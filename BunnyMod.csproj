@@ -40,6 +40,9 @@
     <Reference Include="BepInEx">
       <HintPath>Libraries\BepInEx.dll</HintPath>
     </Reference>
+    <Reference Include="RogueLibs">
+      <HintPath>Libraries\RogueLibs.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

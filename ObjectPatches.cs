@@ -25,21 +25,44 @@ namespace BunnyMod
 		{
             Logger.LogInfo("BunnyMod loaded");
             this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "Interact_Patch");
+            this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "SetVars_Bathtub");
+            this.PatchPostfix(typeof(Altar), "SetVars", GetType(), "SetVars_Altar");
+
         }
 
-        public static bool Interact_Patch(Agent agent, Bathtub __instance)
+
+
+        public static bool Interact_Patch(Agent agent, ObjectReal __instance)
         {
+            #region Altar
+            #endregion
+            #region Bathtub
             if (!(__instance is Bathtub b)) return true;
 
-            MethodInfo baseMethod = AccessTools.DeclaredMethod(__instance.GetType().BaseType, "Interact");
+            MethodInfo baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "Interact");
             baseMethod.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
             agent.statusEffects.BecomeHidden(__instance);
 
-            baseMethod = AccessTools.DeclaredMethod(__instance.GetType().BaseType, "StopInteraction");
+            baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction", new Type[0]);
             baseMethod.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             return false;
+			#endregion
+			#region Stove
+			#endregion
+		}
+		public static void SetVars_Altar(Altar __instance)
+        {
+            __instance.interactable = true;
+        }
+        public static void SetVars_Bathtub(Bathtub __instance)
+        {
+            __instance.interactable = true;
+        }
+        public static void SetVars_Stove(Stove __instance)
+        {
+            __instance.interactable = true;
         }
     }
 

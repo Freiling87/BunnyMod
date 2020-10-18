@@ -1,14 +1,12 @@
-﻿using BepInEx;
-using HarmonyLib;
-using RogueLibsCore;
-using System;
-using System.Reflection;
-using UnityEngine;
-
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Reflection;
 
+using BepInEx;
+using HarmonyLib;
+using UnityEngine;
+using RogueLibsCore;
 
 namespace BunnyMod
 {
@@ -23,37 +21,30 @@ namespace BunnyMod
         public const string pluginName = "Bunny Mod";
         public const string pluginVersion = "1.0.0.0";
 		#endregion
+
 		#region Generic
 		public void Awake()
 		{
             Logger.LogInfo("BunnyMod loaded");
 
-            this.PatchPrefix(typeof(ObjectReal), "Start", GetType(), "Start_ObjectReal");
+            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");//TODO: Move back to Stove (Wut how)
 
-            this.PatchPostfix(typeof(Bathtub), "Interact", GetType(), "Interact_Bathtub");
-            this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "SetVars_Bathtub");
+            this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe");
+            this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
+            this.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
+            this.PatchPostfix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact");
+            this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional");
+            this.PatchPrefix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction");
+            this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
+            this.PatchPostfix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
+            this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
 
-            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "DamagedObject_Stove");
-            this.PatchPostfix(typeof(Stove), "DetermineButtons", GetType(), "DetermineButtons_Stove");
-            this.PatchPrefix(typeof(Stove), "FinishedOperating", GetType(), "FinishedOperating_Stove");
-            this.PatchPrefix(typeof(Stove), "Interact", GetType(), "Interact_Stove");
-            this.PatchPrefix(typeof(Stove), "MakeNonFunctional", GetType(), "MakeNonFunctional_Stove");
-            this.PatchPostfix(typeof(Stove), "ObjectAction", GetType(), "ObjectAction_Stove");
-            this.PatchPrefix(typeof(Stove), "ObjectUpdate", GetType(), "ObjectUpdate_Stove");
-            this.PatchPrefix(typeof(Stove), "playerHasUsableItem", GetType(), "PlayerHasUsableItem_Stove");
-            this.PatchPostfix(typeof(Stove), "PressedButton", GetType(), "PressedButton_Stove");
-            this.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "RevertAllVars_Stove");
-            this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "SetVars_Stove");
-            this.PatchPostfix(typeof(Stove), "Start", GetType(), "Start_Stove");
+            this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
+            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject");
+            this.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
+            this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
         }
-        public static bool Start(ObjectReal __instance)
-		{
-            if (__instance is Stove stove)
-                VariablesStove.Add(stove, new VariablesStove());
-
-            return true;
-		}
         public void FixedUpdate()
         {
             // You will need to check if any of the stoves were destroyed
@@ -62,30 +53,263 @@ namespace BunnyMod
 
             foreach (KeyValuePair<Stove, VariablesStove> pair in VariablesStove)
                 if (pair.Key.isBroken())
+				{
                     removal.Add(pair.Key);
+                    Logger.LogInfo("Added pair.Key from VariablesStove to removal list");
+                }
 
             foreach (Stove stove in removal)
+            {
                 VariablesStove.Remove(stove);
-        }
+                Logger.LogInfo("Removed pair.Key from VariablesStove");
+            }
+        } //TODO: Where should this be patched?
         #endregion
-		#region Bathtub
-        public static void Interact_BathTub(Agent agent, Bathtub __instance)
+
+        #region PlayfieldObject
+        public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
+        {
+            if (__instance is Stove)
+			{
+                Stove stove = (Stove)__instance;
+                return (myItem.invItemName == "Wrench" || myItem.invItemName == "ToolKit") 
+                    && __instance.timer == 0f 
+                    && !stove.startedFlashing; 
+                // PlayfieldObject lacks startedFlashing, but Stove lacks this Method.
+            }
+            else
+			{
+                __result = true;
+                return false;
+			}
+        }    
+        #endregion
+
+        #region ObjectReal
+        public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance)
 		{
-            __instance.Interact(agent);
+            if (__instance is Stove)
+			{
+                if (!__instance.destroying)
+                {
+                    VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
 
-            agent.statusEffects.BecomeHidden(__instance);
-
-            __instance.StopInteraction();
+                    MethodInfo destroyMe_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "DestroyMe");
+                    destroyMe_base.GetMethodWithoutOverrides<Action<PlayfieldObject>>(__instance).Invoke(damagerObject);
+                }
+                return false;
+            }
+            return true;
+		}
+        public static void ObjectReal_DetermineButtons(ObjectReal __instance)
+        {
+            if (__instance is Stove)
+			{
+                if (__instance.interactingAgent.inventory.HasItem("Wrench"))
+                {
+                    if (!__instance.startedFlashing)
+                    {
+                        __instance.buttons.Add("UseWrenchToDetonate");
+                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+                        return;
+                    }
+                }
+                else
+                    __instance.interactingAgent.SayDialogue("CantOperateGenerator");
+            }
         }
-		public static void SetVars_Bathtub(Bathtub __instance)
+        public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
+        {
+            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "FinishedOperating");
+            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            if (__instance is Stove)
+            {
+                if (__instance.operatingItem.invItemName == "Wrench")
+                {
+                    Stove_UseWrenchToDetonate((Stove)__instance);
+
+                    MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction");
+                    stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                }
+            }
+            if (!__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                string operatingBarType = __instance.operatingBarType;
+                if (operatingBarType == "Collecting")
+                {
+                    __instance.CollectPart();
+                    __instance.StopInteraction();
+                }
+            }
+
+            return false;
+        }
+        public static void ObjectReal_Interact(Agent agent, ObjectReal __instance)
+        {
+            __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
+
+            if (__instance is Bathtub)
+            {
+                //TODO: Disable Bathtub's "move toward wall" behavior when generating a chunk.
+                //TODO: Alternatively, make Bathtub non-blocking to movement when a player is inside it.
+
+                MethodInfo baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "Interact");
+                baseMethod.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
+
+                agent.statusEffects.BecomeHidden(__instance);
+
+                baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction", new Type[0]);
+                baseMethod.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+            }
+            if (__instance is Stove)
+            {
+                if (__instance.timer > 0f || __instance.startedFlashing)
+                    __instance.StopInteraction();
+
+                __instance.ShowObjectButtons();
+            }
+        }
+        public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance)
+        {
+            if (__instance is Stove)
+			{
+                if (damagerObject != null && __instance.interactable)
+                {
+                    MethodInfo makeNonFunctional_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "makeNonFunctional");
+                    makeNonFunctional_base.GetMethodWithoutOverrides<Action<PlayfieldObject>>(__instance).Invoke(damagerObject);
+
+                    __instance.timer = 10f;
+                    __instance.timeCountdownClock = (int)__instance.timer;
+                    __instance.InvokeRepeating("Countdown", 0.01f, 1f);
+                    __instance.interactable = false;
+                    VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
+                    VariablesStove[(Stove)__instance].countdownCauser = VariablesStove[(Stove)__instance].savedDamagerObject;
+                }
+                return false;
+            }
+            return true;
+        }
+        public static bool ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool __noMoreObjectActions)
+        {
+            if (myAction == "MakeNonFunctional")
+            {
+                __instance.MakeNonFunctional(null);
+                __noMoreObjectActions = true;
+                return false;
+            }
+            if (myAction == "MakeFunctional")
+            {
+                __instance.MakeFunctional();
+                __noMoreObjectActions = true;
+                return false;
+            }
+            if (myAction == "LaptopHack")
+            {
+                __instance.LaptopHack(causerAgent);
+                __noMoreObjectActions = true;
+                return false;
+            }
+            if (myAction == "HackingToolHack")
+            {
+                __instance.HackingToolHack(causerAgent);
+                __noMoreObjectActions = true;
+                return false;
+            }
+            if (myAction == "HackExplode")
+            {
+                __instance.HackExplode(causerAgent);
+                __noMoreObjectActions = true;
+                return false;
+            }
+			#region patch
+			if (myAction == "UseWrenchToDetonate")
+			{
+                Stove_UseWrenchToDetonate((Stove)__instance);
+                return false;
+			}
+#endregion
+            if (!(myAction == "CollectPart"))
+            {
+                return false;
+            }
+            __instance.CollectPart();
+            return false;
+        }
+        public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)
+        {
+            if (__instance is Stove)
+			{
+                if (__instance.timer > 0f)
+                {
+                    __instance.timer -= Time.deltaTime;
+
+                    if (__instance.timer <= 0f)
+                    {
+                        if (__instance.startedFlashing)
+                        {
+                            __instance.DestroyMe(VariablesStove[(Stove)__instance].savedDamagerObject);
+                            return false;
+                        }
+                        VariablesStove[(Stove)__instance].noOwnCheckCountdown = true;
+                        VariablesStove[(Stove)__instance].savedDamagerObject = VariablesStove[(Stove)__instance].countdownCauser;
+                        __instance.DestroyMe(VariablesStove[(Stove)__instance].countdownCauser);
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+        public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance)
+        {
+            MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "PressedButton");
+            pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+            if (buttonText == "HackExplode")
+            {
+                __instance.HackExplode(__instance.interactingAgent);
+                return false;
+            }
+            if (buttonText == "UseWrenchToDetonate")
+            {
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+                return false;
+            }
+            if (!(buttonText == "CollectPart"))
+            {
+                return false;
+            }
+            __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
+
+            if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+            {
+                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                __instance.gc.audioHandler.Play(__instance, "Hack");
+                __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+            }
+
+            return false;
+        }
+        public static void ObjectReal_Start(ObjectReal __instance)
+		{
+            if (__instance is Stove stove)
+                VariablesStove.Add(stove, new VariablesStove());
+		}
+        #endregion
+
+		#region Bathtub
+        public static void Bathtub_SetVars(Bathtub __instance)
         {
             __instance.interactable = true;
         }
         #endregion
+
         #region Stove
         public static Dictionary<Stove, VariablesStove> VariablesStove = new Dictionary<Stove, VariablesStove>();
 
-        public static IEnumerator AboutToExplode_Stove(Stove __instance) //Non-patch
+        public static IEnumerator Stove_AboutToExplode(Stove __instance)
 		{
             __instance.interactable = false;
             __instance.PlayObjectSpriteEffect("FlashingRepeatedly");
@@ -99,10 +323,6 @@ namespace BunnyMod
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
-
-            MethodInfo removeObjectAgent = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "RemoveObjectAgent");
-            removeObjectAgent.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
             __instance.RemoveObjectAgent();
             __instance.cantMakeFollowersAttack = true;
 
@@ -111,52 +331,16 @@ namespace BunnyMod
                 __instance.DestroyMe(VariablesStove[__instance].savedDamagerObject);
 
 			yield break;
-        }//√
-        public static void AnimationSequence_Stove(Stove __instance) //Non-patch
+        }
+        public static bool Stove_DamagedObject(PlayfieldObject damagerObject, float damageAmount, Stove __instance)
 		{
-            if (!__instance.destroying && __instance.activeObject && !__instance.notInOriginalLocation && __instance.spawnedShadow && __instance.onCamera)
-            {
-                VariablesStove[__instance].animationCountdown -= Time.deltaTime;
-                if (VariablesStove[__instance].animationCountdown <= 0f)
-                {
-                    if (VariablesStove[__instance].animationFrame == 0)
-                    {
-                        __instance.ChangeSpriteByID(VariablesStove[__instance].animateSpriteID2);
-                        VariablesStove[__instance].animationFrame = 1;
-                    }
-                    else
-                    {
-                        __instance.ChangeSpriteByID(VariablesStove[__instance].animateSpriteID);
-                        VariablesStove[__instance].animationFrame = 0;
-                    }
-                    VariablesStove[__instance].animationCountdown = 0.5f;
-                }
-            }
-        }//√
-		public static void Countdown_Stove(Stove __instance) // Non-Patch
-		{
-            if (!__instance.gc.cinematic)
-            {
-                string myText = string.Concat(__instance.timeCountdownClock);
-
-                if (__instance.timeCountdownClock > 0 && !__instance.destroyed && !__instance.destroying)
-                    __instance.gc.spawnerMain.SpawnStatusText(__instance, "Countdown", myText);
-
-                __instance.timeCountdownClock--;
-
-                if (__instance.timeCountdownClock == 0 || __instance.timeCountdownClock == -1 || __instance.destroyed)
-                    __instance.CancelInvoke();
-            }
-        } // Possibly un-used, according to DNSpy // √
-        public static bool DamagedObject_Stove(PlayfieldObject damagerObject, float damageAmount, Stove __instance)
-		{
-            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(Stove).BaseType, "damagedObject");
+            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(Stove).BaseType, "DamagedObject");
             damagedObject.GetMethodWithoutOverrides<Action<PlayfieldObject, float>>(__instance).Invoke(damagerObject, damageAmount);
 
             if (damageAmount >= 15f && !__instance.startedFlashing)
             {
                 VariablesStove[__instance].savedDamagerObject = damagerObject;
-                __instance.StartCoroutine(AboutToExplode_Stove(__instance));
+                __instance.StartCoroutine(Stove_AboutToExplode(__instance));
             }
 
             if (damageAmount >= (float)__instance.damageThreshold)
@@ -164,139 +348,27 @@ namespace BunnyMod
                 VariablesStove[__instance].savedDamagerObject = damagerObject;
                 __instance.DestroyMe(damagerObject);
             }
-
+            //TODO: Ensure Flames for all destruction types.
             return false;
-        }//√
-        public static void DetermineButtons_Stove(Stove __instance)
-		{
-
-            if (__instance.interactingAgent.inventory.HasItem("Wrench"))
-            {
-                if (!__instance.startedFlashing)
-                {
-                    __instance.buttons.Add("UseWrenchToDetonate");
-                    __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
-                    return;
-                }
-            }
-            //if (__instance.interactingAgent.inventory.HasItem("ToolKit"))
-            //{
-            //    if (!__instance.startedFlashing)
-            //    {
-            //        __instance.buttons.Add("UseWrenchToDetonate");
-            //        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("ToolKit").invItemCount + ") -0");
-            //        return;
-            //    }
-            //}
-            else
-                __instance.interactingAgent.SayDialogue("CantOperateGenerator");
-        }//√
-        public static bool FinishedOperating_Stove(Stove __instance)
-		{
-            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(Stove).BaseType, "finishedOperating");
-            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-            string invItemName = __instance.operatingItem.invItemName;
-
-            if (invItemName == "Wrench" || invItemName == "ToolKit")
-            {
-                UseWrenchToDetonate_Stove(__instance);
-                __instance.StopInteraction();
-            }
-
-            return false;
-        }// This one may need to be on ObjectReal instead, since it's called by PlayfieldObject elsewhere //√
-        public static void Interact_Stove(Agent agent, Stove __instance)
-		{
-            MethodInfo interact = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "Interact");
-            interact.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
-
-            if (__instance.timer > 0f || __instance.startedFlashing) //May not have flashing in this
-                __instance.StopInteraction();
-
-            __instance.ShowObjectButtons();
-        }// Patch this one to patch ObjectReal? If I understood correctly. //√
-        public static bool MakeNonFunctional_Stove(PlayfieldObject damagerObject, Stove __instance)
-		{
-            if (damagerObject != null && __instance.interactable)
-            {
-                MethodInfo makeNonFunctional = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "makeNonFunctional");
-                makeNonFunctional.GetMethodWithoutOverrides<Action<PlayfieldObject>>(__instance).Invoke(damagerObject);
-
-                __instance.timer = 10f;
-                __instance.timeCountdownClock = (int)__instance.timer;
-                __instance.InvokeRepeating("Countdown", 0.01f, 1f);
-                __instance.interactable = false;
-                VariablesStove[__instance].savedDamagerObject = damagerObject;
-                VariablesStove[__instance].countdownCauser = VariablesStove[__instance].savedDamagerObject;
-            }
-            return false;
-        }//√
-        public static void ObjectAction_Stove(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, Stove __instance, ref bool __noMoreObjectActions)
-		{
-            if (!__noMoreObjectActions && myAction == "UseWrenchToDetonate")
-                UseWrenchToDetonate_Stove(__instance);
-
-            __noMoreObjectActions = false;
-        }//√
-        public static bool ObjectUpdate_Stove(Stove __instance)
-		{
-            AnimationSequence_Stove(__instance);
-
-			if (__instance.timer > 0f)
-			{
-				__instance.timer -= Time.deltaTime;
-
-				if (__instance.timer <= 0f)
-				{
-					if (__instance.startedFlashing)
-					{
-						__instance.DestroyMe(VariablesStove[__instance].savedDamagerObject);
-						return false;
-					}
-                    VariablesStove[__instance].noOwnCheckCountdown = true;
-                    VariablesStove[__instance].savedDamagerObject = VariablesStove[__instance].countdownCauser;
-					__instance.DestroyMe(VariablesStove[__instance].countdownCauser);
-				}
-			}
-            return false;
-		}//√
-        public static bool PlayerHasUsableItem_Stove(InvItem myItem, Stove __instance) => // Non-patch
-            (myItem.invItemName == "Wrench" || myItem.invItemName == "ToolKit") && __instance.timer == 0f && !__instance.startedFlashing;//√
-        public static void PressedButton_Stove(string buttonText, int buttonPrice, Stove __instance)
-		{
-            MethodInfo pressedButton = AccessTools.DeclaredMethod(typeof(Stove).BaseType, "PressedButton");
-            pressedButton.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
-
-            if (buttonText == "UseWrenchToDetonate")
-            {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-                return;
-            }
-            __instance.StopInteraction();
-        }//√
-		public static void SetVars_Stove(Stove __instance)
+        }
+        public static void Stove_SetVars(Stove __instance)
         {
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
-            __instance.animates = true;
-        }//√
-        public static void RevertAllVars_Stove(Stove __instance)
+        }
+        public static void Stove_RevertAllVars(Stove __instance)
         {
             VariablesStove[__instance].mustSpawnExplosionOnClients = false;
-            VariablesStove[__instance].animateSpriteID = 0;
-            VariablesStove[__instance].animateSpriteID2 = 0;
             VariablesStove[__instance].savedDamagerObject = null;
-            __instance.GetComponent<Animator>().enabled = false;
             VariablesStove[__instance].noOwnCheckCountdown = false;
             VariablesStove[__instance].countdownCauser = null;
             __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
             __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
             __instance.CancelInvoke();
-        }//√
-        public static void UseWrenchToDetonate_Stove(Stove __instance) // Non-Patch
+        }
+        public static void Stove_UseWrenchToDetonate(Stove __instance)
         {
             if (__instance.gc.serverPlayer)
             {
@@ -309,16 +381,12 @@ namespace BunnyMod
             __instance.functional = false;
             __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
-        }//√
+        }
         #endregion
     }
 
     public class VariablesStove
     {
-        public int animateSpriteID;
-        public int animateSpriteID2;
-        public float animationCountdown;
-        public int animationFrame;
         public PlayfieldObject countdownCauser;
         public bool mustSpawnExplosionOnClients;
         public bool noOwnCheckCountdown;

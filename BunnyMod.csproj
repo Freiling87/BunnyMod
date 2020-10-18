@@ -76,5 +76,8 @@
     <Folder Include="Extensions\" />
     <Folder Include="Properties\Resources\" />
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

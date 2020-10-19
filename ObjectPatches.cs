@@ -25,16 +25,14 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
-            Logger.LogInfo("BunnyMod loaded");
-
-            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");//TODO: Move back to Stove (Wut how)
+            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
 
             this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe");
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             this.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
-            this.PatchPostfix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact");
+            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact");
             this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional");
-            this.PatchPrefix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction");
+            this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction");
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
             this.PatchPostfix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
             this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
@@ -64,18 +62,17 @@ namespace BunnyMod
                 Logger.LogInfo("Removed pair.Key from VariablesStove");
             }
         } //TODO: Where should this be patched?
-        #endregion
+		#endregion
 
-        #region PlayfieldObject
-        public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
+		#region PlayfieldObject
+		public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
         {
             if (__instance is Stove)
 			{
                 Stove stove = (Stove)__instance;
-                return (myItem.invItemName == "Wrench" || myItem.invItemName == "ToolKit") 
+                return (myItem.invItemName == "Wrench") 
                     && __instance.timer == 0f 
                     && !stove.startedFlashing; 
-                // PlayfieldObject lacks startedFlashing, but Stove lacks this Method.
             }
             else
 			{
@@ -90,14 +87,7 @@ namespace BunnyMod
 		{
             if (__instance is Stove)
 			{
-                if (!__instance.destroying)
-                {
-                    VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
-
-                    MethodInfo destroyMe_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "DestroyMe");
-                    destroyMe_base.GetMethodWithoutOverrides<Action<PlayfieldObject>>(__instance).Invoke(damagerObject);
-                }
-                return false;
+                VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
             }
             return true;
 		}
@@ -120,9 +110,6 @@ namespace BunnyMod
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
         {
-            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "FinishedOperating");
-            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
             if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
@@ -131,8 +118,14 @@ namespace BunnyMod
 
                     MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction");
                     stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                    return false;
                 }
             }
+
+            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
+            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
             if (!__instance.interactingAgent.interactionHelper.interactingFar)
             {
                 string operatingBarType = __instance.operatingBarType;
@@ -145,8 +138,11 @@ namespace BunnyMod
 
             return false;
         }
-        public static void ObjectReal_Interact(Agent agent, ObjectReal __instance)
+        public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance)
         {
+            MethodInfo baseMethod = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
+            baseMethod.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
+
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
             if (__instance is Bathtub)
@@ -154,10 +150,13 @@ namespace BunnyMod
                 //TODO: Disable Bathtub's "move toward wall" behavior when generating a chunk.
                 //TODO: Alternatively, make Bathtub non-blocking to movement when a player is inside it.
 
-                MethodInfo baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "Interact");
-                baseMethod.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
-
                 agent.statusEffects.BecomeHidden(__instance);
+
+                //Possible fix for stuck hider
+                agent.agentItemColliderTr.gameObject.SetActive(false);
+                //__instance.onShadowLayer = true;
+                //__instance.colliderSize = "InPrefab";
+                // Then patch StatusEffects.BecomeNotHidden() to reenable whatever you disable to make it passable.
 
                 baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction", new Type[0]);
                 baseMethod.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -169,6 +168,8 @@ namespace BunnyMod
 
                 __instance.ShowObjectButtons();
             }
+
+            return false;
         }
         public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance)
         {
@@ -190,51 +191,18 @@ namespace BunnyMod
             }
             return true;
         }
-        public static bool ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool __noMoreObjectActions)
+        public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool __noMoreObjectActions)
         {
-            if (myAction == "MakeNonFunctional")
-            {
-                __instance.MakeNonFunctional(null);
-                __noMoreObjectActions = true;
-                return false;
-            }
-            if (myAction == "MakeFunctional")
-            {
-                __instance.MakeFunctional();
-                __noMoreObjectActions = true;
-                return false;
-            }
-            if (myAction == "LaptopHack")
-            {
-                __instance.LaptopHack(causerAgent);
-                __noMoreObjectActions = true;
-                return false;
-            }
-            if (myAction == "HackingToolHack")
-            {
-                __instance.HackingToolHack(causerAgent);
-                __noMoreObjectActions = true;
-                return false;
-            }
-            if (myAction == "HackExplode")
-            {
-                __instance.HackExplode(causerAgent);
-                __noMoreObjectActions = true;
-                return false;
-            }
-			#region patch
-			if (myAction == "UseWrenchToDetonate")
+            if (__instance is Stove)
 			{
-                Stove_UseWrenchToDetonate((Stove)__instance);
-                return false;
-			}
-#endregion
-            if (!(myAction == "CollectPart"))
-            {
-                return false;
+                if (!__noMoreObjectActions && myAction == "UseWrenchToDetonate")
+                {
+                    Stove_UseWrenchToDetonate((Stove)__instance);
+                }
+                __noMoreObjectActions = false;
+
+                // __noMoreObjectActions might be what's causing the buttons to not activate.
             }
-            __instance.CollectPart();
-            return false;
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)
         {

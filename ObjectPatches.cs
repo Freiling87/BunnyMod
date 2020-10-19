@@ -148,7 +148,7 @@ namespace BunnyMod
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
-            if (__instance is Bathtub || __instance is Plant || __instance is PoolTable)
+            if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
                 //TODO: Disable objects' "move toward wall" behavior when generating a chunk.
                 //TODO: Alternatively, make them non-blocking to movement when a player is inside it.
@@ -336,6 +336,7 @@ namespace BunnyMod
                 __instance.DestroyMe(damagerObject);
             }
             //TODO: Ensure Flames for all destruction types.
+            //TODO: Consider flame spit instead of flame particle
             return false;
         }
         public static void Stove_SetVars(Stove __instance)

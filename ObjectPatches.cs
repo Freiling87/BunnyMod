@@ -34,7 +34,7 @@ namespace BunnyMod
             this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional");
             this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction");
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
-            this.PatchPostfix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
+            this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
             this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
 
             this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
@@ -116,7 +116,7 @@ namespace BunnyMod
                 {
                     Stove_UseWrenchToDetonate((Stove)__instance);
 
-                    MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction");
+                    MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
                     stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
                     return false;
@@ -140,8 +140,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance)
         {
-            MethodInfo baseMethod = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
-            baseMethod.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
+            MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
+            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
@@ -158,8 +158,8 @@ namespace BunnyMod
                 //__instance.colliderSize = "InPrefab";
                 // Then patch StatusEffects.BecomeNotHidden() to reenable whatever you disable to make it passable.
 
-                baseMethod = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "StopInteraction", new Type[0]);
-                baseMethod.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                MethodInfo stopinteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
+                stopinteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
             }
             if (__instance is Stove)
             {
@@ -177,8 +177,11 @@ namespace BunnyMod
 			{
                 if (damagerObject != null && __instance.interactable)
                 {
-                    MethodInfo makeNonFunctional_base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "makeNonFunctional");
-                    makeNonFunctional_base.GetMethodWithoutOverrides<Action<PlayfieldObject>>(__instance).Invoke(damagerObject);
+                    __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+                    if (!__instance.gc.serverPlayer)
+                    {
+                        __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "MakeNonFunctional");
+                    }
 
                     __instance.timer = 10f;
                     __instance.timeCountdownClock = (int)__instance.timer;
@@ -230,7 +233,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance)
         {
-            MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(ObjectReal).BaseType, "PressedButton");
+            MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[1]); //TODO: Verify if index necessary here
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
             if (buttonText == "HackExplode")
@@ -247,6 +250,7 @@ namespace BunnyMod
             {
                 return false;
             }
+
             __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
 
             if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
@@ -302,7 +306,7 @@ namespace BunnyMod
         }
         public static bool Stove_DamagedObject(PlayfieldObject damagerObject, float damageAmount, Stove __instance)
 		{
-            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(Stove).BaseType, "DamagedObject");
+            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject");
             damagedObject.GetMethodWithoutOverrides<Action<PlayfieldObject, float>>(__instance).Invoke(damagerObject, damageAmount);
 
             if (damageAmount >= 15f && !__instance.startedFlashing)

@@ -278,6 +278,7 @@ namespace BunnyMod
         {
             __instance.interactable = true;
             //TODO: Closed Bath Curtain sprite?
+            // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.
         }
 		#endregion
 		#region Plant

@@ -21,7 +21,6 @@ namespace BunnyMod
         public const string pluginName = "Bunny Mod";
         public const string pluginVersion = "1.0.0.0";
 		#endregion
-
 		#region Generic
 		public void Awake()
 		{
@@ -39,9 +38,15 @@ namespace BunnyMod
 
             this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
+            this.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars");
+
+            this.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
+
             this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject");
             this.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
             this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
+
+            this.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
         }
         public void FixedUpdate()
         {
@@ -63,7 +68,6 @@ namespace BunnyMod
             }
         } //TODO: Where should this be patched?
 		#endregion
-
 		#region PlayfieldObject
 		public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
         {
@@ -81,7 +85,6 @@ namespace BunnyMod
 			}
         }    
         #endregion
-
         #region ObjectReal
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance)
 		{
@@ -145,15 +148,15 @@ namespace BunnyMod
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
-            if (__instance is Bathtub)
+            if (__instance is Bathtub || __instance is Plant || __instance is PoolTable)
             {
-                //TODO: Disable Bathtub's "move toward wall" behavior when generating a chunk.
-                //TODO: Alternatively, make Bathtub non-blocking to movement when a player is inside it.
+                //TODO: Disable objects' "move toward wall" behavior when generating a chunk.
+                //TODO: Alternatively, make them non-blocking to movement when a player is inside it.
 
                 agent.statusEffects.BecomeHidden(__instance);
 
-                //Possible fix for stuck hider
-                agent.agentItemColliderTr.gameObject.SetActive(false);
+                //Possible fixes for stuck hider, but you will need to find out how to undo them:
+                //agent.agentItemColliderTr.gameObject.SetActive(false);
                 //__instance.onShadowLayer = true;
                 //__instance.colliderSize = "InPrefab";
                 // Then patch StatusEffects.BecomeNotHidden() to reenable whatever you disable to make it passable.
@@ -270,14 +273,25 @@ namespace BunnyMod
                 VariablesStove.Add(stove, new VariablesStove());
 		}
         #endregion
-
 		#region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance)
         {
             __instance.interactable = true;
+            //TODO: Closed Bath Curtain sprite?
+        }
+		#endregion
+		#region Plant
+		public static void Plant_SetVars(Plant __instance)
+        {
+            __instance.interactable = true;
         }
         #endregion
-
+        #region PoolTable
+        public static void PoolTable_SetVars(PoolTable __instance)
+        {
+            __instance.interactable = true;
+        }
+        #endregion
         #region Stove
         public static Dictionary<Stove, VariablesStove> VariablesStove = new Dictionary<Stove, VariablesStove>();
 
@@ -353,6 +367,12 @@ namespace BunnyMod
             __instance.functional = false;
             __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
+        }
+        #endregion
+        #region TableBig
+        public static void TableBig_SetVars(TableBig __instance)
+        {
+            __instance.interactable = true;
         }
         #endregion
     }

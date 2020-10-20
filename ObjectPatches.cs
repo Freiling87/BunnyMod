@@ -25,7 +25,7 @@ namespace BunnyMod
 		public void Awake()
 		{
             #region Names
-            CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God damn it, I always burn my fucking hands!"));
+            CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
 			#endregion
 			#region Patches
 			this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
@@ -158,7 +158,7 @@ namespace BunnyMod
 
                     return false;
                 }
-            }
+            }   
 
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -290,6 +290,7 @@ namespace BunnyMod
             if (buttonText == "GrillFud")
 			{
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
+                return false;
 			}
 			if (buttonText == "UseWrenchToDetonate")
             {

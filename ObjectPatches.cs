@@ -197,17 +197,15 @@ namespace BunnyMod
             }
             return true;
         }
-        public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool __noMoreObjectActions)
+        public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool ___noMoreObjectActions)
         {
             if (__instance is Stove)
 			{
-                if (!__noMoreObjectActions && myAction == "UseWrenchToDetonate")
+                if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
                 {
                     Stove_UseWrenchToDetonate((Stove)__instance);
                 }
-                __noMoreObjectActions = false;
-
-                // __noMoreObjectActions might be what's causing the buttons to not activate.
+                ___noMoreObjectActions = false;
             }
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)

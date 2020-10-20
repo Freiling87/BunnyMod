@@ -24,7 +24,11 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
-            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
+            #region Names
+            CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God damn it, I always burn my fucking hands!"));
+			#endregion
+			#region Patches
+			this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
 
             this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe");
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
@@ -38,6 +42,8 @@ namespace BunnyMod
 
             this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
+            this.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars");
+
             this.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars");
 
             this.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
@@ -47,8 +53,9 @@ namespace BunnyMod
             this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
 
             this.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
-        }
-        public void FixedUpdate()
+			#endregion
+		}
+		public void FixedUpdate()
         {
             // You will need to check if any of the stoves were destroyed
 
@@ -96,6 +103,28 @@ namespace BunnyMod
 		}
         public static void ObjectReal_DetermineButtons(ObjectReal __instance)
         {
+            if (__instance is FlamingBarrel)
+			{
+                if (__instance.ora.hasParticleEffect)
+				{
+                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                    {
+                        __instance.buttons.Add("GrillFud");
+                        return;
+                    }
+                    __instance.interactingAgent.SayDialogue("CantGrillFud");
+                }
+				else
+				{
+                    if (__instance.interactingAgent.inventory.HasItem("CigaretteLighter"))
+					{
+                        __instance.buttons.Add("LightBarbecue");
+                        return;
+					}
+                    __instance.interactingAgent.SayDialogue("CantOperateBarbecue");
+                    return;
+				}
+			}
             if (__instance is Stove)
 			{
                 if (__instance.interactingAgent.inventory.HasItem("Wrench"))
@@ -113,6 +142,11 @@ namespace BunnyMod
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
         {
+            if (__instance is FlamingBarrel)
+			{
+                FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
+                __instance.StopInteraction();
+			}
             if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
@@ -164,6 +198,10 @@ namespace BunnyMod
                 MethodInfo stopinteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
                 stopinteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
             }
+            if (__instance is FlamingBarrel)
+			{
+                __instance.ShowObjectButtons();
+			}
             if (__instance is Stove)
             {
                 if (__instance.timer > 0f || __instance.startedFlashing)
@@ -242,12 +280,24 @@ namespace BunnyMod
                 __instance.HackExplode(__instance.interactingAgent);
                 return false;
             }
-            if (buttonText == "UseWrenchToDetonate")
+			#region Patch
+            if (buttonText == "LightBarbecue")
+			{
+                __instance.StartFireInObject();
+                __instance.StopInteraction();
+                return false;
+			}
+            if (buttonText == "GrillFud")
+			{
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
+			}
+			if (buttonText == "UseWrenchToDetonate")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
                 return false;
             }
-            if (!(buttonText == "CollectPart"))
+			#endregion Patch
+			if (!(buttonText == "CollectPart"))
             {
                 return false;
             }
@@ -271,6 +321,7 @@ namespace BunnyMod
                 VariablesStove.Add(stove, new VariablesStove());
 		}
         #endregion
+
 		#region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance)
         {
@@ -278,9 +329,45 @@ namespace BunnyMod
             //TODO: Closed Bath Curtain sprite?
             // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.
         }
-		#endregion
-		#region Plant
-		public static void Plant_SetVars(Plant __instance)
+        #endregion
+        #region FlamingBarrel
+        public static void FlamingBarrel_GrilledFud(FlamingBarrel __instance)
+		{
+            InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
+            int num = rawFud.invItemCount;
+            rawFud.invItemCount -= num;
+
+            if (rawFud.invItemCount <= 0)
+            {
+                __instance.interactingAgent.inventory.DestroyItem(rawFud);
+            }
+
+            InvItem cookedFud = new InvItem();
+            cookedFud.invItemName = "HotFud";
+            cookedFud.SetupDetails(false);
+            cookedFud.invItemCount = num;
+            __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
+            cookedFud.ShowPickingUpText(__instance.interactingAgent);
+
+            __instance.gc.audioHandler.Play(__instance, "Grill");
+            FlamingBarrel_GrilledFudAfter(num, __instance);
+        }
+        public static void FlamingBarrel_GrilledFudAfter(int myCount, FlamingBarrel __instance)
+		{
+            __instance.gc.audioHandler.Play(__instance, "FireHit");
+            __instance.interactingAgent.Damage(__instance);
+            __instance.interactingAgent.statusEffects.ChangeHealth((float)5, __instance);
+            __instance.interactingAgent.SayDialogue("BurnedHands");
+            return;
+		}
+        public static void FlamingBarrel_SetVars(FlamingBarrel __instance)
+		{
+            __instance.interactable = true;
+            __instance.fireDoesntDamage = true;
+		}
+        #endregion
+        #region Plant
+        public static void Plant_SetVars(Plant __instance)
         {
             __instance.interactable = true;
         }

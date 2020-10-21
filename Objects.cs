@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 using BepInEx;
+using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
-using BepInEx.Logging;
 
 namespace BunnyMod
 {
@@ -28,27 +29,85 @@ namespace BunnyMod
         public void Awake()
         {
             ConsoleMessage = Logger;
-            #region Names
-            CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
-            #endregion
-            #region Patches
+            RoguePatcher patcher = new RoguePatcher(this, GetType());
+            #region Items
+            #region BeerCan
+            Sprite sprite_beerCan = RogueUtilities.ConvertToSprite(Properties.Resources.BeerCan);
 
-            this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe");
+            CustomItem BeerCan = RogueLibs.CreateCustomItem("BeerCan", sprite_beerCan, true,
+                new CustomNameInfo("Beer Can"),
+                new CustomNameInfo("Probably best just to get the money from recycling this."),
+                item =>
+                {
+                    item.itemType = "WeaponThrown";
+                    item.weaponCode = weaponType.WeaponThrown;
+                    item.Categories.Add("Weapons");
+                    item.Categories.Add("NonViolent");
+                    item.isWeapon = true;
+                    item.itemValue = 5;
+                    item.initCount = 1;
+                    item.rewardCount = 4;
+                    item.stackable = true;
+                    item.throwDamage = 1;
+                    item.throwDistance = 4;
+                    item.throwExtraDist = false;
+                    item.dontAutomaticallySelect = true;
+                    item.specialDamage = true;
+                    item.shadowOffset = 4;
+                });
+			#endregion
+			#region Spear
+			Sprite sprite_spear = RogueUtilities.ConvertToSprite(Properties.Resources.Spear);
+
+			CustomItem Spear = RogueLibs.CreateCustomItem("Spear", sprite_spear, false,
+				new CustomNameInfo("Spear"),
+				new CustomNameInfo("You've probably seen Cavemen hunting your mom with these."),
+				item =>
+				{
+					item.itemType = "WeaponMelee";
+                    item.weaponCode = weaponType.WeaponMelee;
+                    item.Categories.Add("Weapons");
+                    item.isWeapon = true;
+                    item.itemValue = 30;
+                    item.initCount = 80;
+                    item.rewardCount = 200;
+                    item.stackable = true;
+                    item.meleeDamage = 8;
+                    item.hitSoundType = "Cut";
+				});
+            Spear.UnlockCost = 3;
+            Spear.CostInCharacterCreation = 1;
+            Spear.CostInLoadout = 1;
+
+            //(Melee)Spear.animClass = "Stab";
+            // Patch Melee.Attack() for these variables, see those for Knife.
+			#endregion
+			#endregion
+			#region Names
+			CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+			#endregion
+			#region Patches
+			#region Patches - Generic
+            //TODO: Switch to using simpler patcher.Prefix method, now that the point of its arguments are clear
+
+			this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[] { typeof(PlayfieldObject) });
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             this.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
-            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact");
-            this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional");
-            this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction");
+            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[] { typeof(Agent) });
+            this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[] { typeof(PlayfieldObject) });
+            this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
-            this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
+            this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[] { typeof(string), typeof(int) });
             this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
 
-            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
+            this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) });
+            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[] { typeof(InvItem), typeof(PlayfieldObject) });
 
-            this.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden");
+            this.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[] { typeof(ObjectReal) });
             this.PatchPostfix(typeof(StatusEffects), "BecomeUnhidden", GetType(), "StatusEffects_BecomeUnhidden");
-
-            this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
+			#endregion
+			#region Patches - Objects
+			this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
             this.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars");
 
@@ -56,14 +115,15 @@ namespace BunnyMod
 
             this.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
 
-            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject");
+            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[] { typeof(PlayfieldObject), typeof(float) });
             this.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
             this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
 
             this.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
-            #endregion
-            #region Traits
-            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
+			#endregion
+			#endregion
+			#region Traits
+			CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
                 new CustomNameInfo("")); //
             Alcoholic.CostInCharacterCreation = -6;
@@ -272,6 +332,8 @@ namespace BunnyMod
         #region ObjectReal
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_DestroyMe");
+
             if (__instance is Stove)
             {
                 VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
@@ -280,6 +342,8 @@ namespace BunnyMod
         }
         public static void ObjectReal_DetermineButtons(ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
+
             if (__instance is FlamingBarrel)
             {
                 if (__instance.ora.hasParticleEffect)
@@ -356,6 +420,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_Interact");
+
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
             interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
@@ -506,6 +572,8 @@ namespace BunnyMod
         }
         public static void ObjectReal_Start(ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_Start");
+
             if (__instance is Stove stove)
                 VariablesStove.Add(stove, new VariablesStove());
         }
@@ -604,6 +672,7 @@ namespace BunnyMod
         public static IEnumerator Stove_AboutToExplode(Stove __instance)
 		{
             ConsoleMessage.LogMessage("Stove_AboutToExplode");
+
             __instance.interactable = false;
             __instance.PlayObjectSpriteEffect("FlashingRepeatedly");
             
@@ -647,13 +716,6 @@ namespace BunnyMod
             //TODO: Consider flame spit instead of flame particle
             return false;
         }
-        public static void Stove_SetVars(Stove __instance)
-        {
-            __instance.canExplosiveStimulate = true;
-            __instance.dontDestroyImmediateOnClient = true;
-            __instance.hasUpdate = true;
-            __instance.interactable = true;
-        }
         public static void Stove_RevertAllVars(Stove __instance)
         {
             VariablesStove[__instance].mustSpawnExplosionOnClients = false;
@@ -663,6 +725,13 @@ namespace BunnyMod
             __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
             __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
             __instance.CancelInvoke();
+        }
+        public static void Stove_SetVars(Stove __instance)
+        {
+            __instance.canExplosiveStimulate = true;
+            __instance.dontDestroyImmediateOnClient = true;
+            __instance.hasUpdate = true;
+            __instance.interactable = true;
         }
         public static void Stove_UseWrenchToDetonate(Stove __instance)
         {
@@ -687,9 +756,6 @@ namespace BunnyMod
             __instance.interactable = true;
         }
 		#endregion
-		#endregion
-		#region Traits
-
 		#endregion
 	}
 

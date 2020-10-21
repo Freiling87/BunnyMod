@@ -21,7 +21,7 @@ namespace BunnyMod
 		#region Mod Info
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
         public const string pluginName = "Bunny Mod";
-        public const string pluginVersion = "1.0.0.0";
+        public const string pluginVersion = "1.1.0";
         #endregion
         #region Generic
         public static ManualLogSource ConsoleMessage;
@@ -90,21 +90,21 @@ namespace BunnyMod
 			#region Patches - Generic
             //TODO: Switch to using simpler patcher.Prefix method, now that the point of its arguments are clear
 
-			this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[] { typeof(PlayfieldObject) });
+			this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             this.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
-            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[] { typeof(Agent) });
-            this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[] { typeof(PlayfieldObject) });
-            this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
+            this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[1] { typeof(PlayfieldObject) });
+            this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
-            this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[] { typeof(string), typeof(int) });
+            this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[2] { typeof(string), typeof(int) });
             this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
 
-            this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) });
-            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[] { typeof(InvItem), typeof(PlayfieldObject) });
+            //this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) }); 
+            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[2] { typeof(InvItem), typeof(PlayfieldObject) });
 
-            this.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[] { typeof(ObjectReal) });
-            this.PatchPostfix(typeof(StatusEffects), "BecomeUnhidden", GetType(), "StatusEffects_BecomeUnhidden");
+            this.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+            this.PatchPostfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden");
 			#endregion
 			#region Patches - Objects
 			this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
@@ -115,7 +115,7 @@ namespace BunnyMod
 
             this.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
 
-            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[] { typeof(PlayfieldObject), typeof(float) });
+            this.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             this.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
             this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
 
@@ -498,7 +498,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)
         {
-            ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate");
+            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); //Verbose
 
             if (__instance is Stove)
             {
@@ -526,7 +526,7 @@ namespace BunnyMod
         {
             ConsoleMessage.LogMessage("ObjectReal_PressedButton");
 
-            MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[1]); //TODO: Verify if index necessary here
+            MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
             if (buttonText == "HackExplode")
@@ -579,6 +579,10 @@ namespace BunnyMod
         }
         #endregion
         #region PlayfieldObject
+        public static void PlayfieldObject_FindDamage()//verify
+		{
+
+		}
         public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
         {
             if (__instance is Stove)
@@ -599,13 +603,11 @@ namespace BunnyMod
         public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
 		{
             if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
-			{
-                __instance.agent.agentItemColliderTr.gameObject.SetActive(false);
-			}
+                __instance.agent.agentCollider.gameObject.SetActive(false);
 		}
         public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
 		{
-            __instance.agent.agentItemColliderTr.gameObject.SetActive(true);
+            __instance.agent.agentCollider.gameObject.SetActive(true);
 		}
 		#endregion
 

@@ -15,7 +15,7 @@ namespace BunnyMod
     [BepInProcess("StreetsOfRogue.exe")]
     [BepInDependency(RogueLibs.pluginGuid, "2.0")]
 
-    public class ObjectPatches : BaseUnityPlugin
+    public class Objects : BaseUnityPlugin
     {
 		#region Mod Info
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
@@ -25,14 +25,13 @@ namespace BunnyMod
         #region Generic
         public static ManualLogSource ConsoleMessage;
 
-		public void Awake()
-		{
-			ConsoleMessage = Logger;
+        public void Awake()
+        {
+            ConsoleMessage = Logger;
             #region Names
             CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
-			#endregion
-			#region Patches
-			this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
+            #endregion
+            #region Patches
 
             this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe");
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
@@ -43,6 +42,11 @@ namespace BunnyMod
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
             this.PatchPrefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton");
             this.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
+
+            this.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem");
+
+            this.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden");
+            this.PatchPostfix(typeof(StatusEffects), "BecomeUnhidden", GetType(), "StatusEffects_BecomeUnhidden");
 
             this.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
@@ -57,9 +61,195 @@ namespace BunnyMod
             this.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
 
             this.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
-			#endregion
-		}
-		public void FixedUpdate()
+            #endregion
+            #region Traits
+            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
+                new CustomNameInfo("Alcoholic"),
+                new CustomNameInfo("")); //
+            Alcoholic.CostInCharacterCreation = -6;
+            Alcoholic.IsActive = false; //
+            Alcoholic.Upgrade = null;
+
+            CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
+                new CustomNameInfo("Artificial Insermonation"),
+                new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+            ArtificialInsermonation.CostInCharacterCreation = 2;
+            ArtificialInsermonation.IsActive = false; //
+            ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
+
+            CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
+                new CustomNameInfo("Artificial Insermonation +"),
+                new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+            ArtificialInsermonation_2.CostInCharacterCreation = 2;
+            ArtificialInsermonation_2.IsActive = false; //
+            ArtificialInsermonation_2.Upgrade = null;
+
+            CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
+                new CustomNameInfo("Charmed"),
+                new CustomNameInfo("A permanent slight increase to your Luck."));
+            Charmed.CanRemove = false;
+            Charmed.CanSwap = false;
+            Charmed.Conflicting.AddRange(new string[] { "Cursed" });
+            Charmed.CostInCharacterCreation = 2;
+            Charmed.IsActive = false; //
+            Charmed.Upgrade = null;
+
+            CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
+                new CustomNameInfo("Cheeky Trappy"),
+                new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
+            CheekyTrappy.CostInCharacterCreation = 1;
+            CheekyTrappy.IsActive = false; //
+            CheekyTrappy.Upgrade = null;
+
+            CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
+                new CustomNameInfo("Cursed"),
+                new CustomNameInfo("A permanent slight decrease to your Luck."));
+            Cursed.CanRemove = false;
+            Cursed.CanSwap = false;
+            Cursed.Conflicting.AddRange(new string[] { "Charmed" });
+            Cursed.CostInCharacterCreation = -1;
+            Cursed.IsActive = false; //
+            Cursed.Upgrade = null;
+
+            CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
+                new CustomNameInfo("Death To Snitches"),
+                new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
+            DeathToSnitches.AvailableInCharacterCreation = false;
+            DeathToSnitches.IsActive = false; //
+            DeathToSnitches.Upgrade = null;
+            //TODO: Unlock DeathToSnitches when Pusher gained
+
+            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
+                new CustomNameInfo("Draw No Blood"),
+                new CustomNameInfo("You have taken an oath. You cannot use bullet-based guns or sharp weapons."));
+            DrawNoBlood.CanRemove = false;
+            DrawNoBlood.CanSwap = false;
+            DrawNoBlood.CostInCharacterCreation = -3;
+            DrawNoBlood.IsActive = false; //
+            DrawNoBlood.Upgrade = null;
+
+            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
+                new CustomNameInfo("DARE-Devil"),
+                new CustomNameInfo("You cannot consume drugs."));
+            DAREdevil.CanRemove = false;
+            DAREdevil.CanSwap = false;
+            DAREdevil.CostInCharacterCreation = -2;
+            DAREdevil.IsActive = false; //
+            DAREdevil.Upgrade = null;
+
+            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
+                new CustomNameInfo("Friend Of Bill"),
+                new CustomNameInfo("You cannot consume Alchohol."));
+            FriendOfBill.CanRemove = false;
+            FriendOfBill.CanSwap = false;
+            FriendOfBill.CostInCharacterCreation = -2;
+            FriendOfBill.IsActive = false; //
+            FriendOfBill.Upgrade = null;
+
+            CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
+                new CustomNameInfo("Hungry Boy"),
+                new CustomNameInfo("Less healing from food and alcohol."));
+            HungryBoy.CostInCharacterCreation = -3;
+            HungryBoy.IsActive = false; //
+            HungryBoy.Upgrade = null;
+
+            CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
+                new CustomNameInfo("One Happy Tamper"),
+                new CustomNameInfo("Owners will allow you to tamper with their belongings."));
+            OneHappyTamper.CostInCharacterCreation = 2;
+            OneHappyTamper.IsActive = false; //
+            OneHappyTamper.Upgrade = null;
+
+            CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
+                new CustomNameInfo("Pursuit Of Trappiness"),
+                new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
+            PursuitOfTrappiness.CostInCharacterCreation = 2;
+            PursuitOfTrappiness.IsActive = false; //
+            PursuitOfTrappiness.Upgrade = null;
+
+            CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
+                new CustomNameInfo("Pusher"),
+                new CustomNameInfo("You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down."));//
+            Pusher.CanRemove = false;
+            Pusher.CanSwap = false;
+            Pusher.CostInCharacterCreation = 6;
+            Pusher.IsActive = false; //
+            Pusher.Upgrade = "Pusher_2";
+            //TODO: Unlock DeathToSnitches when Pusher gained
+
+            CustomTrait Pusher_2 = RogueLibs.CreateCustomTrait("Pusher_2", true,
+                new CustomNameInfo("Pusher +"),
+                new CustomNameInfo("Increased chances of success when pushing drugs."));//
+            Pusher_2.AvailableInCharacterCreation = false;
+            Pusher_2.IsActive = false; //
+            Pusher_2.Upgrade = null;
+
+            CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
+                new CustomNameInfo("Return to Bonke"),
+                new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
+            ReturnToBonke.CostInCharacterCreation = 3;
+            ReturnToBonke.IsActive = false; //
+            ReturnToBonke.Upgrade = null;
+
+            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+                new CustomNameInfo("Stealth Bastard Deluxe"),
+                new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables.")); 
+            StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Loud" });
+            StealthBastardDeluxe.CostInCharacterCreation = 4;
+            StealthBastardDeluxe.IsActive = false; //
+            StealthBastardDeluxe.Upgrade = null;
+
+            CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
+                new CustomNameInfo("Suffers Tools Gladly"),
+                new CustomNameInfo("Your tools take less wear from tampering."));
+            SuffersToolsGladly.CostInCharacterCreation = 1;
+            SuffersToolsGladly.IsActive = false; //
+            SuffersToolsGladly.Upgrade = "SticklerForTools_2";
+
+            CustomTrait SuffersToolsGladly_2 = RogueLibs.CreateCustomTrait("SuffersToolsGladly_2", true,
+                new CustomNameInfo("Suffers Tools Gladly +"),
+                new CustomNameInfo("Your tools take zero wear when used in tampering."));
+            SuffersToolsGladly_2.AvailableInCharacterCreation = false;
+            SuffersToolsGladly_2.IsActive = false;//
+            SuffersToolsGladly_2.Upgrade = null;
+
+            CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
+                new CustomNameInfo("Teetotaller"),
+                new CustomNameInfo("You cannot consume drugs or alcohol."));
+            Teetotaller.CostInCharacterCreation = -4;
+            Teetotaller.IsActive = false; //
+            Teetotaller.Upgrade = null;
+
+            CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
+                new CustomNameInfo("Trapper Keeper"),
+                new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
+            TrapperKeeper.CostInCharacterCreation = 2;
+            TrapperKeeper.IsActive = false; //
+            TrapperKeeper.Upgrade = null;
+
+            CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
+                new CustomNameInfo("Undead Bane"),
+                new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
+            UndeadBane.CostInCharacterCreation = -4;
+            UndeadBane.IsActive = false; //
+            UndeadBane.Upgrade = null;
+
+            CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
+                new CustomNameInfo("Veiled Threats"),
+                new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+            VeiledThreats.CostInCharacterCreation = 3;
+            VeiledThreats.IsActive = false; //
+            VeiledThreats.Upgrade = null;
+
+            CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
+                new CustomNameInfo("Whiffist"),
+                new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
+            Whiffist.CostInCharacterCreation = 3;
+            Whiffist.IsActive = false; //
+            Whiffist.Upgrade = "Whiffist_2";
+            #endregion
+        }
+        public void FixedUpdate()
         {
             // You will need to check if any of the stoves were destroyed
 
@@ -78,39 +268,22 @@ namespace BunnyMod
                 Logger.LogInfo("Removed pair.Key from VariablesStove");
             }
         }
-		#endregion
-		#region PlayfieldObject
-		public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
-        {
-            if (__instance is Stove)
-			{
-                Stove stove = (Stove)__instance;
-                return (myItem.invItemName == "Wrench") 
-                    && __instance.timer == 0f 
-                    && !stove.startedFlashing; 
-            }
-            else
-			{
-                __result = true;
-                return false;
-			}
-        }    
         #endregion
         #region ObjectReal
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance)
-		{
+        {
             if (__instance is Stove)
-			{
+            {
                 VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
             }
             return true;
-		}
+        }
         public static void ObjectReal_DetermineButtons(ObjectReal __instance)
         {
             if (__instance is FlamingBarrel)
-			{
+            {
                 if (__instance.ora.hasParticleEffect)
-				{
+                {
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
                     {
                         __instance.buttons.Add("GrillFud");
@@ -118,19 +291,19 @@ namespace BunnyMod
                     }
                     __instance.interactingAgent.SayDialogue("CantGrillFud");
                 }
-				else
-				{
+                else
+                {
                     if (__instance.interactingAgent.inventory.HasItem("CigaretteLighter"))
-					{
+                    {
                         __instance.buttons.Add("LightBarbecue");
                         return;
-					}
+                    }
                     __instance.interactingAgent.SayDialogue("CantOperateBarbecue");
                     return;
-				}
-			}
+                }
+            }
             if (__instance is Stove)
-			{
+            {
                 if (__instance.interactingAgent.inventory.HasItem("Wrench"))
                 {
                     if (!__instance.startedFlashing)
@@ -149,10 +322,10 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_FinishedOperating");
 
             if (__instance is FlamingBarrel)
-			{
+            {
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
                 __instance.StopInteraction();
-			}
+            }
             if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
@@ -164,7 +337,7 @@ namespace BunnyMod
 
                     return false;
                 }
-            }   
+            }
 
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -199,15 +372,16 @@ namespace BunnyMod
                 //agent.agentItemColliderTr.gameObject.SetActive(false);
                 //__instance.onShadowLayer = true;
                 //__instance.colliderSize = "InPrefab";
+                //__instance.originalBoxColliderActive = false;
                 // Then patch StatusEffects.BecomeNotHidden() to reenable whatever you disable to make it passable.
 
                 MethodInfo stopinteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
                 stopinteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
             }
             if (__instance is FlamingBarrel)
-			{
+            {
                 __instance.ShowObjectButtons();
-			}
+            }
             if (__instance is Stove)
             {
                 if (__instance.timer > 0f || __instance.startedFlashing)
@@ -223,7 +397,7 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_MakeNonFunctional");
 
             if (__instance is Stove)
-			{
+            {
                 if (damagerObject != null && __instance.interactable)
                 {
                     __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
@@ -248,7 +422,7 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_ObjectAction");
 
             if (__instance is Stove)
-			{
+            {
                 if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
                 {
                     Stove_UseWrenchToDetonate((Stove)__instance);
@@ -261,7 +435,7 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate");
 
             if (__instance is Stove)
-			{
+            {
                 if (__instance.timer > 0f)
                 {
                     __instance.timer -= Time.deltaTime;
@@ -294,25 +468,25 @@ namespace BunnyMod
                 __instance.HackExplode(__instance.interactingAgent);
                 return false;
             }
-			#region Patch
+            #region Patch
             if (buttonText == "LightBarbecue")
-			{
+            {
                 __instance.StartFireInObject();
                 __instance.StopInteraction();
                 return false;
-			}
+            }
             if (buttonText == "GrillFud")
-			{
+            {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
                 return false;
-			}
-			if (buttonText == "UseWrenchToDetonate")
+            }
+            if (buttonText == "UseWrenchToDetonate")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
                 return false;
             }
-			#endregion Patch
-			if (!(buttonText == "CollectPart"))
+            #endregion Patch
+            if (!(buttonText == "CollectPart"))
             {
                 return false;
             }
@@ -331,14 +505,45 @@ namespace BunnyMod
             return false;
         }
         public static void ObjectReal_Start(ObjectReal __instance)
-		{
+        {
             if (__instance is Stove stove)
                 VariablesStove.Add(stove, new VariablesStove());
-		}
+        }
         #endregion
+        #region PlayfieldObject
+        public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
+        {
+            if (__instance is Stove)
+			{
+                Stove stove = (Stove)__instance;
+                return (myItem.invItemName == "Wrench") 
+                    && __instance.timer == 0f 
+                    && !stove.startedFlashing; 
+            }
+            else
+			{
+                __result = true;
+                return false;
+			}
+        }
+		#endregion
+		#region StatusEffects
+        public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
+		{
+            if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
+			{
+                __instance.agent.agentItemColliderTr.gameObject.SetActive(false);
+			}
+		}
+        public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
+		{
+            __instance.agent.agentItemColliderTr.gameObject.SetActive(true);
+		}
+		#endregion
 
+		#region Objects
 		#region Bathtub
-        public static void Bathtub_SetVars(Bathtub __instance)
+		public static void Bathtub_SetVars(Bathtub __instance)
         {
             __instance.interactable = true;
             //TODO: Closed Bath Curtain sprite?
@@ -481,10 +686,14 @@ namespace BunnyMod
         {
             __instance.interactable = true;
         }
-        #endregion
-    }
+		#endregion
+		#endregion
+		#region Traits
 
-    public class VariablesStove
+		#endregion
+	}
+
+	public class VariablesStove
     {
         public PlayfieldObject countdownCauser;
         public bool mustSpawnExplosionOnClients;

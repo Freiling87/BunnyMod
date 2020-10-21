@@ -7,6 +7,7 @@ using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
+using BepInEx.Logging;
 
 namespace BunnyMod
 {
@@ -20,10 +21,13 @@ namespace BunnyMod
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
         public const string pluginName = "Bunny Mod";
         public const string pluginVersion = "1.0.0.0";
-		#endregion
-		#region Generic
+        #endregion
+        #region Generic
+        public static ManualLogSource ConsoleMessage;
+
 		public void Awake()
 		{
+			ConsoleMessage = Logger;
             #region Names
             CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
 			#endregion
@@ -73,7 +77,7 @@ namespace BunnyMod
                 VariablesStove.Remove(stove);
                 Logger.LogInfo("Removed pair.Key from VariablesStove");
             }
-        } //TODO: Where should this be patched?
+        }
 		#endregion
 		#region PlayfieldObject
 		public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
@@ -142,6 +146,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_FinishedOperating");
+
             if (__instance is FlamingBarrel)
 			{
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
@@ -214,6 +220,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_MakeNonFunctional");
+
             if (__instance is Stove)
 			{
                 if (damagerObject != null && __instance.interactable)
@@ -237,6 +245,8 @@ namespace BunnyMod
         }
         public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool ___noMoreObjectActions)
         {
+            ConsoleMessage.LogMessage("ObjectReal_ObjectAction");
+
             if (__instance is Stove)
 			{
                 if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
@@ -248,6 +258,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate");
+
             if (__instance is Stove)
 			{
                 if (__instance.timer > 0f)
@@ -272,6 +284,8 @@ namespace BunnyMod
         }
         public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance)
         {
+            ConsoleMessage.LogMessage("ObjectReal_PressedButton");
+
             MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[1]); //TODO: Verify if index necessary here
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
@@ -384,6 +398,7 @@ namespace BunnyMod
 
         public static IEnumerator Stove_AboutToExplode(Stove __instance)
 		{
+            ConsoleMessage.LogMessage("Stove_AboutToExplode");
             __instance.interactable = false;
             __instance.PlayObjectSpriteEffect("FlashingRepeatedly");
             
@@ -407,6 +422,8 @@ namespace BunnyMod
         }
         public static bool Stove_DamagedObject(PlayfieldObject damagerObject, float damageAmount, Stove __instance)
 		{
+            ConsoleMessage.LogMessage("Stove_DamagedObject");
+
             MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject");
             damagedObject.GetMethodWithoutOverrides<Action<PlayfieldObject, float>>(__instance).Invoke(damagerObject, damageAmount);
 
@@ -444,6 +461,8 @@ namespace BunnyMod
         }
         public static void Stove_UseWrenchToDetonate(Stove __instance)
         {
+            ConsoleMessage.LogMessage("Stove_UseWrenchToDetonate");
+
             if (__instance.gc.serverPlayer)
             {
                 __instance.MakeNonFunctional(__instance.interactingAgent);

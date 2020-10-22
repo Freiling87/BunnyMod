@@ -1,7 +1,4 @@
-﻿[Message: Bunny Mod] ObjectReal_FinishedOperating
-[Error  : Unity Log] Operating Bar Error 2
-
-[Message: Bunny Mod] ObjectReal_DestroyMe
+﻿[Message: Bunny Mod] ObjectReal_DestroyMe
 [Message: Bunny Mod] ObjectReal_DestroyMe
 [Message: Bunny Mod] ObjectReal_DestroyMe
 [Info   : Unity Log] Spawn Generator Explosion
@@ -12,13 +9,9 @@
 [Info   : Unity Log] Generator DestroyObjectExtras2 - False
 [Info   : Unity Log] Generator RemoveObjectLate3 - True
 
-[Message: Bunny Mod] ObjectReal_FinishedOperating
-[Error  : Unity Log] Operating Bar Error 2
 
 [Info   : Unity Log] DropItem: Spear
 [Error  : Unity Log] SetSprite - Sprite not found in collection: Spear
-
-
 
 
 Stove - then can no longer hit or interact with most objects. Also occurred with Fire Barrel.
@@ -30,6 +23,9 @@ Stove - then can no longer hit or interact with most objects. Also occurred with
 
 In particular, it affects chests, fire hydrants, and trash cans. Air Conditioning units, doors, shelves seem to be unaffected.
 
+Possibility: 
+	These are all objects that can be made "dead" once they're interacted with (emptied chests and trashcans). But that'd also go for AC units so...
+	Also not sure why you can't hit them anymore.
 
 1.1.1
 - Grill on Stove

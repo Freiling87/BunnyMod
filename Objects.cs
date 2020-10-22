@@ -325,7 +325,7 @@ namespace BunnyMod
         }
         #endregion
         #region ObjectReal
-        public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance)
+        public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
             ConsoleMessage.LogMessage("ObjectReal_DestroyMe");
 
@@ -334,7 +334,7 @@ namespace BunnyMod
             
             return true;
         }
-        public static void ObjectReal_DetermineButtons(ObjectReal __instance)
+        public static void ObjectReal_DetermineButtons(ObjectReal __instance) // Postfix
         {
             //ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
 
@@ -375,7 +375,7 @@ namespace BunnyMod
                 return;
             }
         }
-        public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
+        public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
             ConsoleMessage.LogMessage("ObjectReal_FinishedOperating");
 
@@ -404,7 +404,7 @@ namespace BunnyMod
             __instance.StopInteraction();
             return false;
         }
-        public static void ObjectReal_Interact(Agent agent, ObjectReal __instance)
+        public static void ObjectReal_Interact(Agent agent, ObjectReal __instance) // Postfix
         {
             ConsoleMessage.LogMessage("ObjectReal_Interact");
             //TODO: Try StopInteraction() as a default, with other options as return.
@@ -430,7 +430,7 @@ namespace BunnyMod
                 __instance.ShowObjectButtons();
             }
         }
-        public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance)
+        public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
             ConsoleMessage.LogMessage("ObjectReal_MakeNonFunctional");
 
@@ -454,7 +454,7 @@ namespace BunnyMod
             }
             return true;
         }
-        public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool ___noMoreObjectActions)
+        public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool ___noMoreObjectActions) // Postfix
         {
             ConsoleMessage.LogMessage("ObjectReal_ObjectAction");
 
@@ -466,7 +466,7 @@ namespace BunnyMod
                 ___noMoreObjectActions = false;
             }
         }
-        public static bool ObjectReal_ObjectUpdate(ObjectReal __instance)
+        public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
             //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); //Verbose
 
@@ -492,7 +492,7 @@ namespace BunnyMod
             }
             return true;
         }
-        public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance)
+        public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance) // Replacement
         {
             ConsoleMessage.LogMessage("ObjectReal_PressedButton");
 
@@ -540,7 +540,7 @@ namespace BunnyMod
 
             return false;
         }
-        public static void ObjectReal_Start(ObjectReal __instance)
+        public static void ObjectReal_Start(ObjectReal __instance) // Postfix
         {
             ConsoleMessage.LogMessage("ObjectReal_Start");
 
@@ -549,37 +549,34 @@ namespace BunnyMod
         }
         #endregion
         #region PlayfieldObject
-        public static void PlayfieldObject_FindDamage()//I think this is for Spear & Beer Can
+        public static void PlayfieldObject_FindDamage() // 
 		{
 
-		}
-        public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance, ref bool __result)
+        }//I think this is for Spear & Beer Can
+        public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance) // Prefix
         {
             if (__instance is Stove)
-			{
+            {
                 Stove stove = (Stove)__instance;
-                return (myItem.invItemName == "Wrench")
-                    && __instance.timer == 0f 
-                    && !stove.startedFlashing; 
+                return (myItem.invItemName == "Wrench" || myItem.invItemName == "Fud")
+                    && __instance.timer == 0f
+                    && !stove.startedFlashing;
             }
             else
-			{
-                __result = true;
                 return false;
-			}
         }
 		#endregion
 		#region StatusEffects
         public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
 		{
             if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
-                //__instance.agent.agentCollider.gameObject.SetActive(false); Nope, this makes the character invisible but still trapped.
-                
-                return;
+                __instance.agent.agentCollider.enabled = false;
+            return;
 		}
         public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
 		{
-		}
+            __instance.agent.agentCollider.enabled = true;
+        }
 		#endregion
 
 		#region Objects
@@ -616,9 +613,8 @@ namespace BunnyMod
         public static void FlamingBarrel_GrilledFudAfter(int myCount, FlamingBarrel __instance)
 		{
             __instance.gc.audioHandler.Play(__instance, "FireHit");
-            __instance.interactingAgent.Damage(__instance);
             __instance.interactingAgent.statusEffects.ChangeHealth((float)-10, __instance);
-            __instance.interactingAgent.SayDialogue("BurnedHands");
+            __instance.interactingAgent.Say(RogueLibs.GetCustomName("BurnedHands", "Dialogue").English);
             return;
 		}
         public static void FlamingBarrel_SetVars(FlamingBarrel __instance)
@@ -718,8 +714,8 @@ namespace BunnyMod
             Stove_Variables[__instance].savedDamagerObject = null;
             Stove_Variables[__instance].noOwnCheckCountdown = false;
             Stove_Variables[__instance].countdownCauser = null;
-            __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
-            __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
+            //__instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
+            //__instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
             __instance.CancelInvoke();
         }
         public static void Stove_SetVars(Stove __instance)
@@ -728,6 +724,7 @@ namespace BunnyMod
             __instance.dontDestroyImmediateOnClient = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
+            __instance.animates = true; //TODO: Try with and without this to see if it fixes flashing issues
         }
         public static void Stove_UseWrenchToDetonate(Stove __instance)
         {

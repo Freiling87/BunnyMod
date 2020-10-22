@@ -1,0 +1,36 @@
+﻿[Warning:   Harmony] AccessTools.Method: Could not find method for type PlayfieldObject and name playerHasUsableItem and parameters (InvItem, PlayfieldObject)
+
+[Message: Bunny Mod] ObjectReal_FinishedOperating
+[Error  : Unity Log] Operating Bar Error 2
+
+[Message: Bunny Mod] ObjectReal_DestroyMe
+[Message: Bunny Mod] ObjectReal_DestroyMe
+[Message: Bunny Mod] ObjectReal_DestroyMe
+[Info   : Unity Log] Spawn Generator Explosion
+[Info   : Unity Log] SpawnExplosion -1
+[Info   : Unity Log] Generator RemoveObjectLate 1
+[Info   : Unity Log] Generator RemoveObjectLate2 - False
+[Info   : Unity Log] Generator DestroyObjectExtras1 - False
+[Info   : Unity Log] Generator DestroyObjectExtras2 - False
+[Info   : Unity Log] Generator RemoveObjectLate3 - True
+
+[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
+[Message: Bunny Mod] ObjectReal_FinishedOperating
+[Error  : Unity Log] Operating Bar Error 2
+
+[Info   : Unity Log] DropItem: Spear
+[Error  : Unity Log] SetSprite - Sprite not found in collection: Spear
+
+
+
+
+Stove - then can no longer hit or interact with most objects. Also occurred with Fire Barrel.
+[Message: Bunny Mod] Stove_UseWrenchToDetonate
+[Message: Bunny Mod] ObjectReal_MakeNonFunctional
+[Message: Bunny Mod] ObjectReal_Interact
+[Message: Bunny Mod] ObjectReal_DetermineButtons
+[Message: Bunny Mod] ObjectReal_DestroyMe
+
+
+
+

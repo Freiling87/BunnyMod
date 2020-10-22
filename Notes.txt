@@ -28,7 +28,9 @@ Stove - then can no longer hit or interact with most objects. Also occurred with
 [Message: Bunny Mod] ObjectReal_DetermineButtons
 [Message: Bunny Mod] ObjectReal_DestroyMe
 
+In particular, it affects chests, fire hydrants, and trash cans. Air Conditioning units, doors, shelves seem to be unaffected.
+
 
 1.1.1
 - Grill on Stove
-
+- Issues 8, 7, 5, 

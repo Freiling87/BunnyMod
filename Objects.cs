@@ -362,15 +362,15 @@ namespace BunnyMod
             if (__instance is Stove)
             {
                 if (!__instance.startedFlashing)
-				{
-                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
-                        __instance.buttons.Add("GrillFud");
-
+                {
                     if (__instance.interactingAgent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
                         __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+                        // TODO: It was adding this to Grill Fud. Hopefully reordering it will fix it?
                     }
+                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                        __instance.buttons.Add("GrillFud");
                 }
                 return;
             }
@@ -573,11 +573,12 @@ namespace BunnyMod
         public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
 		{
             if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
-                __instance.agent.agentCollider.gameObject.SetActive(false);
+                //__instance.agent.agentCollider.gameObject.SetActive(false); Nope, this makes the character invisible but still trapped.
+                
+                return;
 		}
         public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
 		{
-            __instance.agent.agentCollider.gameObject.SetActive(true);
 		}
 		#endregion
 

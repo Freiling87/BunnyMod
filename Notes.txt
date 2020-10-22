@@ -1,6 +1,4 @@
-﻿[Warning:   Harmony] AccessTools.Method: Could not find method for type PlayfieldObject and name playerHasUsableItem and parameters (InvItem, PlayfieldObject)
-
-[Message: Bunny Mod] ObjectReal_FinishedOperating
+﻿[Message: Bunny Mod] ObjectReal_FinishedOperating
 [Error  : Unity Log] Operating Bar Error 2
 
 [Message: Bunny Mod] ObjectReal_DestroyMe
@@ -14,7 +12,6 @@
 [Info   : Unity Log] Generator DestroyObjectExtras2 - False
 [Info   : Unity Log] Generator RemoveObjectLate3 - True
 
-[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
 [Message: Bunny Mod] ObjectReal_FinishedOperating
 [Error  : Unity Log] Operating Bar Error 2
 
@@ -32,5 +29,6 @@ Stove - then can no longer hit or interact with most objects. Also occurred with
 [Message: Bunny Mod] ObjectReal_DestroyMe
 
 
-
+1.1.1
+- Grill on Stove
 

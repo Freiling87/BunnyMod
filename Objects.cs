@@ -93,7 +93,7 @@ namespace BunnyMod
 			this.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             this.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             this.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
-            this.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
+            this.PatchPostfix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
             this.PatchPrefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[1] { typeof(PlayfieldObject) });
             this.PatchPostfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             this.PatchPrefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate");
@@ -311,21 +311,16 @@ namespace BunnyMod
         }
         public void FixedUpdate()
         {
-            // You will need to check if any of the stoves were destroyed
-
             List<Stove> removal = new List<Stove>();
 
-            foreach (KeyValuePair<Stove, VariablesStove> pair in VariablesStove)
+            foreach (KeyValuePair<Stove, VariablesStove> pair in Stove_Variables)
                 if (pair.Key.isBroken())
-				{
                     removal.Add(pair.Key);
-                    Logger.LogInfo("Added pair.Key from VariablesStove to removal list");
-                }
 
             foreach (Stove stove in removal)
             {
-                VariablesStove.Remove(stove);
-                Logger.LogInfo("Removed pair.Key from VariablesStove");
+                Stove_Variables.Remove(stove);
+                ConsoleMessage.LogInfo("Removed pair.Key from VariablesStove");
             }
         }
         #endregion
@@ -335,97 +330,84 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_DestroyMe");
 
             if (__instance is Stove)
-            {
-                VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
-            }
+                Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
+            
             return true;
         }
         public static void ObjectReal_DetermineButtons(ObjectReal __instance)
         {
-            ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
+            //ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
 
             if (__instance is FlamingBarrel)
             {
                 if (__instance.ora.hasParticleEffect)
                 {
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
-                    {
                         __instance.buttons.Add("GrillFud");
-                        return;
-                    }
-                    __instance.interactingAgent.SayDialogue("CantGrillFud");
+                    else
+                        __instance.interactingAgent.SayDialogue("CantGrillFud");
+
+                    return;
                 }
                 else
                 {
                     if (__instance.interactingAgent.inventory.HasItem("CigaretteLighter"))
-                    {
                         __instance.buttons.Add("LightBarbecue");
-                        return;
-                    }
-                    __instance.interactingAgent.SayDialogue("CantOperateBarbecue");
+                    else
+                        __instance.interactingAgent.SayDialogue("CantOperateBarbecue");
+
                     return;
                 }
             }
             if (__instance is Stove)
             {
-                if (__instance.interactingAgent.inventory.HasItem("Wrench"))
-                {
-                    if (!__instance.startedFlashing)
+                if (!__instance.startedFlashing)
+				{
+                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                        __instance.buttons.Add("GrillFud");
+
+                    if (__instance.interactingAgent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
                         __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
-                        return;
                     }
                 }
-                else
-                    __instance.interactingAgent.SayDialogue("CantOperateGenerator");
+                return;
             }
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance)
         {
             ConsoleMessage.LogMessage("ObjectReal_FinishedOperating");
 
-            if (__instance is FlamingBarrel)
+            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
+            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+			#region Patch
+			if (__instance is FlamingBarrel)
             {
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
-                __instance.StopInteraction();
             }
             if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
-                {
                     Stove_UseWrenchToDetonate((Stove)__instance);
 
-                    MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
-                    stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-                    return false;
-                }
+                if (__instance.operatingItem.invItemName == "Fud")
+                    Stove_GrilledFud((Stove)__instance);
             }
+			#endregion
 
-            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
-            finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-            if (!__instance.interactingAgent.interactionHelper.interactingFar)
-            {
-                string operatingBarType = __instance.operatingBarType;
-                if (operatingBarType == "Collecting")
-                {
+			if (!__instance.interactingAgent.interactionHelper.interactingFar)
+                if (__instance.operatingBarType == "Collecting")
                     __instance.CollectPart();
-                    __instance.StopInteraction();
-                }
-            }
 
+            __instance.StopInteraction();
             return false;
         }
-        public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance)
+        public static void ObjectReal_Interact(Agent agent, ObjectReal __instance)
         {
             ConsoleMessage.LogMessage("ObjectReal_Interact");
-
-            MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
-            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
-
-            __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
+            //TODO: Try StopInteraction() as a default, with other options as return.
 
             if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
@@ -434,15 +416,7 @@ namespace BunnyMod
 
                 agent.statusEffects.BecomeHidden(__instance);
 
-                //Possible fixes for stuck hider, but you will need to find out how to undo them:
-                //agent.agentItemColliderTr.gameObject.SetActive(false);
-                //__instance.onShadowLayer = true;
-                //__instance.colliderSize = "InPrefab";
-                //__instance.originalBoxColliderActive = false;
-                // Then patch StatusEffects.BecomeNotHidden() to reenable whatever you disable to make it passable.
-
-                MethodInfo stopinteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "StopInteraction", new Type[0]);
-                stopinteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                __instance.StopInteraction();
             }
             if (__instance is FlamingBarrel)
             {
@@ -455,8 +429,6 @@ namespace BunnyMod
 
                 __instance.ShowObjectButtons();
             }
-
-            return false;
         }
         public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance)
         {
@@ -467,17 +439,16 @@ namespace BunnyMod
                 if (damagerObject != null && __instance.interactable)
                 {
                     __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+
                     if (!__instance.gc.serverPlayer)
-                    {
                         __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "MakeNonFunctional");
-                    }
 
                     __instance.timer = 10f;
                     __instance.timeCountdownClock = (int)__instance.timer;
                     __instance.InvokeRepeating("Countdown", 0.01f, 1f);
                     __instance.interactable = false;
-                    VariablesStove[(Stove)__instance].savedDamagerObject = damagerObject;
-                    VariablesStove[(Stove)__instance].countdownCauser = VariablesStove[(Stove)__instance].savedDamagerObject;
+                    Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
+                    Stove_Variables[(Stove)__instance].countdownCauser = Stove_Variables[(Stove)__instance].savedDamagerObject;
                 }
                 return false;
             }
@@ -490,9 +461,8 @@ namespace BunnyMod
             if (__instance is Stove)
             {
                 if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
-                {
                     Stove_UseWrenchToDetonate((Stove)__instance);
-                }
+                
                 ___noMoreObjectActions = false;
             }
         }
@@ -510,12 +480,12 @@ namespace BunnyMod
                     {
                         if (__instance.startedFlashing)
                         {
-                            __instance.DestroyMe(VariablesStove[(Stove)__instance].savedDamagerObject);
+                            __instance.DestroyMe(Stove_Variables[(Stove)__instance].savedDamagerObject);
                             return false;
                         }
-                        VariablesStove[(Stove)__instance].noOwnCheckCountdown = true;
-                        VariablesStove[(Stove)__instance].savedDamagerObject = VariablesStove[(Stove)__instance].countdownCauser;
-                        __instance.DestroyMe(VariablesStove[(Stove)__instance].countdownCauser);
+                        Stove_Variables[(Stove)__instance].noOwnCheckCountdown = true;
+                        Stove_Variables[(Stove)__instance].savedDamagerObject = Stove_Variables[(Stove)__instance].countdownCauser;
+                        __instance.DestroyMe(Stove_Variables[(Stove)__instance].countdownCauser);
                     }
                 }
                 return false;
@@ -575,11 +545,11 @@ namespace BunnyMod
             ConsoleMessage.LogMessage("ObjectReal_Start");
 
             if (__instance is Stove stove)
-                VariablesStove.Add(stove, new VariablesStove());
+                Stove_Variables.Add(stove, new VariablesStove());
         }
         #endregion
         #region PlayfieldObject
-        public static void PlayfieldObject_FindDamage()//verify
+        public static void PlayfieldObject_FindDamage()//I think this is for Spear & Beer Can
 		{
 
 		}
@@ -588,7 +558,7 @@ namespace BunnyMod
             if (__instance is Stove)
 			{
                 Stove stove = (Stove)__instance;
-                return (myItem.invItemName == "Wrench") 
+                return (myItem.invItemName == "Wrench")
                     && __instance.timer == 0f 
                     && !stove.startedFlashing; 
             }
@@ -646,7 +616,7 @@ namespace BunnyMod
 		{
             __instance.gc.audioHandler.Play(__instance, "FireHit");
             __instance.interactingAgent.Damage(__instance);
-            __instance.interactingAgent.statusEffects.ChangeHealth((float)5, __instance);
+            __instance.interactingAgent.statusEffects.ChangeHealth((float)-10, __instance);
             __instance.interactingAgent.SayDialogue("BurnedHands");
             return;
 		}
@@ -669,8 +639,6 @@ namespace BunnyMod
         }
         #endregion
         #region Stove
-        public static Dictionary<Stove, VariablesStove> VariablesStove = new Dictionary<Stove, VariablesStove>();
-
         public static IEnumerator Stove_AboutToExplode(Stove __instance)
 		{
             ConsoleMessage.LogMessage("Stove_AboutToExplode");
@@ -692,7 +660,7 @@ namespace BunnyMod
 
 			yield return new WaitForSeconds(3f);
             if (!__instance.destroying)
-                __instance.DestroyMe(VariablesStove[__instance].savedDamagerObject);
+                __instance.DestroyMe(Stove_Variables[__instance].savedDamagerObject);
 
 			yield break;
         }
@@ -705,25 +673,50 @@ namespace BunnyMod
 
             if (damageAmount >= 15f && !__instance.startedFlashing)
             {
-                VariablesStove[__instance].savedDamagerObject = damagerObject;
+                Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.StartCoroutine(Stove_AboutToExplode(__instance));
             }
 
             if (damageAmount >= (float)__instance.damageThreshold)
             {
-                VariablesStove[__instance].savedDamagerObject = damagerObject;
+                Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.DestroyMe(damagerObject);
             }
             //TODO: Ensure Flames for all destruction types.
             //TODO: Consider flame spit instead of flame particle
             return false;
         }
+        public static void Stove_GrilledFud(Stove __instance)
+        {
+            InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
+            int num = rawFud.invItemCount;
+            rawFud.invItemCount -= num;
+
+            if (rawFud.invItemCount <= 0)
+            {
+                __instance.interactingAgent.inventory.DestroyItem(rawFud);
+            }
+
+            InvItem cookedFud = new InvItem();
+            cookedFud.invItemName = "HotFud";
+            cookedFud.SetupDetails(false);
+            cookedFud.invItemCount = num;
+            __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
+            cookedFud.ShowPickingUpText(__instance.interactingAgent);
+
+            __instance.gc.audioHandler.Play(__instance, "Grill");
+            Stove_GrilledFudAfter(num, __instance);
+        }
+        public static void Stove_GrilledFudAfter(int myCount, Stove __instance)
+        {
+            return;
+        }
         public static void Stove_RevertAllVars(Stove __instance)
         {
-            VariablesStove[__instance].mustSpawnExplosionOnClients = false;
-            VariablesStove[__instance].savedDamagerObject = null;
-            VariablesStove[__instance].noOwnCheckCountdown = false;
-            VariablesStove[__instance].countdownCauser = null;
+            Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
+            Stove_Variables[__instance].savedDamagerObject = null;
+            Stove_Variables[__instance].noOwnCheckCountdown = false;
+            Stove_Variables[__instance].countdownCauser = null;
             __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
             __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
             __instance.CancelInvoke();
@@ -751,6 +744,7 @@ namespace BunnyMod
             __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
         }
+        public static Dictionary<Stove, VariablesStove> Stove_Variables = new Dictionary<Stove, VariablesStove>();
         #endregion
         #region TableBig
         public static void TableBig_SetVars(TableBig __instance)

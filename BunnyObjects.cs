@@ -46,6 +46,8 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
+
+            //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
 			#endregion
 
             Initialize_Names();
@@ -371,6 +373,12 @@ namespace BunnyMod
             __instance.interactable = true;
         }
         #endregion
+        #region Refrigerator
+        public static void Refrigerator_SetVars()
+		{
+
+		}
+        #endregion
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance)
         {
@@ -383,6 +391,7 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage("Stove_AboutToExplode");
 
             __instance.interactable = false;
+
             __instance.PlayObjectSpriteEffect("FlashingRepeatedly");
             
             if (__instance.lastHitByAgent != null)
@@ -421,7 +430,6 @@ namespace BunnyMod
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.DestroyMe(damagerObject);
             }
-            //TODO: Ensure Flames for all destruction types.
             //TODO: Consider flame spit instead of flame particle
             return false;
         }
@@ -486,18 +494,18 @@ namespace BunnyMod
         }
         public static Dictionary<Stove, Stove_Variables> Stove_Variables = new Dictionary<Stove, Stove_Variables>();
 		#endregion
-		#region Television
-        public static void Television_SetVars(Television __instance)
-		{
-		}
-		#endregion
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance)
         {
             __instance.interactable = true;
         }
-		#endregion
-	}
+        #endregion
+        #region Television
+        public static void Television_SetVars(Television __instance)
+        {
+        }
+        #endregion
+    }
     public class Stove_Variables
     {
         public PlayfieldObject countdownCauser;

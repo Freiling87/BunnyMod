@@ -79,5 +79,15 @@ namespace BunnyMod.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] WhiskeyBottle {
+            get {
+                object obj = ResourceManager.GetObject("WhiskeyBottle", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

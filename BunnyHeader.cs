@@ -15,7 +15,7 @@ namespace BunnyMod
 	{
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
 		public const string pluginName = "Bunny Mod";
-		public const string pluginVersion = "1.1.1";
+		public const string pluginVersion = "1.1.2";
 
 		public static ManualLogSource ConsoleMessage;
 		public static BaseUnityPlugin MainInstance;
@@ -27,13 +27,13 @@ namespace BunnyMod
 			ConsoleMessage = Logger;
 			RoguePatcher patcher = new RoguePatcher(this, GetType());
 
-			new BunnyItems().Awake();
+			//new BunnyItems().Awake();
 			new BunnyObjects().Awake();
-			new BunnyTraits().Awake();
+			//new BunnyTraits().Awake();
 		}
 	}
 
-	public static class BunnyFunctions
+	public static class BunnyHeaderTools
 	{
 		public static T GetMethodWithoutOverrides<T>(this MethodInfo method, object callFrom)
 			where T : Delegate

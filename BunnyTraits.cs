@@ -15,7 +15,6 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
-
             Initialize_Traits();
         }
         public static void Initialize_Traits()

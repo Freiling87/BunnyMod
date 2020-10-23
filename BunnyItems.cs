@@ -15,15 +15,21 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
-			#region Patches
+			#region Patches - Functions
 			BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
             #endregion
+            #region Patches - Item Base
 
-            BeerCan_Create();
-            Spear_Create();
-            WhiskeyBottle_Create();
+            #endregion
+            #region Patches - Items
+
+            #endregion
+
+            //BeerCan_Create();
+            //Spear_Create();
+            //WhiskeyBottle_Create();
         }
 		#endregion
 
@@ -126,7 +132,6 @@ namespace BunnyMod
                     item.meleeDamage = 8;
                     item.hitSoundType = "Cut";
                 });
-            Spear.Available = false; //
             Spear.CostInCharacterCreation = 1;
             Spear.CostInLoadout = 1;
             Spear.UnlockCost = 3;

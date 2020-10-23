@@ -15,7 +15,7 @@ namespace BunnyMod
         #region Generic
         public void Awake()
         {
-            #region Base Classes
+            #region Patches - Object Base
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
@@ -32,7 +32,7 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden");
 			#endregion
-			#region Objects
+			#region Patches - Objects
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars");
@@ -485,9 +485,14 @@ namespace BunnyMod
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
         }
         public static Dictionary<Stove, Stove_Variables> Stove_Variables = new Dictionary<Stove, Stove_Variables>();
-        #endregion
-        #region TableBig
-        public static void TableBig_SetVars(TableBig __instance)
+		#endregion
+		#region Television
+        public static void Television_SetVars(Television __instance)
+		{
+		}
+		#endregion
+		#region TableBig
+		public static void TableBig_SetVars(TableBig __instance)
         {
             __instance.interactable = true;
         }

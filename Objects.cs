@@ -21,7 +21,7 @@ namespace BunnyMod
 		#region Mod Info
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
         public const string pluginName = "Bunny Mod";
-        public const string pluginVersion = "1.1.0";
+        public const string pluginVersion = "1.1.1";
         #endregion
         #region Generic
         public static ManualLogSource ConsoleMessage;
@@ -31,57 +31,57 @@ namespace BunnyMod
             ConsoleMessage = Logger;
             RoguePatcher patcher = new RoguePatcher(this, GetType());
             #region Items
-            #region BeerCan
-            Sprite sprite_beerCan = RogueUtilities.ConvertToSprite(Properties.Resources.BeerCan);
+   //         #region BeerCan
+   //         Sprite sprite_beerCan = RogueUtilities.ConvertToSprite(Properties.Resources.BeerCan);
 
-            CustomItem BeerCan = RogueLibs.CreateCustomItem("BeerCan", sprite_beerCan, true,
-                new CustomNameInfo("Beer Can"),
-                new CustomNameInfo("Probably best just to get the money from recycling this."),
-                item =>
-                {
-                    item.itemType = "WeaponThrown";
-                    item.weaponCode = weaponType.WeaponThrown;
-                    item.Categories.Add("Weapons");
-                    item.Categories.Add("NonViolent");
-                    item.isWeapon = true;
-                    item.itemValue = 5;
-                    item.initCount = 1;
-                    item.rewardCount = 4;
-                    item.stackable = true;
-                    item.throwDamage = 1;
-                    item.throwDistance = 4;
-                    item.throwExtraDist = false;
-                    item.dontAutomaticallySelect = true;
-                    item.specialDamage = true;
-                    item.shadowOffset = 4;
-                });
-			#endregion
-			#region Spear
-			Sprite sprite_spear = RogueUtilities.ConvertToSprite(Properties.Resources.Spear);
+   //         CustomItem BeerCan = RogueLibs.CreateCustomItem("BeerCan", sprite_beerCan, true,
+   //             new CustomNameInfo("Beer Can"),
+   //             new CustomNameInfo("Probably best just to get the money from recycling this."),
+   //             item =>
+   //             {
+   //                 item.itemType = "WeaponThrown";
+   //                 item.weaponCode = weaponType.WeaponThrown;
+   //                 item.Categories.Add("Weapons");
+   //                 item.Categories.Add("NonViolent");
+   //                 item.isWeapon = true;
+   //                 item.itemValue = 5;
+   //                 item.initCount = 1;
+   //                 item.rewardCount = 4;
+   //                 item.stackable = true;
+   //                 item.throwDamage = 1;
+   //                 item.throwDistance = 4;
+   //                 item.throwExtraDist = false;
+   //                 item.dontAutomaticallySelect = true;
+   //                 item.specialDamage = true;
+   //                 item.shadowOffset = 4;
+   //             });
+			//#endregion
+			//#region Spear
+			//Sprite sprite_spear = RogueUtilities.ConvertToSprite(Properties.Resources.Spear);
 
-			CustomItem Spear = RogueLibs.CreateCustomItem("Spear", sprite_spear, false,
-				new CustomNameInfo("Spear"),
-				new CustomNameInfo("You've probably seen Cavemen hunting your mom with these."),
-				item =>
-				{
-					item.itemType = "WeaponMelee";
-                    item.weaponCode = weaponType.WeaponMelee;
-                    item.Categories.Add("Weapons");
-                    item.isWeapon = true;
-                    item.itemValue = 30;
-                    item.initCount = 80;
-                    item.rewardCount = 200;
-                    item.stackable = true;
-                    item.meleeDamage = 8;
-                    item.hitSoundType = "Cut";
-				});
-            Spear.UnlockCost = 3;
-            Spear.CostInCharacterCreation = 1;
-            Spear.CostInLoadout = 1;
+			//CustomItem Spear = RogueLibs.CreateCustomItem("Spear", sprite_spear, false,
+			//	new CustomNameInfo("Spear"),
+			//	new CustomNameInfo("You've probably seen Cavemen hunting your mom with these."),
+			//	item =>
+			//	{
+			//		item.itemType = "WeaponMelee";
+   //                 item.weaponCode = weaponType.WeaponMelee;
+   //                 item.Categories.Add("Weapons");
+   //                 item.isWeapon = true;
+   //                 item.itemValue = 30;
+   //                 item.initCount = 80;
+   //                 item.rewardCount = 200;
+   //                 item.stackable = true;
+   //                 item.meleeDamage = 8;
+   //                 item.hitSoundType = "Cut";
+			//	});
+   //         Spear.UnlockCost = 3;
+   //         Spear.CostInCharacterCreation = 1;
+   //         Spear.CostInLoadout = 1;
 
-            //(Melee)Spear.animClass = "Stab";
-            // Patch Melee.Attack() for these variables, see those for Knife.
-			#endregion
+   //         //(Melee)Spear.animClass = "Stab";
+   //         // Patch Melee.Attack() for these variables, see those for Knife.
+			//#endregion
 			#endregion
 			#region Names
 			CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));

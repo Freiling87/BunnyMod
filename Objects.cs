@@ -513,7 +513,7 @@ namespace BunnyMod
             }
             if (buttonText == "GrillFud")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
                 return false;
             }
             if (buttonText == "UseWrenchToDetonate")

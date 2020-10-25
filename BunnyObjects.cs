@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using BepInEx;
@@ -56,7 +57,7 @@ namespace BunnyMod
         {
             List<Stove> removal = new List<Stove>();
 
-            foreach (KeyValuePair<Stove, Stove_Variables> pair in Stove_Variables)
+            foreach (KeyValuePair<Stove, Stove_Remora> pair in Stove_Variables)
                 if (pair.Key.isBroken())
                     removal.Add(pair.Key);
 
@@ -193,7 +194,7 @@ namespace BunnyMod
 
                     __instance.timer = 10f;
                     __instance.timeCountdownClock = (int)__instance.timer;
-                    __instance.InvokeRepeating("Countdown", 0.01f, 1f);
+                    BunnyHeaderTools.InvokeRepeating(Stove_Variables[(Stove)__instance], "Countdown", 0.01f, 1f);
                     __instance.interactable = false;
                     Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
                     Stove_Variables[(Stove)__instance].countdownCauser = Stove_Variables[(Stove)__instance].savedDamagerObject;
@@ -293,7 +294,11 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Start");
 
             if (__instance is Stove stove)
-                Stove_Variables.Add(stove, new Stove_Variables());
+			{
+                Stove_Remora remora = new Stove_Remora();
+                Stove_Variables.Add(stove, remora);
+                remora.stoveHost = stove;
+            }
         }
         #endregion
         #region PlayfieldObject
@@ -492,7 +497,7 @@ namespace BunnyMod
             __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
         }
-        public static Dictionary<Stove, Stove_Variables> Stove_Variables = new Dictionary<Stove, Stove_Variables>();
+        public static Dictionary<Stove, Stove_Remora> Stove_Variables = new Dictionary<Stove, Stove_Remora>();
 		#endregion
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance)
@@ -506,11 +511,29 @@ namespace BunnyMod
         }
         #endregion
     }
-    public class Stove_Variables
+    public class Stove_Remora
     {
+        public Stove stoveHost;
+
         public PlayfieldObject countdownCauser;
         public bool mustSpawnExplosionOnClients;
         public bool noOwnCheckCountdown;
         public PlayfieldObject savedDamagerObject;
+
+        public void Countdown()
+        {
+            Stove stove = BunnyObjects.Stove_Variables.FirstOrDefault(x => x.Value == this).Key;
+
+            string myText = string.Concat(stove.timeCountdownClock);
+            if (stove.timeCountdownClock > 0 && !stove.destroyed && !stove.destroying)
+            {
+                stove.gc.spawnerMain.SpawnStatusText(stove, "Countdown", myText);
+            }
+            stove.timeCountdownClock--;
+            if (stove.timeCountdownClock == 0 || stove.timeCountdownClock == -1 || stove.destroyed)
+            {
+                stove.CancelInvoke();
+            }
+        }
     }
 }

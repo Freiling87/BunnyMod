@@ -8,9 +8,14 @@ using BepInEx.Logging;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
+using System.Threading.Tasks;
 
 namespace BunnyMod
 {
+	[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
+	[BepInProcess("StreetsOfRogue.exe")]
+	[BepInDependency(RogueLibs.pluginGuid, "2.0")]
+
 	public class BunnyHeader : BaseUnityPlugin
 	{
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
@@ -25,7 +30,6 @@ namespace BunnyMod
 			MainInstance = this;
 
 			ConsoleMessage = Logger;
-			RoguePatcher patcher = new RoguePatcher(this, GetType());
 
 			//new BunnyItems().Awake();
 			new BunnyObjects().Awake();
@@ -40,6 +44,20 @@ namespace BunnyMod
 		{
 			IntPtr ptr = method.MethodHandle.GetFunctionPointer();
 			return (T)Activator.CreateInstance(typeof(T), callFrom, ptr);
+		}
+		public static void InvokeRepeating(object instance, string method, float delay, float interval)
+		{
+			MethodInfo method2 = AccessTools.Method(instance.GetType(), method);
+			Task task = InvokeRepeating2(instance, method2, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
+		}
+		private static async Task InvokeRepeating2(object instance, MethodInfo method, int delay, int interval)
+		{
+			await Task.Delay(delay);
+			while (true)
+			{
+				method.Invoke(instance, new object[0]);
+				await Task.Delay(interval);
+			}
 		}
 	}
 }

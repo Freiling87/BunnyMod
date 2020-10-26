@@ -33,7 +33,7 @@ namespace BunnyMod
 
 			//new BunnyItems().Awake();
 			new BunnyObjects().Awake();
-			//new BunnyTraits().Awake();
+			new BunnyTraits().Awake();
 		}
 	}
 

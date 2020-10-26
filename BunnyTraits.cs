@@ -24,6 +24,7 @@ namespace BunnyMod
             CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
                 new CustomNameInfo("")); //
+            Alcoholic.AvailableInCharacterCreation = false; //
             Alcoholic.CostInCharacterCreation = -6;
             Alcoholic.IsActive = false; //
             Alcoholic.Available = false; //
@@ -32,6 +33,7 @@ namespace BunnyMod
             CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
                 new CustomNameInfo("Artificial Insermonation"),
                 new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+            ArtificialInsermonation.AvailableInCharacterCreation = false; //
             ArtificialInsermonation.CostInCharacterCreation = 2;
             ArtificialInsermonation.IsActive = false; //
             ArtificialInsermonation.Available = false; //
@@ -40,6 +42,7 @@ namespace BunnyMod
             CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
                 new CustomNameInfo("Artificial Insermonation +"),
                 new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+            ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
             ArtificialInsermonation_2.CostInCharacterCreation = 2;
             ArtificialInsermonation_2.IsActive = false; //
             ArtificialInsermonation_2.Available = false; //
@@ -51,7 +54,7 @@ namespace BunnyMod
             Charmed.AvailableInCharacterCreation = true;
             Charmed.CanRemove = false;
             Charmed.CanSwap = true;
-            Charmed.Conflicting.AddRange(new string[] { "Cursed", "Cursed_2" });
+            Charmed.Conflicting.AddRange(new string[] { "Charmed_2", "Cursed", "Cursed_2" });
             Charmed.CostInCharacterCreation = 3;
             Charmed.IsActive = true;
             Charmed.Upgrade = "Charmed_2";
@@ -61,14 +64,15 @@ namespace BunnyMod
             new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
             Charmed.AvailableInCharacterCreation = true;
             Charmed_2.CanRemove = false;
-            Charmed_2.CanSwap = false;
-            Charmed_2.Conflicting.AddRange(new string[] { "Cursed", "Cursed_2" });
+            Charmed_2.CanSwap = true;
+            Charmed_2.Conflicting.AddRange(new string[] { "Charmed", "Cursed", "Cursed_2" });
             Charmed_2.CostInCharacterCreation = 5;
             Charmed_2.Upgrade = null;
 
             CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
                 new CustomNameInfo("Cheeky Trappy"),
                 new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
+            CheekyTrappy.AvailableInCharacterCreation = false; //
             CheekyTrappy.CostInCharacterCreation = 1;
             CheekyTrappy.IsActive = false; //
             CheekyTrappy.Available = false; //
@@ -88,17 +92,18 @@ namespace BunnyMod
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
             new CustomNameInfo("First in Cursed"),
             new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
-            Cursed.CanRemove = false;
-            Cursed.CanSwap = false;
-            Cursed.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
-            Cursed.CostInCharacterCreation = -4;
-            Cursed.IsActive = false;
-            Cursed.Upgrade = null;
+            Cursed_2.AvailableInCharacterCreation = true;
+            Cursed_2.CanRemove = false;
+            Cursed_2.CanSwap = false;
+            Cursed_2.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
+            Cursed_2.CostInCharacterCreation = -4;
+            Cursed_2.IsActive = false;
+            Cursed_2.Upgrade = null;
 
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
                 new CustomNameInfo("Death To Snitches"),
                 new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
-            DeathToSnitches.AvailableInCharacterCreation = false;
+            DeathToSnitches.AvailableInCharacterCreation = false; //
             DeathToSnitches.IsActive = false; //
             DeathToSnitches.Available = false; //
             DeathToSnitches.Upgrade = null;
@@ -107,6 +112,7 @@ namespace BunnyMod
             CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
                 new CustomNameInfo("Draw No Blood"),
                 new CustomNameInfo("You have taken an oath. You cannot use bullet-based guns or sharp weapons."));
+            DrawNoBlood.AvailableInCharacterCreation = false; //
             DrawNoBlood.CanRemove = false;
             DrawNoBlood.CanSwap = false;
             DrawNoBlood.CostInCharacterCreation = -3;
@@ -117,6 +123,7 @@ namespace BunnyMod
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
                 new CustomNameInfo("DARE-Devil"),
                 new CustomNameInfo("You cannot consume drugs."));
+            DAREdevil.AvailableInCharacterCreation = false; //
             DAREdevil.CanRemove = false;
             DAREdevil.CanSwap = false;
             DAREdevil.CostInCharacterCreation = -2;
@@ -127,6 +134,7 @@ namespace BunnyMod
             CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
                 new CustomNameInfo("Friend Of Bill"),
                 new CustomNameInfo("You cannot consume Alchohol."));
+            FriendOfBill.AvailableInCharacterCreation = false; //
             FriendOfBill.CanRemove = false;
             FriendOfBill.CanSwap = false;
             FriendOfBill.CostInCharacterCreation = -2;
@@ -137,6 +145,7 @@ namespace BunnyMod
             CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
                 new CustomNameInfo("Hungry Boy"),
                 new CustomNameInfo("Less healing from food and alcohol."));
+            HungryBoy.AvailableInCharacterCreation = false; //
             HungryBoy.CostInCharacterCreation = -3;
             HungryBoy.IsActive = false; //
             HungryBoy.Available = false; //
@@ -145,6 +154,7 @@ namespace BunnyMod
             CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
                 new CustomNameInfo("One Happy Tamper"),
                 new CustomNameInfo("Owners will allow you to tamper with their belongings."));
+            OneHappyTamper.AvailableInCharacterCreation = false; //
             OneHappyTamper.CostInCharacterCreation = 2;
             OneHappyTamper.IsActive = false; //
             OneHappyTamper.Available = false; //
@@ -153,6 +163,7 @@ namespace BunnyMod
             CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
                 new CustomNameInfo("Pursuit Of Trappiness"),
                 new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
+            PursuitOfTrappiness.AvailableInCharacterCreation = false; //
             PursuitOfTrappiness.CostInCharacterCreation = 2;
             PursuitOfTrappiness.IsActive = false; //
             PursuitOfTrappiness.Available = false; //
@@ -161,6 +172,7 @@ namespace BunnyMod
             CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
                 new CustomNameInfo("Pusher"),
                 new CustomNameInfo("You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down."));//
+            Pusher.AvailableInCharacterCreation = false; //
             Pusher.CanRemove = false;
             Pusher.CanSwap = false;
             Pusher.CostInCharacterCreation = 6;
@@ -172,7 +184,7 @@ namespace BunnyMod
             CustomTrait Pusher_2 = RogueLibs.CreateCustomTrait("Pusher_2", true,
                 new CustomNameInfo("Pusher +"),
                 new CustomNameInfo("Increased chances of success when pushing drugs."));//
-            Pusher_2.AvailableInCharacterCreation = false;
+            Pusher_2.AvailableInCharacterCreation = false; //
             Pusher_2.IsActive = false; //
             Pusher_2.Available = false; //
             Pusher_2.Upgrade = null;
@@ -180,6 +192,7 @@ namespace BunnyMod
             CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
                 new CustomNameInfo("Return to Bonke"),
                 new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
+            ReturnToBonke.AvailableInCharacterCreation = false; //
             ReturnToBonke.CostInCharacterCreation = 3;
             ReturnToBonke.IsActive = false; //
             ReturnToBonke.Available = false; //
@@ -188,6 +201,7 @@ namespace BunnyMod
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables."));
+            StealthBastardDeluxe.AvailableInCharacterCreation = false; //
             StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Loud" });
             StealthBastardDeluxe.CostInCharacterCreation = 4;
             StealthBastardDeluxe.IsActive = false; //
@@ -197,6 +211,7 @@ namespace BunnyMod
             CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
                 new CustomNameInfo("Suffers Tools Gladly"),
                 new CustomNameInfo("Your tools take less wear from tampering."));
+            SuffersToolsGladly.AvailableInCharacterCreation = false; //
             SuffersToolsGladly.CostInCharacterCreation = 1;
             SuffersToolsGladly.IsActive = false; //
             SuffersToolsGladly.Available = false; //
@@ -213,6 +228,7 @@ namespace BunnyMod
             CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
                 new CustomNameInfo("Teetotaller"),
                 new CustomNameInfo("You cannot consume drugs or alcohol."));
+            Teetotaller.AvailableInCharacterCreation = false; //
             Teetotaller.CostInCharacterCreation = -4;
             Teetotaller.IsActive = false; //
             Teetotaller.Available = false; //
@@ -221,6 +237,7 @@ namespace BunnyMod
             CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
                 new CustomNameInfo("Trapper Keeper"),
                 new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
+            TrapperKeeper.AvailableInCharacterCreation = false; //
             TrapperKeeper.CostInCharacterCreation = 2;
             TrapperKeeper.IsActive = false; //
             TrapperKeeper.Available = false; //
@@ -229,6 +246,7 @@ namespace BunnyMod
             CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
                 new CustomNameInfo("Undead Bane"),
                 new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
+            UndeadBane.AvailableInCharacterCreation = false; //
             UndeadBane.CostInCharacterCreation = -4;
             UndeadBane.IsActive = false; //
             UndeadBane.Available = false; //
@@ -237,6 +255,7 @@ namespace BunnyMod
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
                 new CustomNameInfo("Veiled Threats"),
                 new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+            VeiledThreats.AvailableInCharacterCreation = false; //
             VeiledThreats.CostInCharacterCreation = 3;
             VeiledThreats.IsActive = false; //
             VeiledThreats.Available = false; //
@@ -245,6 +264,7 @@ namespace BunnyMod
             CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
                 new CustomNameInfo("Whiffist"),
                 new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
+            Whiffist.AvailableInCharacterCreation = false; //
             Whiffist.CostInCharacterCreation = 3;
             Whiffist.IsActive = false; //
             Whiffist.Available = false; //

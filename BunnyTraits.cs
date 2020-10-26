@@ -8,6 +8,13 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 
+/*
+    IsActive is the state of the unlock in the Rewards/Traits/Mutators menu
+    Available determines whether the unlock will be available in the menu and in the game
+    if Available is set to false, you won't find anything about that unlock in the game; if set to true you can find it in the Rewards/Traits/Mutators menu
+    if IsActive is set to true, you'll be able to find that unlock while playing; if set to false you won't
+ */
+
 namespace BunnyMod
 {
 	class BunnyTraits
@@ -15,11 +22,21 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
+            Initialize_Names();
             Initialize_Traits();
+
+            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
         }
-        public static void Initialize_Traits()
+        public static void Initialize_Names()
+		{
+            RogueLibs.CreateCustomName("CantDrinkAlcohol", "Dialogue", new CustomNameInfo("Today, I choose not to drink."));
+            RogueLibs.CreateCustomName("CantDoDrugs", "Dialogue", new CustomNameInfo("Nope, my body is a temple!"));
+            RogueLibs.CreateCustomName("CantEatMeat", "Dialogue", new CustomNameInfo("Meat is murder!"));
+            RogueLibs.CreateCustomName("CantEatNonMeat", "Dialogue", new CustomNameInfo("No! Me want meat!"));
+        }
+        public static void Initialize_Traits_Inactive()
 		{
             CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
@@ -48,27 +65,6 @@ namespace BunnyMod
             ArtificialInsermonation_2.Available = false; //
             ArtificialInsermonation_2.Upgrade = null;
 
-            CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
-                new CustomNameInfo("Charmed & Dangerous"),
-                new CustomNameInfo("You once found a fourteen-leaf clover."));
-            Charmed.AvailableInCharacterCreation = true;
-            Charmed.CanRemove = false;
-            Charmed.CanSwap = true;
-            Charmed.Conflicting.AddRange(new string[] { "Charmed_2", "Cursed", "Cursed_2" });
-            Charmed.CostInCharacterCreation = 3;
-            Charmed.IsActive = true;
-            Charmed.Upgrade = "Charmed_2";
-
-            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
-            new CustomNameInfo("Charmed to the Teeth"),
-            new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
-            Charmed.AvailableInCharacterCreation = true;
-            Charmed_2.CanRemove = false;
-            Charmed_2.CanSwap = true;
-            Charmed_2.Conflicting.AddRange(new string[] { "Charmed", "Cursed", "Cursed_2" });
-            Charmed_2.CostInCharacterCreation = 5;
-            Charmed_2.Upgrade = null;
-
             CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
                 new CustomNameInfo("Cheeky Trappy"),
                 new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
@@ -77,28 +73,6 @@ namespace BunnyMod
             CheekyTrappy.IsActive = false; //
             CheekyTrappy.Available = false; //
             CheekyTrappy.Upgrade = null;
-
-            CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
-                new CustomNameInfo("Your own Cursed Enemy"),
-                new CustomNameInfo("You pissed in some old Gypsy lady's cereal, and you still refuse to apologize. She didn't like that."));
-            Cursed.AvailableInCharacterCreation = true;
-            Cursed.CanRemove = false;
-            Cursed.CanSwap = false;
-            Cursed.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
-            Cursed.CostInCharacterCreation = -2;
-            Cursed.IsActive = false;
-            Cursed.Upgrade = null;
-
-            CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
-            new CustomNameInfo("First in Cursed"),
-            new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
-            Cursed_2.AvailableInCharacterCreation = true;
-            Cursed_2.CanRemove = false;
-            Cursed_2.CanSwap = false;
-            Cursed_2.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
-            Cursed_2.CostInCharacterCreation = -4;
-            Cursed_2.IsActive = false;
-            Cursed_2.Upgrade = null;
 
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
                 new CustomNameInfo("Death To Snitches"),
@@ -119,28 +93,6 @@ namespace BunnyMod
             DrawNoBlood.IsActive = false; //
             DrawNoBlood.Available = false; //
             DrawNoBlood.Upgrade = null;
-
-            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
-                new CustomNameInfo("DARE-Devil"),
-                new CustomNameInfo("You cannot consume drugs."));
-            DAREdevil.AvailableInCharacterCreation = false; //
-            DAREdevil.CanRemove = false;
-            DAREdevil.CanSwap = false;
-            DAREdevil.CostInCharacterCreation = -2;
-            DAREdevil.IsActive = false; //
-            DAREdevil.Available = false; //
-            DAREdevil.Upgrade = null;
-
-            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
-                new CustomNameInfo("Friend Of Bill"),
-                new CustomNameInfo("You cannot consume Alchohol."));
-            FriendOfBill.AvailableInCharacterCreation = false; //
-            FriendOfBill.CanRemove = false;
-            FriendOfBill.CanSwap = false;
-            FriendOfBill.CostInCharacterCreation = -2;
-            FriendOfBill.IsActive = false; //
-            FriendOfBill.Available = false; // 
-            FriendOfBill.Upgrade = null;
 
             CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
                 new CustomNameInfo("Hungry Boy"),
@@ -198,16 +150,6 @@ namespace BunnyMod
             ReturnToBonke.Available = false; //
             ReturnToBonke.Upgrade = null;
 
-            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
-                new CustomNameInfo("Stealth Bastard Deluxe"),
-                new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables."));
-            StealthBastardDeluxe.AvailableInCharacterCreation = false; //
-            StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Loud" });
-            StealthBastardDeluxe.CostInCharacterCreation = 4;
-            StealthBastardDeluxe.IsActive = false; //
-            StealthBastardDeluxe.Available = false; //
-            StealthBastardDeluxe.Upgrade = null;
-
             CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
                 new CustomNameInfo("Suffers Tools Gladly"),
                 new CustomNameInfo("Your tools take less wear from tampering."));
@@ -224,15 +166,6 @@ namespace BunnyMod
             SuffersToolsGladly_2.IsActive = false;//
             SuffersToolsGladly_2.Available = false; //
             SuffersToolsGladly_2.Upgrade = null;
-
-            CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
-                new CustomNameInfo("Teetotaller"),
-                new CustomNameInfo("You cannot consume drugs or alcohol."));
-            Teetotaller.AvailableInCharacterCreation = false; //
-            Teetotaller.CostInCharacterCreation = -4;
-            Teetotaller.IsActive = false; //
-            Teetotaller.Available = false; //
-            Teetotaller.Upgrade = null;
 
             CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
                 new CustomNameInfo("Trapper Keeper"),
@@ -270,10 +203,169 @@ namespace BunnyMod
             Whiffist.Available = false; //
             Whiffist.Upgrade = "Whiffist_2";
         }
+        public static void Initialize_Traits()
+        {
+            CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
+                new CustomNameInfo("Carnivore"),
+                new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
+            Carnivore.Available = true;
+            Carnivore.AvailableInCharacterCreation = true;
+            Carnivore.CanRemove = true;
+            Carnivore.CanSwap = false;
+            Carnivore.Conflicting.AddRange(new string[] { "BananaLover", "Vegetarian" });
+            Carnivore.CostInCharacterCreation = -1;
+            Carnivore.IsActive = true;
+            Carnivore.Upgrade = null;
+
+            CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
+                new CustomNameInfo("Charmed & Dangerous"),
+                new CustomNameInfo("You once found a fourteen-leaf clover."));
+            Charmed.Available = true;
+            Charmed.AvailableInCharacterCreation = true;
+            Charmed.CanRemove = false;
+            Charmed.CanSwap = true;
+            Charmed.Conflicting.AddRange(new string[] { "Charmed_2", "Cursed", "Cursed_2" });
+            Charmed.CostInCharacterCreation = 3;
+            Charmed.IsActive = true;
+            Charmed.Upgrade = "Charmed_2";
+
+            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
+                new CustomNameInfo("Charmed to the Teeth"),
+                new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
+            Charmed_2.Available = true;
+            Charmed_2.AvailableInCharacterCreation = true;
+            Charmed_2.CanRemove = false;
+            Charmed_2.CanSwap = true;
+            Charmed_2.Conflicting.AddRange(new string[] { "Charmed", "Cursed", "Cursed_2" });
+            Charmed_2.CostInCharacterCreation = 6;
+            Charmed_2.Upgrade = null;
+
+            CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
+                new CustomNameInfo("Your own Cursed Enemy"),
+                new CustomNameInfo("You pissed in some old Gypsy lady's cereal, and you still refuse to apologize. She didn't like that."));
+            Cursed.Available = true;
+            Cursed.AvailableInCharacterCreation = true;
+            Cursed.CanRemove = true;
+            Cursed.CanSwap = false;
+            Cursed.Conflicting.AddRange(new string[] { "Cursed_2", "Charmed", "Charmed_2" });
+            Cursed.CostInCharacterCreation = -2;
+            Cursed.IsActive = false;
+            Cursed.Upgrade = null;
+
+            CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
+            new CustomNameInfo("First in Cursed"),
+            new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
+            Cursed_2.Available = true;
+            Cursed_2.AvailableInCharacterCreation = true;
+            Cursed_2.CanRemove = true;
+            Cursed_2.CanSwap = false;
+            Cursed_2.Conflicting.AddRange(new string[] { "Cursed", "Charmed", "Charmed_2" });
+            Cursed_2.CostInCharacterCreation = -4;
+            Cursed_2.IsActive = false;
+            Cursed_2.Upgrade = null;
+
+            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
+                new CustomNameInfo("DAREdevil"),
+                new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
+            DAREdevil.Available = true;
+            DAREdevil.AvailableInCharacterCreation = true;
+            DAREdevil.CanRemove = true;
+            DAREdevil.CanSwap = false;
+            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "Teetotaller" });
+            DAREdevil.CostInCharacterCreation = -3;
+            DAREdevil.IsActive = true;
+            DAREdevil.Upgrade = null;
+
+            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
+                new CustomNameInfo("Friend Of Bill"),
+                new CustomNameInfo("You are taking things one day at a time. But every day sucks when you can't get drunk anymore."));
+            FriendOfBill.Available = true;
+            FriendOfBill.AvailableInCharacterCreation = true;
+            FriendOfBill.CanRemove = true;
+            FriendOfBill.CanSwap = false;
+            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "Teetotaller" });
+            FriendOfBill.CostInCharacterCreation = -1;
+            FriendOfBill.IsActive = true;
+            FriendOfBill.Upgrade = null;
+
+			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+				new CustomNameInfo("Stealth Bastard Deluxe"),
+				new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
+			StealthBastardDeluxe.Available = true;
+			StealthBastardDeluxe.AvailableInCharacterCreation = true;
+			StealthBastardDeluxe.CanRemove = false;
+			StealthBastardDeluxe.CanRemove = true;
+			StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Loud" });
+			StealthBastardDeluxe.CostInCharacterCreation = 4;
+			StealthBastardDeluxe.IsActive = true;
+			StealthBastardDeluxe.Upgrade = null;
+
+			CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
+                new CustomNameInfo("Teetotaller"),
+                new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
+            Teetotaller.Available = true;
+            Teetotaller.AvailableInCharacterCreation = true;
+            Teetotaller.CanRemove = true;
+            Teetotaller.CanSwap = false;
+            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "FriendOfBill" });
+            Teetotaller.CostInCharacterCreation = -4;
+            Teetotaller.IsActive = true;
+            Teetotaller.Upgrade = null;
+
+            CustomTrait Vegetarian = RogueLibs.CreateCustomTrait("Vegetarian", true,
+                new CustomNameInfo("Vegetarian"),
+                new CustomNameInfo("You are one of those people."));
+            Vegetarian.Available = true;
+            Vegetarian.AvailableInCharacterCreation = true;
+            Vegetarian.CanRemove = true;
+            Vegetarian.CanSwap = true;
+            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Zombify" });
+            Vegetarian.CostInCharacterCreation = -1;
+            Vegetarian.IsActive = false;
+            Vegetarian.Available = false;
+            Vegetarian.Upgrade = null;
+        }
 		#endregion
 
+		#region ItemFunctions
+        public static bool ItemFunctions_UseItem(InvItem item, Agent agent)
+		{
+            string itemName = item.invItemName;
+            List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
+            List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
+            List<string> meats = new List<string>() { "BaconCheeseburger", "HamSandwich" };
+            List<string> nonMeats = new List<string>() { "Banana", "Fud", "HotFud" };
+
+            if (nonMeats.Contains(itemName) && agent.statusEffects.hasTrait("Carnivore"))
+            {
+                agent.SayDialogue("CantEatNonMeat");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (drugs.Contains(itemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+			{
+                agent.SayDialogue("CantDoDrugs");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (alcohol.Contains(itemName) && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+			{
+                agent.SayDialogue("CantDrinkAlcohol");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (meats.Contains(itemName) && agent.statusEffects.hasTrait("Vegetarian"))
+			{
+                agent.SayDialogue("CantEatMeat");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+			}
+
+            return true;
+		}
+		#endregion
 		#region PlayfieldObject
-        public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
+		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
 		{
             int modifier = 0;
 

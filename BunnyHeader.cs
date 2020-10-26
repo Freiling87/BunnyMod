@@ -23,6 +23,7 @@ namespace BunnyMod
 		public const string pluginVersion = "1.1.2";
 
 		public static ManualLogSource ConsoleMessage;
+		public static GameController gc = GameController.gameController;
 		public static BaseUnityPlugin MainInstance;
 
 		public void Awake()

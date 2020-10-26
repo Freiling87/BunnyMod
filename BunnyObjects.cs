@@ -71,8 +71,8 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-            CustomName name_BurnedHands = RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
-        }
+			RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+		}
         #endregion
 
         #region ObjectReal
@@ -160,7 +160,7 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Interact");
             //TODO: Try StopInteraction() as a default, with other options as return.
 
-            if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
+            if (agent.statusEffects.hasTrait("StealthBastardDeluxe") && (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig))
             {
                 //TODO: Disable objects' "move toward wall" behavior when generating a chunk.
                 //TODO: Alternatively, make them non-blocking to movement when a player is inside it.
@@ -385,6 +385,7 @@ namespace BunnyMod
         public static void Plant_SetVars(Plant __instance)
         {
             __instance.interactable = true;
+            __instance.lowInteractionPriority = true;
         }
         #endregion
         #region Refrigerator
@@ -397,6 +398,7 @@ namespace BunnyMod
         public static void PoolTable_SetVars(PoolTable __instance)
         {
             __instance.interactable = true;
+            __instance.lowInteractionPriority = true;
         }
         #endregion
         #region Stove
@@ -543,6 +545,7 @@ namespace BunnyMod
 		public static void TableBig_SetVars(TableBig __instance)
         {
             __instance.interactable = true;
+            __instance.lowInteractionPriority = true;
         }
         #endregion
         #region Television

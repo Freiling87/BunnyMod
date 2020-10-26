@@ -6,3 +6,7 @@
 [Info   : Unity Log] HideInventory Sound Debug: True - False - False - False - False - False
 [Info   : Unity Log] Window Lose Focus
 
+1.1.2
+
+Stove now displays Countdown correctly.
+

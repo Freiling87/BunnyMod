@@ -16,6 +16,8 @@ namespace BunnyMod
 		public void Awake()
 		{
             Initialize_Traits();
+
+            BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
         }
         public static void Initialize_Traits()
 		{
@@ -44,15 +46,25 @@ namespace BunnyMod
             ArtificialInsermonation_2.Upgrade = null;
 
             CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
-                new CustomNameInfo("Charmed"),
-                new CustomNameInfo("A permanent slight increase to your Luck."));
+                new CustomNameInfo("Charmed & Dangerous"),
+                new CustomNameInfo("You once found a fourteen-leaf clover."));
+            Charmed.AvailableInCharacterCreation = true;
             Charmed.CanRemove = false;
-            Charmed.CanSwap = false;
-            Charmed.Conflicting.AddRange(new string[] { "Cursed" });
-            Charmed.CostInCharacterCreation = 2;
-            Charmed.IsActive = false; //
-            Charmed.Available = false; //
-            Charmed.Upgrade = null;
+            Charmed.CanSwap = true;
+            Charmed.Conflicting.AddRange(new string[] { "Cursed", "Cursed_2" });
+            Charmed.CostInCharacterCreation = 3;
+            Charmed.IsActive = true;
+            Charmed.Upgrade = "Charmed_2";
+
+            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
+            new CustomNameInfo("Charmed to the Teeth"),
+            new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
+            Charmed.AvailableInCharacterCreation = true;
+            Charmed_2.CanRemove = false;
+            Charmed_2.CanSwap = false;
+            Charmed_2.Conflicting.AddRange(new string[] { "Cursed", "Cursed_2" });
+            Charmed_2.CostInCharacterCreation = 5;
+            Charmed_2.Upgrade = null;
 
             CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
                 new CustomNameInfo("Cheeky Trappy"),
@@ -63,14 +75,24 @@ namespace BunnyMod
             CheekyTrappy.Upgrade = null;
 
             CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
-                new CustomNameInfo("Cursed"),
-                new CustomNameInfo("A permanent slight decrease to your Luck."));
+                new CustomNameInfo("Your own Cursed Enemy"),
+                new CustomNameInfo("You pissed in some old Gypsy lady's cereal, and you still refuse to apologize. She didn't like that."));
+            Cursed.AvailableInCharacterCreation = true;
             Cursed.CanRemove = false;
             Cursed.CanSwap = false;
-            Cursed.Conflicting.AddRange(new string[] { "Charmed" });
-            Cursed.CostInCharacterCreation = -1;
-            Cursed.IsActive = false; //
-            Cursed.Available = false; //
+            Cursed.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
+            Cursed.CostInCharacterCreation = -2;
+            Cursed.IsActive = false;
+            Cursed.Upgrade = null;
+
+            CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
+            new CustomNameInfo("First in Cursed"),
+            new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
+            Cursed.CanRemove = false;
+            Cursed.CanSwap = false;
+            Cursed.Conflicting.AddRange(new string[] { "Charmed", "Charmed_2" });
+            Cursed.CostInCharacterCreation = -4;
+            Cursed.IsActive = false;
             Cursed.Upgrade = null;
 
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
@@ -228,6 +250,66 @@ namespace BunnyMod
             Whiffist.Available = false; //
             Whiffist.Upgrade = "Whiffist_2";
         }
-        #endregion
-    }
+		#endregion
+
+		#region PlayfieldObject
+        public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
+		{
+            int modifier = 0;
+
+            if (luckType == "FreeShopItem2")
+                modifier = 10;
+            if (luckType == "DestroyGravestone")
+                modifier = -5;
+            if (luckType == "TurnTables")
+                modifier = 10;
+            if (luckType == "Joke")
+                modifier = 10;
+            if (luckType == "CritChance")
+                modifier = 3;
+            if (luckType == "ChanceAttacksDoZeroDamage")
+                modifier = 4;
+            if (luckType == "DoorDetonator")
+                modifier = 10;
+            if (luckType == "FreeShopItem")
+                modifier = 10;
+            if (luckType == "FindThreat")
+                modifier = 8;
+            if (luckType == "FindAskMayorHatPercentage")
+                modifier = 8;
+            if (luckType == "ChanceToKnockWeapons")
+                modifier = 5;
+            if (luckType == "SlotMachine")
+                modifier = 8;
+            if (luckType == "AttacksDamageAttacker")
+                modifier = 10;
+            if (luckType == "Hack")
+                modifier = 10;
+            if (luckType == "GunAim")
+                modifier = 5;
+            if (luckType == "SecurityCam")
+                modifier = 10;
+            if (luckType == "FindAskPercentage")
+                modifier = 8;
+            if (luckType == "ThiefToolsMayNotSubtract")
+                modifier = 10;
+            if (luckType == "CanceToSlowEnemies")
+                modifier = 4;
+
+            if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Charmed"))
+                __result += modifier * 1;
+            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Charmed_2"))
+                __result += modifier * 2;
+            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Cursed"))
+                __result += modifier * -1;
+            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Cursed_2"))
+                __result += modifier * -2;
+
+            if (__result > 100)
+                __result = 100;
+            else if (__result < 0)
+                __result = 0;
+        }
+		#endregion
+	}
 }

@@ -16,6 +16,8 @@ namespace BunnyMod
         #region Generic
         public void Awake()
         {
+            Initialize_Names();
+
             #region Patches - Object Base
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
@@ -42,6 +44,8 @@ namespace BunnyMod
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
 
+            //BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "SetVars", GetType(), "Refrigerator_SetVars");
+
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
@@ -50,8 +54,6 @@ namespace BunnyMod
 
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
 			#endregion
-
-            Initialize_Names();
         }
         public void FixedUpdate()
         {
@@ -221,6 +223,10 @@ namespace BunnyMod
 
             if (__instance is Stove)
             {
+                Stove_Remora remora = Stove_Variables[(Stove)__instance];
+
+                Stove_AnimationSequence((Stove)__instance); //Untested
+
                 if (__instance.timer > 0f)
                 {
                     __instance.timer -= Time.deltaTime;
@@ -229,12 +235,12 @@ namespace BunnyMod
                     {
                         if (__instance.startedFlashing)
                         {
-                            __instance.DestroyMe(Stove_Variables[(Stove)__instance].savedDamagerObject);
+                            __instance.DestroyMe(remora.savedDamagerObject);
                             return false;
                         }
-                        Stove_Variables[(Stove)__instance].noOwnCheckCountdown = true;
-                        Stove_Variables[(Stove)__instance].savedDamagerObject = Stove_Variables[(Stove)__instance].countdownCauser;
-                        __instance.DestroyMe(Stove_Variables[(Stove)__instance].countdownCauser);
+                        remora.noOwnCheckCountdown = true;
+                        remora.savedDamagerObject = remora.countdownCauser;
+                        __instance.DestroyMe(remora.countdownCauser);
                     }
                 }
                 return false;
@@ -298,6 +304,9 @@ namespace BunnyMod
                 Stove_Remora remora = new Stove_Remora();
                 Stove_Variables.Add(stove, remora);
                 remora.stoveHost = stove;
+                // Untested:
+                Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove");
+                Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
             }
         }
         #endregion
@@ -391,7 +400,7 @@ namespace BunnyMod
         }
         #endregion
         #region Stove
-        public static IEnumerator Stove_AboutToExplode(Stove __instance)
+        public static IEnumerator Stove_AboutToExplode(Stove __instance) // Non-Patch
 		{
             BunnyHeader.ConsoleMessage.LogMessage("Stove_AboutToExplode");
 
@@ -407,6 +416,7 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
             __instance.RemoveObjectAgent();
             __instance.cantMakeFollowersAttack = true;
@@ -417,7 +427,30 @@ namespace BunnyMod
 
 			yield break;
         }
-        public static bool Stove_DamagedObject(PlayfieldObject damagerObject, float damageAmount, Stove __instance)
+        public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
+		{
+            Stove_Remora remora = Stove_Variables[(Stove)__instance];
+
+            if (!__instance.destroying && __instance.activeObject && !__instance.notInOriginalLocation && __instance.spawnedShadow && __instance.onCamera)
+            {
+                remora.animationCountdown -= Time.deltaTime;
+                if (remora.animationCountdown <= 0f)
+                {
+                    if (remora.animationFrame == 0)
+                    {
+                        __instance.ChangeSpriteByID(remora.animateSpriteID2);
+                        remora.animationFrame = 1;
+                    }
+                    else
+                    {
+                        __instance.ChangeSpriteByID(remora.animateSpriteID);
+                        remora.animationFrame = 0;
+                    }
+                    remora.animationCountdown = 0.5f;
+                }
+            }
+        }
+        public static bool Stove_DamagedObject(PlayfieldObject damagerObject, float damageAmount, Stove __instance) // Prefix
 		{
             BunnyHeader.ConsoleMessage.LogMessage("Stove_DamagedObject");
 
@@ -438,50 +471,57 @@ namespace BunnyMod
             //TODO: Consider flame spit instead of flame particle
             return false;
         }
-        public static void Stove_GrilledFud(Stove __instance)
+        public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
-            int num = rawFud.invItemCount;
-            rawFud.invItemCount -= num;
+            
+            int numCooked = rawFud.invItemCount;
+
+            rawFud.invItemCount -= numCooked;
 
             if (rawFud.invItemCount <= 0)
-            {
                 __instance.interactingAgent.inventory.DestroyItem(rawFud);
-            }
 
             InvItem cookedFud = new InvItem();
             cookedFud.invItemName = "HotFud";
             cookedFud.SetupDetails(false);
-            cookedFud.invItemCount = num;
+            cookedFud.invItemCount = numCooked;
             __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
             cookedFud.ShowPickingUpText(__instance.interactingAgent);
 
             __instance.gc.audioHandler.Play(__instance, "Grill");
-            Stove_GrilledFudAfter(num, __instance);
+            Stove_GrilledFudAfter(numCooked, __instance);
         }
-        public static void Stove_GrilledFudAfter(int myCount, Stove __instance)
+        public static void Stove_GrilledFudAfter(int myCount, Stove __instance) // Non-Patch 
         {
             return;
         }
-        public static void Stove_RevertAllVars(Stove __instance)
+        public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
+            // Untested:
+            Stove_Variables[__instance].animateSpriteID = 0;
+            Stove_Variables[__instance].animateSpriteID2 = 0;
+            __instance.GetComponent<Animator>().enabled = false;
+            //
             Stove_Variables[__instance].savedDamagerObject = null;
             Stove_Variables[__instance].noOwnCheckCountdown = false;
             Stove_Variables[__instance].countdownCauser = null;
-            //__instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
-            //__instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
+            // Untested:
+            __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
+            __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
+            //
             __instance.CancelInvoke();
         }
-        public static void Stove_SetVars(Stove __instance)
+        public static void Stove_SetVars(Stove __instance) // Postfix
         {
+            __instance.animates = true;
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
-            __instance.animates = true; //TODO: Try with and without this to see if it fixes flashing issues
         }
-        public static void Stove_UseWrenchToDetonate(Stove __instance)
+        public static void Stove_UseWrenchToDetonate(Stove __instance) // Non-Patch 
         {
             BunnyHeader.ConsoleMessage.LogMessage("Stove_UseWrenchToDetonate");
 
@@ -515,6 +555,10 @@ namespace BunnyMod
     {
         public Stove stoveHost;
 
+        public int animateSpriteID;
+        public int animateSpriteID2;
+        public float animationCountdown;
+        public int animationFrame;
         public PlayfieldObject countdownCauser;
         public bool mustSpawnExplosionOnClients;
         public bool noOwnCheckCountdown;
@@ -525,15 +569,14 @@ namespace BunnyMod
             Stove stove = BunnyObjects.Stove_Variables.FirstOrDefault(x => x.Value == this).Key;
 
             string myText = string.Concat(stove.timeCountdownClock);
+
             if (stove.timeCountdownClock > 0 && !stove.destroyed && !stove.destroying)
-            {
                 stove.gc.spawnerMain.SpawnStatusText(stove, "Countdown", myText);
-            }
+
             stove.timeCountdownClock--;
+
             if (stove.timeCountdownClock == 0 || stove.timeCountdownClock == -1 || stove.destroyed)
-            {
                 stove.CancelInvoke();
-            }
         }
     }
 }

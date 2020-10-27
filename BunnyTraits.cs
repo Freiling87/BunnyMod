@@ -33,10 +33,6 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-            RogueLibs.CreateCustomName("CantDrinkAlcohol", "Dialogue", new CustomNameInfo("Today, I choose not to drink."));
-            RogueLibs.CreateCustomName("CantDoDrugs", "Dialogue", new CustomNameInfo("Nope, my body is a temple!"));
-            RogueLibs.CreateCustomName("CantEatMeat", "Dialogue", new CustomNameInfo("Meat is murder!"));
-            RogueLibs.CreateCustomName("CantEatNonMeat", "Dialogue", new CustomNameInfo("No! Me want meat!"));
         }
         public static void Initialize_Traits_Inactive()
 		{
@@ -280,7 +276,7 @@ namespace BunnyMod
             DAREdevil.AvailableInCharacterCreation = true;
             DAREdevil.CanRemove = true;
             DAREdevil.CanSwap = false;
-            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "Teetotaller" });
+            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "FriendOfBill", "Teetotaller" });
             DAREdevil.CostInCharacterCreation = -3;
             DAREdevil.IsActive = true;
             DAREdevil.Upgrade = null;
@@ -327,7 +323,7 @@ namespace BunnyMod
             FriendOfBill.AvailableInCharacterCreation = true;
             FriendOfBill.CanRemove = true;
             FriendOfBill.CanSwap = false;
-            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "Electronic", "Teetotaller" });
+            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Teetotaller" });
             FriendOfBill.CostInCharacterCreation = -1;
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
@@ -414,25 +410,25 @@ namespace BunnyMod
 
             if ((vegetarian.Contains(itemName) || item.Categories.Contains("Vegetarian")) && agent.statusEffects.hasTrait("Carnivore"))
             {
-                agent.SayDialogue("CantEatNonMeat");
+                agent.Say("No! Me want meat!");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            if ((nonVegetarian.Contains(itemName) || item.Categories.Contains("NonVegetarian")) && agent.statusEffects.hasTrait("Vegetarian"))
-            {
-                agent.SayDialogue("CantEatMeat");
+            if (drugs.Contains(itemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+			{
+                agent.Say("Nope, my body is a temple!");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
             if ((drugs.Contains(itemName) || item.Categories.Contains("Drugs")) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
-                agent.SayDialogue("CantDoDrugs");
+                agent.Say("Today, I choose not to drink.");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
             if ((alcohol.Contains(itemName) || item.Categories.Contains("Alcohol")) && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
-                agent.SayDialogue("CantDrinkAlcohol");
+                agent.Say("Meat is murder!");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }

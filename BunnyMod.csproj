@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BunnyBehaviors.cs" />
     <Compile Include="BunnyHeader.cs" />
     <Compile Include="BunnyObjects.cs" />
     <Compile Include="BunnyTraits.cs" />

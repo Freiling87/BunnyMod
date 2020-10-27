@@ -32,6 +32,7 @@ namespace BunnyMod
 
 			ConsoleMessage = Logger;
 
+			//new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
 			new BunnyObjects().Awake();
 			new BunnyTraits().Awake();

@@ -25,6 +25,8 @@ namespace BunnyMod
             Initialize_Names();
             Initialize_Traits();
 
+            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+
             BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
@@ -38,13 +40,22 @@ namespace BunnyMod
         }
         public static void Initialize_Traits_Inactive()
 		{
+            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
+                new CustomNameInfo("Afraid of Loud Noises"),
+                new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
+            AfraidOfLoudNoises.Available = false; //
+            AfraidOfLoudNoises.AvailableInCharacterCreation = false; //
+            AfraidOfLoudNoises.CostInCharacterCreation = -4;
+            AfraidOfLoudNoises.IsActive = false; //
+            AfraidOfLoudNoises.Upgrade = null;
+
             CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
                 new CustomNameInfo("")); //
+            Alcoholic.Available = false; //
             Alcoholic.AvailableInCharacterCreation = false; //
             Alcoholic.CostInCharacterCreation = -6;
             Alcoholic.IsActive = false; //
-            Alcoholic.Available = false; //
             Alcoholic.Upgrade = null;
 
             CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
@@ -74,6 +85,15 @@ namespace BunnyMod
             CheekyTrappy.Available = false; //
             CheekyTrappy.Upgrade = null;
 
+            CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
+                new CustomNameInfo("Code of Honor"),
+                new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
+            CodeOfHonor.Available = false; //
+            CodeOfHonor.AvailableInCharacterCreation = false; //
+            CodeOfHonor.CostInCharacterCreation = -6;
+            CodeOfHonor.IsActive = false; // 
+            CodeOfHonor.Upgrade = null;
+
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
                 new CustomNameInfo("Death To Snitches"),
                 new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
@@ -82,17 +102,6 @@ namespace BunnyMod
             DeathToSnitches.Available = false; //
             DeathToSnitches.Upgrade = null;
             //TODO: Unlock DeathToSnitches when Pusher gained
-
-            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
-                new CustomNameInfo("Draw No Blood"),
-                new CustomNameInfo("You have taken an oath. You cannot use bullet-based guns or sharp weapons."));
-            DrawNoBlood.AvailableInCharacterCreation = false; //
-            DrawNoBlood.CanRemove = false;
-            DrawNoBlood.CanSwap = false;
-            DrawNoBlood.CostInCharacterCreation = -3;
-            DrawNoBlood.IsActive = false; //
-            DrawNoBlood.Available = false; //
-            DrawNoBlood.Upgrade = null;
 
             CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
                 new CustomNameInfo("Hungry Boy"),
@@ -212,7 +221,7 @@ namespace BunnyMod
             Carnivore.AvailableInCharacterCreation = true;
             Carnivore.CanRemove = true;
             Carnivore.CanSwap = false;
-            Carnivore.Conflicting.AddRange(new string[] { "BananaLover", "Vegetarian" });
+            Carnivore.Conflicting.AddRange(new string[] { "BananaLover", "OilRestoresHealth", "Vegetarian" });
             Carnivore.CostInCharacterCreation = -1;
             Carnivore.IsActive = true;
             Carnivore.Upgrade = null;
@@ -276,6 +285,41 @@ namespace BunnyMod
             DAREdevil.IsActive = true;
             DAREdevil.Upgrade = null;
 
+            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
+                new CustomNameInfo("Draw No Blood"),
+                new CustomNameInfo("You have taken an oath to draw no blood. Guess you'll have to smash skulls really carefully, then. You cannot use bullet-based guns, sharp weapons, or most explosives."));
+            DrawNoBlood.Available = true; 
+            DrawNoBlood.AvailableInCharacterCreation = true;
+            DrawNoBlood.CanRemove = true;
+            DrawNoBlood.CanSwap = false;
+            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" }); //
+            DrawNoBlood.CostInCharacterCreation = -4;
+            DrawNoBlood.IsActive = false;
+            DrawNoBlood.Upgrade = null;
+
+            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+                new CustomNameInfo("Fatass"),
+                new CustomNameInfo("Good god, look at you. That is one big... healthy boy. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            Fatass.Available = true;
+            Fatass.AvailableInCharacterCreation = true;
+            Fatass.CanRemove = true;
+            Fatass.CanSwap = false;
+            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            Fatass.CostInCharacterCreation = 0;
+            Fatass.IsActive = true;
+            Fatass.Upgrade = null;
+
+            CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
+                new CustomNameInfo("Fat Head"),
+                new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
+            FatHead.Available = true;
+            FatHead.AvailableInCharacterCreation = true;
+            FatHead.CanRemove = true;
+            FatHead.CanSwap = false;
+            FatHead.CostInCharacterCreation = -1;
+            FatHead.IsActive = true;
+            FatHead.Upgrade = null;
+
             CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
                 new CustomNameInfo("Friend Of Bill"),
                 new CustomNameInfo("You are taking things one day at a time. But every day sucks when you can't get drunk anymore."));
@@ -283,7 +327,7 @@ namespace BunnyMod
             FriendOfBill.AvailableInCharacterCreation = true;
             FriendOfBill.CanRemove = true;
             FriendOfBill.CanSwap = false;
-            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "Teetotaller" });
+            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "Electronic", "Teetotaller" });
             FriendOfBill.CostInCharacterCreation = -1;
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
@@ -295,7 +339,7 @@ namespace BunnyMod
 			StealthBastardDeluxe.AvailableInCharacterCreation = true;
 			StealthBastardDeluxe.CanRemove = false;
 			StealthBastardDeluxe.CanRemove = true;
-			StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Loud" });
+			StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Fatass", "Loud" });
 			StealthBastardDeluxe.CostInCharacterCreation = 4;
 			StealthBastardDeluxe.IsActive = true;
 			StealthBastardDeluxe.Upgrade = null;
@@ -307,7 +351,7 @@ namespace BunnyMod
             Teetotaller.AvailableInCharacterCreation = true;
             Teetotaller.CanRemove = true;
             Teetotaller.CanSwap = false;
-            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "FriendOfBill" });
+            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Electronic", "FriendOfBill", "OilRestoresHealth" });
             Teetotaller.CostInCharacterCreation = -4;
             Teetotaller.IsActive = true;
             Teetotaller.Upgrade = null;
@@ -319,7 +363,7 @@ namespace BunnyMod
             Vegetarian.AvailableInCharacterCreation = true;
             Vegetarian.CanRemove = true;
             Vegetarian.CanSwap = true;
-            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Zombify" });
+            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Electronic", "FleshFeast", "OilRestoresHealth", "Zombify" });
             Vegetarian.CostInCharacterCreation = -1;
             Vegetarian.IsActive = false;
             Vegetarian.Available = false;
@@ -327,40 +371,83 @@ namespace BunnyMod
         }
 		#endregion
 
-		#region ItemFunctions
-        public static bool ItemFunctions_UseItem(InvItem item, Agent agent)
+		#region InvDatabase
+        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+		{
+			List<string> blunt = new List<string>() { };
+			List<string> explosive = new List<string>() { };
+			List<string> loud = new List<string>() { "DizzyGrenade", "EMPGrenade", "FireExtinguisher", "GhostGibber", "Grenade", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
+            List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
+            
+            //TODO: Verify non-equipped items like Time Bomb.
+
+            if (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && piercing.Contains(item.invItemName))
+            {
+                __instance.agent.Say("I shall draw no blood!");
+                __result = false;
+            }
+            if (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && loud.Contains(item.invItemName) && !item.contents.Contains("Silencer"))
+			{
+                __instance.agent.Say("But dat'll hurt my liddle ears!");
+                __result = false;
+            }
+            if (__instance.agent.statusEffects.hasTrait("NoBlunt") && blunt.Contains(item.invItemName))
+			{
+                __instance.agent.Say("No. I want to feel them bleed on me.");
+                __result = false;
+            }
+            if (__instance.agent.statusEffects.hasTrait("NoExplosive") && explosive.Contains(item.invItemName))
+			{
+                __instance.agent.Say("");
+                __result = false;
+            }
+        }
+        #endregion
+        #region ItemFunctions
+        public static bool ItemFunctions_UseItem_Prefix(InvItem item, Agent agent)
 		{
             string itemName = item.invItemName;
             List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
             List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
-            List<string> meats = new List<string>() { "BaconCheeseburger", "HamSandwich" };
-            List<string> nonMeats = new List<string>() { "Banana", "Fud", "HotFud" };
+            List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
+            List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
 
-            if (nonMeats.Contains(itemName) && agent.statusEffects.hasTrait("Carnivore"))
+            if ((vegetarian.Contains(itemName) || item.Categories.Contains("Vegetarian")) && agent.statusEffects.hasTrait("Carnivore"))
             {
                 agent.SayDialogue("CantEatNonMeat");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            if (drugs.Contains(itemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            if ((nonVegetarian.Contains(itemName) || item.Categories.Contains("NonVegetarian")) && agent.statusEffects.hasTrait("Vegetarian"))
+            {
+                agent.SayDialogue("CantEatMeat");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if ((drugs.Contains(itemName) || item.Categories.Contains("Drugs")) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
                 agent.SayDialogue("CantDoDrugs");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            if (alcohol.Contains(itemName) && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+            if ((alcohol.Contains(itemName) || item.Categories.Contains("Alcohol")) && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
                 agent.SayDialogue("CantDrinkAlcohol");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            if (meats.Contains(itemName) && agent.statusEffects.hasTrait("Vegetarian"))
+            return true;
+		}
+        public static bool ItemFunctions_DetermineHealthChange(InvItem item, Agent agent) // Prefix
+		{
+			if (agent.statusEffects.hasTrait("Alcoholic") && item.Categories.Contains("Alcohol"))
 			{
-                agent.SayDialogue("CantEatMeat");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-			}
+				if (agent.statusEffects.hasStatusEffect("FeelingGood"))
+					agent.statusEffects.AddStatusEffect("FeelingGood", false, true, item.healthChange);
 
+				if (agent.statusEffects.hasStatusEffect("Withdrawal"))
+					agent.statusEffects.RemoveStatusEffect("Withdrawal", false);
+			}
             return true;
 		}
 		#endregion
@@ -422,6 +509,8 @@ namespace BunnyMod
             else if (__result < 0)
                 __result = 0;
         }
+		#endregion
+		#region StatusEffects
 		#endregion
 	}
 }

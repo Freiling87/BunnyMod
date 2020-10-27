@@ -71,10 +71,10 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-			RogueLibs.CreateCustomName("BurnedHands", "Dialogue", new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+			RogueLibs.CreateCustomName("BurnedHands", "Dialogue", 
+                new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
 		}
         #endregion
-
         #region ObjectReal
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
@@ -371,8 +371,8 @@ namespace BunnyMod
         public static void FlamingBarrel_GrilledFudAfter(int myCount, FlamingBarrel __instance)
 		{
             __instance.gc.audioHandler.Play(__instance, "FireHit");
-            __instance.interactingAgent.statusEffects.ChangeHealth((float)-10, __instance);
-            string text = GameController.gameController.nameDB.GetName("BurnedHands", "Dialogue");
+            __instance.interactingAgent.statusEffects.ChangeHealth(-10f, __instance);
+            __instance.interactingAgent.Say("God fucking damn it, I always fucking burn my fucking hands!");
             return;
 		}
         public static void FlamingBarrel_SetVars(FlamingBarrel __instance)

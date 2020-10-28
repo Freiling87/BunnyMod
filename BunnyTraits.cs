@@ -25,11 +25,12 @@ namespace BunnyMod
             Initialize_Names();
             Initialize_Traits();
 
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "ChooseHealthItem", GetType(), "InvDatabase_ChooseHealthItem", new Type[0] { });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
 
-            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
@@ -42,6 +43,17 @@ namespace BunnyMod
         }
         public static void Initialize_Traits_Inactive()
 		{
+            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
+                new CustomNameInfo("Alcoholic"),
+                new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
+            Alcoholic.Available = true;
+            Alcoholic.AvailableInCharacterCreation = true;
+            Alcoholic.CanRemove = true;
+            Alcoholic.CanSwap = false;
+            Alcoholic.CostInCharacterCreation = -5;
+            Alcoholic.IsActive = true;
+            Alcoholic.Upgrade = null;
+            // TODO: Allow consumption at full health
 
             CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
                 new CustomNameInfo("Artificial Insermonation"),
@@ -199,29 +211,7 @@ namespace BunnyMod
         }
         public static void Initialize_Traits()
         {
-            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
-                new CustomNameInfo("Afraid of Loud Noises"),
-                new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
-            AfraidOfLoudNoises.Available = true;
-            AfraidOfLoudNoises.AvailableInCharacterCreation = true;
-            AfraidOfLoudNoises.CanRemove = true;
-            AfraidOfLoudNoises.CanSwap = true;
-            AfraidOfLoudNoises.CostInCharacterCreation = -4;
-            AfraidOfLoudNoises.IsActive = true;
-            AfraidOfLoudNoises.Upgrade = null;
-
-            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
-                new CustomNameInfo("Alcoholic"),
-                new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
-            Alcoholic.Available = true;
-            Alcoholic.AvailableInCharacterCreation = true;
-            Alcoholic.CanRemove = true;
-            Alcoholic.CanSwap = false;
-            Alcoholic.CostInCharacterCreation = -5;
-            Alcoholic.IsActive = true;
-            Alcoholic.Upgrade = null;
-            // TODO: Allow consumption at full health
-
+            #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
                 new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
@@ -234,6 +224,103 @@ namespace BunnyMod
             Carnivore.IsActive = true;
             Carnivore.Upgrade = null;
 
+            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
+                new CustomNameInfo("DAREdevil"),
+                new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
+            DAREdevil.Available = true;
+            DAREdevil.AvailableInCharacterCreation = true;
+            DAREdevil.CanRemove = true;
+            DAREdevil.CanSwap = false;
+            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "FriendOfBill", "Teetotaller" });
+            DAREdevil.CostInCharacterCreation = -3;
+            DAREdevil.IsActive = true;
+            DAREdevil.Upgrade = null;
+
+            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
+                new CustomNameInfo("Friend Of Bill"),
+                new CustomNameInfo("You are taking things one day at a time. But every day sucks when you can't get drunk anymore."));
+            FriendOfBill.Available = true;
+            FriendOfBill.AvailableInCharacterCreation = true;
+            FriendOfBill.CanRemove = true;
+            FriendOfBill.CanSwap = false;
+            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Teetotaller" });
+            FriendOfBill.CostInCharacterCreation = -1;
+            FriendOfBill.IsActive = true;
+            FriendOfBill.Upgrade = null;
+
+            CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
+                new CustomNameInfo("Teetotaller"),
+                new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
+            Teetotaller.Available = true;
+            Teetotaller.AvailableInCharacterCreation = true;
+            Teetotaller.CanRemove = true;
+            Teetotaller.CanSwap = false;
+            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Electronic", "FriendOfBill", "OilRestoresHealth" });
+            Teetotaller.CostInCharacterCreation = -4;
+            Teetotaller.IsActive = true;
+            Teetotaller.Upgrade = null;
+
+            CustomTrait Vegetarian = RogueLibs.CreateCustomTrait("Vegetarian", true,
+                new CustomNameInfo("Vegetarian"),
+                new CustomNameInfo("You are one of those people."));
+            Vegetarian.Available = true;
+            Vegetarian.AvailableInCharacterCreation = true;
+            Vegetarian.CanRemove = true;
+            Vegetarian.CanSwap = true;
+            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Electronic", "FleshFeast", "OilRestoresHealth", "Zombify" });
+            Vegetarian.CostInCharacterCreation = -1;
+            Vegetarian.IsActive = false;
+            Vegetarian.Available = false;
+            Vegetarian.Upgrade = null;
+            #endregion
+            #region Equipment
+            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
+                new CustomNameInfo("Afraid of Loud Noises"),
+                new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
+            AfraidOfLoudNoises.Available = true;
+            AfraidOfLoudNoises.AvailableInCharacterCreation = true;
+            AfraidOfLoudNoises.CanRemove = true;
+            AfraidOfLoudNoises.CanSwap = true;
+            AfraidOfLoudNoises.CostInCharacterCreation = -4;
+            AfraidOfLoudNoises.IsActive = true;
+            AfraidOfLoudNoises.Upgrade = null;
+
+            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
+                new CustomNameInfo("Draw No Blood"),
+                new CustomNameInfo("You have taken an oath to draw no blood. Guess you'll have to smash skulls really carefully, then. You cannot use bullet-based guns, sharp weapons, or most explosives."));
+            DrawNoBlood.Available = true;
+            DrawNoBlood.AvailableInCharacterCreation = true;
+            DrawNoBlood.CanRemove = true;
+            DrawNoBlood.CanSwap = false;
+            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" });
+            DrawNoBlood.CostInCharacterCreation = -4;
+            DrawNoBlood.IsActive = false;
+            DrawNoBlood.Upgrade = null;
+
+            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+                new CustomNameInfo("Fatass"),
+                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            Fatass.Available = true;
+            Fatass.AvailableInCharacterCreation = true;
+            Fatass.CanRemove = true;
+            Fatass.CanSwap = false;
+            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            Fatass.CostInCharacterCreation = 0;
+            Fatass.IsActive = true;
+            Fatass.Upgrade = null;
+
+            CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
+                new CustomNameInfo("Fat Head"),
+                new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
+            FatHead.Available = true;
+            FatHead.AvailableInCharacterCreation = true;
+            FatHead.CanRemove = true;
+            FatHead.CanSwap = false;
+            FatHead.CostInCharacterCreation = -1;
+            FatHead.IsActive = true;
+            FatHead.Upgrade = null;
+            #endregion
+            #region Luck
             CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
                 new CustomNameInfo("Charmed & Dangerous"),
                 new CustomNameInfo("You once found a fourteen-leaf clover."));
@@ -270,8 +357,8 @@ namespace BunnyMod
             Cursed.Upgrade = null;
 
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
-            new CustomNameInfo("First in Cursed"),
-            new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
+                new CustomNameInfo("First in Cursed"),
+                new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
             Cursed_2.Available = true;
             Cursed_2.AvailableInCharacterCreation = true;
             Cursed_2.CanRemove = true;
@@ -280,293 +367,24 @@ namespace BunnyMod
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = false;
             Cursed_2.Upgrade = null;
-
-            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
-                new CustomNameInfo("DAREdevil"),
-                new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
-            DAREdevil.Available = true;
-            DAREdevil.AvailableInCharacterCreation = true;
-            DAREdevil.CanRemove = true;
-            DAREdevil.CanSwap = false;
-            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "FriendOfBill", "Teetotaller" });
-            DAREdevil.CostInCharacterCreation = -3;
-            DAREdevil.IsActive = true;
-            DAREdevil.Upgrade = null;
-
-            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
-                new CustomNameInfo("Draw No Blood"),
-                new CustomNameInfo("You have taken an oath to draw no blood. Guess you'll have to smash skulls really carefully, then. You cannot use bullet-based guns, sharp weapons, or most explosives."));
-            DrawNoBlood.Available = true; 
-            DrawNoBlood.AvailableInCharacterCreation = true;
-            DrawNoBlood.CanRemove = true;
-            DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" });
-            DrawNoBlood.CostInCharacterCreation = -4;
-            DrawNoBlood.IsActive = false;
-            DrawNoBlood.Upgrade = null;
-
-            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-                new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            Fatass.Available = true;
-            Fatass.AvailableInCharacterCreation = true;
-            Fatass.CanRemove = true;
-            Fatass.CanSwap = false;
-            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            Fatass.CostInCharacterCreation = 0;
-            Fatass.IsActive = true;
-            Fatass.Upgrade = null;
-
-            CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
-                new CustomNameInfo("Fat Head"),
-                new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
-            FatHead.Available = true;
-            FatHead.AvailableInCharacterCreation = true;
-            FatHead.CanRemove = true;
-            FatHead.CanSwap = false;
-            FatHead.CostInCharacterCreation = -1;
-            FatHead.IsActive = true;
-            FatHead.Upgrade = null;
-
-            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
-                new CustomNameInfo("Friend Of Bill"),
-                new CustomNameInfo("You are taking things one day at a time. But every day sucks when you can't get drunk anymore."));
-            FriendOfBill.Available = true;
-            FriendOfBill.AvailableInCharacterCreation = true;
-            FriendOfBill.CanRemove = true;
-            FriendOfBill.CanSwap = false;
-            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Teetotaller" });
-            FriendOfBill.CostInCharacterCreation = -1;
-            FriendOfBill.IsActive = true;
-            FriendOfBill.Upgrade = null;
-
-			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
-				new CustomNameInfo("Stealth Bastard Deluxe"),
-				new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
-			StealthBastardDeluxe.Available = true;
-			StealthBastardDeluxe.AvailableInCharacterCreation = true;
-			StealthBastardDeluxe.CanRemove = false;
-			StealthBastardDeluxe.CanRemove = true;
-			StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Fatass", "Loud" });
-			StealthBastardDeluxe.CostInCharacterCreation = 4;
-			StealthBastardDeluxe.IsActive = true;
-			StealthBastardDeluxe.Upgrade = null;
-
-			CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
-                new CustomNameInfo("Teetotaller"),
-                new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
-            Teetotaller.Available = true;
-            Teetotaller.AvailableInCharacterCreation = true;
-            Teetotaller.CanRemove = true;
-            Teetotaller.CanSwap = false;
-            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Electronic", "FriendOfBill", "OilRestoresHealth" });
-            Teetotaller.CostInCharacterCreation = -4;
-            Teetotaller.IsActive = true;
-            Teetotaller.Upgrade = null;
-
-            CustomTrait Vegetarian = RogueLibs.CreateCustomTrait("Vegetarian", true,
-                new CustomNameInfo("Vegetarian"),
-                new CustomNameInfo("You are one of those people."));
-            Vegetarian.Available = true;
-            Vegetarian.AvailableInCharacterCreation = true;
-            Vegetarian.CanRemove = true;
-            Vegetarian.CanSwap = true;
-            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Electronic", "FleshFeast", "OilRestoresHealth", "Zombify" });
-            Vegetarian.CostInCharacterCreation = -1;
-            Vegetarian.IsActive = false;
-            Vegetarian.Available = false;
-            Vegetarian.Upgrade = null;
+            #endregion
+            #region Stealth
+            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+                new CustomNameInfo("Stealth Bastard Deluxe"),
+                new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
+            StealthBastardDeluxe.Available = true;
+            StealthBastardDeluxe.AvailableInCharacterCreation = true;
+            StealthBastardDeluxe.CanRemove = false;
+            StealthBastardDeluxe.CanRemove = true;
+            StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Fatass", "Loud" });
+            StealthBastardDeluxe.CostInCharacterCreation = 4;
+            StealthBastardDeluxe.IsActive = true;
+            StealthBastardDeluxe.Upgrade = null;
+            #endregion
         }
 		#endregion
 
 		#region InvDatabase
-
-        public static bool InvDatabase_ChooseHealthItem(InvDatabase __instance) // TODO
-		{
-            List<InvItem> list = new List<InvItem>();
-            foreach (InvItem invItem in __instance.InvItemList)
-            {
-                if (__instance.agent.statusEffects.hasTrait("OilRestoresHealth"))
-                {
-                    if (invItem.invItemName == "OilContainer")
-                    {
-                        int num = (int)(__instance.agent.healthMax - __instance.agent.health);
-                        float health = __instance.agent.health;
-                        int invItemCount = invItem.invItemCount;
-                        float num2 = 1.5f;
-                        if (__instance.agent.statusEffects.hasTrait("OilRestoresMoreHealth") || __instance.agent.oma.superSpecialAbility)
-                        {
-                            num2 = 3f;
-                        }
-                        num = (int)((float)num / num2);
-                        if (num <= 0)
-                        {
-                            return false;
-                        }
-                        if (invItemCount > 0)
-                        {
-                            if (num >= invItemCount)
-                            {
-                                __instance.agent.statusEffects.ChangeHealth((float)invItemCount * num2);
-                                invItem.invItemCount = 0;
-                            }
-                            else if (num < invItemCount)
-                            {
-                                __instance.agent.statusEffects.ChangeHealth(__instance.agent.healthMax);
-                                invItem.invItemCount -= num;
-                            }
-                            BunnyHeader.gc.audioHandler.Play(__instance.agent, "OilChangeHealth");
-                            BunnyHeader.gc.mainGUI.invInterface.DirtySlots();
-                        }
-                        return false;
-                    }
-                }
-                else if (__instance.agent.statusEffects.hasTrait("BloodRestoresHealth"))
-                {
-                    if (invItem.invItemName == "BloodBag")
-                    {
-                        list.Add(invItem);
-                    }
-                }
-                else if ((!__instance.agent.statusEffects.hasTrait("CannibalizeRestoresHealth") || !invItem.Categories.Contains("Food")) && (!__instance.agent.electronic || (!invItem.Categories.Contains("Food") && !invItem.Categories.Contains("Health"))) && (!__instance.agent.statusEffects.hasTrait("CantInteract") || !(invItem.itemType != "Food")) && (!(invItem.invItemName == "BloodBag") || __instance.agent.statusEffects.hasTrait("MedicalProfessional")) && (invItem.itemType == "Food" || invItem.Categories.Contains("Health")))
-                {
-                    list.Add(invItem);
-                }
-            }
-            InvItem invItem2 = null;
-            InvItem invItem3 = null;
-            int num3 = 0;
-            int num4 = 9999;
-            if (__instance.agent.health != __instance.agent.healthMax)
-            {
-                bool flag = false;
-                if (__instance.agent.bigQuest == "Bartender")
-                {
-                    if (BunnyHeader.gc.challenges.Contains("LowHealth"))
-                    {
-                        using (List<InvItem>.Enumerator enumerator = list.GetEnumerator())
-                        {
-                            while (enumerator.MoveNext())
-                            {
-                                InvItem invItem4 = enumerator.Current;
-                                if (!invItem4.Categories.Contains("Alcohol"))
-                                {
-                                    int num5 = invItem4.itemFunctions.DetermineHealthChange(invItem4, __instance.agent);
-                                    flag = true;
-                                    if (__instance.agent.health <= __instance.agent.healthMax - (float)num5)
-                                    {
-                                        if (num5 > num3)
-                                        {
-                                            invItem2 = invItem4;
-                                            num3 = num5;
-                                        }
-                                    }
-                                    else if (num5 < num4)
-                                    {
-                                        invItem3 = invItem4;
-                                        num4 = num5;
-                                    }
-                                }
-                            }
-                            goto IL_40B;
-                        }
-                    }
-                    foreach (InvItem invItem5 in list)
-                    {
-                        if (!invItem5.Categories.Contains("Alcohol"))
-                        {
-                            int num6 = invItem5.itemFunctions.DetermineHealthChange(invItem5, __instance.agent);
-                            flag = true;
-                            if (__instance.agent.health <= __instance.agent.healthMax - (float)num6 && num6 > num3)
-                            {
-                                invItem2 = invItem5;
-                                num3 = num6;
-                            }
-                        }
-                    }
-                }
-            IL_40B:
-                if (!flag)
-                {
-                    if (BunnyHeader.gc.challenges.Contains("LowHealth"))
-                    {
-                        using (List<InvItem>.Enumerator enumerator = list.GetEnumerator())
-                        {
-                            while (enumerator.MoveNext())
-                            {
-                                InvItem invItem6 = enumerator.Current;
-                                int num7 = invItem6.itemFunctions.DetermineHealthChange(invItem6, __instance.agent);
-                                bool flag2 = false;
-                                if (num3 == num7 && num3 != 0)
-                                {
-                                    if (invItem6.Categories.Contains("Alcohol"))
-                                    {
-                                        flag2 = true;
-                                    }
-                                    if (invItem2 != null && invItem2.Categories.Contains("Alcohol"))
-                                    {
-                                        invItem2 = null;
-                                        num3 = 0;
-                                    }
-                                }
-                                if (!flag2)
-                                {
-                                    if (__instance.agent.health <= __instance.agent.healthMax - (float)num7)
-                                    {
-                                        if (num7 > num3)
-                                        {
-                                            invItem2 = invItem6;
-                                            num3 = num7;
-                                        }
-                                    }
-                                    else if (num7 < num4)
-                                    {
-                                        invItem3 = invItem6;
-                                        num4 = num7;
-                                    }
-                                }
-                            }
-                            goto IL_598;
-                        }
-                    }
-                    foreach (InvItem invItem7 in list)
-                    {
-                        int num8 = invItem7.itemFunctions.DetermineHealthChange(invItem7, __instance.agent);
-                        bool flag3 = false;
-                        if (num3 == num8 && num3 != 0)
-                        {
-                            if (invItem7.Categories.Contains("Alcohol"))
-                            {
-                                flag3 = true;
-                            }
-                            if (invItem2 != null && invItem2.Categories.Contains("Alcohol"))
-                            {
-                                invItem2 = null;
-                                num3 = 0;
-                            }
-                        }
-                        if (!flag3 && __instance.agent.health <= __instance.agent.healthMax - (float)num8 && num8 > num3)
-                        {
-                            invItem2 = invItem7;
-                            num3 = num8;
-                        }
-                    }
-                }
-            }
-        IL_598:
-            if (invItem2 != null)
-            {
-                BunnyHeader.gc.spawnerMain.SpawnStatusText(__instance.agent, "UseItem", invItem2.invItemName, "Item");
-                invItem2.UseItem();
-                return false;
-            }
-            if (invItem3 != null)
-            {
-                BunnyHeader.gc.spawnerMain.SpawnStatusText(__instance.agent, "UseItem", invItem3.invItemName, "Item");
-                invItem3.UseItem();
-            }
-            return false;
-		}
 		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{
             //TODO: Verify non-equipped items like Time Bomb.
@@ -596,7 +414,6 @@ namespace BunnyMod
                 __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
             }
         }
-
 		#endregion
 		#region InvItem
 		#region Category Lists
@@ -614,49 +431,36 @@ namespace BunnyMod
         #endregion
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
         {
+            string name = __instance.invItemName;
+
             if (__instance.Categories.Contains("Alcohol"))
 			{
-                return;
 			}
             if (__instance.Categories.Contains("Drugs"))
 			{
-                return;
 			}
             if (__instance.Categories.Contains("Food"))
             {
-                if (nonVegetarian.Contains(__instance.invItemName))
+                if (nonVegetarian.Contains(name))
                     __instance.Categories.Add("NonVegetarian");
-                else if (vegetarian.Contains(__instance.invItemName))
+                else if (vegetarian.Contains(name))
                     __instance.Categories.Add("Vegetarian");
-                return;
             }
             if (__instance.Categories.Contains("Weapons"))
             {
-                if (blunt.Contains(__instance.invItemName))
+                if (blunt.Contains(name))
                     __instance.Categories.Add("Blunt");
-                if (explosive.Contains(__instance.invItemName))
+                if (explosive.Contains(name))
                     __instance.Categories.Add("Explosive");
-                if (loud.Contains(__instance.invItemName))
+                if (loud.Contains(name))
                     __instance.Categories.Add("Loud");
-                if (piercing.Contains(__instance.invItemName))
+                if (piercing.Contains(name))
                     __instance.Categories.Add("Piercing");
-                return;
             }
-		}
+            return;
+        }
         #endregion
         #region ItemFunctions
-        public static bool ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
-        {
-            if (agent.statusEffects.hasTrait("Alcoholic") && item.Categories.Contains("Alcohol"))
-            {
-                if (agent.statusEffects.hasStatusEffect("FeelingGood"))
-                    agent.statusEffects.AddStatusEffect("FeelingGood", false, true, item.healthChange);
-
-                if (agent.statusEffects.hasStatusEffect("Withdrawal"))
-                    agent.statusEffects.RemoveStatusEffect("Withdrawal", false);
-            }
-            return true;
-        }
         public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
 		{
             if (item.Categories.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))

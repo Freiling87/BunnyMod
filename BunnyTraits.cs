@@ -26,33 +26,22 @@ namespace BunnyMod
             Initialize_Traits();
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
 
+            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
+
+            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
         }
         public static void Initialize_Names()
 		{
         }
         public static void Initialize_Traits_Inactive()
 		{
-            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
-                new CustomNameInfo("Afraid of Loud Noises"),
-                new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
-            AfraidOfLoudNoises.Available = false; //
-            AfraidOfLoudNoises.AvailableInCharacterCreation = false; //
-            AfraidOfLoudNoises.CostInCharacterCreation = -4;
-            AfraidOfLoudNoises.IsActive = false; //
-            AfraidOfLoudNoises.Upgrade = null;
-
-            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
-                new CustomNameInfo("Alcoholic"),
-                new CustomNameInfo("")); //
-            Alcoholic.Available = false; //
-            Alcoholic.AvailableInCharacterCreation = false; //
-            Alcoholic.CostInCharacterCreation = -6;
-            Alcoholic.IsActive = false; //
-            Alcoholic.Upgrade = null;
 
             CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
                 new CustomNameInfo("Artificial Insermonation"),
@@ -210,6 +199,29 @@ namespace BunnyMod
         }
         public static void Initialize_Traits()
         {
+            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
+                new CustomNameInfo("Afraid of Loud Noises"),
+                new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
+            AfraidOfLoudNoises.Available = true;
+            AfraidOfLoudNoises.AvailableInCharacterCreation = true;
+            AfraidOfLoudNoises.CanRemove = true;
+            AfraidOfLoudNoises.CanSwap = true;
+            AfraidOfLoudNoises.CostInCharacterCreation = -4;
+            AfraidOfLoudNoises.IsActive = true;
+            AfraidOfLoudNoises.Upgrade = null;
+
+            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
+                new CustomNameInfo("Alcoholic"),
+                new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
+            Alcoholic.Available = true;
+            Alcoholic.AvailableInCharacterCreation = true;
+            Alcoholic.CanRemove = true;
+            Alcoholic.CanSwap = false;
+            Alcoholic.CostInCharacterCreation = -5;
+            Alcoholic.IsActive = true;
+            Alcoholic.Upgrade = null;
+            // TODO: Allow consumption at full health
+
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
                 new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
@@ -288,14 +300,14 @@ namespace BunnyMod
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" }); //
+            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" });
             DrawNoBlood.CostInCharacterCreation = -4;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
 
             CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
                 new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Good god, look at you. That is one big... healthy boy. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
             Fatass.Available = true;
             Fatass.AvailableInCharacterCreation = true;
             Fatass.CanRemove = true;
@@ -368,82 +380,309 @@ namespace BunnyMod
 		#endregion
 
 		#region InvDatabase
-        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
-		{
-			List<string> blunt = new List<string>() { };
-			List<string> explosive = new List<string>() { };
-			List<string> loud = new List<string>() { "DizzyGrenade", "EMPGrenade", "FireExtinguisher", "GhostGibber", "Grenade", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
-            List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
-            
-            //TODO: Verify non-equipped items like Time Bomb.
 
-            if (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && piercing.Contains(item.invItemName))
+        public static bool InvDatabase_ChooseHealthItem(InvDatabase __instance) // TODO
+		{
+            List<InvItem> list = new List<InvItem>();
+            foreach (InvItem invItem in __instance.InvItemList)
             {
-                __instance.agent.Say("I shall draw no blood!");
-                __result = false;
+                if (__instance.agent.statusEffects.hasTrait("OilRestoresHealth"))
+                {
+                    if (invItem.invItemName == "OilContainer")
+                    {
+                        int num = (int)(__instance.agent.healthMax - __instance.agent.health);
+                        float health = __instance.agent.health;
+                        int invItemCount = invItem.invItemCount;
+                        float num2 = 1.5f;
+                        if (__instance.agent.statusEffects.hasTrait("OilRestoresMoreHealth") || __instance.agent.oma.superSpecialAbility)
+                        {
+                            num2 = 3f;
+                        }
+                        num = (int)((float)num / num2);
+                        if (num <= 0)
+                        {
+                            return false;
+                        }
+                        if (invItemCount > 0)
+                        {
+                            if (num >= invItemCount)
+                            {
+                                __instance.agent.statusEffects.ChangeHealth((float)invItemCount * num2);
+                                invItem.invItemCount = 0;
+                            }
+                            else if (num < invItemCount)
+                            {
+                                __instance.agent.statusEffects.ChangeHealth(__instance.agent.healthMax);
+                                invItem.invItemCount -= num;
+                            }
+                            BunnyHeader.gc.audioHandler.Play(__instance.agent, "OilChangeHealth");
+                            BunnyHeader.gc.mainGUI.invInterface.DirtySlots();
+                        }
+                        return false;
+                    }
+                }
+                else if (__instance.agent.statusEffects.hasTrait("BloodRestoresHealth"))
+                {
+                    if (invItem.invItemName == "BloodBag")
+                    {
+                        list.Add(invItem);
+                    }
+                }
+                else if ((!__instance.agent.statusEffects.hasTrait("CannibalizeRestoresHealth") || !invItem.Categories.Contains("Food")) && (!__instance.agent.electronic || (!invItem.Categories.Contains("Food") && !invItem.Categories.Contains("Health"))) && (!__instance.agent.statusEffects.hasTrait("CantInteract") || !(invItem.itemType != "Food")) && (!(invItem.invItemName == "BloodBag") || __instance.agent.statusEffects.hasTrait("MedicalProfessional")) && (invItem.itemType == "Food" || invItem.Categories.Contains("Health")))
+                {
+                    list.Add(invItem);
+                }
             }
-            if (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && loud.Contains(item.invItemName) && !item.contents.Contains("Silencer"))
-			{
-                __instance.agent.Say("But dat'll hurt my liddle ears!");
-                __result = false;
+            InvItem invItem2 = null;
+            InvItem invItem3 = null;
+            int num3 = 0;
+            int num4 = 9999;
+            if (__instance.agent.health != __instance.agent.healthMax)
+            {
+                bool flag = false;
+                if (__instance.agent.bigQuest == "Bartender")
+                {
+                    if (BunnyHeader.gc.challenges.Contains("LowHealth"))
+                    {
+                        using (List<InvItem>.Enumerator enumerator = list.GetEnumerator())
+                        {
+                            while (enumerator.MoveNext())
+                            {
+                                InvItem invItem4 = enumerator.Current;
+                                if (!invItem4.Categories.Contains("Alcohol"))
+                                {
+                                    int num5 = invItem4.itemFunctions.DetermineHealthChange(invItem4, __instance.agent);
+                                    flag = true;
+                                    if (__instance.agent.health <= __instance.agent.healthMax - (float)num5)
+                                    {
+                                        if (num5 > num3)
+                                        {
+                                            invItem2 = invItem4;
+                                            num3 = num5;
+                                        }
+                                    }
+                                    else if (num5 < num4)
+                                    {
+                                        invItem3 = invItem4;
+                                        num4 = num5;
+                                    }
+                                }
+                            }
+                            goto IL_40B;
+                        }
+                    }
+                    foreach (InvItem invItem5 in list)
+                    {
+                        if (!invItem5.Categories.Contains("Alcohol"))
+                        {
+                            int num6 = invItem5.itemFunctions.DetermineHealthChange(invItem5, __instance.agent);
+                            flag = true;
+                            if (__instance.agent.health <= __instance.agent.healthMax - (float)num6 && num6 > num3)
+                            {
+                                invItem2 = invItem5;
+                                num3 = num6;
+                            }
+                        }
+                    }
+                }
+            IL_40B:
+                if (!flag)
+                {
+                    if (BunnyHeader.gc.challenges.Contains("LowHealth"))
+                    {
+                        using (List<InvItem>.Enumerator enumerator = list.GetEnumerator())
+                        {
+                            while (enumerator.MoveNext())
+                            {
+                                InvItem invItem6 = enumerator.Current;
+                                int num7 = invItem6.itemFunctions.DetermineHealthChange(invItem6, __instance.agent);
+                                bool flag2 = false;
+                                if (num3 == num7 && num3 != 0)
+                                {
+                                    if (invItem6.Categories.Contains("Alcohol"))
+                                    {
+                                        flag2 = true;
+                                    }
+                                    if (invItem2 != null && invItem2.Categories.Contains("Alcohol"))
+                                    {
+                                        invItem2 = null;
+                                        num3 = 0;
+                                    }
+                                }
+                                if (!flag2)
+                                {
+                                    if (__instance.agent.health <= __instance.agent.healthMax - (float)num7)
+                                    {
+                                        if (num7 > num3)
+                                        {
+                                            invItem2 = invItem6;
+                                            num3 = num7;
+                                        }
+                                    }
+                                    else if (num7 < num4)
+                                    {
+                                        invItem3 = invItem6;
+                                        num4 = num7;
+                                    }
+                                }
+                            }
+                            goto IL_598;
+                        }
+                    }
+                    foreach (InvItem invItem7 in list)
+                    {
+                        int num8 = invItem7.itemFunctions.DetermineHealthChange(invItem7, __instance.agent);
+                        bool flag3 = false;
+                        if (num3 == num8 && num3 != 0)
+                        {
+                            if (invItem7.Categories.Contains("Alcohol"))
+                            {
+                                flag3 = true;
+                            }
+                            if (invItem2 != null && invItem2.Categories.Contains("Alcohol"))
+                            {
+                                invItem2 = null;
+                                num3 = 0;
+                            }
+                        }
+                        if (!flag3 && __instance.agent.health <= __instance.agent.healthMax - (float)num8 && num8 > num3)
+                        {
+                            invItem2 = invItem7;
+                            num3 = num8;
+                        }
+                    }
+                }
             }
-            if (__instance.agent.statusEffects.hasTrait("NoBlunt") && blunt.Contains(item.invItemName))
-			{
-                __instance.agent.Say("No. I want to feel them bleed on me.");
-                __result = false;
+        IL_598:
+            if (invItem2 != null)
+            {
+                BunnyHeader.gc.spawnerMain.SpawnStatusText(__instance.agent, "UseItem", invItem2.invItemName, "Item");
+                invItem2.UseItem();
+                return false;
             }
-            if (__instance.agent.statusEffects.hasTrait("NoExplosive") && explosive.Contains(item.invItemName))
-			{
-                __instance.agent.Say("");
+            if (invItem3 != null)
+            {
+                BunnyHeader.gc.spawnerMain.SpawnStatusText(__instance.agent, "UseItem", invItem3.invItemName, "Item");
+                invItem3.UseItem();
+            }
+            return false;
+		}
+		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+		{
+            //TODO: Verify non-equipped items like Time Bomb.
+            //TODO: Add Item.Categories for types above for mod compatibility
+            //TODO: Convert all uses of Lists to Category checks
+
+            if (
+                (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing")) ||
+                (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer")) ||
+                (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+            )
                 __result = false;
+        }
+        public static void InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Postfix
+        {
+            if (__instance.agent.statusEffects.hasTrait("Fatass"))
+			{
+                __instance.UnequipArmor(sfx, true);
+                __instance.agent.Say("I'm too fuckin' fat to wear this!");
+			}
+        }
+        public static void InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Postfix
+		{
+            if (__instance.agent.statusEffects.hasTrait("FatHead"))
+            {
+                __instance.UnequipArmorHead(sfx, true);
+                __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
             }
         }
+
+		#endregion
+		#region InvItem
+		#region Category Lists
+        public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
+
+        public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
+
+        public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
+        public static List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
+
+        public static List<string> blunt = new List<string>() { };
+        public static List<string> explosive = new List<string>() { };
+        public static List<string> loud = new List<string>() { "DizzyGrenade", "EMPGrenade", "FireExtinguisher", "GhostGibber", "Grenade", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
+        public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
+        #endregion
+        public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
+        {
+            if (__instance.Categories.Contains("Alcohol"))
+			{
+                return;
+			}
+            if (__instance.Categories.Contains("Drugs"))
+			{
+                return;
+			}
+            if (__instance.Categories.Contains("Food"))
+            {
+                if (nonVegetarian.Contains(__instance.invItemName))
+                    __instance.Categories.Add("NonVegetarian");
+                else if (vegetarian.Contains(__instance.invItemName))
+                    __instance.Categories.Add("Vegetarian");
+                return;
+            }
+            if (__instance.Categories.Contains("Weapons"))
+            {
+                if (blunt.Contains(__instance.invItemName))
+                    __instance.Categories.Add("Blunt");
+                if (explosive.Contains(__instance.invItemName))
+                    __instance.Categories.Add("Explosive");
+                if (loud.Contains(__instance.invItemName))
+                    __instance.Categories.Add("Loud");
+                if (piercing.Contains(__instance.invItemName))
+                    __instance.Categories.Add("Piercing");
+                return;
+            }
+		}
         #endregion
         #region ItemFunctions
-        public static bool ItemFunctions_UseItem_Prefix(InvItem item, Agent agent)
-		{
-            string itemName = item.invItemName;
-            List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
-            List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
-            List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
-            List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
-
-            if ((vegetarian.Contains(itemName) || item.Categories.Contains("Vegetarian")) && agent.statusEffects.hasTrait("Carnivore"))
+        public static bool ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
+        {
+            if (agent.statusEffects.hasTrait("Alcoholic") && item.Categories.Contains("Alcohol"))
             {
-                agent.Say("No! Me want meat!");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
+                if (agent.statusEffects.hasStatusEffect("FeelingGood"))
+                    agent.statusEffects.AddStatusEffect("FeelingGood", false, true, item.healthChange);
+
+                if (agent.statusEffects.hasStatusEffect("Withdrawal"))
+                    agent.statusEffects.RemoveStatusEffect("Withdrawal", false);
             }
-            if (drugs.Contains(itemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
-			{
-                agent.Say("Nope, my body is a temple!");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-            }
-            if ((drugs.Contains(itemName) || item.Categories.Contains("Drugs")) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            return true;
+        }
+        public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
+		{
+            if (item.Categories.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
                 agent.Say("Today, I choose not to drink.");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            if ((alcohol.Contains(itemName) || item.Categories.Contains("Alcohol")) && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+            if (item.Categories.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            {
+                agent.Say("Nope, my body is a temple!");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (item.Categories.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
 			{
                 agent.Say("Meat is murder!");
                 BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
                 return false;
             }
-            return true;
-		}
-        public static bool ItemFunctions_DetermineHealthChange(InvItem item, Agent agent) // Prefix
-		{
-			if (agent.statusEffects.hasTrait("Alcoholic") && item.Categories.Contains("Alcohol"))
-			{
-				if (agent.statusEffects.hasStatusEffect("FeelingGood"))
-					agent.statusEffects.AddStatusEffect("FeelingGood", false, true, item.healthChange);
-
-				if (agent.statusEffects.hasStatusEffect("Withdrawal"))
-					agent.statusEffects.RemoveStatusEffect("Withdrawal", false);
-			}
+            if (item.Categories.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
+            {
+                agent.Say("No! Me want meat!");
+                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
             return true;
 		}
 		#endregion
@@ -507,6 +746,26 @@ namespace BunnyMod
         }
 		#endregion
 		#region StatusEffects
+        public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
+		{
+            Agent agent = __instance.agent;
+
+            if (traitName == "Fatass")
+			{
+                agent.SetEndurance(agent.enduranceStatMod + 1);
+                agent.SetSpeed(agent.speedStatMod - 1);
+			}
+		}
+        public static void StatusEffects_RemoveTrait(string traitName, StatusEffects __instance) // Postfix
+		{
+            Agent agent = __instance.agent;
+            if (traitName == "Fatass")
+			{
+                //TODO: CharacterCreation.CreatePointTallyText() for stat mods
+                agent.SetEndurance(agent.enduranceStatMod - 1);
+                agent.SetSpeed(agent.speedStatMod + 1);
+			}
+		}
 		#endregion
 	}
 }

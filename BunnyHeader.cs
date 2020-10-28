@@ -20,7 +20,7 @@ namespace BunnyMod
 	{
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
 		public const string pluginName = "Bunny Mod";
-		public const string pluginVersion = "1.1.2";
+		public const string pluginVersion = "1.2.0";
 
 		public static ManualLogSource ConsoleMessage;
 		public static GameController gc = GameController.gameController;

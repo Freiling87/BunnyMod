@@ -1,8 +1,12 @@
-﻿Stove grilling: 
+﻿ISSUES: 
 
-[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
-[Message: Bunny Mod] ObjectReal_FinishedOperating
-[Error  : Unity Log] Operating Bar Error 2
-[Info   : Unity Log] HideInventory Sound Debug: True - False - False - False - False - False
-[Info   : Unity Log] Window Lose Focus
+HIGH PRIORITY
+- Use Quick Heal with only a prohibited healing item, inventory menu will repeatedly close and reopen.
+	Might be in InvDatabase.ChooseHealthItem... but it ain't pretty
+- keep getting the BluntOnly message when a weapon breaks
+- Laptop & Hacking Device interactions are canceled
+- Extend weapon ban traits to Use-Items, not just Equip-Items
 
+LOW PRIORITY
+- Stove sprite turns into pink square when highlighted pre-Interaction
+- Object interactions show a "Cancelled" message even though they went through successfully.

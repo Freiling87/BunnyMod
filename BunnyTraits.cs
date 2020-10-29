@@ -389,11 +389,16 @@ namespace BunnyMod
 		#region Custom
         public static void MoralCodeEvents(Agent agent, string action)
 		{
-		}
-		#endregion
+            //TODO: Look in Quests and ObjectMult for pointsType
+            // Event will call SkillPoints.AddPoints(EventType, 0=Good, 1=Evil)
+            // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
+            // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
+            // If you do an IL injection, do it at 787
+        }
+        #endregion
 
-		#region InvDatabase
-		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+        #region InvDatabase
+        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{
             //TODO: Verify non-equipped items like Time Bomb.
             //TODO: Add Item.Categories for types above for mod compatibility
@@ -482,6 +487,19 @@ namespace BunnyMod
         }
         #endregion
         #region ItemFunctions
+        public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ref int __result)
+		{
+            List<string> cats = item.Categories;
+            StatusEffects traits = agent.statusEffects;
+            if
+            (
+                (cats.Contains("Alcohol") && (traits.hasTrait("FriendOfBill") || traits.hasTrait("Teetotaller"))) ||
+                (cats.Contains("Drugs") && (traits.hasTrait("DAREdevil") || traits.hasTrait("Teetotaller"))) ||
+                (cats.Contains("Vegetarian") && traits.hasTrait("Carnivore")) ||
+                (cats.Contains("NonVegetarian") && traits.hasTrait("Vegetarian"))
+            )
+                __result = 0;
+		}
         public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
 		{
             if (item.Categories.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))

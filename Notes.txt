@@ -1,13 +1,13 @@
 ﻿ISSUES: 
 
 HIGH PRIORITY
-- Use Quick Heal with only a prohibited healing item, inventory menu will repeatedly close and reopen.
-	Might be in InvDatabase.ChooseHealthItem... but it ain't pretty
-	So far I've only been able to observe this with scroll-select.
+- Quick Heal button leads to endless cycle of attempting to use prohibited items.
 - keep getting the BluntOnly message when a weapon breaks
-- Laptop & Hacking Device interactions are canceled
+- Hacking on Vending machines is cancelled (with no message)
+	- [Message: Bunny Mod] ObjectReal_FinishedOperating
+	- Sellomatic
 - Extend weapon ban traits to Use-Items, not just Equip-Items
-- Weapon ban traits no longer work after this last change.
+- Quick Health selects for highest-HP item, can get no eligible item when there might actually be one
 
 LOW PRIORITY
 - Stove sprite turns into pink square when highlighted pre-Interaction

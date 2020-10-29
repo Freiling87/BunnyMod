@@ -17,11 +17,11 @@ using RogueLibsCore;
 
 namespace BunnyMod
 {
-	class BunnyTraits
-	{
-		#region Generic
-		public void Awake()
-		{
+    class BunnyTraits
+    {
+        #region Generic
+        public void Awake()
+        {
             Initialize_Names();
             Initialize_Traits();
 
@@ -42,10 +42,10 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
         }
         public static void Initialize_Names()
-		{
+        {
         }
         public static void Initialize_Traits_Inactive()
-		{
+        {
             CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
                 new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
@@ -385,15 +385,16 @@ namespace BunnyMod
             StealthBastardDeluxe.Upgrade = null;
             #endregion
         }
-		#endregion
-		#region Custom
-        public static void MoralCodeEvents(Agent agent, string action)
-		{
-		}
-		#endregion
+        #endregion
 
-		#region InvDatabase
-		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+        #region Custom
+        public static void MoralCodeEvents(Agent agent, string action)
+        {
+        }
+        #endregion
+
+        #region InvDatabase
+        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{
             //TODO: Verify non-equipped items like Time Bomb.
             //TODO: Add Item.Categories for types above for mod compatibility
@@ -427,6 +428,10 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
 		{
+            BunnyHeader.ConsoleMessage.LogMessage(item.invItemName);
+            foreach (string i in item.contents)
+                BunnyHeader.ConsoleMessage.LogMessage(i);
+
             if 
             (
                 (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing")) ||
@@ -451,8 +456,12 @@ namespace BunnyMod
         public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
         #endregion
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
+
         {
             string name = __instance.invItemName;
+
+            if (__instance.Categories.Count == 0)
+                __instance.Categories.Add("NullCatcher");
 
             if (__instance.Categories.Contains("Alcohol"))
 			{
@@ -473,7 +482,7 @@ namespace BunnyMod
                     __instance.Categories.Add("Blunt");
                 if (explosive.Contains(name))
                     __instance.Categories.Add("Explosive");
-                if (loud.Contains(name))
+                if (loud.Contains(name) && !__instance.contents.Contains("Silencer"))
                     __instance.Categories.Add("Loud");
                 if (piercing.Contains(name))
                     __instance.Categories.Add("Piercing");
@@ -482,8 +491,10 @@ namespace BunnyMod
         }
         #endregion
         #region ItemFunctions
-        public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
+        public static bool ItemFunctions_UseItem(InvItem item, Agent agent) // Prefix
 		{
+            if (item.Categories.Count == 0)
+                item.Categories.Add("NullCatcher");
             if (item.Categories.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
 			{
                 agent.Say("Today, I choose not to drink.");

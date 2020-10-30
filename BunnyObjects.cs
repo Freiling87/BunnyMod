@@ -482,6 +482,9 @@ namespace BunnyMod
             {
                 __instance.buttons.Add("RefrigeratorRun");
                 __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+
+                CustomName showChest = RogueLibs.CreateCustomName("ShowChest", "ButtonText",
+                    new CustomNameInfo("Open container"));
                 __instance.buttons.Add("ShowChest");
             }
             else
@@ -594,6 +597,7 @@ namespace BunnyMod
             MethodInfo PressedButton_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[1] { typeof(string) });
             PressedButton_Base.GetMethodWithoutOverrides<Action<string>>(__instance).Invoke(buttonText);
 
+
             if (buttonText == "RefrigeratorRun" && __instance.interactingAgent.interactionHelper.interactingFar)
             {
                 __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
@@ -605,7 +609,7 @@ namespace BunnyMod
             {
                 //Manual tampering here
             }
-            else if (buttonText != "RefrigeratorRun")
+            else if (buttonText == "ShowChest")
                 __instance.ShowChest();
 
             __instance.StopInteraction(); // May need to remove this for second two options

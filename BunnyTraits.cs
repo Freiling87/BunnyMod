@@ -559,12 +559,14 @@ namespace BunnyMod
             StatusEffects traits = agent.statusEffects;
             if
             (
-                (cats.Contains("Alcohol") && (traits.hasTrait("FriendOfBill") || traits.hasTrait("Teetotaller"))) ||
-                (cats.Contains("Drugs") && (traits.hasTrait("DAREdevil") || traits.hasTrait("Teetotaller"))) ||
+                (cats.Contains("Alcohol") && (traits.hasTrait("FriendOfBill") || traits.hasTrait("Teetotaller")) ) ||
+                (cats.Contains("Drugs") && (traits.hasTrait("DAREdevil") || traits.hasTrait("Teetotaller")) ) ||
                 (cats.Contains("Vegetarian") && traits.hasTrait("Carnivore")) ||
                 (cats.Contains("NonVegetarian") && traits.hasTrait("Vegetarian"))
             )
                 __result = 0;
+            if (traits.hasTrait("Fatass"))
+                __result = (int)((float)__result * 1.5f);
 		}
 		#endregion
 		#region PlayfieldObject

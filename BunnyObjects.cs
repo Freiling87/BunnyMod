@@ -189,14 +189,13 @@ namespace BunnyMod
             //TODO: Try StopInteraction() as a default, with other options as return.
 
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
-            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent); // *201029 attempt at fixing Hack, includes changing to Replacement
+            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
             if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
                 if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
-                    //TODO: Try disabling objects' "move toward wall" behavior when generating a chunk.
                     agent.statusEffects.BecomeHidden(__instance);
-                __instance.StopInteraction(); // Cancels camera centering on object
+                __instance.StopInteraction();
             }
             else if (__instance is FlamingBarrel)
             {
@@ -210,7 +209,7 @@ namespace BunnyMod
                 __instance.ShowObjectButtons();
             }
 
-            __instance.playerInvDatabase = agent.GetComponent<InvDatabase>(); // *201029 attempt at fixing Hack, includes changing to Replacement
+            __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
             return false;
         }
@@ -669,7 +668,7 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
-            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent); // Orig. gc.playerAgent
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
             __instance.RemoveObjectAgent();
             __instance.cantMakeFollowersAttack = true;

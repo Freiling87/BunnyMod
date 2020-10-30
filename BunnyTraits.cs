@@ -19,7 +19,6 @@ namespace BunnyMod
 {
     class BunnyTraits
     {
-        
         #region Generic
         public void Awake()
         {
@@ -47,6 +46,26 @@ namespace BunnyMod
         }
         public static void Initialize_Traits_Inactive()
         {
+            #region combat
+            CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
+                new CustomNameInfo("Return to Bonke"),
+                new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
+            ReturnToBonke.AvailableInCharacterCreation = false; //
+            ReturnToBonke.CostInCharacterCreation = 3;
+            ReturnToBonke.IsActive = false; //
+            ReturnToBonke.Available = false; //
+            ReturnToBonke.Upgrade = null;
+
+            CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
+                new CustomNameInfo("Whiffist"),
+                new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
+            Whiffist.AvailableInCharacterCreation = false; //
+            Whiffist.CostInCharacterCreation = 3;
+            Whiffist.IsActive = false; //
+            Whiffist.Available = false; //
+            Whiffist.Upgrade = "Whiffist_2";
+            #endregion
+            #region Consumables
             CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
                 new CustomNameInfo("Alcoholic"),
                 new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
@@ -59,42 +78,16 @@ namespace BunnyMod
             Alcoholic.Upgrade = null;
             // TODO: Allow consumption at full health
 
-            CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
-                new CustomNameInfo("Artificial Insermonation"),
-                new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
-            ArtificialInsermonation.AvailableInCharacterCreation = false; //
-            ArtificialInsermonation.CostInCharacterCreation = 2;
-            ArtificialInsermonation.IsActive = false; //
-            ArtificialInsermonation.Available = false; //
-            ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
-
-            CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
-                new CustomNameInfo("Artificial Insermonation +"),
-                new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
-            ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
-            ArtificialInsermonation_2.CostInCharacterCreation = 2;
-            ArtificialInsermonation_2.IsActive = false; //
-            ArtificialInsermonation_2.Available = false; //
-            ArtificialInsermonation_2.Upgrade = null;
-
-            CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
-                new CustomNameInfo("Cheeky Trappy"),
-                new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
-            CheekyTrappy.AvailableInCharacterCreation = false; //
-            CheekyTrappy.CostInCharacterCreation = 1;
-            CheekyTrappy.IsActive = false; //
-            CheekyTrappy.Available = false; //
-            CheekyTrappy.Upgrade = null;
-
-            CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
-                new CustomNameInfo("Code of Honor"),
-                new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
-            CodeOfHonor.Available = false; //
-            CodeOfHonor.AvailableInCharacterCreation = false; //
-            CodeOfHonor.CostInCharacterCreation = -6;
-            CodeOfHonor.IsActive = false; // 
-            CodeOfHonor.Upgrade = null;
-
+            CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
+    new CustomNameInfo("Hungry Boy"),
+    new CustomNameInfo("Less healing from food and alcohol."));
+            HungryBoy.AvailableInCharacterCreation = false; //
+            HungryBoy.CostInCharacterCreation = -3;
+            HungryBoy.IsActive = false; //
+            HungryBoy.Available = false; //
+            HungryBoy.Upgrade = null;
+            #endregion
+            #region Dealer
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
                 new CustomNameInfo("Death To Snitches"),
                 new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
@@ -103,33 +96,6 @@ namespace BunnyMod
             DeathToSnitches.Available = false; //
             DeathToSnitches.Upgrade = null;
             //TODO: Unlock DeathToSnitches when Pusher gained
-
-            CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
-                new CustomNameInfo("Hungry Boy"),
-                new CustomNameInfo("Less healing from food and alcohol."));
-            HungryBoy.AvailableInCharacterCreation = false; //
-            HungryBoy.CostInCharacterCreation = -3;
-            HungryBoy.IsActive = false; //
-            HungryBoy.Available = false; //
-            HungryBoy.Upgrade = null;
-
-            CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
-                new CustomNameInfo("One Happy Tamper"),
-                new CustomNameInfo("Owners will allow you to tamper with their belongings."));
-            OneHappyTamper.AvailableInCharacterCreation = false; //
-            OneHappyTamper.CostInCharacterCreation = 2;
-            OneHappyTamper.IsActive = false; //
-            OneHappyTamper.Available = false; //
-            OneHappyTamper.Upgrade = null;
-
-            CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
-                new CustomNameInfo("Pursuit Of Trappiness"),
-                new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
-            PursuitOfTrappiness.AvailableInCharacterCreation = false; //
-            PursuitOfTrappiness.CostInCharacterCreation = 2;
-            PursuitOfTrappiness.IsActive = false; //
-            PursuitOfTrappiness.Available = false; //
-            PursuitOfTrappiness.Upgrade = null;
 
             CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
                 new CustomNameInfo("Pusher"),
@@ -150,41 +116,35 @@ namespace BunnyMod
             Pusher_2.IsActive = false; //
             Pusher_2.Available = false; //
             Pusher_2.Upgrade = null;
+            #endregion
+            #region Karma
+            CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
+                new CustomNameInfo("Code of Honor"),
+                new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
+            CodeOfHonor.Available = false; //
+            CodeOfHonor.AvailableInCharacterCreation = false; //
+            CodeOfHonor.CostInCharacterCreation = -6;
+            CodeOfHonor.IsActive = false; // 
+            CodeOfHonor.Upgrade = null;
+			#endregion
+            #region Priest
+            CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
+                new CustomNameInfo("Artificial Insermonation"),
+                new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+            ArtificialInsermonation.AvailableInCharacterCreation = false; //
+            ArtificialInsermonation.CostInCharacterCreation = 2;
+            ArtificialInsermonation.IsActive = false; //
+            ArtificialInsermonation.Available = false; //
+            ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
 
-            CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
-                new CustomNameInfo("Return to Bonke"),
-                new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
-            ReturnToBonke.AvailableInCharacterCreation = false; //
-            ReturnToBonke.CostInCharacterCreation = 3;
-            ReturnToBonke.IsActive = false; //
-            ReturnToBonke.Available = false; //
-            ReturnToBonke.Upgrade = null;
-
-            CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
-                new CustomNameInfo("Suffers Tools Gladly"),
-                new CustomNameInfo("Your tools take less wear from tampering."));
-            SuffersToolsGladly.AvailableInCharacterCreation = false; //
-            SuffersToolsGladly.CostInCharacterCreation = 1;
-            SuffersToolsGladly.IsActive = false; //
-            SuffersToolsGladly.Available = false; //
-            SuffersToolsGladly.Upgrade = "SticklerForTools_2";
-
-            CustomTrait SuffersToolsGladly_2 = RogueLibs.CreateCustomTrait("SuffersToolsGladly_2", true,
-                new CustomNameInfo("Suffers Tools Gladly +"),
-                new CustomNameInfo("Your tools take zero wear when used in tampering."));
-            SuffersToolsGladly_2.AvailableInCharacterCreation = false;
-            SuffersToolsGladly_2.IsActive = false;//
-            SuffersToolsGladly_2.Available = false; //
-            SuffersToolsGladly_2.Upgrade = null;
-
-            CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
-                new CustomNameInfo("Trapper Keeper"),
-                new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
-            TrapperKeeper.AvailableInCharacterCreation = false; //
-            TrapperKeeper.CostInCharacterCreation = 2;
-            TrapperKeeper.IsActive = false; //
-            TrapperKeeper.Available = false; //
-            TrapperKeeper.Upgrade = null;
+            CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
+                new CustomNameInfo("Artificial Insermonation +"),
+                new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+            ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
+            ArtificialInsermonation_2.CostInCharacterCreation = 2;
+            ArtificialInsermonation_2.IsActive = false; //
+            ArtificialInsermonation_2.Available = false; //
+            ArtificialInsermonation_2.Upgrade = null;
 
             CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
                 new CustomNameInfo("Undead Bane"),
@@ -194,7 +154,8 @@ namespace BunnyMod
             UndeadBane.IsActive = false; //
             UndeadBane.Available = false; //
             UndeadBane.Upgrade = null;
-
+            #endregion
+            #region Social
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
                 new CustomNameInfo("Veiled Threats"),
                 new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
@@ -203,15 +164,45 @@ namespace BunnyMod
             VeiledThreats.IsActive = false; //
             VeiledThreats.Available = false; //
             VeiledThreats.Upgrade = null;
+            #endregion
+            #region Tampering
+            CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
+                new CustomNameInfo("One Happy Tamper"),
+                new CustomNameInfo("Owners will allow you to tamper with their belongings."));
+            OneHappyTamper.AvailableInCharacterCreation = false; //
+            OneHappyTamper.CostInCharacterCreation = 2;
+            OneHappyTamper.IsActive = false; //
+            OneHappyTamper.Available = false; //
+            OneHappyTamper.Upgrade = null;
+            #endregion
+            #region Trapping
+            CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
+                new CustomNameInfo("Cheeky Trappy"),
+                new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
+            CheekyTrappy.AvailableInCharacterCreation = false; //
+            CheekyTrappy.CostInCharacterCreation = 1;
+            CheekyTrappy.IsActive = false; //
+            CheekyTrappy.Available = false; //
+            CheekyTrappy.Upgrade = null;
 
-            CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
-                new CustomNameInfo("Whiffist"),
-                new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
-            Whiffist.AvailableInCharacterCreation = false; //
-            Whiffist.CostInCharacterCreation = 3;
-            Whiffist.IsActive = false; //
-            Whiffist.Available = false; //
-            Whiffist.Upgrade = "Whiffist_2";
+            CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
+                new CustomNameInfo("Pursuit Of Trappiness"),
+                new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
+            PursuitOfTrappiness.AvailableInCharacterCreation = false; //
+            PursuitOfTrappiness.CostInCharacterCreation = 2;
+            PursuitOfTrappiness.IsActive = false; //
+            PursuitOfTrappiness.Available = false; //
+            PursuitOfTrappiness.Upgrade = null;
+
+            CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
+                new CustomNameInfo("Trapper Keeper"),
+                new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
+            TrapperKeeper.AvailableInCharacterCreation = false; //
+            TrapperKeeper.CostInCharacterCreation = 2;
+            TrapperKeeper.IsActive = false; //
+            TrapperKeeper.Available = false; //
+            TrapperKeeper.Upgrade = null;
+            #endregion
         }
         public static void Initialize_Traits()
         {
@@ -379,11 +370,38 @@ namespace BunnyMod
             StealthBastardDeluxe.Available = true;
             StealthBastardDeluxe.AvailableInCharacterCreation = true;
             StealthBastardDeluxe.CanRemove = false;
-            StealthBastardDeluxe.CanRemove = true;
+            StealthBastardDeluxe.CanSwap = true;
             StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Fatass", "Loud" });
             StealthBastardDeluxe.CostInCharacterCreation = 4;
             StealthBastardDeluxe.IsActive = true;
             StealthBastardDeluxe.Upgrade = null;
+            #endregion
+            #region Tampering
+            CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
+                new CustomNameInfo("Suffers Tools Gladly"),
+                new CustomNameInfo("Your tools take less wear from tampering."));
+            SuffersToolsGladly.Available = true;
+            SuffersToolsGladly.AvailableInCharacterCreation = true;
+            SuffersToolsGladly.CanRemove = false;
+            SuffersToolsGladly.CanSwap = true;
+            SuffersToolsGladly.Conflicting.AddRange(new string[] { });
+            SuffersToolsGladly.CostInCharacterCreation = 2;
+            SuffersToolsGladly.IsActive = true;
+            SuffersToolsGladly.Available = true;
+            SuffersToolsGladly.Upgrade = "SuffersToolsGladly_2";
+
+            CustomTrait SuffersToolsGladly_2 = RogueLibs.CreateCustomTrait("SuffersToolsGladly_2", true,
+                new CustomNameInfo("Suffers Tools Gladly +"),
+                new CustomNameInfo("Your tools take zero wear when used in tampering."));
+            SuffersToolsGladly.Available = true;
+            SuffersToolsGladly.AvailableInCharacterCreation = false;
+            SuffersToolsGladly.CanRemove = false;
+            SuffersToolsGladly.CanSwap = false;
+            SuffersToolsGladly.Conflicting.AddRange(new string[] { });
+            SuffersToolsGladly.CostInCharacterCreation = 2;
+            SuffersToolsGladly.IsActive = true;
+            SuffersToolsGladly.Available = true;
+            SuffersToolsGladly.Upgrade = null;
             #endregion
         }
         #endregion
@@ -460,20 +478,19 @@ namespace BunnyMod
                 __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
             }
         }
+        public static bool InvDatabase_SubtractFromItemCount(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+		{
+            if (BunnyHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
+			{
+                if (__instance.agent.statusEffects.hasTrait("SuffersToolsGladly_2"))
+                    amount = 0;
+                else if (__instance.agent.statusEffects.hasTrait("SuffersToolsGladly"))
+                    amount /= 2;
+            }
+            return true;
+		}
 		#endregion
 		#region InvItem
-		#region ----Category Lists
-        public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
-        public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
-        public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
-        public static List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
-
-        public static List<string> blunt = new List<string>() { };
-        public static List<string> explosive = new List<string>() { };
-        public static List<string> heavy = new List<string>() { "Axe", "BaseballBat", "BearTrap", "BombTrigger", "BulletproofVest", "FireExtinguisher", "FireproofSuit", "Flamethrower", "GhostBlaster", "LandMine", "MachineGun", "Revolver", "RocketLauncher", "Shotgun", "Sledgehammer", "Wrench"};
-        public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "TimeBomb", "WarpGrenade" };
-        public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
-        #endregion
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
 
         {
@@ -490,20 +507,20 @@ namespace BunnyMod
 			}
             if (__instance.Categories.Contains("Food"))
             {
-                if (nonVegetarian.Contains(name))
+                if (BunnyHeader.nonVegetarian.Contains(name))
                     __instance.Categories.Add("NonVegetarian");
-                else if (vegetarian.Contains(name))
+                else if (BunnyHeader.vegetarian.Contains(name))
                     __instance.Categories.Add("Vegetarian");
             }
             if (__instance.Categories.Contains("Weapons"))
             {
-                if (blunt.Contains(name))
+                if (BunnyHeader.blunt.Contains(name))
                     __instance.Categories.Add("Blunt");
-                if (explosive.Contains(name))
+                if (BunnyHeader.explosive.Contains(name))
                     __instance.Categories.Add("Explosive");
-                if (loud.Contains(name) && !__instance.contents.Contains("Silencer"))
+                if (BunnyHeader.loud.Contains(name) && !__instance.contents.Contains("Silencer"))
                     __instance.Categories.Add("Loud");
-                if (piercing.Contains(name))
+                if (BunnyHeader.piercing.Contains(name))
                     __instance.Categories.Add("Piercing");
             }
             return;

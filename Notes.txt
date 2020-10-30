@@ -6,7 +6,7 @@ ISSUES:
 HIGH PRIORITY
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
-	√
+
 
 - Interact w Fridge now does what BigTable did before - cam focus, no result. 
 
@@ -15,33 +15,6 @@ HIGH PRIORITY
 
 
 - If Camouflage is active when hiding, it will get stuck and not recharge.
-
-
-- [Message: Bunny Mod] Refrigerator_Interact
-	[Message: Bunny Mod] ObjectReal_Interact
-	[Message: Bunny Mod] Refrigerator_DetermineButtons
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	BunnyMod.BunnyObjects.Refrigerator_DetermineButtons (Refrigerator __instance) (at <6117fcedf2f44f1bb3a7028706a224c4>:0)
-	Refrigerator.DetermineButtons () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	PlayfieldObject.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <6117fcedf2f44f1bb3a7028706a224c4>:0)
-	ObjectReal.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects.Refrigerator_Interact (Agent agent, Refrigerator __instance) (at <6117fcedf2f44f1bb3a7028706a224c4>:0)
-	Refrigerator.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	InteractionHelper.UpdateInteractionHelper () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	Updater.UpdateInterface () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	Updater.Update () (at <baf147b425754ac297f80552e2b52eaa>:0)
-
-
--[Error  : Unity Log] ArgumentException: An item with the same key has already been added. Key: Stove (1094) (Stove)
-	Stack trace:
-	System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-	System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-	BunnyMod.BunnyObjects.ObjectReal_Start (ObjectReal __instance) (at <fbdd3ba12c2c41e590c3f351897b9d16>:0)
-	ObjectReal.Start () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	ObjectReal+<RecycleStart2>d__216.MoveNext () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
 
 
 - [Message: Bunny Mod] Stove_DamagedObject

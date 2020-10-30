@@ -37,6 +37,19 @@ namespace BunnyMod
 			new BunnyObjects().Awake();
 			new BunnyTraits().Awake();
 		}
+		#region ----Category Lists
+		public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
+		public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
+		public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
+		public static List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
+
+		public static List<string> blunt = new List<string>() { };
+		public static List<string> explosive = new List<string>() { };
+		public static List<string> heavy = new List<string>() { "Axe", "BaseballBat", "BearTrap", "BombTrigger", "BulletproofVest", "FireExtinguisher", "FireproofSuit", "Flamethrower", "GhostBlaster", "LandMine", "MachineGun", "Revolver", "RocketLauncher", "Shotgun", "Sledgehammer", "Wrench" };
+		public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "TimeBomb", "WarpGrenade" };
+		public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
+		public static List<string> tools = new List<string> { "Crowbar", "Wrench" };
+		#endregion
 	}
 
 	public static class BunnyHeaderTools

@@ -25,21 +25,20 @@ namespace BunnyMod
             Initialize_Names();
             Initialize_Traits();
 
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "ChooseHealthItem", GetType(), "InvDatabase_ChooseHealthItem", new Type[0] { });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
 
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
         }
         public static void Initialize_Names()
         {
@@ -337,7 +336,7 @@ namespace BunnyMod
             Charmed.Upgrade = "Charmed_2";
 
             CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
-                new CustomNameInfo("Charmed to the Teeth"),
+                new CustomNameInfo("Charmed & Dangerous +"),
                 new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
             Charmed_2.Available = true;
             Charmed_2.AvailableInCharacterCreation = true;
@@ -348,7 +347,7 @@ namespace BunnyMod
             Charmed_2.Upgrade = null;
 
             CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
-                new CustomNameInfo("Your own Cursed Enemy"),
+                new CustomNameInfo("Unlucky"),
                 new CustomNameInfo("You pissed in some old Gypsy lady's cereal, and you still refuse to apologize. She didn't like that."));
             Cursed.Available = true;
             Cursed.AvailableInCharacterCreation = true;
@@ -360,7 +359,7 @@ namespace BunnyMod
             Cursed.Upgrade = null;
 
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
-                new CustomNameInfo("First in Cursed"),
+                new CustomNameInfo("Unlucky +"),
                 new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
             Cursed_2.Available = true;
             Cursed_2.AvailableInCharacterCreation = true;
@@ -432,18 +431,32 @@ namespace BunnyMod
             }
         }
         public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
-		{
+        {
             BunnyHeader.ConsoleMessage.LogMessage(item.invItemName);
-            foreach (string i in item.contents)
-                BunnyHeader.ConsoleMessage.LogMessage(i);
+            bool flag = false;
+            Agent agent = __instance.agent;
 
-            if 
-            (
-                (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing")) ||
-                (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer")) ||
-                (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
-            )
+            if (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
+            {
+                agent.Say("Mommy says I can't use sharp things!");
+                flag = true;
+            }
+            if (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
+            {
+                agent.Say("I can't use that! It's too loooooud.");
+                flag = true;
+            }
+            if (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+			{
+                agent.Say("I don't use blunt weapons.");
+                flag = true;
+            }
+
+            if (flag)
+			{
                 __instance.UnequipWeapon();
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+            }
         }
 		#endregion
 		#region InvItem
@@ -494,6 +507,37 @@ namespace BunnyMod
             }
             return;
         }
+        public static bool InvItem_UseItem(InvItem __instance) // Prefix
+		{
+            Agent agent = __instance.agent;
+            List<string> cats = __instance.Categories;
+
+            if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+            {
+                agent.Say("Today, I choose not to drink.");
+                __instance.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            {
+                agent.Say("Nope, my body is a temple!");
+                __instance.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
+            {
+                agent.Say("Meat is murder!");
+                __instance.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
+            {
+                agent.Say("No! Me want meat!");
+                __instance.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+            return true;
+        }
         #endregion
         #region ItemFunctions
         public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ref int __result)
@@ -508,36 +552,8 @@ namespace BunnyMod
                 (cats.Contains("NonVegetarian") && traits.hasTrait("Vegetarian"))
             )
                 __result = 0;
-		}
-        public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix
-		{
-            if (item.Categories.Count == 0)
-                item.Categories.Add("NullCatcher");
-            if (item.Categories.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
-			{
-                agent.Say("Today, I choose not to drink.");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-            }
-            if (item.Categories.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
-            {
-                agent.Say("Nope, my body is a temple!");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-            }
-            if (item.Categories.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
-			{
-                agent.Say("Meat is murder!");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-            }
-            if (item.Categories.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
-            {
-                agent.Say("No! Me want meat!");
-                BunnyHeader.gc.audioHandler.Play(agent, "CantDo");
-                return false;
-            }
-            return true;
+
+            return;
 		}
 		#endregion
 		#region PlayfieldObject
@@ -610,7 +626,7 @@ namespace BunnyMod
                 agent.SetSpeed(agent.speedStatMod - 1);
 			}
 		}
-        public static void StatusEffects_RemoveTrait(string traitName, StatusEffects __instance) // Postfix
+        public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
 		{
             Agent agent = __instance.agent;
             if (traitName == "Fatass")

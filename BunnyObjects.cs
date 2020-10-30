@@ -45,7 +45,7 @@ namespace BunnyMod
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
+            BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
             BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
@@ -109,7 +109,10 @@ namespace BunnyMod
                 if (__instance.ora.hasParticleEffect)
                 {
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                    {
                         __instance.buttons.Add("GrillFud");
+                        __instance.buttonsExtra.Add(" (Burn hands for 10 damage)");
+                    }
                     else
                         __instance.interactingAgent.SayDialogue("CantGrillFud");
 
@@ -138,7 +141,6 @@ namespace BunnyMod
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
 					{
                         __instance.buttons.Add("GrillFud");
-                        __instance.buttonsExtra.Add(" (Burn hands for 10 damage)");
                     }
                         
                 }
@@ -181,13 +183,12 @@ namespace BunnyMod
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
             interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent); // *201029 attempt at fixing Hack, includes changing to Replacement
 
-            if (agent.statusEffects.hasTrait("StealthBastardDeluxe") && (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig))
+            if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
-                //TODO: Try disabling objects' "move toward wall" behavior when generating a chunk.
-
-                agent.statusEffects.BecomeHidden(__instance);
-
-                __instance.StopInteraction();
+                if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
+                    //TODO: Try disabling objects' "move toward wall" behavior when generating a chunk.
+                    agent.statusEffects.BecomeHidden(__instance);
+                __instance.StopInteraction(); // Cancels camera centering on object
             }
             else if (__instance is FlamingBarrel)
             {
@@ -200,8 +201,6 @@ namespace BunnyMod
 
                 __instance.ShowObjectButtons();
             }
-            else
-                __instance.StopInteraction(); // Cancels camera centering on object
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>(); // *201029 attempt at fixing Hack, includes changing to Replacement
 
@@ -465,14 +464,14 @@ namespace BunnyMod
             MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
             DetermineButtons_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            if (__instance.interactingAgent.interactionHelper != null && __instance.interactingAgent.interactionHelper.interactingFar)
 			{
                 __instance.buttons.Add("RefrigeratorRun");
 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                     __instance.buttons.Add("HackExplode");
             }
-            if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.interactingAgent.inventory.HasItem("Wrench"))
+            if ((__instance.interactingAgent.interactionHelper == null || !__instance.interactingAgent.interactionHelper.interactingFar) && __instance.interactingAgent.inventory.HasItem("Wrench"))
             {
                 __instance.buttons.Add("RefrigeratorRun");
                 __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
@@ -481,7 +480,6 @@ namespace BunnyMod
                 __instance.ShowChest();
             return false;
 		}
-
         public static void Refrigerator_FinishedOperating(Refrigerator __instance) // PostFix
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);

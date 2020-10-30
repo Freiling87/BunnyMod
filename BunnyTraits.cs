@@ -19,6 +19,7 @@ namespace BunnyMod
 {
     class BunnyTraits
     {
+        
         #region Generic
         public void Awake()
         {
@@ -470,7 +471,7 @@ namespace BunnyMod
         public static List<string> blunt = new List<string>() { };
         public static List<string> explosive = new List<string>() { };
         public static List<string> heavy = new List<string>() { "Axe", "BaseballBat", "BearTrap", "BombTrigger", "BulletproofVest", "FireExtinguisher", "FireproofSuit", "Flamethrower", "GhostBlaster", "LandMine", "MachineGun", "Revolver", "RocketLauncher", "Shotgun", "Sledgehammer", "Wrench"};
-        public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
+        public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "TimeBomb", "WarpGrenade" };
         public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
         #endregion
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix

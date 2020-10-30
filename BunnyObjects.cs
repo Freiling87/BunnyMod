@@ -49,7 +49,9 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "Start", GetType(), "Refrigerator_Start");
 
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
@@ -167,12 +169,18 @@ namespace BunnyMod
                 if (__instance.operatingItem.invItemName == "Fud")
                     Stove_GrilledFud((Stove)__instance);
             }
-			#endregion
+            #endregion
 
-			if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.operatingBarType == "Collecting")
-                __instance.CollectPart();
+            if (!__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                string operatingBarType = __instance.operatingBarType;
 
-            __instance.StopInteraction();
+                if (operatingBarType == "Collecting")
+                {
+                    __instance.CollectPart();
+                    __instance.StopInteraction();
+                }
+            }
             return false;
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement
@@ -327,7 +335,7 @@ namespace BunnyMod
             if (__instance is Stove stove)
 			{
                 Stove_Remora remora = new Stove_Remora();
-                Stove_Variables.Add(stove, remora);
+                Stove_Variables[stove] = remora;
                 remora.stoveHost = stove;
                 // Untested:
                 Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove");
@@ -336,7 +344,6 @@ namespace BunnyMod
         }
         #endregion
         #region PlayfieldObject
-
         public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance) // Prefix
         {
             if (__instance is Stove)
@@ -464,17 +471,18 @@ namespace BunnyMod
             MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
             DetermineButtons_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-            if (__instance.interactingAgent.interactionHelper != null && __instance.interactingAgent.interactionHelper.interactingFar)
+            if (__instance.interactingAgent.interactionHelper.interactingFar)
 			{
                 __instance.buttons.Add("RefrigeratorRun");
 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                     __instance.buttons.Add("HackExplode");
             }
-            if ((__instance.interactingAgent.interactionHelper == null || !__instance.interactingAgent.interactionHelper.interactingFar) && __instance.interactingAgent.inventory.HasItem("Wrench"))
+            else if (__instance.interactingAgent.inventory.HasItem("Wrench"))
             {
                 __instance.buttons.Add("RefrigeratorRun");
                 __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+                __instance.buttons.Add("ShowChest");
             }
             else
                 __instance.ShowChest();
@@ -562,6 +570,23 @@ namespace BunnyMod
             }
             return true;
         }
+        public static void Refrigerator_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, Refrigerator __instance, ref bool ___noMoreObjectActions) // Replacement 
+		{
+            MethodInfo ObjectAction_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+            ObjectAction_Base.GetMethodWithoutOverrides<Action<string, string, float, Agent, PlayfieldObject>>(__instance).Invoke(myAction, extraString, extraFloat, causerAgent, extraObject);
+
+            if (!___noMoreObjectActions)
+            {
+                if (myAction == "ShowChest")
+                    __instance.ShowChest();
+                if (!(myAction == "RefrigeratorRun"))
+                    if (myAction == "RefrigeratorRunClients")
+                        __instance.RefrigeratorRunClients();
+                else
+                    __instance.RefrigeratorRun(causerAgent);
+            }
+            ___noMoreObjectActions = false;
+        }
         public static bool Refrigerator_PressedButton(string buttonText, Refrigerator __instance) // Replacement
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
@@ -587,6 +612,15 @@ namespace BunnyMod
 
             return false;
 		}
+        public static void Refrigerator_Start(Refrigerator __instance) // Postfix
+		{
+            Refrigerator_Remora remora = new Refrigerator_Remora();
+            Refrigerator_Variables[__instance] = remora;
+            remora.refrigeratorHost = __instance;
+            // Untested:
+            Refrigerator_Variables[(Refrigerator)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Refrigerator");
+            Refrigerator_Variables[(Refrigerator)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Refrigerator");
+        }
         public static void Refrigerator_UseWrenchToRun(Refrigerator __instance) // Non-Patch
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
@@ -797,6 +831,8 @@ namespace BunnyMod
     }
     public class Refrigerator_Remora
 	{
+        public Refrigerator refrigeratorHost;
+
         public int animateSpriteID;
         public int animateSpriteID2;
         public float animationCountdown;

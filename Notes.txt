@@ -1,7 +1,9 @@
-﻿ISSUES: 
+﻿- SMILE, YOU'RE HAVING FUN!
+- This week's focus: Prefer guards over nesting
+
+ISSUES: 
 
 HIGH PRIORITY
-- SMILE, YOU'RE HAVING FUN!
 
 - Hacking on Vending machines is cancelled (with no message)
 	- [Message: Bunny Mod] ObjectReal_FinishedOperating
@@ -12,10 +14,20 @@ HIGH PRIORITY
 	- Arcade Works
 	- TV Works
 	- Slot Works
-- Extend weapon ban traits to Use-Items, not just Equip-Items
+	√
+
+- Extend weapon ban traits to Use-Items, not just Equip-Items 
+	√
+
 - Quick Health selects for highest-HP item, can get no eligible item when there might actually be one
+
+
 - Interact w Fridge now does what BigTable did before - cam focus, no result. 
+
+
 - If Camouflage is active when hiding, it will get stuck and not recharge.
+
+
 -[Error  : Unity Log] ArgumentException: An item with the same key has already been added. Key: Stove (1094) (Stove)
 	Stack trace:
 	System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) (at <c79628fadf574d3a8feae0871fad28ef>:0)
@@ -24,6 +36,7 @@ HIGH PRIORITY
 	ObjectReal.Start () (at <baf147b425754ac297f80552e2b52eaa>:0)
 	ObjectReal+<RecycleStart2>d__216.MoveNext () (at <baf147b425754ac297f80552e2b52eaa>:0)
 	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+
 
 - [Message: Bunny Mod] Stove_DamagedObject
 	[Message: Bunny Mod] Stove_AboutToExplode
@@ -39,49 +52,8 @@ HIGH PRIORITY
 	MeleeHitbox:HitObject(GameObject, Boolean)
 	MeleeColliderBox:OnTriggerEnter2D(Collider2D)
 
-- [Message: Bunny Mod] Refrigerator_DetermineButtons
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	BunnyMod.BunnyObjects.Refrigerator_DetermineButtons (Refrigerator __instance) (at <fbdd3ba12c2c41e590c3f351897b9d16>:0)
-	Refrigerator.DetermineButtons () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	PlayfieldObject.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <fbdd3ba12c2c41e590c3f351897b9d16>:0)
-	ObjectReal.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects.Refrigerator_Interact (Agent agent, Refrigerator __instance) (at <fbdd3ba12c2c41e590c3f351897b9d16>:0)
-	Refrigerator.Interact (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	InteractionHelper.UpdateInteractionHelper () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	Updater.UpdateInterface () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	Updater.Update () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	-	DIFFERENT: 
-	[Message: Bunny Mod] Refrigerator_InteractFar
-	[Message: Bunny Mod] Refrigerator_DetermineButtons
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	WorldSpaceGUI.ShowChest (UnityEngine.GameObject go, InvDatabase invDatabase, Agent interactingAgent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	PlayfieldObject.ShowChest () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects.Refrigerator_DetermineButtons (Refrigerator __instance) (at <ac9ec474ed6e43bc93448075eca310a9>:0)
-	Refrigerator.DetermineButtons () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	PlayfieldObject.InteractFar (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	ObjectReal.InteractFar (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	Refrigerator.InteractFar (Agent agent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	ItemFunctions.TargetObject (InvItem item, Agent agent, PlayfieldObject otherObject, System.String combineType) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	InvItem.TargetObject (PlayfieldObject otherObject, System.String combineType) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	ObjectSprite.OnMouseDown () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	UnityEngine.SendMouseEvents:DoSendMouseEvents(Int32)
 
 - Stove blinks when damaged but never actually blows up
-
-- [Error  : Unity Log] Error in ResetObjectReal: Stove (1161) (Stove) - Stove
-	Then, much later:
-	[Message: Bunny Mod] ObjectReal_Start
-	[Error  : Unity Log] ArgumentException: An item with the same key has already been added. Key: Stove (1161) (Stove)
-	Stack trace:
-	System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-	System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-	BunnyMod.BunnyObjects.ObjectReal_Start (ObjectReal __instance) (at <ac9ec474ed6e43bc93448075eca310a9>:0)
-	ObjectReal.Start () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	ObjectReal+<RecycleStart2>d__216.MoveNext () (at <baf147b425754ac297f80552e2b52eaa>:0)
-	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
 
 
 LOW PRIORITY

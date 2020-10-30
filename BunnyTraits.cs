@@ -33,6 +33,7 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
 
+            BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             //BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
@@ -438,17 +439,17 @@ namespace BunnyMod
 
             if (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
             {
-                agent.Say("Mommy says I can't use sharp things!");
+                //agent.Say("Mommy says I can't use sharp things!");
                 flag = true;
             }
             if (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
-                agent.Say("I can't use that! It's too loooooud.");
+                //agent.Say("I can't use that! It's too loooooud.");
                 flag = true;
             }
             if (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
 			{
-                agent.Say("I don't use blunt weapons.");
+                //agent.Say("I don't use blunt weapons.");
                 flag = true;
             }
 
@@ -462,15 +463,14 @@ namespace BunnyMod
 		#region InvItem
 		#region ----Category Lists
         public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
-
         public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
-
         public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
         public static List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
 
         public static List<string> blunt = new List<string>() { };
         public static List<string> explosive = new List<string>() { };
-        public static List<string> loud = new List<string>() { "DizzyGrenade", "EMPGrenade", "FireExtinguisher", "GhostGibber", "Grenade", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
+        public static List<string> heavy = new List<string>() { "Axe", "BaseballBat", "BearTrap", "BombTrigger", "BulletproofVest", "FireExtinguisher", "FireproofSuit", "Flamethrower", "GhostBlaster", "LandMine", "MachineGun", "Revolver", "RocketLauncher", "Shotgun", "Sledgehammer", "Wrench"};
+        public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "WarpGrenade" };
         public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
         #endregion
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
@@ -511,36 +511,49 @@ namespace BunnyMod
 		{
             Agent agent = __instance.agent;
             List<string> cats = __instance.Categories;
+            bool cantDoFlag = false;
 
             if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
             {
                 agent.Say("Today, I choose not to drink.");
-                __instance.gc.audioHandler.Play(agent, "CantDo");
-                return false;
+                cantDoFlag = true;
             }
             if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
             {
                 agent.Say("Nope, my body is a temple!");
-                __instance.gc.audioHandler.Play(agent, "CantDo");
-                return false;
+                cantDoFlag = true;
             }
             if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
             {
                 agent.Say("Meat is murder!");
-                __instance.gc.audioHandler.Play(agent, "CantDo");
-                return false;
+                cantDoFlag = true;
             }
             if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
             {
                 agent.Say("No! Me want meat!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Loud") && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
+			{
+                agent.Say("But that'll hurt my little ears!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Piercing") && agent.statusEffects.hasTrait("DrawNoBlood"))
+			{
+                agent.Say("I swore to draw no blood. Unless I remove this trait first.");
+                cantDoFlag = true;
+            }
+            if (cantDoFlag)
+			{
                 __instance.gc.audioHandler.Play(agent, "CantDo");
                 return false;
-            }
+			}
+
             return true;
         }
         #endregion
         #region ItemFunctions
-        public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ref int __result)
+        public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ref int __result) // Postfix
 		{
             List<string> cats = item.Categories;
             StatusEffects traits = agent.statusEffects;
@@ -552,8 +565,6 @@ namespace BunnyMod
                 (cats.Contains("NonVegetarian") && traits.hasTrait("Vegetarian"))
             )
                 __result = 0;
-
-            return;
 		}
 		#endregion
 		#region PlayfieldObject

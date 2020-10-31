@@ -137,8 +137,7 @@ namespace BunnyMod
                     if (__instance.interactingAgent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
-                        // TODO: It was adding this to Grill Fud. Hopefully reordering it will fix it?
+                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent));
                     }
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
 					{
@@ -467,12 +466,13 @@ namespace BunnyMod
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
 
-            MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+            MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
             DetermineButtons_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            if (__instance.interactingAgent.interactionHelper != null)
 			{
-                __instance.buttons.Add("RefrigeratorRun");
+                if (__instance.interactingAgent.interactionHelper.interactingFar)
+                    __instance.buttons.Add("RefrigeratorRun");
 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                     __instance.buttons.Add("HackExplode");
@@ -480,7 +480,7 @@ namespace BunnyMod
             else if (__instance.interactingAgent.inventory.HasItem("Wrench"))
             {
                 __instance.buttons.Add("RefrigeratorRun");
-                __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+                __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent));
 
                 CustomName showChest = RogueLibs.CreateCustomName("ShowChest", "ButtonText",
                     new CustomNameInfo("Open container"));

@@ -460,7 +460,6 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
         {
-            BunnyHeader.ConsoleMessage.LogMessage(item.invItemName);
             bool flag = false;
             Agent agent = __instance.agent;
 
@@ -479,7 +478,7 @@ namespace BunnyMod
                 //agent.Say("I don't use blunt weapons.");
                 flag = true;
             }
-
+            //TODO: Instate dialogue to play only when weapon manually selected
             if (flag)
 			{
                 __instance.UnequipWeapon();

@@ -50,6 +50,8 @@ namespace BunnyMod
 		public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
 		public static List<string> tools = new List<string> { "Crowbar", "Wrench" };
 		#endregion
+		public static void Log (string logMessage) =>
+			ConsoleMessage.LogMessage(logMessage);
 	}
 
 	public static class BunnyHeaderTools

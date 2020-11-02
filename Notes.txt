@@ -7,9 +7,10 @@ HIGH PRIORITY
 
 - Can't tamper w stove after cooking on it
 
-- Stove name hovers after use
+- Stove name hovers after use (Which button? Both?)
 
 - Fridge doesnt' do tamper bar, just immediate
+√
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 	√

@@ -306,11 +306,6 @@ namespace BunnyMod
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
                 return false;
             }
-            if (buttonText == "UseWrenchToRun")
-			{
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-                return false;
-			}
             #endregion Patch
             if (!(buttonText == "CollectPart"))
             {
@@ -643,9 +638,12 @@ namespace BunnyMod
             else if (buttonText == "RefrigeratorRun" && !__instance.interactingAgent.interactionHelper.interactingFar)
             {
                 __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
-                __instance.RefrigeratorRun(__instance.interactingAgent);
-                __instance.StopInteraction();
-                //TODO: Replace with Dispense Ice
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+                Refrigerator_IceDispense(__instance);
+                return false;
+                //__instance.RefrigeratorRun(__instance.interactingAgent);
+                //__instance.StopInteraction();
+                //TODO: I think 
             }
             else if (buttonText == "ShowChest")
 			{

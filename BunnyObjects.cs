@@ -138,7 +138,6 @@ namespace BunnyMod
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
                         __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
-                        // TODO: It was adding this to Grill Fud. Hopefully reordering it will fix it?
                     }
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
 					{
@@ -194,7 +193,11 @@ namespace BunnyMod
             if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
                 if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
+				{
+                    agent.SetInvisible(false); // Attempt to fix camo bug
                     agent.statusEffects.BecomeHidden(__instance);
+                }
+                    
                 __instance.StopInteraction();
             }
             else if (__instance is FlamingBarrel)
@@ -654,6 +657,8 @@ namespace BunnyMod
         #region Stove
         public static IEnumerator Stove_AboutToExplode(Stove __instance) // Non-Patch
 		{
+            // TODO: This one is why it's blinking but not breaking.
+
             BunnyHeader.ConsoleMessage.LogMessage("Stove_AboutToExplode");
 
             __instance.interactable = false;
@@ -668,8 +673,11 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
-            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent); // Orig. gc.playerAgent
+
+            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
+
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
+
             __instance.RemoveObjectAgent();
             __instance.cantMakeFollowersAttack = true;
 
@@ -681,11 +689,12 @@ namespace BunnyMod
         }
         public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
 		{
-            Stove_Remora remora = Stove_Variables[(Stove)__instance];
+            Stove_Remora remora = Stove_Variables[__instance];
 
             if (!__instance.destroying && __instance.activeObject && !__instance.notInOriginalLocation && __instance.spawnedShadow && __instance.onCamera)
             {
                 remora.animationCountdown -= Time.deltaTime;
+
                 if (remora.animationCountdown <= 0f)
                 {
                     if (remora.animationFrame == 0)
@@ -715,7 +724,7 @@ namespace BunnyMod
                 __instance.StartCoroutine(Stove_AboutToExplode(__instance));
             }
 
-            if (damageAmount >= (float)__instance.damageThreshold)
+            if (damageAmount >= __instance.damageThreshold)
             {
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.DestroyMe(damagerObject);
@@ -804,7 +813,8 @@ namespace BunnyMod
         }
         #endregion
     }
-    public class Stove_Remora
+	#region Remorae
+	public class Stove_Remora
     {
         public Stove stoveHost;
 
@@ -857,4 +867,5 @@ namespace BunnyMod
                 Refrigerator.CancelInvoke();
         }
     }
+	#endregion
 }

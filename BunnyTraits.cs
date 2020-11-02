@@ -34,7 +34,7 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
 
@@ -585,6 +585,49 @@ namespace BunnyMod
                 __result = 0;
             if (traits.hasTrait("Fatass"))
                 __result = (int)((float)__result * 1.5f);
+		}
+        public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix ***new
+		{
+            List<string> cats = item.Categories;
+            bool cantDoFlag = false;
+
+            if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+            {
+                agent.Say("Today, I choose not to drink.");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            {
+                agent.Say("Nope, my body is a temple!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
+            {
+                agent.Say("Meat is murder!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
+            {
+                agent.Say("No! Me want meat!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Loud") && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
+            {
+                agent.Say("But that'll hurt my little ears!");
+                cantDoFlag = true;
+            }
+            if (cats.Contains("Piercing") && agent.statusEffects.hasTrait("DrawNoBlood"))
+            {
+                agent.Say("I swore to draw no blood. Unless I remove this trait first.");
+                cantDoFlag = true;
+            }
+            if (cantDoFlag)
+            {
+                item.gc.audioHandler.Play(agent, "CantDo");
+                return false;
+            }
+
+            return true;
 		}
 		#endregion
 		#region PlayfieldObject

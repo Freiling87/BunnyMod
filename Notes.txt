@@ -6,13 +6,7 @@ ISSUES:
 HIGH PRIORITY
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
-
-
-- Interact w Fridge now does what BigTable did before - cam focus, no result. 
-
-
-- Stoves appear to no longer rotate toward walls
-
+	√
 
 - If Camouflage is active when hiding, it will get stuck and not recharge.
 
@@ -31,6 +25,8 @@ HIGH PRIORITY
 	MeleeHitbox:HitObject(GameObject, Boolean)
 	MeleeColliderBox:OnTriggerEnter2D(Collider2D)
 
+	√
+
 
 - Stove blinks when damaged but never actually blows up
 
@@ -38,6 +34,8 @@ HIGH PRIORITY
 LOW PRIORITY
 - Stove sprite turns into pink square when highlighted pre-Interaction
 - Object interactions show a "Cancelled" message even though they went through successfully.
+- Stoves appear to no longer rotate toward walls
+
 
 1.2.1
-- Quick Heal button no longer breaks the game if it conflicts with dietary restrictions. You may have to manually choose food items for now, though.
+- Quick Heal button now works properly for those with dietary restriction traits.

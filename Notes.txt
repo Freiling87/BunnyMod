@@ -5,6 +5,12 @@ ISSUES:
 
 HIGH PRIORITY
 
+- Can't tamper w stove after cooking on it
+
+- Stove name hovers after use
+
+- Fridge doesnt' do tamper bar, just immediate
+
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 	√
 

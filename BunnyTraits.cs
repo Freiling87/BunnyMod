@@ -29,6 +29,8 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
@@ -377,32 +379,38 @@ namespace BunnyMod
             StealthBastardDeluxe.Upgrade = null;
             #endregion
             #region Tampering
-            CustomTrait SuffersToolsGladly = RogueLibs.CreateCustomTrait("SuffersToolsGladly", true,
-                new CustomNameInfo("Suffers Tools Gladly"),
+            CustomTrait TamperTantrum = RogueLibs.CreateCustomTrait("TamperTantrum", true,
+                new CustomNameInfo("Tamper Tantrum"),
                 new CustomNameInfo("Your tools take less wear from tampering."));
-            SuffersToolsGladly.Available = true;
-            SuffersToolsGladly.AvailableInCharacterCreation = true;
-            SuffersToolsGladly.CanRemove = false;
-            SuffersToolsGladly.CanSwap = true;
-            SuffersToolsGladly.Conflicting.AddRange(new string[] { });
-            SuffersToolsGladly.CostInCharacterCreation = 2;
-            SuffersToolsGladly.IsActive = true;
-            SuffersToolsGladly.Available = true;
-            SuffersToolsGladly.Upgrade = "SuffersToolsGladly_2";
+            TamperTantrum.Available = true;
+            TamperTantrum.AvailableInCharacterCreation = true;
+            TamperTantrum.CanRemove = false;
+            TamperTantrum.CanSwap = true;
+            TamperTantrum.CostInCharacterCreation = 2;
+            TamperTantrum.IsActive = true;
+            TamperTantrum.Upgrade = "TamperTantrum_2";
 
-            CustomTrait SuffersToolsGladly_2 = RogueLibs.CreateCustomTrait("SuffersToolsGladly_2", true,
-                new CustomNameInfo("Suffers Tools Gladly +"),
+            CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait("TamperTantrum_2", true,
+                new CustomNameInfo("Tamper Tantrum +"),
                 new CustomNameInfo("Your tools take zero wear when used in tampering."));
-            SuffersToolsGladly.Available = true;
-            SuffersToolsGladly.AvailableInCharacterCreation = false;
-            SuffersToolsGladly.CanRemove = false;
-            SuffersToolsGladly.CanSwap = false;
-            SuffersToolsGladly.Conflicting.AddRange(new string[] { });
-            SuffersToolsGladly.CostInCharacterCreation = 2;
-            SuffersToolsGladly.IsActive = true;
-            SuffersToolsGladly.Available = true;
-            SuffersToolsGladly.Upgrade = null;
+            TamperTantrum_2.Available = true;
+            TamperTantrum_2.AvailableInCharacterCreation = false;
+            TamperTantrum_2.CanRemove = false;
+            TamperTantrum_2.CanSwap = false;
+            TamperTantrum_2.CostInCharacterCreation = 5;
+            TamperTantrum_2.IsActive = true;
+            TamperTantrum_2.Upgrade = null;
             #endregion
+        }
+        public static string ToolCost(Agent agent)
+        {
+            if (agent.statusEffects.hasTrait("TamperTantrum"))
+                return "15";
+            if (agent.statusEffects.hasTrait("TamperTantrum_2"))
+                return "0";
+            return "30";
+
+            //TODO: Base this on SubtractFromItemCount prefix or vice versa to make always accurate
         }
         #endregion
 
@@ -452,7 +460,6 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
         {
-            BunnyHeader.ConsoleMessage.LogMessage(item.invItemName);
             bool flag = false;
             Agent agent = __instance.agent;
 
@@ -471,24 +478,35 @@ namespace BunnyMod
                 //agent.Say("I don't use blunt weapons.");
                 flag = true;
             }
-
+            //TODO: Instate dialogue to play only when weapon manually selected
             if (flag)
 			{
                 __instance.UnequipWeapon();
                 __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
             }
         }
-        public static bool InvDatabase_SubtractFromItemCount(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+        public static bool InvDatabase_SubtractFromItemCount_a(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
             if (BunnyHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
-                if (__instance.agent.statusEffects.hasTrait("SuffersToolsGladly_2"))
+                if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
                     amount = 0;
-                else if (__instance.agent.statusEffects.hasTrait("SuffersToolsGladly"))
+                else if (__instance.agent.statusEffects.hasTrait("TamperTantrum"))
                     amount /= 2;
             }
             return true;
 		}
+        public static bool InvDatabase_SubtractFromItemCount_b(InvItem invItem, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+		{
+            if (BunnyHeader.tools.Contains(invItem.invItemName))
+            {
+                if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
+                    amount = 0;
+                else if (__instance.agent.statusEffects.hasTrait("TamperTantrum"))
+                    amount /= 2;
+            }
+            return true;
+        }
 		#endregion
 		#region InvItem
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix

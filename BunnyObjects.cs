@@ -51,7 +51,6 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "Start", GetType(), "Refrigerator_Start");
 
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
@@ -137,7 +136,7 @@ namespace BunnyMod
                     if (__instance.interactingAgent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
+                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent));
                     }
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
 					{
@@ -332,7 +331,7 @@ namespace BunnyMod
         }
         public static void ObjectReal_Start(ObjectReal __instance) // Postfix
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Start");
+            //BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Start");
 
             if (__instance is Stove stove)
 			{
@@ -342,6 +341,12 @@ namespace BunnyMod
                 // Untested:
                 Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove");
                 Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
+            }
+            else if (__instance is Refrigerator refrigerator)
+            {
+                Refrigerator_Remora remora = new Refrigerator_Remora();
+                Refrigerator_Variables[refrigerator] = remora;
+                remora.refrigeratorHost = refrigerator;
             }
         }
         #endregion
@@ -470,93 +475,120 @@ namespace BunnyMod
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
 
-            MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+            Agent agent = __instance.interactingAgent;
+
+            MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
             DetermineButtons_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            BunnyHeader.ConsoleMessage.LogMessage("wasHacked: " + Refrigerator_Variables[__instance].wasHacked);
+            BunnyHeader.ConsoleMessage.LogMessage("NullAgent: " + (agent == null).ToString());
+
+            BunnyHeader.ConsoleMessage.LogMessage("Start");
+
+            if (Refrigerator_Variables[__instance].wasHacked)
 			{
+                BunnyHeader.ConsoleMessage.LogMessage("Lemma 1");
+
                 __instance.buttons.Add("RefrigeratorRun");
+
+                BunnyHeader.ConsoleMessage.LogMessage("1.2");
 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                     __instance.buttons.Add("HackExplode");
             }
-            else if (__instance.interactingAgent.inventory.HasItem("Wrench"))
-            {
-                __instance.buttons.Add("RefrigeratorRun");
-                __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -30");
 
-                CustomName showChest = RogueLibs.CreateCustomName("ShowChest", "ButtonText",
-                    new CustomNameInfo("Open container"));
+            BunnyHeader.ConsoleMessage.LogMessage("Start 2");
+            if (!Refrigerator_Variables[__instance].wasHacked && __instance.interactingAgent.inventory.HasItem("Wrench"))
+            {
+                BunnyHeader.ConsoleMessage.LogMessage("Lemma 2");
+
+                __instance.buttons.Add("RefrigeratorRun");
+                __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent));
+
+                BunnyHeader.ConsoleMessage.LogMessage("2.2");
+
+                //CustomName showChest = RogueLibs.CreateCustomName("ShowChest", "ButtonText",
+                    //new CustomNameInfo("Open container"));
                 __instance.buttons.Add("ShowChest");
+
+                BunnyHeader.ConsoleMessage.LogMessage("2.3");
             }
-            else
+			else
+			{
+                BunnyHeader.ConsoleMessage.LogMessage("Lemma 3");
                 __instance.ShowChest();
+            }
+
+            BunnyHeader.ConsoleMessage.LogMessage("End");
             return false;
 		}
         public static void Refrigerator_FinishedOperating(Refrigerator __instance) // PostFix
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
 
-            if (__instance.interactingAgent.inventory.HasItem("Wrench"))
-                __instance.ShowObjectButtons();
+            if (__instance.operatingItem.invItemName == "Wrench")
+			{
+                Refrigerator_IceDispense(__instance);
+                __instance.StopInteraction();
+			}
 		}
-  //      public static IEnumerator Refrigerator_IceDispense(Refrigerator __instance)
-  //      {
-  //          __instance.StopItemAudio();
-  //          int num;
-  //          for (int i = 0; i < 10; i = num + 1)
-  //          {
-  //              __instance.FireworksFire(0, 0, null);
-  //              yield return new WaitForSeconds(Random.Range(0.3f, 0.6f));
-  //              num = i;
-  //          }
-  //          Explosion explosion = __instance.gc.spawnerMain.SpawnExplosion(__instance, __instance.tr.position, "Normal", false, -1, false, true);
-  //          explosion.agent = __instance.owner;
-  //          explosion.realSource = __instance;
-  //          __instance.DestroyMeFromClient();
-  //          yield break;
-  //      }
-  //      public static void Refrigerator_IceShot(int bulletNetID, int bulletRotation, Agent fireworksOwner, Refrigerator __instance)
-		//{
-  //          if (fireworksOwner != null)
-  //          {
-  //              __instance.owner = fireworksOwner;
-  //          }
-  //          Bullet bullet = __instance.gc.spawnerMain.SpawnBullet(__instance.tr.position, bulletStatus.FreezeRay, __instance);
-  //          float angle;
-  //          if (__instance.gc.serverPlayer)
-  //          {
-  //              angle = (float)Random.Range(0, 359);
-  //          }
-  //          else
-  //          {
-  //              angle = (float)bulletRotation;
-  //          }
-  //          bullet.movement.RotateToAngleTransform(angle);
-  //          bullet.movement.MoveForwardTransform(0.48f);
-  //          __instance.gc.audioHandler.Play(__instance, "FireworksFire");
-  //          if (__instance.gc.multiplayerMode && __instance.gc.serverPlayer)
-  //          {
-  //              bullet.bulletNetID = Random.Range(0, 10000);
-  //              NetworkInstanceId extraObjectID = NetworkInstanceId.Invalid;
-  //              if (__instance.owner != null)
-  //              {
-  //                  extraObjectID = __instance.owner.objectNetID;
-  //              }
-  //              __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "FireworksFire", angle.ToString(), (float)bulletNetID, extraObjectID);
-  //          }
-  //      }
-        public static bool Refrigerator_Interact(Agent agent, Refrigerator __instance) // Replacement
+		public static IEnumerator Refrigerator_IceDispense(Refrigerator __instance)
+		{
+			//__instance.StopItemAudio();
+			int num;
+			for (int i = 0; i < 10; i = num + 1)
+			{
+				Refrigerator_IceShot(0, 0, null, __instance);
+				yield return new WaitForSeconds(UnityEngine.Random.Range(0.3f, 0.6f));
+				num = i;
+			}
+			Explosion explosion = __instance.gc.spawnerMain.SpawnExplosion(__instance, __instance.tr.position, "Normal", false, -1, false, true);
+			explosion.agent = __instance.interactingAgent;
+			explosion.realSource = __instance;
+			__instance.DestroyMe();
+			yield break;
+		}
+		public static void Refrigerator_IceShot(int bulletNetID, int bulletRotation, Agent fireworksOwner, Refrigerator __instance)
+		{
+			//if (fireworksOwner != null)
+			//{
+			//	__instance.owner = fireworksOwner;
+			//}
+			Bullet bullet = __instance.gc.spawnerMain.SpawnBullet(__instance.tr.position, bulletStatus.FreezeRay, __instance);
+			float angle;
+			if (__instance.gc.serverPlayer)
+			{
+				angle = (float)UnityEngine.Random.Range(0, 359);
+			}
+			else
+			{
+				angle = (float)bulletRotation;
+			}
+			bullet.movement.RotateToAngleTransform(angle);
+			bullet.movement.MoveForwardTransform(0.48f);
+			__instance.gc.audioHandler.Play(__instance, "FireworksFire");
+			if (__instance.gc.multiplayerMode && __instance.gc.serverPlayer)
+			{
+				bullet.bulletNetID = UnityEngine.Random.Range(0, 10000);
+				NetworkInstanceId extraObjectID = NetworkInstanceId.Invalid;
+				if (__instance.owner != null)
+				{
+					extraObjectID = __instance.interactingAgent.objectNetID;
+				}
+				__instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "FireworksFire", angle.ToString(), (float)bulletNetID, extraObjectID);
+			}
+		}
+		public static bool Refrigerator_Interact(Agent agent, Refrigerator __instance) // Replacement
         {
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
 
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
-            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(__instance.interactingAgent);
+            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
             if (__instance.timer > 0f || __instance.startedFlashing)
                 __instance.StopInteraction();
 
-            if (__instance.interactingAgent.inventory.HasItem("Wrench"))
+            if (agent.inventory.HasItem("Wrench"))
                 __instance.ShowObjectButtons();
 
             else
@@ -573,6 +605,7 @@ namespace BunnyMod
                 __instance.StopInteraction();
                 return false;
             }
+            Refrigerator_Variables[__instance].wasHacked = true;
             return true;
         }
         public static void Refrigerator_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, Refrigerator __instance, ref bool ___noMoreObjectActions) // Replacement 
@@ -599,7 +632,6 @@ namespace BunnyMod
             MethodInfo PressedButton_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[1] { typeof(string) });
             PressedButton_Base.GetMethodWithoutOverrides<Action<string>>(__instance).Invoke(buttonText);
 
-
             if (buttonText == "RefrigeratorRun" && __instance.interactingAgent.interactionHelper.interactingFar)
             {
                 __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
@@ -609,24 +641,25 @@ namespace BunnyMod
             }
             else if (buttonText == "RefrigeratorRun" && !__instance.interactingAgent.interactionHelper.interactingFar)
             {
-                //Manual tampering here
+                __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+                Refrigerator_IceDispense(__instance);
+                return false;
+                //__instance.RefrigeratorRun(__instance.interactingAgent);
+                //__instance.StopInteraction();
+                //TODO: I think 
             }
             else if (buttonText == "ShowChest")
+			{
                 __instance.ShowChest();
+                return false;
+            }
 
+            Refrigerator_Variables[__instance].wasHacked = false;
             __instance.StopInteraction(); // May need to remove this for second two options
 
             return false;
 		}
-        public static void Refrigerator_Start(Refrigerator __instance) // Postfix
-		{
-            Refrigerator_Remora remora = new Refrigerator_Remora();
-            Refrigerator_Variables[__instance] = remora;
-            remora.refrigeratorHost = __instance;
-            // Untested:
-            Refrigerator_Variables[(Refrigerator)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Refrigerator");
-            Refrigerator_Variables[(Refrigerator)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Refrigerator");
-        }
         public static void Refrigerator_UseWrenchToRun(Refrigerator __instance) // Non-Patch
 		{
             BunnyHeader.ConsoleMessage.LogMessage(MethodBase.GetCurrentMethod().Name);
@@ -851,6 +884,7 @@ namespace BunnyMod
         public float animationCountdown;
         public int animationFrame;
         public PlayfieldObject savedDamagerObject;
+        public bool wasHacked = false;
 
         public void Countdown()
         {

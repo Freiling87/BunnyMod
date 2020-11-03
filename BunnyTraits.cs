@@ -17,7 +17,7 @@ using RogueLibsCore;
 
 namespace BunnyMod
 {
-    class BunnyTraits
+    public class BunnyTraits
     {
         #region Generic
         public void Awake()

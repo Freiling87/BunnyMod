@@ -73,6 +73,16 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] Fireball {
+            get {
+                object obj = ResourceManager.GetObject("Fireball", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] Spear {
             get {
                 object obj = ResourceManager.GetObject("Spear", resourceCulture);

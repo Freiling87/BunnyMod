@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BunnyAbilities.cs" />
     <Compile Include="BunnyBehaviors.cs" />
     <Compile Include="BunnyHeader.cs" />
     <Compile Include="BunnyObjects.cs" />
@@ -102,6 +103,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
+    <None Include="Properties\Resources\Fireball.bin" />
     <None Include="Properties\Resources\Spear.bin" />
     <None Include="Properties\Resources\WhiskeyBottle.bin" />
     <None Include="Properties\Settings.settings">

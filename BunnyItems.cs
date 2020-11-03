@@ -15,21 +15,18 @@ namespace BunnyMod
 		#region Generic
 		public void Awake()
 		{
-            Initialize_Items();
+            InitializeItems();
 
-			#region Patches - Functions
-			BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+            #region Patches - Item Base
+            BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
-            #endregion
-            #region Patches - Item Base
-
             #endregion
             #region Patches - Items
 
             #endregion
         }
-        public static void Initialize_Items_Inactive()
+        public static void InitializeItems_Inactive()
 		{
             Sprite sprite_beerCan = RogueUtilities.ConvertToSprite(Properties.Resources.BeerCan);
             CustomItem BeerCan = RogueLibs.CreateCustomItem("BeerCan", sprite_beerCan, true,
@@ -102,7 +99,7 @@ namespace BunnyMod
             // TODO: See if there's a way to make this impact louder than a normal projectile
             // See Explosion.ExplosionHit() , with this.initialHitGlass = true;
         }
-        public static void Initialize_Items()
+        public static void InitializeItems()
 		{
         }
 		#endregion

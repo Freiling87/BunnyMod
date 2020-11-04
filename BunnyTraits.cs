@@ -510,7 +510,6 @@ namespace BunnyMod
 		#endregion
 		#region InvItem
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
-
         {
             string name = __instance.invItemName;
 

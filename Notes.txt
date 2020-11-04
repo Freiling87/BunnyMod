@@ -1,44 +1,36 @@
 ﻿- SMILE, YOU'RE HAVING FUN!
 - This week's focus: Prefer guards over nesting
 
-ISSUES: 
+HIGH PRIORITY	√
 
-HIGH PRIORITY
+- Fridge not showing button text for showchest
+	√
 
-- Can't tamper w stove after cooking on it
+- Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that.
 
 - Stove name hovers after use (Which button? Both?)
-
-- Fridge doesnt' do tamper bar, just immediate
-√
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 	√
 
-- If Camouflage is active when hiding, it will get stuck and not recharge.
+-
+[Message: Bunny Mod] Refrigerator (1448): Refrigerator_Interact
+[Message: Bunny Mod] Refrigerator (1448): ObjectReal_Interact
+[Message: Bunny Mod] Refrigerator (1448): Refrigerator_DetermineButtons
+[Message: Bunny Mod] Button error?
+[Message: Bunny Mod] Refrigerator (1448): Refrigerator_PressedButton
+[Message: Bunny Mod] Refrigerator (1448): ObjectReal_PressedButton
+[Message: Bunny Mod] Refrigerator (1448): Refrigerator_FinishedOperating
 
-
-- [Message: Bunny Mod] Stove_DamagedObject
-	[Message: Bunny Mod] Stove_AboutToExplode
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <baf147b425754ac297f80552e2b52eaa>:0)
-	BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__30.MoveNext () (at <ac9ec474ed6e43bc93448075eca310a9>:0)
-	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-	UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-	BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-	Stove:DamagedObject(PlayfieldObject, Single)
-	ObjectReal:Damage(PlayfieldObject, Boolean)
-	MeleeHitbox:HitObject(GameObject, Boolean)
-	MeleeColliderBox:OnTriggerEnter2D(Collider2D)
-
-	√
+See Refrigerator_ObjectACtion for the above, pressing Tamper
 
 
 - Stove blinks when damaged but never actually blows up
+	This calls Stove.MoveNext, which is not one of mine.
 
 
-LOW PRIORITY
+LOW PRIORITY	√
+
 - Stove sprite turns into pink square when highlighted pre-Interaction
 - Object interactions show a "Cancelled" message even though they went through successfully.
 - Stoves appear to no longer rotate toward walls
@@ -46,3 +38,4 @@ LOW PRIORITY
 
 1.2.1
 - Quick Heal button now works properly for those with dietary restriction traits.
+- Stoves no longer turn into pink squares

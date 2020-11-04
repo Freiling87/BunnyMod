@@ -89,12 +89,17 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-		}
+            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "ButtonText",
+                new CustomNameInfo("Dispense Ice"));
+
+            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText",
+                new CustomNameInfo("Open container"));
+        }
         #endregion
         #region ObjectReal
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_DestroyMe");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             if (__instance is Stove)
                 Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
@@ -149,7 +154,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_FinishedOperating");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -183,7 +188,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Interact");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
             //TODO: Try StopInteraction() as a default, with other options as return.
 
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
@@ -217,7 +222,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_MakeNonFunctional(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_MakeNonFunctional");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             if (__instance is Stove)
             {
@@ -241,7 +246,7 @@ namespace BunnyMod
         }
         public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, ObjectReal __instance, ref bool ___noMoreObjectActions) // Postfix
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_ObjectAction");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             if (__instance is Stove)
             {
@@ -283,7 +288,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance) // Replacement
         {
-            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_PressedButton");
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
@@ -308,23 +313,25 @@ namespace BunnyMod
             if (buttonText == "UseWrenchToDetonate")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-                return false;
             }
+            if (buttonText == "DispenseIce")
+			{
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+			}
             #endregion Patch
-            if (!(buttonText == "CollectPart"))
-                return false;
+            if (buttonText == "CollectPart")
+			{
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
 
-            __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
-
-            if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
-            {
-                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                __instance.gc.audioHandler.Play(__instance, "Hack");
-                __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    __instance.gc.audioHandler.Play(__instance, "Hack");
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
             }
-
             return false;
         }
         public static void ObjectReal_Start(ObjectReal __instance) // Postfix
@@ -490,12 +497,13 @@ namespace BunnyMod
 
             if (!Refrigerator_Variables[__instance].wasHacked && __instance.interactingAgent.inventory.HasItem("Wrench"))
             {
-                __instance.buttons.Add("RefrigeratorRun");
+
+                __instance.buttons.Add("DispenseIce");
                 __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent));
 
-                //CustomName showChest = RogueLibs.CreateCustomName("ShowChest", "ButtonText",
-                    //new CustomNameInfo("Open container"));
-                __instance.buttons.Add("ShowChest");
+                BunnyHeader.ConsoleMessage.LogMessage("Button error?");
+
+				__instance.buttons.Add("OpenContainer");
             }
 			else
                 __instance.ShowChest();
@@ -603,7 +611,7 @@ namespace BunnyMod
 
             if (!___noMoreObjectActions)
             {
-                if (myAction == "ShowChest")
+                if (myAction == "OpenContainer")
                     __instance.ShowChest();
                 if (!(myAction == "RefrigeratorRun"))
                     if (myAction == "RefrigeratorRunClients")
@@ -622,6 +630,8 @@ namespace BunnyMod
 
             if (buttonText == "RefrigeratorRun" && __instance.interactingAgent.interactionHelper.interactingFar)
             {
+                BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + "Remote Run");
+
                 __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
                 __instance.RefrigeratorRun(__instance.interactingAgent);
                 __instance.StopInteraction();
@@ -629,6 +639,8 @@ namespace BunnyMod
             }
             else if (buttonText == "RefrigeratorRun" && !__instance.interactingAgent.interactionHelper.interactingFar)
             {
+                BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + "Manual Run");
+
                 __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
                 Refrigerator_IceDispense(__instance);
@@ -637,8 +649,10 @@ namespace BunnyMod
                 //__instance.StopInteraction();
                 //TODO: I think 
             }
-            else if (buttonText == "ShowChest")
+            else if (buttonText == "OpenContainer")
 			{
+                BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + "Show Chest");
+
                 __instance.ShowChest();
                 return false;
             }
@@ -710,7 +724,7 @@ namespace BunnyMod
         }
         public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
 		{
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
+            // BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name); // Verbose
 
             Stove_Remora remora = Stove_Variables[__instance];
 
@@ -743,16 +757,23 @@ namespace BunnyMod
 
             if (damageAmount >= 15f && !__instance.startedFlashing)
             {
+                BunnyHeader.ConsoleMessage.LogMessage("Lemma 1");
+
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.StartCoroutine(Stove_AboutToExplode(__instance));
             }
 
             if (damageAmount >= __instance.damageThreshold)
             {
+                BunnyHeader.ConsoleMessage.LogMessage("Lemma 2");
+
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.DestroyMe(damagerObject);
             }
             //TODO: Consider flame spit instead of flame particle
+
+            BunnyHeader.ConsoleMessage.LogMessage("3");
+
             return false;
         }
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
@@ -765,24 +786,21 @@ namespace BunnyMod
 
             rawFud.invItemCount -= numCooked;
 
-            if (rawFud.invItemCount <= 0)
-                __instance.interactingAgent.inventory.DestroyItem(rawFud);
+            //if (rawFud.invItemCount <= 0)
+            //    __instance.interactingAgent.inventory.DestroyItem(rawFud);
+            // isn't this redundant to the above? Test with a barbecue to verify quantity removed vs. grilled
 
-            InvItem cookedFud = new InvItem();
-            cookedFud.invItemName = "HotFud";
+            InvItem cookedFud = new InvItem()
+            {
+                invItemName = "HotFud",
+                invItemCount = numCooked,
+            };
             cookedFud.SetupDetails(false);
-            cookedFud.invItemCount = numCooked;
+
             __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
             cookedFud.ShowPickingUpText(__instance.interactingAgent);
 
             __instance.gc.audioHandler.Play(__instance, "Grill");
-            Stove_GrilledFudAfter(numCooked, __instance);
-        }
-        public static void Stove_GrilledFudAfter(int myCount, Stove __instance) // Non-Patch 
-        {
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-
-            return;
         }
         public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {

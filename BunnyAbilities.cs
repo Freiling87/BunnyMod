@@ -23,10 +23,71 @@ namespace BunnyMod
 		}
 		public static void InitializeAbilities()
 		{
-			#region Pyromancy
-			Sprite sprite = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
+			#region Blink
+			Sprite spriteBlink = RogueUtilities.ConvertToSprite(Properties.Resources.Blink);
 
-			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", sprite, true,
+			CustomAbility blink = RogueLibs.CreateCustomAbility("Blink", spriteBlink, true,
+				new CustomNameInfo("Blink"),
+				new CustomNameInfo("Almost at will, you can instantly teleport to a nearby location. Whether this is better or worse than where you were before remains to be seen. It also recharges at an inconsistent rate. Maybe you can get better at this?"),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Usable"); //
+					item.Categories.Add("NPCsCantPickup");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.isWeapon = false;
+					item.initCount = 25;
+					item.itemType = ""; //
+					item.rechargeAmountInverse = item.initCount;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+				});
+
+			blink.Available = true;
+			blink.AvailableInCharacterCreation = true;
+			blink.CostInCharacterCreation = 10;
+
+			blink.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (item.invItemCount > 0)
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				else
+				{
+					agent.SpawnParticleEffect("Spawn", agent.curPosition);
+
+					agent.Teleport(agent.gc.tileInfo.FindLocationNearLocation(agent.curPosition, agent, 3f, 8f, true, false));
+					agent.rb.velocity = Vector2.zero;
+
+					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
+					GameController.gameController.audioHandler.Play(agent, "Spawn");
+				}
+			};
+			blink.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount -= UnityEngine.Random.Range(1, item.invItemCount);
+
+					if (item.invItemCount == 0) // Recharged
+					{
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			blink.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+			#endregion
+			#region Cryomancy
+
+			#endregion
+			#region Pyromancy
+			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
+
+			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
 				new CustomNameInfo("Pyromancy"),
 				new CustomNameInfo("You can throw fireballs from your hands. This tends to fix a lot of your problems, and create much worse ones."),
 				delegate (InvItem item)
@@ -40,26 +101,26 @@ namespace BunnyMod
 					item.isWeapon = true;
 					item.rapidFire = false;
 					item.initCount = 15;
-					item.initCountAI = 15;
 					item.itemType = "WeaponProjectile";
 					item.LoadItemSprite("Fireball");
 					item.rechargeAmountInverse = item.initCount;
 					item.shadowOffset = 2;
 					item.specialMeleeTexture = true;
+					item.stackable = true;
 					item.thiefCantSteal = true;
 					item.weaponCode = weaponType.WeaponProjectile;
 				});
+
 			pyromancy.Available = true;
 			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 10;
+
 			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
 				if (item.invItemCount > 0)
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
-				{
-
-				}
+					agent.gc.spawnerMain.SpawnBullet(agent.tr.position, bulletStatus.Fireball, agent);
 			};
 
 			pyromancy.Recharge = (item, myAgent) =>
@@ -68,12 +129,11 @@ namespace BunnyMod
 				{
 					item.invItemCount--;
 
-					if (item.invItemCount == 0) // ability recharged
+					if (item.invItemCount == 0) // Recharged
 					{
 						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
 						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
 						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-						// make special ability slot fully visible again
 					}
 				}
 			};

@@ -826,6 +826,7 @@ namespace BunnyMod
             __instance.animates = true;
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
+            __instance.faceAwayFromWalls = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
         }

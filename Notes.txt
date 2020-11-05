@@ -4,14 +4,12 @@
 HIGH PRIORITY	√
 
 - Fridge not showing button text for showchest
-	√
 
 - Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that.
 
 - Stove name hovers after use (Which button? Both?)
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
-	√
 
 -
 [Message: Bunny Mod] Refrigerator (1448): Refrigerator_Interact

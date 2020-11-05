@@ -19,13 +19,7 @@ namespace BunnyMod
 
 			BunnyHeader.MainInstance.PatchPrefix(typeof(Gun), "Shoot", GetType(), "Gun_Shoot", new Type[5] { typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string) });
 
-			BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
-
 			BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectMult), "AttackProjectilePos", GetType(), "ObjectMult_AttackProjectilePos", new Type[6] { typeof(Vector2), typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string)});
-
-			BunnyHeader.MainInstance.PatchPrefix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(string) });
-			BunnyHeader.MainInstance.PatchPrefix(typeof(StatusEffects), "HeldSpecialAbility", GetType(), "StatusEffects_HeldSpecialAbility");
-			BunnyHeader.MainInstance.PatchPrefix(typeof(StatusEffects), "RechargeSpecialAbility", GetType(), "StatusEffects_RechargeSpecialAbility", new Type[1] { typeof(string) });
 		}
 		public static void InitializeAbilities()
 		{
@@ -37,25 +31,23 @@ namespace BunnyMod
 				new CustomNameInfo("You can throw fireballs from your hands. This tends to fix a lot of your problems, and create much worse ones."),
 				delegate (InvItem item)
 				{
-					item.initCount = 0;
-					item.LoadItemSprite("Fireball");
-					item.itemType = "WeaponProjectile";
-					item.weaponCode = weaponType.WeaponProjectile;
+					item.cantDrop = true;
 					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = false;
 					item.initCount = 15;
 					item.initCountAI = 15;
-					item.shadowOffset = 2;
-					item.gunKnockback = 0;
-					// May need to set RechargeAmount as well, not sure.
+					item.itemType = "WeaponProjectile";
+					item.LoadItemSprite("Fireball");
 					item.rechargeAmountInverse = item.initCount;
-					item.cantDrop = true;
-					item.Categories.Add("NPCsCantPickUp");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
+					item.shadowOffset = 2;
 					item.specialMeleeTexture = true;
 					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
 				});
 			pyromancy.Available = true;
 			pyromancy.AvailableInCharacterCreation = true;
@@ -66,11 +58,10 @@ namespace BunnyMod
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
 				{
-					// What goes here?
+
 				}
 			};
-			pyromancy.RechargeInterval = (item, myAgent) => 
-				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+
 			pyromancy.Recharge = (item, myAgent) =>
 			{
 				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
@@ -86,6 +77,9 @@ namespace BunnyMod
 					}
 				}
 			};
+
+			pyromancy.RechargeInterval = (item, myAgent) => 
+				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 			#endregion
 		}
 		#endregion

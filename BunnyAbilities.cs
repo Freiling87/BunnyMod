@@ -29,7 +29,7 @@ namespace BunnyMod
 		}
 		public static void InitializeAbilities()
 		{
-			#region pyromancy
+			#region Pyromancy
 			Sprite sprite = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
 
 			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", sprite, true,
@@ -38,35 +38,59 @@ namespace BunnyMod
 				delegate (InvItem item)
 				{
 					item.initCount = 0;
+					item.LoadItemSprite("Fireball");
+					item.itemType = "WeaponProjectile";
+					item.weaponCode = weaponType.WeaponProjectile;
+					item.Categories.Add("Weapons");
+					item.isWeapon = true;
+					item.rapidFire = false;
+					item.initCount = 15;
+					item.initCountAI = 15;
+					item.shadowOffset = 2;
+					item.gunKnockback = 0;
+					// May need to set RechargeAmount as well, not sure.
+					item.rechargeAmountInverse = item.initCount;
+					item.cantDrop = true;
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.specialMeleeTexture = true;
+					item.thiefCantSteal = true;
 				});
 			pyromancy.Available = true;
+			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 10;
 			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
 				if (item.invItemCount > 0)
-				{
-					//Gun.Shoot()
-					//TODO: Mirror pretty much everything that mentions "LaserGun"
-				}
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
 				{
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+					// What goes here?
 				}
 			};
-			pyromancy.RechargeInterval = ((InvItem item, Agent agent) =>
-				(item.invItemCount > 0) ? new WaitForSeconds(1f) : null);
-			pyromancy.Recharge = delegate (InvItem item, Agent agent)
+			pyromancy.RechargeInterval = (item, myAgent) => 
+				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+			pyromancy.Recharge = (item, myAgent) =>
 			{
+				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount--;
 
+					if (item.invItemCount == 0) // ability recharged
+					{
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						// make special ability slot fully visible again
+					}
+				}
 			};
 			#endregion
 		}
 		#endregion
-		#region Agent
-		//FindCategories - This seems to determine Trait choices based on special abilities
-		#endregion
+
 		#region Gun
-		//GunUpdate - Seems to be generic, with some exceptions for laser gun I think I can ignore for now.
 		public bool Gun_Shoot(bool specialAbility, bool silenced, bool rubber, int bulletNetID, string bulletStatusEffect, Gun __instance) // Prefix
 		{
 			GameController gc = BunnyHeader.gc;
@@ -125,19 +149,6 @@ namespace BunnyMod
 				}
 				__instance.gunContainerAnim.Play("", -1, 0f);
 
-
-				if (gunFired.invItemName == "WaterCannon")
-				{
-					if (!__instance.firstShotCompleted)
-						__instance.gunContainerAnim.Play("GunForward-1");
-					else
-						__instance.gunContainerAnim.Play("GunForward-2");
-				}
-				else if (gunFired.invItemName == "LaserGun")
-					__instance.gunContainerAnim.Play("Gun-Shoot-Forward");
-				else
-					__instance.gunContainerAnim.Play("Gun-Shoot", -1, 0f);
-
 				__instance.shootAnimPlaying = true;
 
 				if (__instance.agent.statusEffects.hasTrait("GunKnockback"))
@@ -149,33 +160,6 @@ namespace BunnyMod
 				__instance.firstShotCompleted = true;
 
 			return true;
-		}
-		// ShowGun - Only for visuals I think, which would be skipped for this
-		#endregion
-		#region InvItem
-		public void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
-		{
-			if (__instance.invItemName == "Pyromancy")
-			{
-				__instance.LoadItemSprite("Fireball");
-				__instance.itemType = "WeaponProjectile";
-				__instance.weaponCode = weaponType.WeaponProjectile;
-				__instance.Categories.Add("Weapons");
-				__instance.isWeapon = true;
-				__instance.rapidFire = false;
-				__instance.initCount = 15;
-				__instance.initCountAI = 15;
-				__instance.shadowOffset = 2;
-				__instance.gunKnockback = 0;
-				// May need to set RechargeAmount as well, not sure.
-				__instance.rechargeAmountInverse = __instance.initCount;
-				__instance.cantDrop = true;
-				__instance.Categories.Add("NPCsCantPickUp");
-				__instance.dontAutomaticallySelect = true;
-				__instance.dontSelectNPC = true;
-				__instance.specialMeleeTexture = true;
-				__instance.thiefCantSteal = true;
-			}
 		}
 		#endregion
 		#region ObjectMult
@@ -196,139 +180,6 @@ namespace BunnyMod
 				return false;
 			}
 			return true;
-		}
-		#endregion
-		#region StatusEffects
-		public static bool StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Prefix
-		{
-			if (abilityName == "Pyromancy")
-			{
-				if (BunnyHeader.gc.levelType == "HomeBase" && !__instance.agent.isDummy)
-					return false;
-
-				InvItem invItem = new InvItem();
-				invItem.invItemName = abilityName;
-				invItem.SetupDetails(false);
-				invItem.invItemCount = invItem.initCount;
-				invItem.agent = __instance.agent;
-				invItem.invInterface = __instance.agent.mainGUI.invInterface;
-				__instance.agent.inventory.equippedSpecialAbility = invItem;
-
-				if (BunnyHeader.gc.serverPlayer)
-					__instance.agent.oma.equippedSpecialAbility = __instance.agent.oma.convertSpecialAbilityToInt(abilityName);
-
-				__instance.agent.specialAbility = abilityName;
-
-				if (__instance.agent.isPlayer != 0 && !BunnyHeader.gc.serverPlayer && __instance.agent.localPlayer && __instance.agent.agentName == "Custom")
-					__instance.agent.objectMult.CallCmdAddSpecialAbility(abilityName);
-
-				__instance.agent.hasSpecialAbilityArm2 = true; //TODO: Verify if this is the graphic character model
-				__instance.RechargeSpecialAbility(abilityName);
-
-				return false;
-			}
-			return true;
-		}
-		public static bool StatusEffects_HeldSpecialAbility (StatusEffects __instance) // Prefix
-		{
-			string specialAbility = __instance.agent.specialAbility;
-			Agent agent = __instance.agent;
-			GameController gc = BunnyHeader.gc;
-
-			if (specialAbility == "Pyromancy")
-			{
-				float castTime = 0.6f;
-				//if (agent.oma.superSpecialAbility || __instance.hasTrait("TODO: Pyromancy Recharge Upgrade")) // TODO
-				//	num = 0.3f;
-
-				if (gc.playerControl.pressedSpecialAbilityTime[agent.isPlayer - 1] > castTime)
-				{
-					gc.audioHandler.Play(agent, "ZombieSpitFire"); // TODO
-					agent.objectMult.chargingSpecialLunge = false;
-					gc.playerControl.pressedSpecialAbilityTime[agent.isPlayer - 1] = 0f;
-					agent.gun.spawnBullet(bulletStatus.Fireball, null, -1, true);
-					gc.spawnerMain.SpawnNoise(agent.tr.position, 2f, null, null, agent);
-
-					if (agent.isPlayer > 0 && agent.localPlayer)
-						gc.ScreenBump(2f, 30, agent);
-
-					gc.alienFX.FireGun(agent);
-					gc.playerControl.Vibrate(agent.isPlayer, 0.25f, 0.2f);
-
-					if (agent.health != 1f && !agent.oma.superSpecialAbility && !__instance.hasTrait("NoZombieSpitHealthLoss"))
-					{
-						float healthCost = 3f;
-
-						if (gc.challenges.Contains("LowHealth"))
-							healthCost = 2f;
-
-						if (agent.health <= healthCost)
-							healthCost = agent.health - 1f;
-
-						agent.deathMethod = "ZombieSpit";
-						__instance.ChangeHealth(-healthCost);
-					}
-
-					gc.audioHandler.Stop(agent, "ZombieSpitCharge");
-					agent.tr.eulerAngles = agent.melee.tr.eulerAngles;
-
-					return false;
-				}
-				if (agent.controllerType == "Keyboard" && !BunnyHeader.gc.sessionDataBig.trackpadMode)
-					agent.movement.RotateToMouseOffset(agent.agentCamera.actualCamera);
-
-				return false;
-			}
-			return true;
-		}
-		public bool StatusEffects_RechargeSpecialAbility(string abilityName, StatusEffects __instance) // Prefix
-		{
-			if (!__instance.startedRechargeSpecialAbility && __instance.agent.inventory.equippedSpecialAbility.invItemName == "Pyromancy")
-				__instance.StartCoroutine(StatusEffects_RechargeSpecialAbility3(abilityName, __instance));
-			else
-				return true;
-			return false;
-		}
-		private static IEnumerator StatusEffects_RechargeSpecialAbility3(string abilityName, StatusEffects __instance) // Non-patch
-		{
-			Agent agent = __instance.agent;
-			GameController gc = BunnyHeader.gc;
-			bool doStop = false;
-			__instance.startedRechargeSpecialAbility = true;
-			__instance.rechargesSpecialAbility = true;
-
-			do
-			{
-				if (agent.inventory.equippedSpecialAbility != null)
-				{
-					InvItem myItem;
-
-					if (agent.inventory.equippedSpecialAbility.invItemName == "Pyromancy")
-					{
-						myItem = agent.inventory.equippedSpecialAbility;
-						float timeSinceLastShotThreshold = 2f;
-						float num2 = 0.25f;
-						
-						if (__instance.hasTrait("TODO: PyromancyChargesFaster") || agent.oma.superSpecialAbility)
-						{
-							timeSinceLastShotThreshold = 1.25f;
-							num2 = 0.15f;
-						}
-						if (myItem.invItemCount < myItem.rechargeAmountInverse)
-						{
-							yield return new WaitForSeconds(num2);
-
-							if (!agent.dead && !agent.FellInHole() && !agent.teleporting && !agent.KnockedOut() && gc.loadComplete && !agent.finishedLevel && !agent.finishedLevelImmediate && !agent.finishedLevelRealMult && __instance.timeSinceLastShot > timeSinceLastShotThreshold && myItem.invItemCount < myItem.rechargeAmountInverse)
-							{
-								gc.mainGUI.invInterface.DirtySlots();
-								myItem.invItemCount++;
-							}
-						}
-					}
-				}
-			}
-			while (!doStop);
-			yield break;
 		}
 		#endregion
 	}

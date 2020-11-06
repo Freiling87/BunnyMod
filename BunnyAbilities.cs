@@ -12,7 +12,7 @@ namespace BunnyMod
 {
 	public class BunnyAbilities
 	{
-		#region generic
+		#region Generic
 		public void Awake()
 		{
 			InitializeAbilities();
@@ -37,7 +37,7 @@ namespace BunnyMod
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.isWeapon = false;
-					item.initCount = 25;
+					item.initCount = 5;
 					item.itemType = ""; //
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
@@ -56,18 +56,20 @@ namespace BunnyMod
 				{
 					agent.SpawnParticleEffect("Spawn", agent.curPosition);
 
-					agent.Teleport(agent.gc.tileInfo.FindLocationNearLocation(agent.curPosition, agent, 3f, 8f, true, false));
+					agent.Teleport(agent.gc.tileInfo.FindLocationNearLocation(agent.curPosition, agent, 2f, 5f, false, false, true, true, true), false, true);
 					agent.rb.velocity = Vector2.zero;
 
 					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
 					GameController.gameController.audioHandler.Play(agent, "Spawn");
+
+					item.invItemCount += UnityEngine.Random.Range(1, 5);
 				}
 			};
 			blink.Recharge = (item, myAgent) =>
 			{
 				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
 				{
-					item.invItemCount -= UnityEngine.Random.Range(1, item.invItemCount);
+					item.invItemCount--;
 
 					if (item.invItemCount == 0) // Recharged
 					{
@@ -85,6 +87,8 @@ namespace BunnyMod
 
 			#endregion
 			#region Pyromancy
+			GameController gc = BunnyHeader.gc;
+
 			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
 
 			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
@@ -100,9 +104,10 @@ namespace BunnyMod
 					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = false;
-					item.initCount = 15;
+					item.initCount = 30;
 					item.itemType = "WeaponProjectile";
 					item.LoadItemSprite("Fireball");
+					item.rapidFire = true;
 					item.rechargeAmountInverse = item.initCount;
 					item.shadowOffset = 2;
 					item.specialMeleeTexture = true;
@@ -117,17 +122,36 @@ namespace BunnyMod
 
 			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (item.invItemCount > 0)
+				if (item.invItemCount == 0)
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
-					agent.gc.spawnerMain.SpawnBullet(agent.tr.position, bulletStatus.Fireball, agent);
+				{
+					//agent.gun.HideGun();
+
+					Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
+
+					if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
+					{
+						bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+					}
+					else if (agent.target.AttackTowardTarget())
+					{
+						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+					}
+					else
+					{
+						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+					}
+
+					item.invItemCount--;
+				}
 			};
 
 			pyromancy.Recharge = (item, myAgent) =>
 			{
-				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
 				{
-					item.invItemCount--;
+					item.invItemCount++;
 
 					if (item.invItemCount == 0) // Recharged
 					{

@@ -3,6 +3,10 @@
 
 HIGH PRIORITY	√
 
+- Blink does not go indoors
+
+- Blink is a little slow
+
 - Fridge not showing button text for showchest
 
 - Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that.

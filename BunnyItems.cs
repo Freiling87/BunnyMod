@@ -105,7 +105,7 @@ namespace BunnyMod
 		#endregion
 
 		#region ItemFunctions
-		public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent)
+		public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent) // Postfix
         {
             if (item.invItemName == "Beer")
             {
@@ -118,7 +118,7 @@ namespace BunnyMod
         }
         #endregion
         #region Melee
-        public static void Melee_Attack(bool specialAbility, Melee __instance)
+        public static void Melee_Attack(bool specialAbility, Melee __instance) // Postfix
         {
             InvItem invItem = (specialAbility ? __instance.agent.inventory.equippedSpecialAbility : __instance.agent.inventory.equippedWeapon) ?? __instance.agent.inventory.fist;
 

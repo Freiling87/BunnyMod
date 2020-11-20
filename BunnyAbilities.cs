@@ -17,9 +17,9 @@ namespace BunnyMod
 		{
 			InitializeAbilities();
 
-			BunnyHeader.MainInstance.PatchPrefix(typeof(Gun), "Shoot", GetType(), "Gun_Shoot", new Type[5] { typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string) });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Gun), "Shoot", GetType(), "Gun_Shoot", new Type[5] { typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string) });
 
-			BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectMult), "AttackProjectilePos", GetType(), "ObjectMult_AttackProjectilePos", new Type[6] { typeof(Vector2), typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string)});
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectMult), "AttackProjectilePos", GetType(), "ObjectMult_AttackProjectilePos", new Type[6] { typeof(Vector2), typeof(bool), typeof(bool), typeof(bool), typeof(int), typeof(string)});
 		}
 		public static void InitializeAbilities()
 		{
@@ -83,88 +83,88 @@ namespace BunnyMod
 			blink.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 			#endregion
-			#region Cryomancy
+			//#region Cryomancy
 
-			#endregion
-			#region Pyromancy
-			GameController gc = BunnyHeader.gc;
+			//#endregion
+			//#region Pyromancy
+			//GameController gc = BunnyHeader.gc;
 
-			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
+			//Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
 
-			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
-				new CustomNameInfo("Pyromancy"),
-				new CustomNameInfo("You can throw fireballs from your hands. This tends to fix a lot of your problems, and create much worse ones."),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("Weapons");
-					item.Categories.Add("NPCsCantPickUp");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.gunKnockback = 0;
-					item.isWeapon = true;
-					item.rapidFire = false;
-					item.initCount = 30;
-					item.itemType = "WeaponProjectile";
-					item.LoadItemSprite("Fireball");
-					item.rapidFire = true;
-					item.rechargeAmountInverse = item.initCount;
-					item.shadowOffset = 2;
-					item.specialMeleeTexture = true;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-					item.weaponCode = weaponType.WeaponProjectile;
-				});
+			//CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
+			//	new CustomNameInfo("Pyromancy"),
+			//	new CustomNameInfo("You can throw fireballs from your hands. This tends to fix a lot of your problems, and create much worse ones."),
+			//	delegate (InvItem item)
+			//	{
+			//		item.cantDrop = true;
+			//		item.Categories.Add("Weapons");
+			//		item.Categories.Add("NPCsCantPickUp");
+			//		item.dontAutomaticallySelect = true;
+			//		item.dontSelectNPC = true;
+			//		item.gunKnockback = 0;
+			//		item.isWeapon = true;
+			//		item.rapidFire = false;
+			//		item.initCount = 30;
+			//		item.itemType = "WeaponProjectile";
+			//		item.LoadItemSprite("Fireball");
+			//		item.rapidFire = true;
+			//		item.rechargeAmountInverse = item.initCount;
+			//		item.shadowOffset = 2;
+			//		item.specialMeleeTexture = true;
+			//		item.stackable = true;
+			//		item.thiefCantSteal = true;
+			//		item.weaponCode = weaponType.WeaponProjectile;
+			//	});
 
-			pyromancy.Available = true;
-			pyromancy.AvailableInCharacterCreation = true;
-			pyromancy.CostInCharacterCreation = 10;
+			//pyromancy.Available = true;
+			//pyromancy.AvailableInCharacterCreation = true;
+			//pyromancy.CostInCharacterCreation = 10;
 
-			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
-			{
-				if (item.invItemCount == 0)
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-				else
-				{
-					//agent.gun.HideGun();
+			//pyromancy.OnPressed = delegate (InvItem item, Agent agent)
+			//{
+			//	if (item.invItemCount == 0)
+			//		item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+			//	else
+			//	{
+			//		//agent.gun.HideGun();
 
-					Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
+			//		Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
-					if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
-					{
-						bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
-					}
-					else if (agent.target.AttackTowardTarget())
-					{
-						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
-					}
-					else
-					{
-						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
-					}
+			//		if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
+			//		{
+			//			bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+			//		}
+			//		else if (agent.target.AttackTowardTarget())
+			//		{
+			//			bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+			//		}
+			//		else
+			//		{
+			//			bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+			//		}
 
-					item.invItemCount--;
-				}
-			};
+			//		item.invItemCount--;
+			//	}
+			//};
 
-			pyromancy.Recharge = (item, myAgent) =>
-			{
-				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
-				{
-					item.invItemCount++;
+			//pyromancy.Recharge = (item, myAgent) =>
+			//{
+			//	if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+			//	{
+			//		item.invItemCount++;
 
-					if (item.invItemCount == 0) // Recharged
-					{
-						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
-						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-					}
-				}
-			};
+			//		if (item.invItemCount == 0) // Recharged
+			//		{
+			//			myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+			//			myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+			//			myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+			//		}
+			//	}
+			//};
 
-			pyromancy.RechargeInterval = (item, myAgent) => 
-				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
-			#endregion
+			//pyromancy.RechargeInterval = (item, myAgent) => 
+			//	item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+			//#endregion
 		}
 		#endregion
 

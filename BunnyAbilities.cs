@@ -56,13 +56,20 @@ namespace BunnyMod
 				{
 					agent.SpawnParticleEffect("Spawn", agent.curPosition);
 
-					agent.Teleport(agent.gc.tileInfo.FindLocationNearLocation(agent.curPosition, agent, 2f, 5f, false, false, true, true, true), false, true);
+					Vector3 targetLocation = BlinkRandomLocation(agent.gc.tileInfo, agent.curPosition, agent, 2f, 5f, false, false, true, true, true);
+
+					agent.Teleport(targetLocation, false, true); 
 					agent.rb.velocity = Vector2.zero;
 
 					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
 					GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-					item.invItemCount += UnityEngine.Random.Range(1, 5);
+					item.invItemCount += BlinkNausea(agent);
+
+					if (item.invItemCount >= 10)
+					{
+						// Apply Dizzy and/or Damage here
+					}
 				}
 			};
 			blink.Recharge = (item, myAgent) =>
@@ -75,7 +82,7 @@ namespace BunnyMod
 					{
 						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
 						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable(); // Remove possibly
 					}
 				}
 			};
@@ -83,10 +90,10 @@ namespace BunnyMod
 			blink.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 			#endregion
-			//#region Cryomancy
+			#region Cryomancy
 
-			//#endregion
-			//#region Pyromancy
+			#endregion
+			#region Pyromancy
 			//GameController gc = BunnyHeader.gc;
 
 			//Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
@@ -164,7 +171,7 @@ namespace BunnyMod
 
 			//pyromancy.RechargeInterval = (item, myAgent) => 
 			//	item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
-			//#endregion
+			#endregion
 		}
 		#endregion
 
@@ -260,5 +267,46 @@ namespace BunnyMod
 			return true;
 		}
 		#endregion
+		public static Vector2 BlinkRandomLocation(TileInfo tileInfo, Vector2 pos, Agent agent, float rangeNear, float rangeFar, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls) // Non-Patch
+		{
+			for (int i = 0; i < 50; i++)
+			{
+				float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
+				Vector2 vector = pos + distance * UnityEngine.Random.insideUnitCircle.normalized;
+
+				TileData tileData = tileInfo.GetTileData(vector);
+				
+				if (tileData.solidObject)
+					continue;
+				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
+					continue;
+				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
+					continue;
+				else if (tileInfo.IsOverlapping(vector, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
+					continue;
+
+				else if (!accountForObstacles)
+					if (tileInfo.GetWallMaterial(vector.x, vector.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
+						continue;
+
+				else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(vector, "Anything", 0.32f))
+					continue;
+
+				if (notInside && (tileInfo.IsIndoors(vector) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
+					continue;
+
+				return vector;
+			}
+			return pos;
+		}
+		public static int BlinkNausea(Agent agent) // Non-Patch
+		{
+			int minimum = 1;
+			int maximum = 5;
+
+			// Consider an Agent Remora to store variables rather than conditional checks every time
+
+			return UnityEngine.Random.Range(minimum, maximum);
+		}
 	}
 }

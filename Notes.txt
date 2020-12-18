@@ -1,11 +1,16 @@
-﻿- SMILE, YOU'RE HAVING FUN!
-- This week's focus: Prefer guards over nesting
+﻿- Current focus: try to prefer guards over nesting
 
 HIGH PRIORITY	√
 
-- Blink does not go indoors
+- General Arcane traits:
+	Arcane Training: Greatly reduces the chance of miscasting a spell. (Spells will always have a 1% chance to miscast)
+	Wild Magic: Increases chance of miscast to 5%, but supercharges most spells.
 
-- Blink is a little slow
+- Trait incompatibilities:
+	Weapon Traits: Stubby Fingers, Sausage Fingers
+	Afraid of Loud Noises / Draw No Blood
+
+- Blink does not go indoors
 
 - Fridge not showing button text for showchest
 
@@ -33,11 +38,9 @@ See Refrigerator_ObjectACtion for the above, pressing Tamper
 
 LOW PRIORITY	√
 
-- Stove sprite turns into pink square when highlighted pre-Interaction
 - Object interactions show a "Cancelled" message even though they went through successfully.
 - Stoves appear to no longer rotate toward walls
 
 
-1.2.1
-- Quick Heal button now works properly for those with dietary restriction traits.
-- Stoves no longer turn into pink squares
+1.2.2
+- 

@@ -48,7 +48,7 @@ namespace BunnyMod
         }
         public static void Initialize_Traits_Inactive()
         {
-            #region combat
+            #region Combat
             CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
                 new CustomNameInfo("Return to Bonke"),
                 new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
@@ -278,6 +278,7 @@ namespace BunnyMod
             AfraidOfLoudNoises.AvailableInCharacterCreation = true;
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
+            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "DrawNoBlood" });
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -289,7 +290,7 @@ namespace BunnyMod
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "FleshFeast" });
+            DrawNoBlood.Conflicting.AddRange(new string[] { "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast" });
             DrawNoBlood.CostInCharacterCreation = -4;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
@@ -330,11 +331,11 @@ namespace BunnyMod
             Charmed.IsActive = true;
             Charmed.Upgrade = "Charmed_2";
 
-            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
+            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", false,
                 new CustomNameInfo("Charmed & Dangerous +"),
                 new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
             Charmed_2.Available = true;
-            Charmed_2.AvailableInCharacterCreation = true;
+            Charmed_2.AvailableInCharacterCreation = false;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
             Charmed_2.Conflicting.AddRange(new string[] { "Charmed", "Cursed", "Cursed_2" });
@@ -390,7 +391,7 @@ namespace BunnyMod
             TamperTantrum.IsActive = true;
             TamperTantrum.Upgrade = "TamperTantrum_2";
 
-            CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait("TamperTantrum_2", true,
+            CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait("TamperTantrum_2", false,
                 new CustomNameInfo("Tamper Tantrum +"),
                 new CustomNameInfo("Your tools take zero wear when used in tampering."));
             TamperTantrum_2.Available = true;

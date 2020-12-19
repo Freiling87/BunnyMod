@@ -2,6 +2,14 @@
 
 HIGH PRIORITY	√
 
+- Ideas:
+	BULLET TIIIIME
+	the point value is 5, and recharge is 10 seconds long after use
+	upgrade traits are making the slowdown longer and the recharge shorter
+	Description: "make time run to near-zero for everyone else except you."
+	During slowdown, your character's speed is given a +4
+	i'm sure you could make it a status effect like fast, but faster
+
 - General Arcane traits:
 	Arcane Training: Greatly reduces the chance of miscasting a spell. (Spells will always have a 1% chance to miscast)
 	Wild Magic: Increases chance of miscast to 5%, but supercharges most spells.

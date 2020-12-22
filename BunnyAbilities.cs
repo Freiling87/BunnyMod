@@ -12,7 +12,7 @@ namespace BunnyMod
 {
 	public class BunnyAbilities
 	{
-		#region Generic
+		#region Main
 		public void Awake()
 		{
 			InitializeAbilities();
@@ -28,7 +28,7 @@ namespace BunnyMod
 
 			CustomAbility blink = RogueLibs.CreateCustomAbility("Blink", spriteBlink, true,
 				new CustomNameInfo("Blink"),
-				new CustomNameInfo("Almost at will, you can instantly teleport to a nearby location. Whether this is better or worse than where you were before remains to be seen. It also recharges at an inconsistent rate. Maybe you can get better at this?"),
+				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -37,7 +37,7 @@ namespace BunnyMod
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.isWeapon = false;
-					item.initCount = 5;
+					item.initCount = 0;
 					item.itemType = ""; //
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
@@ -46,17 +46,17 @@ namespace BunnyMod
 
 			blink.Available = true;
 			blink.AvailableInCharacterCreation = true;
-			blink.CostInCharacterCreation = 10;
+			blink.CostInCharacterCreation = 8;
 
 			blink.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (item.invItemCount > 0)
+				if (item.invItemCount >= 20)
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
 				{
 					agent.SpawnParticleEffect("Spawn", agent.curPosition);
 
-					Vector3 targetLocation = BlinkRandomLocation(agent.gc.tileInfo, agent.curPosition, agent, 2f, 5f, false, false, true, true, true);
+					Vector3 targetLocation = BlinkRandomLocation(agent, false, false, true, true, true);
 
 					agent.Teleport(targetLocation, false, true); 
 					agent.rb.velocity = Vector2.zero;
@@ -64,25 +64,28 @@ namespace BunnyMod
 					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
 					GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-					item.invItemCount += BlinkNausea(agent);
+					item.invItemCount += ManaCost(agent);
 
-					if (item.invItemCount >= 10)
+					if (item.invItemCount >= 20)
 					{
-						// Apply Dizzy and/or Damage here
+						agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+						agent.Say("I smell burning toast.");
+						agent.statusEffects.AddStatusEffect("Dizzy", 5);
+						agent.statusEffects.ChangeHealth(Math.Max(0, item.invItemCount - 20));
 					}
 				}
 			};
-			blink.Recharge = (item, myAgent) =>
+			blink.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount > 0 && myAgent.statusEffects.CanRecharge())
+				if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount--;
 
-					if (item.invItemCount == 0) // Recharged
+					if (item.invItemCount == 20)
 					{
-						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
-						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable(); // Remove possibly
+						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+						agent.gc.audioHandler.Play(agent, "Recharge");
+						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 					}
 				}
 			};
@@ -94,6 +97,11 @@ namespace BunnyMod
 
 			#endregion
 			#region Pyromancy
+
+			//// Check out RotateToMouseOffset
+			////					this.agent.movement.RotateToMouseOffset(this.agent.agentCamera.actualCamera);
+
+
 			//GameController gc = BunnyHeader.gc;
 
 			//Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Fireball);
@@ -267,46 +275,116 @@ namespace BunnyMod
 			return true;
 		}
 		#endregion
-		public static Vector2 BlinkRandomLocation(TileInfo tileInfo, Vector2 pos, Agent agent, float rangeNear, float rangeFar, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls) // Non-Patch
+
+		#region Custom - Magic General
+		public static bool RollForMiscast(Agent agent, int modifier)
 		{
-			for (int i = 0; i < 50; i++)
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk /= 10;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk /= 5;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk *= 5;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk *= 5 / 2;
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
+		#endregion
+		#region Custom - Blink
+		public static Vector2 BlinkRandomLocation(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls) // Non-Patch
+		{
+			TileInfo tileInfo = agent.gc.tileInfo;
+			Vector2 pos = agent.curPosition;
+			float rangeNear = 2f; //
+			float rangeFar = 5f; //
+
+
+			if (agent.statusEffects.hasTrait("BlinkTraining_2"))
 			{
-				float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
-				Vector2 vector = pos + distance * UnityEngine.Random.insideUnitCircle.normalized;
+				rangeNear = 0f;
+				rangeFar = 0f;
+			}
 
-				TileData tileData = tileInfo.GetTileData(vector);
+			if (agent.statusEffects.hasTrait("BlinkTraining")) // Set pos to Mouse pointer tile
+			{
+				TileData td = agent.gc.tileInfo.GetTileData(MouseIngamePosition());
+			}
+			else
+			{
+				for (int i = 0; i < 50; i++)
+				{
+					float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
+					Vector2 vector = pos + distance * UnityEngine.Random.insideUnitCircle.normalized;
+
+					TileData tileData = tileInfo.GetTileData(vector);
 				
-				if (tileData.solidObject)
-					continue;
-				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
-					continue;
-				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
-					continue;
-				else if (tileInfo.IsOverlapping(vector, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
-					continue;
-
-				else if (!accountForObstacles)
-					if (tileInfo.GetWallMaterial(vector.x, vector.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
+					if (tileData.solidObject)
+						continue;
+					else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
+						continue;
+					else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
+						continue;
+					else if (tileInfo.IsOverlapping(vector, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
 						continue;
 
-				else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(vector, "Anything", 0.32f))
-					continue;
+					else if (!accountForObstacles)
+						if (tileInfo.GetWallMaterial(vector.x, vector.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
+							continue;
 
-				if (notInside && (tileInfo.IsIndoors(vector) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
-					continue;
+					else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(vector, "Anything", 0.32f))
+						continue;
 
-				return vector;
+					if (notInside && (tileInfo.IsIndoors(vector) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
+						continue;
+
+					return vector;
+				}
 			}
 			return pos;
 		}
-		public static int BlinkNausea(Agent agent) // Non-Patch
+		public static int ManaCost(Agent agent) // Non-Patch
 		{
-			int minimum = 1;
-			int maximum = 5;
+			int minimum = 4;
+			int maximum = 8;
 
-			// Consider an Agent Remora to store variables rather than conditional checks every time
+			if (agent.specialAbility == "Blink")
+			{
+				if (agent.statusEffects.hasTrait("BlinkTraining"))
+				{
+					minimum -= 1;
+					maximum -= 1;
+				}
+				if (agent.statusEffects.hasTrait("BlinkTraining_2"))
+				{
+					minimum -= 2;
+					maximum -= 2;
+				}
+			}
 
-			return UnityEngine.Random.Range(minimum, maximum);
+			int roll = UnityEngine.Random.Range(minimum, maximum);
+
+			if (agent.statusEffects.hasTrait("StrongGagReflex"))
+				roll -= 1;
+			else if (agent.statusEffects.hasTrait("StrongGagReflex_2"))
+				roll -= 2;
+
+			if (roll > maximum)
+				roll = maximum;
+			if (roll < minimum)
+				roll = minimum;
+
+			return roll;
 		}
+		public static Vector2 MouseIngamePosition()
+		{
+			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
+			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
+		}
+		#endregion
 	}
 }

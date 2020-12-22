@@ -40,7 +40,8 @@ LOW PRIORITY	√
 
 - Object interactions show a "Cancelled" message even though they went through successfully.
 - Stoves appear to no longer rotate toward walls
+- Auto-trayed items may include those you can't use/equip
 
 
 1.2.2
-- 
+- Test whether setting Available to false is actually working for upgrade traits

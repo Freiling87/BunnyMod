@@ -10,16 +10,18 @@ using RogueLibsCore;
 
 /*
     IsActive is the state of the unlock in the Rewards/Traits/Mutators menu
+    if IsActive is set to true, you'll be able to find that unlock while playing; if set to false you won't
+
     Available determines whether the unlock will be available in the menu and in the game
     if Available is set to false, you won't find anything about that unlock in the game; if set to true you can find it in the Rewards/Traits/Mutators menu
-    if IsActive is set to true, you'll be able to find that unlock while playing; if set to false you won't
+    For upgrade traits, set Available to false.
  */
 
 namespace BunnyMod
 {
     public class BunnyTraits
     {
-        #region Generic
+        #region Main
         public void Awake()
         {
             Initialize_Names();
@@ -89,7 +91,7 @@ namespace BunnyMod
             HungryBoy.Available = false; //
             HungryBoy.Upgrade = null;
             #endregion
-            #region Dealer
+            #region Class - Dealer
             CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
                 new CustomNameInfo("Death To Snitches"),
                 new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
@@ -119,6 +121,19 @@ namespace BunnyMod
             Pusher_2.Available = false; //
             Pusher_2.Upgrade = null;
             #endregion
+            #region Equipment
+            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+                new CustomNameInfo("Fatass"),
+                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            Fatass.Available = true;
+            Fatass.AvailableInCharacterCreation = true;
+            Fatass.CanRemove = true;
+            Fatass.CanSwap = false;
+            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            Fatass.CostInCharacterCreation = 0;
+            Fatass.IsActive = true;
+            Fatass.Upgrade = null;
+            #endregion
             #region Karma
             CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
                 new CustomNameInfo("Code of Honor"),
@@ -129,7 +144,7 @@ namespace BunnyMod
             CodeOfHonor.IsActive = false; // 
             CodeOfHonor.Upgrade = null;
 			#endregion
-            #region Priest
+            #region Class - Priest
             CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
                 new CustomNameInfo("Artificial Insermonation"),
                 new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
@@ -294,18 +309,6 @@ namespace BunnyMod
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
 
-            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-                new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            Fatass.Available = true;
-            Fatass.AvailableInCharacterCreation = true;
-            Fatass.CanRemove = true;
-            Fatass.CanSwap = false;
-            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            Fatass.CostInCharacterCreation = 0;
-            Fatass.IsActive = true;
-            Fatass.Upgrade = null;
-
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
                 new CustomNameInfo("Fat Head"),
                 new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
@@ -333,7 +336,7 @@ namespace BunnyMod
             CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", true,
                 new CustomNameInfo("Charmed & Dangerous +"),
                 new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
-            Charmed_2.Available = true;
+            Charmed_2.Available = false;
             Charmed_2.AvailableInCharacterCreation = true;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
@@ -356,7 +359,7 @@ namespace BunnyMod
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
                 new CustomNameInfo("Unlucky +"),
                 new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
-            Cursed_2.Available = true;
+            Cursed_2.Available = false;
             Cursed_2.AvailableInCharacterCreation = true;
             Cursed_2.CanRemove = true;
             Cursed_2.CanSwap = false;
@@ -364,6 +367,108 @@ namespace BunnyMod
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = false;
             Cursed_2.Upgrade = null;
+            #endregion
+            #region Magic - Blink
+            CustomTrait BlinkTraining = RogueLibs.CreateCustomTrait("Trained Blinking", true,
+                new CustomNameInfo("Trained Blinking"),
+                new CustomNameInfo("You can direct your Blink with the mouse pointer. It's still slightly inaccurate."));
+            BlinkTraining.Available = true; 
+            BlinkTraining.AvailableInCharacterCreation = false;
+            BlinkTraining.CanRemove = false;
+            BlinkTraining.CanSwap = false;
+            BlinkTraining.Conflicting.AddRange(new string[] { });
+            BlinkTraining.IsActive = true; 
+            BlinkTraining.SpecialAbilities.AddRange(new string[] { "Blink" });
+            BlinkTraining.Upgrade = "BlinkTraining_2";
+
+            CustomTrait BlinkTraining_2 = RogueLibs.CreateCustomTrait("Trained Blinking +", true,
+                new CustomNameInfo("Trained Blinking +"),
+                new CustomNameInfo("You can Blink with pinpoint accuracy."));
+            BlinkTraining_2.Available = true; 
+            BlinkTraining_2.AvailableInCharacterCreation = false;
+            BlinkTraining_2.CanRemove = false;
+            BlinkTraining_2.CanSwap = false;
+            BlinkTraining_2.Conflicting.AddRange(new string[] { });
+            BlinkTraining_2.IsActive = true; 
+            BlinkTraining_2.SpecialAbilities.AddRange(new string[] { "Blink" });
+            BlinkTraining_2.Upgrade = null;
+            #endregion
+            #region Magic - General
+            CustomTrait FocusedCaster = RogueLibs.CreateCustomTrait("Focused Caster", true,
+                new CustomNameInfo("Focused Caster"),
+                new CustomNameInfo("You've carefully refined your magic techniques to reduce the chances of miscasting spells."));
+            FocusedCaster.Available = true; 
+            FocusedCaster.AvailableInCharacterCreation = true;
+            FocusedCaster.CanRemove = false;
+            FocusedCaster.CanSwap = false;
+            FocusedCaster.Conflicting.AddRange(new string[] { "WildCaster", "WildCaster_2" });
+            FocusedCaster.CostInCharacterCreation = 2;
+            FocusedCaster.IsActive = true; 
+            FocusedCaster.Recommendations.AddRange(new string[] { "Blink" });
+            FocusedCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
+            FocusedCaster.Upgrade = "FocusedCaster_2";
+
+            CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("Focused Caster", true,
+                new CustomNameInfo("Focused Caster"),
+                new CustomNameInfo("You've even more carefully refined your techniques even more to reduce the chances of miscasting spells EVEN MORE."));
+            FocusedCaster_2.Available = false; 
+            FocusedCaster_2.AvailableInCharacterCreation = false;
+            FocusedCaster_2.CanRemove = false;
+            FocusedCaster_2.CanSwap = false;
+            FocusedCaster_2.Conflicting.AddRange(new string[] { "WildCaster", "WildCaster_2" });
+            FocusedCaster_2.CostInCharacterCreation = 2;
+            FocusedCaster_2.IsActive = true; 
+            FocusedCaster_2.Upgrade = null;
+
+            CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("Strong Gag Reflex", true,
+                new CustomNameInfo("Strong Gag Reflex"),
+                new CustomNameInfo("You can tolerate the physical side-effects of magic better than before. You're also very popular downtown."));
+            StrongGagReflex.Available = true; 
+            StrongGagReflex.AvailableInCharacterCreation = false;
+            StrongGagReflex.CanRemove = false;
+            StrongGagReflex.CanSwap = false;
+            StrongGagReflex.IsActive = true; 
+            StrongGagReflex.Recommendations.AddRange(new string[] { "Blink" });
+            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Blink" });
+            StrongGagReflex.Upgrade = "StrongGagReflex_2";
+
+            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("Strong Gag Reflex +", true,
+                new CustomNameInfo("Strong Gag Reflex +"),
+                new CustomNameInfo("You can eat a hotdog in one bite. This also helps with your little magic hobby. Now get out there and throat some Glizzies!"));
+            StrongGagReflex_2.Available = false; 
+            StrongGagReflex_2.AvailableInCharacterCreation = false;
+            StrongGagReflex_2.CanRemove = false;
+            StrongGagReflex_2.CanSwap = false;
+            StrongGagReflex_2.IsActive = true; 
+            StrongGagReflex_2.Upgrade = null;
+
+            CustomTrait WildCaster = RogueLibs.CreateCustomTrait("Wild Caster", true,
+                new CustomNameInfo("Wild Caster"),
+                new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
+            WildCaster.Available = true; 
+            WildCaster.AvailableInCharacterCreation = true;
+            WildCaster.CanRemove = false;
+            WildCaster.CanSwap = false;
+            WildCaster.Conflicting.AddRange(new string[] { "FocusedCaster", "FocusedCaster_2" });
+            WildCaster.CostInCharacterCreation = 2;
+            WildCaster.IsActive = true; 
+            WildCaster.Recommendations.AddRange(new string[] { "Blink" });
+            WildCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
+            WildCaster.Upgrade = "WildCaster_2";
+
+            CustomTrait WildCaster_2 = RogueLibs.CreateCustomTrait("Wild Caster +", true,
+                new CustomNameInfo("Wild Caster +"),
+                new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
+            WildCaster_2.Available = false; 
+            WildCaster_2.AvailableInCharacterCreation = false;
+            WildCaster_2.CanRemove = false;
+            WildCaster_2.CanSwap = false;
+            WildCaster_2.Conflicting.AddRange(new string[] { "FocusedCaster", "FocusedCaster_2" });
+            WildCaster_2.CostInCharacterCreation = 2;
+            WildCaster_2.IsActive = true; 
+            WildCaster_2.Upgrade = null;
+
+            // Distortion Field
             #endregion
             #region Stealth
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
@@ -393,7 +498,7 @@ namespace BunnyMod
             CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait("TamperTantrum_2", true,
                 new CustomNameInfo("Tamper Tantrum +"),
                 new CustomNameInfo("Your tools take zero wear when used in tampering."));
-            TamperTantrum_2.Available = true;
+            TamperTantrum_2.Available = false;
             TamperTantrum_2.AvailableInCharacterCreation = false;
             TamperTantrum_2.CanRemove = false;
             TamperTantrum_2.CanSwap = false;

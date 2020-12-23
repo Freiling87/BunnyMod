@@ -368,37 +368,11 @@ namespace BunnyMod
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = false;
             Cursed_2.Upgrade = null;
-            #endregion
-            #region Magic - Blink
-            CustomTrait BlinkTraining = RogueLibs.CreateCustomTrait("BlinkTraining", true,
-                new CustomNameInfo("Trained Blinking"),
-                new CustomNameInfo("You can direct your Blink with the mouse pointer. It's still slightly inaccurate."));
-            BlinkTraining.Available = true; 
-            BlinkTraining.AvailableInCharacterCreation = true; // Disable after finishing
-            BlinkTraining.CostInCharacterCreation = 3; 
-            BlinkTraining.CanRemove = false;
-            BlinkTraining.CanSwap = false;
-            BlinkTraining.Conflicting.AddRange(new string[] { });
-            BlinkTraining.IsActive = true; 
-            BlinkTraining.SpecialAbilities.AddRange(new string[] { "Blink" });
-            BlinkTraining.Upgrade = "BlinkTraining_2";
-
-            CustomTrait BlinkTraining_2 = RogueLibs.CreateCustomTrait("BlinkTraining_2", true,
-                new CustomNameInfo("Trained Blinking +"),
-                new CustomNameInfo("You can Blink with pinpoint accuracy."));
-            BlinkTraining_2.Available = true; 
-            BlinkTraining_2.AvailableInCharacterCreation = false;
-            BlinkTraining_2.CanRemove = false;
-            BlinkTraining_2.CanSwap = false;
-            BlinkTraining_2.Conflicting.AddRange(new string[] { });
-            BlinkTraining_2.IsActive = true; 
-            BlinkTraining_2.SpecialAbilities.AddRange(new string[] { "Blink" });
-            BlinkTraining_2.Upgrade = null;
-            #endregion
-            #region Magic - General
+			#endregion
+			#region Magic
             CustomTrait FocusedCaster = RogueLibs.CreateCustomTrait("FocusedCaster", true,
                 new CustomNameInfo("Focused Caster"),
-                new CustomNameInfo("You've carefully refined your magic techniques to reduce the chances of miscasting spells."));
+                new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));
             FocusedCaster.Available = true; 
             FocusedCaster.AvailableInCharacterCreation = true;
             FocusedCaster.CanRemove = false;
@@ -412,7 +386,7 @@ namespace BunnyMod
 
             CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("FocusedCaster_2", true,
                 new CustomNameInfo("Focused Caster +"),
-                new CustomNameInfo("You've even more carefully refined your techniques even more to reduce the chances of miscasting spells EVEN MORE."));
+                new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
             FocusedCaster_2.Available = false; 
             FocusedCaster_2.AvailableInCharacterCreation = false;
             FocusedCaster_2.CanRemove = false;
@@ -421,6 +395,31 @@ namespace BunnyMod
             FocusedCaster_2.CostInCharacterCreation = 2;
             FocusedCaster_2.IsActive = true; 
             FocusedCaster_2.Upgrade = null;
+
+            CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
+                new CustomNameInfo("Magic Training"),
+                new CustomNameInfo("Improves your skills with any Magic Special Ability."));
+            MagicTraining.Available = true;
+            MagicTraining.AvailableInCharacterCreation = true; // Disable after finishing
+            MagicTraining.CostInCharacterCreation = 3;
+            MagicTraining.CanRemove = false;
+            MagicTraining.CanSwap = false;
+            MagicTraining.Conflicting.AddRange(new string[] { });
+            MagicTraining.IsActive = true;
+            MagicTraining.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining.Upgrade = "MagicTraining_2";
+
+            CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait("MagicTraining_2", true,
+                new CustomNameInfo("Magic Training +"),
+                new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
+            MagicTraining_2.Available = true;
+            MagicTraining_2.AvailableInCharacterCreation = false;
+            MagicTraining_2.CanRemove = false;
+            MagicTraining_2.CanSwap = false;
+            MagicTraining_2.Conflicting.AddRange(new string[] { });
+            MagicTraining_2.IsActive = true;
+            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining_2.Upgrade = null;
 
             CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
                 new CustomNameInfo("Strong Gag Reflex"),

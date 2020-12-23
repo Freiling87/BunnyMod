@@ -118,19 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BeerCan" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\BeerCan.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Chronomancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Chronomancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Blink" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Blink.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Pyromancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Pyromancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Fireball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Fireball.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Spear" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Spear.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="WhiskeyBottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\WhiskeyBottle.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Telemancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Telemancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

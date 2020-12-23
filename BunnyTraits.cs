@@ -370,11 +370,12 @@ namespace BunnyMod
             Cursed_2.Upgrade = null;
             #endregion
             #region Magic - Blink
-            CustomTrait BlinkTraining = RogueLibs.CreateCustomTrait("Trained Blinking", true,
+            CustomTrait BlinkTraining = RogueLibs.CreateCustomTrait("BlinkTraining", true,
                 new CustomNameInfo("Trained Blinking"),
                 new CustomNameInfo("You can direct your Blink with the mouse pointer. It's still slightly inaccurate."));
             BlinkTraining.Available = true; 
-            BlinkTraining.AvailableInCharacterCreation = false;
+            BlinkTraining.AvailableInCharacterCreation = true; // Disable after finishing
+            BlinkTraining.CostInCharacterCreation = 3; 
             BlinkTraining.CanRemove = false;
             BlinkTraining.CanSwap = false;
             BlinkTraining.Conflicting.AddRange(new string[] { });
@@ -382,7 +383,7 @@ namespace BunnyMod
             BlinkTraining.SpecialAbilities.AddRange(new string[] { "Blink" });
             BlinkTraining.Upgrade = "BlinkTraining_2";
 
-            CustomTrait BlinkTraining_2 = RogueLibs.CreateCustomTrait("Trained Blinking +", true,
+            CustomTrait BlinkTraining_2 = RogueLibs.CreateCustomTrait("BlinkTraining_2", true,
                 new CustomNameInfo("Trained Blinking +"),
                 new CustomNameInfo("You can Blink with pinpoint accuracy."));
             BlinkTraining_2.Available = true; 
@@ -395,7 +396,7 @@ namespace BunnyMod
             BlinkTraining_2.Upgrade = null;
             #endregion
             #region Magic - General
-            CustomTrait FocusedCaster = RogueLibs.CreateCustomTrait("Focused Caster", true,
+            CustomTrait FocusedCaster = RogueLibs.CreateCustomTrait("FocusedCaster", true,
                 new CustomNameInfo("Focused Caster"),
                 new CustomNameInfo("You've carefully refined your magic techniques to reduce the chances of miscasting spells."));
             FocusedCaster.Available = true; 
@@ -409,8 +410,8 @@ namespace BunnyMod
             FocusedCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
             FocusedCaster.Upgrade = "FocusedCaster_2";
 
-            CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("Focused Caster", true,
-                new CustomNameInfo("Focused Caster"),
+            CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("FocusedCaster_2", true,
+                new CustomNameInfo("Focused Caster +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to reduce the chances of miscasting spells EVEN MORE."));
             FocusedCaster_2.Available = false; 
             FocusedCaster_2.AvailableInCharacterCreation = false;
@@ -421,19 +422,20 @@ namespace BunnyMod
             FocusedCaster_2.IsActive = true; 
             FocusedCaster_2.Upgrade = null;
 
-            CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("Strong Gag Reflex", true,
+            CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
                 new CustomNameInfo("Strong Gag Reflex"),
                 new CustomNameInfo("You can tolerate the physical side-effects of magic better than before. You're also very popular downtown."));
             StrongGagReflex.Available = true; 
-            StrongGagReflex.AvailableInCharacterCreation = false;
+            StrongGagReflex.AvailableInCharacterCreation = true;
             StrongGagReflex.CanRemove = false;
             StrongGagReflex.CanSwap = false;
+            StrongGagReflex.CostInCharacterCreation = 2;
             StrongGagReflex.IsActive = true; 
             StrongGagReflex.Recommendations.AddRange(new string[] { "Blink" });
             StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Blink" });
             StrongGagReflex.Upgrade = "StrongGagReflex_2";
 
-            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("Strong Gag Reflex +", true,
+            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,
                 new CustomNameInfo("Strong Gag Reflex +"),
                 new CustomNameInfo("You can eat a hotdog in one bite. This also helps with your little magic hobby. Now get out there and throat some Glizzies!"));
             StrongGagReflex_2.Available = false; 
@@ -443,7 +445,7 @@ namespace BunnyMod
             StrongGagReflex_2.IsActive = true; 
             StrongGagReflex_2.Upgrade = null;
 
-            CustomTrait WildCaster = RogueLibs.CreateCustomTrait("Wild Caster", true,
+            CustomTrait WildCaster = RogueLibs.CreateCustomTrait("WildCaster", true,
                 new CustomNameInfo("Wild Caster"),
                 new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
             WildCaster.Available = true; 
@@ -457,7 +459,7 @@ namespace BunnyMod
             WildCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
             WildCaster.Upgrade = "WildCaster_2";
 
-            CustomTrait WildCaster_2 = RogueLibs.CreateCustomTrait("Wild Caster +", true,
+            CustomTrait WildCaster_2 = RogueLibs.CreateCustomTrait("WildCaster_2", true,
                 new CustomNameInfo("Wild Caster +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
             WildCaster_2.Available = false; 

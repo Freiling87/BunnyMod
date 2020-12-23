@@ -50,8 +50,16 @@ namespace BunnyMod
 
 			blink.OnPressed = delegate (InvItem item, Agent agent)
 			{
+				if (RollForMiscast(agent, item.invItemCount))
+				{
+					BlinkMiscast(agent);
+				}
+
 				if (item.invItemCount >= 20)
+				{
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+					agent.Say("I need to rest or my head will explode. I've seen it happen.");
+				}
 				else
 				{
 					agent.SpawnParticleEffect("Spawn", agent.curPosition);
@@ -67,12 +75,7 @@ namespace BunnyMod
 					item.invItemCount += ManaCost(agent);
 
 					if (item.invItemCount >= 20)
-					{
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
-						agent.Say("I smell burning toast.");
-						agent.statusEffects.AddStatusEffect("Dizzy", 5);
-						agent.statusEffects.ChangeHealth(Math.Max(0, item.invItemCount - 20));
-					}
+						BlinkMiscast(agent);
 				}
 			};
 			blink.Recharge = (item, agent) =>
@@ -295,13 +298,35 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Custom - Blink
+		public static void BlinkMiscast (Agent agent)
+		{
+			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+			switch (UnityEngine.Random.Range(1, 4))
+			{
+				case 1:
+					agent.Say("I smell burning toast.");
+					break;
+				case 2:
+					agent.Say("Blurgh. (Drool)");
+					break;
+				case 3:
+					agent.Say("I pink I bust hab a stroke.");
+					break;
+				case 4:
+					agent.Say("My head a splode.");
+					break;
+			}
+			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
+			agent.statusEffects.ChangeHealth(-agent.inventory.equippedSpecialAbility.invItemCount);
+			agent.statusEffects.AddStatusEffect("Dizzy", 5);
+		}
 		public static Vector2 BlinkRandomLocation(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls) // Non-Patch
 		{
 			TileInfo tileInfo = agent.gc.tileInfo;
-			Vector2 pos = agent.curPosition;
+			Vector2 currentPosition = agent.curPosition;
+			Vector2 targetPosition;
 			float rangeNear = 2f; //
 			float rangeFar = 5f; //
-
 
 			if (agent.statusEffects.hasTrait("BlinkTraining_2"))
 			{
@@ -309,42 +334,53 @@ namespace BunnyMod
 				rangeFar = 0f;
 			}
 
-			if (agent.statusEffects.hasTrait("BlinkTraining")) // Set pos to Mouse pointer tile
+			if (agent.statusEffects.hasTrait("BlinkTraining"))
 			{
-				TileData td = agent.gc.tileInfo.GetTileData(MouseIngamePosition());
+				rangeNear = 1f;
+				rangeFar = 3f;
+
+
+				//TileData tileData = agent.gc.tileInfo.GetTileData(MouseIngamePosition()); This needs to point to the randomized location, not the mouse position
+
 			}
-			else
+
+			for (int i = 0; i < 50; i++)
 			{
-				for (int i = 0; i < 50; i++)
+				if (agent.statusEffects.hasTrait("BlinkTraining"))
 				{
 					float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
-					Vector2 vector = pos + distance * UnityEngine.Random.insideUnitCircle.normalized;
-
-					TileData tileData = tileInfo.GetTileData(vector);
-				
-					if (tileData.solidObject)
-						continue;
-					else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
-						continue;
-					else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
-						continue;
-					else if (tileInfo.IsOverlapping(vector, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
-						continue;
-
-					else if (!accountForObstacles)
-						if (tileInfo.GetWallMaterial(vector.x, vector.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
-							continue;
-
-					else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(vector, "Anything", 0.32f))
-						continue;
-
-					if (notInside && (tileInfo.IsIndoors(vector) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
-						continue;
-
-					return vector;
+					targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
 				}
+				else
+				{
+					float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
+					targetPosition = currentPosition + distance * UnityEngine.Random.insideUnitCircle.normalized;
+				}
+
+				TileData tileData = tileInfo.GetTileData(targetPosition);
+				
+				if (tileData.solidObject)
+					continue;
+				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
+					continue;
+				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
+					continue;
+				else if (tileInfo.IsOverlapping(targetPosition, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
+					continue;
+
+				else if (!accountForObstacles)
+					if (tileInfo.GetWallMaterial(targetPosition.x, targetPosition.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
+						continue;
+
+				else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(targetPosition, "Anything", 0.32f))
+					continue;
+
+				if (notInside && (tileInfo.IsIndoors(targetPosition) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
+					continue;
+
+				return targetPosition;
 			}
-			return pos;
+			return currentPosition;
 		}
 		public static int ManaCost(Agent agent) // Non-Patch
 		{

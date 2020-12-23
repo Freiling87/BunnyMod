@@ -1,48 +1,21 @@
 ﻿- Current focus: try to prefer guards over nesting
 
+TEST NOTES
+
 HIGH PRIORITY	√
-
-- Ideas:
-	BULLET TIIIIME
-	the point value is 5, and recharge is 10 seconds long after use
-	upgrade traits are making the slowdown longer and the recharge shorter
-	Description: "make time run to near-zero for everyone else except you."
-	During slowdown, your character's speed is given a +4
-	i'm sure you could make it a status effect like fast, but faster
-
-- General Arcane traits:
-	Arcane Training: Greatly reduces the chance of miscasting a spell. (Spells will always have a 1% chance to miscast)
-	Wild Magic: Increases chance of miscast to 5%, but supercharges most spells.
 
 - Trait incompatibilities:
 	Weapon Traits: Stubby Fingers, Sausage Fingers
 	Afraid of Loud Noises / Draw No Blood
 
-- Blink does not go indoors
-
 - Fridge not showing button text for showchest
 
-- Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that.
-
-- Stove name hovers after use (Which button? Both?)
+- Stove name hovers after use. Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 
--
-[Message: Bunny Mod] Refrigerator (1448): Refrigerator_Interact
-[Message: Bunny Mod] Refrigerator (1448): ObjectReal_Interact
-[Message: Bunny Mod] Refrigerator (1448): Refrigerator_DetermineButtons
-[Message: Bunny Mod] Button error?
-[Message: Bunny Mod] Refrigerator (1448): Refrigerator_PressedButton
-[Message: Bunny Mod] Refrigerator (1448): ObjectReal_PressedButton
-[Message: Bunny Mod] Refrigerator (1448): Refrigerator_FinishedOperating
-
-See Refrigerator_ObjectACtion for the above, pressing Tamper
-
-
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
-
 
 LOW PRIORITY	√
 
@@ -50,6 +23,13 @@ LOW PRIORITY	√
 - Stoves appear to no longer rotate toward walls
 - Auto-trayed items may include those you can't use/equip
 
+IDEAS 
+- BULLET TIME
+	the point value is 5, and recharge is 10 seconds long after use
+	upgrade traits are making the slowdown longer and the recharge shorter
+	Description: "make time run to near-zero for everyone else except you."
+	During slowdown, your character's speed is given a +4
+	i'm sure you could make it a status effect like fast, but faster
 
 1.2.2
 - Test whether setting Available to false is actually working for upgrade traits

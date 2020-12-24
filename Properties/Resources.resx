@@ -121,6 +121,12 @@
   <data name="Chronomancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Chronomancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Cryomancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Cryomancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Electromancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Electromancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Pyromancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Pyromancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

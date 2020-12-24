@@ -109,12 +109,11 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
+    <None Include="Properties\Resources\Cryomancy.bin" />
+    <None Include="Properties\Resources\Electromancy.bin" />
     <None Include="Properties\Resources\Pyromancy.bin" />
     <None Include="Properties\Resources\Telemancy.bin" />
     <None Include="Properties\Resources\Chronomancy.bin" />
-    <None Include="Properties\Resources\Fireball.bin" />
-    <None Include="Properties\Resources\Spear.bin" />
-    <None Include="Properties\Resources\WhiskeyBottle.bin" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

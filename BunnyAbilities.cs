@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-
-using BepInEx;
-using HarmonyLib;
+﻿using RogueLibsCore;
 using UnityEngine;
-using UnityEngine.Networking;
-using RogueLibsCore;
 
 namespace BunnyMod
 {
@@ -69,7 +61,7 @@ namespace BunnyMod
 					}
 					else
 					{
-						if (RollForMiscast(agent, item.invItemCount))
+						if (TelemancyRollForMiscast(agent, item.invItemCount))
 						{
 							slowedDown = true;
 							ChronomancyMiscast(agent, item.invItemCount);
@@ -77,7 +69,7 @@ namespace BunnyMod
 						else
 						{
 							spedUp = true;
-							item.invItemCount += ChronomancyAccrual(agent);
+							item.invItemCount += ChronomancyManaCost(agent);
 
 							if (item.invItemCount >= 20)
 							{
@@ -99,7 +91,7 @@ namespace BunnyMod
 
 				if (spedUp)
 				{
-					item.invItemCount += ChronomancyAccrual(agent);
+					item.invItemCount += ChronomancyManaCost(agent);
 
 					if (item.invItemCount >= 20)
 					{
@@ -132,15 +124,154 @@ namespace BunnyMod
 
 			#endregion
 			#region Cryomancy
+			Sprite spriteCryomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Cryomancy);
+
+			CustomAbility cryomancy = RogueLibs.CreateCustomAbility("Cryomancy", spriteCryomancy, true,
+				new CustomNameInfo("Cryomancy"),
+				new CustomNameInfo("You can shoot a Freeze Ray from your hands. Your ice cream never melts."),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
+					item.isWeapon = true;
+					item.rapidFire = false;
+					item.initCount = 100;
+					item.itemType = "WeaponProjectile";
+					//item.LoadItemSprite("Fireball");
+					item.rapidFire = false;
+					item.rechargeAmountInverse = item.initCount;
+					item.shadowOffset = 2;
+					item.specialMeleeTexture = true;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
+				});
+
+			cryomancy.Available = true;
+			cryomancy.AvailableInCharacterCreation = true;
+			cryomancy.CostInCharacterCreation = 8;
+
+			bool icedOut = false;
+
+			cryomancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (icedOut)
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				}
+				
+				if (CryomancyRollForMiscast(agent, 0))
+				{
+					CryomancyMiscast(agent, 20);
+					icedOut = true;
+				}
+				else
+				{
+					CryomancyCast(agent);
+					item.invItemCount -= CryomancyManaCost(agent);
+				}
+			};
+
+			cryomancy.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+					{
+						if (icedOut)
+							icedOut = false;
+
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			cryomancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 
 			#endregion
 			#region Electromancy
+			Sprite spriteElectromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Electromancy);
 
+			CustomAbility electromancy = RogueLibs.CreateCustomAbility("Electromancy", spriteElectromancy, true,
+				new CustomNameInfo("Electromancy"),
+				new CustomNameInfo("You can shoot a little bolt of lightning from your hands. Do not try to charge your phone with it."),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
+					item.isWeapon = true;
+					item.rapidFire = false;
+					item.initCount = 100;
+					item.itemType = "WeaponProjectile";
+					item.rapidFire = false;
+					item.rechargeAmountInverse = item.initCount;
+					item.shadowOffset = 2;
+					item.specialMeleeTexture = true;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
+				});
+
+			electromancy.Available = true;
+			electromancy.AvailableInCharacterCreation = true;
+			electromancy.CostInCharacterCreation = 8;
+
+			bool zappedOut = false;
+
+			electromancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (zappedOut)
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				}
+
+				if (ElectromancyRollForMiscast(agent, 0))
+				{
+					ElectromancyMiscast(agent, 20);
+					zappedOut = true;
+				}
+				else
+				{
+					ElectromancyCast(agent);
+					item.invItemCount -= ElectromancyManaCost(agent);
+				}
+			};
+
+			electromancy.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+					{
+						if (zappedOut)
+							zappedOut = false;
+
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			electromancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 			#endregion
 			#region Pyromancy
-
-			// Check out RotateToMouseOffset
-			//					this.agent.movement.RotateToMouseOffset(this.agent.agentCamera.actualCamera);
 
 			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
 
@@ -156,7 +287,7 @@ namespace BunnyMod
 					item.dontSelectNPC = true;
 					item.gunKnockback = 0;
 					item.isWeapon = true;
-					item.rapidFire = false;
+					item.rapidFire = true; //testing
 					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
 					item.LoadItemSprite("Fireball");
@@ -173,29 +304,29 @@ namespace BunnyMod
 			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 8;
 
+			bool burntOut = false;
+
 			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
 			{
+
 				if (item.invItemCount == 0)
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "MindControlEnd");
+					burntOut = true;
+				}
 				else
 				{
-					Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
-					
-					if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
-						bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
-					else if (agent.target.AttackTowardTarget())
-						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
-					else
-						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
-
-					if (agent.gc.sessionDataBig.autoAim != "Off")
+					if (TelemancyRollForMiscast(agent, 0))
 					{
-						int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
-						if (agent.gc.percentChance(myChance))
-							bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
+						PyromancyMiscast(agent, 20);
+						burntOut = true;
 					}
-
-					item.invItemCount --;
+					else
+					{
+						PyromancyCast(agent);
+						if (PyromancyManaCost(agent))
+							item.invItemCount--;
+					}
 				}
 			};
 
@@ -207,6 +338,9 @@ namespace BunnyMod
 
 					if (item.invItemCount == 100)
 					{
+						if (burntOut)
+							burntOut = false;
+
 						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
 						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
 						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
@@ -244,7 +378,7 @@ namespace BunnyMod
 
 			telemancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (RollForMiscast(agent, item.invItemCount))
+				if (TelemancyRollForMiscast(agent, item.invItemCount))
 					TelemancyMiscast(agent);
 
 				if (item.invItemCount <= 0)
@@ -292,27 +426,6 @@ namespace BunnyMod
 		#endregion
 
 		#region Magic General
-		public static bool RollForMiscast(Agent agent, int modifier)
-		{
-			int risk = 100 + modifier;
-
-			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 50;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 25;
-
-			if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 150;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 75;
-
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
-				risk *= (4 / 5);
-
-			return (UnityEngine.Random.Range(0, 10000) <= risk);
-		}
 		public static Vector2 MouseIngamePosition()
 		{
 			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
@@ -320,20 +433,10 @@ namespace BunnyMod
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
 		#endregion
+		#region Aimatomancy // Blood Magic
+		// Harm self or destroy corpse for boosts
+		#endregion
 		#region Chronomancy
-		public static int ChronomancyAccrual(Agent agent)
-		{
-			int increment;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				increment = UnityEngine.Random.Range(1, 3);
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				increment = UnityEngine.Random.Range(0, 4);
-			else
-				increment = 2;
-
-			return increment;
-		}
 		public static void ChronomancyCast(Agent agent)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
@@ -353,6 +456,19 @@ namespace BunnyMod
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.FindSpeed();
+		}
+		public static int ChronomancyManaCost(Agent agent)
+		{
+			int increment;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				increment = UnityEngine.Random.Range(1, 3);
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				increment = UnityEngine.Random.Range(0, 4);
+			else
+				increment = 2;
+
+			return increment;
 		}
 		public static void ChronomancyMiscast(Agent agent, int degree)
 		{
@@ -377,6 +493,239 @@ namespace BunnyMod
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() / 2;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		#endregion
+		#region Cryomancy
+		public static void CryomancyCast(Agent agent)
+		{
+			agent.gun.HideGun();
+
+			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.FreezeRay, agent);
+
+			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+			else if (agent.target.AttackTowardTarget())
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+			else
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+
+			if (agent.gc.sessionDataBig.autoAim != "Off")
+			{
+				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
+				if (agent.gc.percentChance(myChance))
+					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
+			}
+		}
+		public static int CryomancyManaCost(Agent agent)
+		{
+			int minimum = 20;
+			int maximum = 40;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			{
+				minimum -= 5;
+				maximum -= 5;
+			}
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			{
+				minimum -= 2;
+				maximum -= 2;
+			}
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+			{
+				minimum -= UnityEngine.Random.Range(-3, 5);
+				maximum -= UnityEngine.Random.Range(-3, 5);
+			}
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				minimum -= UnityEngine.Random.Range(-5, 10);
+				maximum -= UnityEngine.Random.Range(-5, 10);
+			}
+
+			return UnityEngine.Random.Range(minimum, maximum);
+		}
+		public static void CryomancyMiscast(Agent agent, int degree)
+		{
+			agent.statusEffects.AddStatusEffect("Frozen", degree);
+		}
+		public static bool CryomancyRollForMiscast(Agent agent, int modifier)
+		{
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 50;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 25;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 150;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 75;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= (4 / 5);
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
+		#endregion
+		#region Electromancy
+		public static void ElectromancyCast(Agent agent)
+		{
+			agent.gun.HideGun();
+
+			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
+
+			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+			else if (agent.target.AttackTowardTarget())
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+			else
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+
+			if (agent.gc.sessionDataBig.autoAim != "Off")
+			{
+				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
+				if (agent.gc.percentChance(myChance))
+					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
+			}
+		}
+		public static int ElectromancyManaCost(Agent agent)
+		{
+			int minimum = 20;
+			int maximum = 40;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			{
+				minimum -= 5;
+				maximum -= 5;
+			}
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			{
+				minimum -= 2;
+				maximum -= 2;
+			}
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+			{
+				minimum -= UnityEngine.Random.Range(-3, 5);
+				maximum -= UnityEngine.Random.Range(-3, 5);
+			}
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				minimum -= UnityEngine.Random.Range(-5, 10);
+				maximum -= UnityEngine.Random.Range(-5, 10);
+			}
+
+			return UnityEngine.Random.Range(minimum, maximum);
+		}
+		public static void ElectromancyMiscast(Agent agent, int degree)
+		{
+			agent.statusEffects.AddStatusEffect("Electrocuted", degree);
+		}
+		public static bool ElectromancyRollForMiscast(Agent agent, int modifier)
+		{
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 50;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 25;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 150;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 75;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= (4 / 5);
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
+		#endregion
+		#region Kinetomancy // Telekinesis
+
+		#endregion
+		#region Megaleiomancy //Charm Person
+
+		#endregion
+		#region Necromancy
+		// Summon Zombies from corpses, automatically alleid
+		// Miscast turns all of them hostile, or summons hostile ghosts
+		// When close to a ghost, you can turn them into mana crystals
+		#endregion
+		#region Pyromancy
+		public static void PyromancyCast(Agent agent)
+		{
+			agent.gun.HideGun();
+
+			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
+
+			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+			else if (agent.target.AttackTowardTarget())
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+			else
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+
+			if (agent.gc.sessionDataBig.autoAim != "Off")
+			{
+				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
+				if (agent.gc.percentChance(myChance))
+					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
+			}
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				bullet.speed = 15;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				bullet.speed = 20;
+			else
+				bullet.speed = 7;
+		}
+		public static bool PyromancyManaCost(Agent agent)
+		{
+			int chance = 100;
+
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				chance -= 10;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				chance -= 20;
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				chance -= 15;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				chance -= 30;
+
+			return agent.gc.percentChance(chance);
+		}
+		public static void PyromancyMiscast(Agent agent, int degree)
+		{
+			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
+			agent.statusEffects.ChangeHealth(-degree);
+		}
+		public static bool PyromancyRollForMiscast(Agent agent, int modifier)
+		{
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 66;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 33;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 50;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 25;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= (4 / 5);
+
+			return UnityEngine.Random.Range(0, 10000) <= risk;
 		}
 		#endregion
 		#region Telemancy
@@ -502,6 +851,27 @@ namespace BunnyMod
 			agent.statusEffects.ChangeHealth(- degree);
 			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		public static bool TelemancyRollForMiscast(Agent agent, int modifier)
+		{
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 50;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 25;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 150;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 75;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= (4 / 5);
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
 		#endregion
 	}

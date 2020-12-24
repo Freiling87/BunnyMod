@@ -5,11 +5,6 @@ TEST NOTES
 - Chronomancy
 	Flags appear to persist between runs.
 
-- Pyromancy
-	Can only aim North
-	No rapid fire
-
-
 HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
 
 - Move all Magic traits to a scale of 0-100
@@ -34,27 +29,6 @@ LOW PRIORITY	√
 - Auto-trayed items may include those you can't use/equip
 
 IDEAS 
-- BULLET TIME
-	the point value is 5, and recharge is 10 seconds long after use
-	upgrade traits are making the slowdown longer and the recharge shorter
-	Description: "make time run to near-zero for everyone else except you."
-	During slowdown, your character's speed is given a +4
-	i'm sure you could make it a status effect like fast, but faster
-
-	waveToday at 10:43 AM
-telekinesis? the throw ability but you can pick up from a distance
-SolivanToday at 10:53 AM
-- Necromancy (summon zombie followers)
-Grimm ZToday at 10:54 AM
-Sacrifice? Lose hp (or use corpse)and get damage up
-SolivanToday at 10:57 AM
-yes
-GenEricToday at 11:30 AM
-that gives me an idea
-"force glove"
-5 uses
-lets you pick up items form get distance and tehn toss them
-
 
     Seperation Anxiety; cost: -3
         If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)

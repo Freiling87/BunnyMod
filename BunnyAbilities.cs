@@ -28,7 +28,7 @@ namespace BunnyMod
 
 			CustomAbility blink = RogueLibs.CreateCustomAbility("Blink", spriteBlink, true,
 				new CustomNameInfo("Blink"),
-				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
+				new CustomNameInfo("You can teleport a short distance at will, but it's unpredictable and if you overdo it, you'll have a little aneurysm. Maybe you can get better at this?"),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -46,7 +46,7 @@ namespace BunnyMod
 
 			blink.Available = true;
 			blink.AvailableInCharacterCreation = true;
-			blink.CostInCharacterCreation = 8;
+			blink.CostInCharacterCreation = 7;
 
 			blink.OnPressed = delegate (InvItem item, Agent agent)
 			{
@@ -346,7 +346,7 @@ namespace BunnyMod
 
 			for (int i = 0; i < 50; i++)
 			{
-				if (agent.statusEffects.hasTrait("BlinkTraining"))
+				if (agent.statusEffects.hasTrait("MagicTraining") || agent.statusEffects.hasTrait("MagicTraining_2"))
 				{
 					float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
 					targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;

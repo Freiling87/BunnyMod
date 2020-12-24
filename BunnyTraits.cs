@@ -383,6 +383,10 @@ namespace BunnyMod
             BlinkTraining.SpecialAbilities.AddRange(new string[] { "Blink" });
             BlinkTraining.Upgrade = "BlinkTraining_2";
 
+            FieldInfo unlockField = AccessTools.Field(typeof(CustomUnlock), "unlock");
+            Unlock unlock = (Unlock)unlockField.GetValue(BlinkTraining);
+            unlock.cost3 = 5;
+
             CustomTrait BlinkTraining_2 = RogueLibs.CreateCustomTrait("BlinkTraining_2", true,
                 new CustomNameInfo("Trained Blinking +"),
                 new CustomNameInfo("You can Blink with pinpoint accuracy."));

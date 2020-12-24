@@ -2,7 +2,16 @@
 
 TEST NOTES
 
-HIGH PRIORITY	√
+- Chronomancy
+	Values for time shift appear to be reversed. Normal use moves the whole game forward at hyperspeed. 
+
+- Pyromancy
+	Can only aim North
+	No rapid fire
+
+HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
+
+- Trained Blinking teleports you to... nowhere!
 
 - Trait incompatibilities:
 	Weapon Traits: Stubby Fingers, Sausage Fingers

@@ -6,6 +6,7 @@ using System.Reflection;
 using BepInEx;
 using HarmonyLib;
 using UnityEngine;
+using UnityEngine.Networking;
 using RogueLibsCore;
 
 namespace BunnyMod
@@ -16,19 +17,13 @@ namespace BunnyMod
 		public void Awake()
 		{
 			InitializeAbilities();
-
-			BunnyHeader.MainInstance.PatchPostfix(typeof(Agent), "FindSpeed", GetType(), "Agent_FindSpeed", new Type[0] {});
-
-			CustomName superFast = RogueLibs.CreateCustomName("SuperFast", "StatusEffect",
-				new CustomNameInfo("Super Fast"));
-			CustomName superSlow = RogueLibs.CreateCustomName("SuperSlow", "StatusEffect",
-				new CustomNameInfo("Super Slow"));
 		}
 		public static void InitializeAbilities()
 		{
 			#region Chronomancy
 			bool spedUp = false;
 			bool slowedDown = false;
+			bool coolDown = false;
 
 			Sprite spriteChronomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Chronomancy);
 
@@ -56,43 +51,52 @@ namespace BunnyMod
 
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (spedUp)
-				{
-					spedUp = false;
-					ChronomancyDecast(agent);
-				}
-				else if (slowedDown)
-				{
+				if (coolDown)
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-					agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
-				}
 				else
 				{
-					if (RollForMiscast(agent, item.invItemCount))
+					coolDown = true;
+
+					if (spedUp)
 					{
-						slowedDown = true;
-						ChronomancyMiscast(agent, item.invItemCount);
+						spedUp = false;
+						ChronomancyDecast(agent);
+					}
+					else if (slowedDown)
+					{
+						item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+						agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
 					}
 					else
 					{
-						spedUp = true;
-						item.invItemCount += ChronomancyAccrual(agent);
-
-						if (item.invItemCount >= 20)
+						if (RollForMiscast(agent, item.invItemCount))
 						{
-							spedUp = false;
 							slowedDown = true;
-							ChronomancyDecast(agent);
 							ChronomancyMiscast(agent, item.invItemCount);
 						}
 						else
+						{
 							spedUp = true;
+							item.invItemCount += ChronomancyAccrual(agent);
+
+							if (item.invItemCount >= 20)
+							{
+								spedUp = false;
+								slowedDown = true;
+								ChronomancyDecast(agent);
+								ChronomancyMiscast(agent, item.invItemCount);
+							}
+							else
+								spedUp = true;
 							ChronomancyCast(agent);
+						}
 					}
 				}
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
+				coolDown = false;
+
 				if (spedUp)
 				{
 					item.invItemCount += ChronomancyAccrual(agent);
@@ -138,8 +142,6 @@ namespace BunnyMod
 			// Check out RotateToMouseOffset
 			//					this.agent.movement.RotateToMouseOffset(this.agent.agentCamera.actualCamera);
 
-			GameController gc = BunnyHeader.gc;
-
 			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
 
 			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
@@ -155,7 +157,7 @@ namespace BunnyMod
 					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = false;
-					item.initCount = 30;
+					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
 					item.LoadItemSprite("Fireball");
 					item.rapidFire = true;
@@ -169,7 +171,7 @@ namespace BunnyMod
 
 			pyromancy.Available = true;
 			pyromancy.AvailableInCharacterCreation = true;
-			pyromancy.CostInCharacterCreation = 10;
+			pyromancy.CostInCharacterCreation = 8;
 
 			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
@@ -177,25 +179,29 @@ namespace BunnyMod
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
 				{
-					//agent.gun.HideGun();
-
 					Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
-
-					if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
-					{
+					
+					if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 						bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
-					}
 					else if (agent.target.AttackTowardTarget())
-					{
 						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
-					}
 					else
-					{
 						bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+
+					if (agent.gc.sessionDataBig.autoAim != "Off")
+					{
+						int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
+						if (agent.gc.percentChance(myChance))
+							bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 					}
 
-					item.invItemCount--;
+					item.invItemCount -= 5;
 				}
+			};
+
+			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float secondsHeld)
+			{
+				// Rapid Fire here?
 			};
 
 			pyromancy.Recharge = (item, myAgent) =>
@@ -204,7 +210,7 @@ namespace BunnyMod
 				{
 					item.invItemCount++;
 
-					if (item.invItemCount == 0) // Recharged
+					if (item.invItemCount == 100)
 					{
 						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
 						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
@@ -214,7 +220,7 @@ namespace BunnyMod
 			};
 
 			pyromancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 			#endregion
 			#region Telemancy
 			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
@@ -230,7 +236,7 @@ namespace BunnyMod
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.isWeapon = false;
-					item.initCount = 0;
+					item.initCount = 100;
 					item.itemType = ""; //
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
@@ -246,10 +252,10 @@ namespace BunnyMod
 				if (RollForMiscast(agent, item.invItemCount))
 					TelemancyMiscast(agent);
 
-				if (item.invItemCount >= 20)
+				if (item.invItemCount <= 0)
 				{
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-					agent.Say("I need to rest or my head will explode. I've seen it happen.");
+					agent.Say("I need to give it a rest or my head will explode. I've seen it happen.");
 				}
 				else
 				{
@@ -263,19 +269,19 @@ namespace BunnyMod
 					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
 					GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-					item.invItemCount += ManaCost(agent);
+					item.invItemCount -= TelemancyManaCost(agent);
 
-					if (item.invItemCount >= 20)
+					if (item.invItemCount <= 0)
 						TelemancyMiscast(agent);
 				}
 			};
 			telemancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
+				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
 				{
-					item.invItemCount--;
+					item.invItemCount++;
 
-					if (item.invItemCount == 20)
+					if (item.invItemCount == 100)
 					{
 						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 						agent.gc.audioHandler.Play(agent, "Recharge");
@@ -285,7 +291,7 @@ namespace BunnyMod
 			};
 
 			telemancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 			#endregion
 		}
 		#endregion
@@ -312,39 +318,6 @@ namespace BunnyMod
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
-		public static int ManaCost(Agent agent) // Non-Patch
-		{
-			int minimum = 4;
-			int maximum = 8;
-
-			if (agent.specialAbility == "Telemancy")
-			{
-				if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				{
-					minimum -= 2;
-					maximum -= 2;
-				}
-				else if (agent.statusEffects.hasTrait("MagicTraining"))
-				{
-					minimum -= 1;
-					maximum -= 1;
-				}
-			}
-
-			int roll = UnityEngine.Random.Range(minimum, maximum);
-
-			if (agent.statusEffects.hasTrait("StrongGagReflex"))
-				roll -= 1;
-			else if (agent.statusEffects.hasTrait("StrongGagReflex_2"))
-				roll -= 2;
-
-			if (roll > maximum)
-				roll = maximum;
-			if (roll < minimum)
-				roll = minimum;
-
-			return roll;
-		}
 		public static Vector2 MouseIngamePosition()
 		{
 			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
@@ -357,9 +330,9 @@ namespace BunnyMod
 		{
 			int increment;
 
-			if (agent.statusEffects.hasTrait("WildCaster"))
+			if (agent.statusEffects.hasTrait("WildCasting"))
 				increment = UnityEngine.Random.Range(1, 3);
-			else if (agent.statusEffects.hasTrait("WildCaster_2"))
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				increment = UnityEngine.Random.Range(0, 4);
 			else
 				increment = 2;
@@ -372,8 +345,9 @@ namespace BunnyMod
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
 			agent.gc.mainTimeScale = 0.5f;
-			agent.statusEffects.RemoveStatusEffect("SuperSlow");
-			agent.statusEffects.AddStatusEffect("SuperFast");
+			agent.statusEffects.RemoveStatusEffect("Fast");
+			agent.statusEffects.RemoveStatusEffect("Slow");
+			agent.speedMax = agent.FindSpeed() * 2;
 		}
 		public static void ChronomancyDecast(Agent agent)
 		{
@@ -381,9 +355,9 @@ namespace BunnyMod
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
 			agent.gc.mainTimeScale = 1f;
-			agent.statusEffects.RemoveStatusEffect("SuperFast");
-			agent.statusEffects.RemoveStatusEffect("SuperSlow");
-			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+			agent.statusEffects.RemoveStatusEffect("Fast");
+			agent.statusEffects.RemoveStatusEffect("Slow");
+			agent.FindSpeed();
 		}
 		public static void ChronomancyMiscast(Agent agent, int degree)
 		{
@@ -404,8 +378,9 @@ namespace BunnyMod
 			}
 
 			agent.gc.mainTimeScale = 2f;
-			agent.statusEffects.RemoveStatusEffect("SuperFast");
-			agent.statusEffects.AddStatusEffect("SuperSlow");
+			agent.statusEffects.RemoveStatusEffect("Fast");
+			agent.statusEffects.RemoveStatusEffect("Slow");
+			agent.speedMax = agent.FindSpeed() / 2;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		#endregion
@@ -420,12 +395,12 @@ namespace BunnyMod
 
 			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 			{
-				rangeNear -= 2f;
+				rangeNear -= 2.5f;
 				rangeFar -= 2f;
 			}
 			if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
-				rangeNear -= 1f;
+				rangeNear -= 1.5f;
 				rangeFar -= 1f;
 			}
 			if (agent.statusEffects.hasTrait("WildCasting"))
@@ -474,6 +449,35 @@ namespace BunnyMod
 			}
 			return currentPosition;
 		}
+		public static int TelemancyManaCost(Agent agent) 
+		{
+			int minimum = 20;
+			int maximum = 40;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			{
+				minimum -= 10;
+				maximum -= 10;
+			}
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			{
+				minimum -= 5;
+				maximum -= 5;
+			}
+			
+			if (agent.statusEffects.hasTrait("WildCasting"))
+			{
+				minimum -= UnityEngine.Random.Range(-3, 5);
+				maximum -= UnityEngine.Random.Range(-3, 5);
+			}
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				minimum -= UnityEngine.Random.Range(-5, 10);
+				maximum -= UnityEngine.Random.Range(-5, 10);
+			}
+
+			return UnityEngine.Random.Range(minimum, maximum);
+		}
 		public static void TelemancyMiscast(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
@@ -493,23 +497,16 @@ namespace BunnyMod
 					break;
 			}
 
-			agent.statusEffects.ChangeHealth(-agent.inventory.equippedSpecialAbility.invItemCount);
-			agent.statusEffects.AddStatusEffect("Dizzy", 5);
-			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
-		}
-		#endregion
+			int degree = 20;
 
-		#region Agent
-		public static void Agent_FindSpeed(Agent __instance, ref int __result) // Postfix
-		{
-			if (__instance.statusEffects.hasStatusEffect("SuperSlow"))
-			{
-				__result /= 2;
-			}
-			else if (__instance.statusEffects.hasStatusEffect("SuperFast"))
-			{
-				__result *= 2;
-			}
+			if (agent.statusEffects.hasTrait("StrongGagReflex"))
+				degree /= 2;
+			else if (agent.statusEffects.hasTrait("StrongGagReflex_2"))
+				degree /= 4;
+
+			agent.statusEffects.ChangeHealth(- degree);
+			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
+			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		#endregion
 	}

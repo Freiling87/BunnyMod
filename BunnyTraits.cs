@@ -370,31 +370,31 @@ namespace BunnyMod
             Cursed_2.Upgrade = null;
 			#endregion
 			#region Magic
-            CustomTrait FocusedCaster = RogueLibs.CreateCustomTrait("FocusedCaster", true,
-                new CustomNameInfo("Focused Caster"),
+            CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
+                new CustomNameInfo("Focused Casting"),
                 new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));
-            FocusedCaster.Available = true; 
-            FocusedCaster.AvailableInCharacterCreation = true;
-            FocusedCaster.CanRemove = false;
-            FocusedCaster.CanSwap = false;
-            FocusedCaster.Conflicting.AddRange(new string[] { "WildCaster", "WildCaster_2" });
-            FocusedCaster.CostInCharacterCreation = 2;
-            FocusedCaster.IsActive = true; 
-            FocusedCaster.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            FocusedCaster.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            FocusedCaster.Upgrade = "FocusedCaster_2";
+            FocusedCasting.Available = true; 
+            FocusedCasting.AvailableInCharacterCreation = true;
+            FocusedCasting.CanRemove = false;
+            FocusedCasting.CanSwap = false;
+            FocusedCasting.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
+            FocusedCasting.CostInCharacterCreation = 2;
+            FocusedCasting.IsActive = true; 
+            FocusedCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            FocusedCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            FocusedCasting.Upgrade = "FocusedCasting_2";
 
-            CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("FocusedCaster_2", true,
-                new CustomNameInfo("Focused Caster +"),
+            CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
+                new CustomNameInfo("Focused Casting +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
-            FocusedCaster_2.Available = false; 
-            FocusedCaster_2.AvailableInCharacterCreation = false;
-            FocusedCaster_2.CanRemove = false;
-            FocusedCaster_2.CanSwap = false;
-            FocusedCaster_2.Conflicting.AddRange(new string[] { "WildCaster", "WildCaster_2" });
-            FocusedCaster_2.CostInCharacterCreation = 2;
-            FocusedCaster_2.IsActive = true; 
-            FocusedCaster_2.Upgrade = null;
+            FocusedCasting_2.Available = false; 
+            FocusedCasting_2.AvailableInCharacterCreation = false;
+            FocusedCasting_2.CanRemove = false;
+            FocusedCasting_2.CanSwap = false;
+            FocusedCasting_2.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
+            FocusedCasting_2.CostInCharacterCreation = 2;
+            FocusedCasting_2.IsActive = true; 
+            FocusedCasting_2.Upgrade = null;
 
             CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
                 new CustomNameInfo("Magic Training"),
@@ -444,31 +444,31 @@ namespace BunnyMod
             StrongGagReflex_2.IsActive = true; 
             StrongGagReflex_2.Upgrade = null;
 
-            CustomTrait WildCaster = RogueLibs.CreateCustomTrait("WildCaster", true,
-                new CustomNameInfo("Wild Caster"),
+            CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
+                new CustomNameInfo("Wild Casting"),
                 new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
-            WildCaster.Available = true; 
-            WildCaster.AvailableInCharacterCreation = true;
-            WildCaster.CanRemove = false;
-            WildCaster.CanSwap = false;
-            WildCaster.Conflicting.AddRange(new string[] { "FocusedCaster", "FocusedCaster_2" });
-            WildCaster.CostInCharacterCreation = 2;
-            WildCaster.IsActive = true; 
-            WildCaster.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            WildCaster.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            WildCaster.Upgrade = "WildCaster_2";
+            WildCasting.Available = true; 
+            WildCasting.AvailableInCharacterCreation = true;
+            WildCasting.CanRemove = false;
+            WildCasting.CanSwap = false;
+            WildCasting.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
+            WildCasting.CostInCharacterCreation = 2;
+            WildCasting.IsActive = true; 
+            WildCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            WildCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            WildCasting.Upgrade = "WildCasting_2";
 
-            CustomTrait WildCaster_2 = RogueLibs.CreateCustomTrait("WildCaster_2", true,
-                new CustomNameInfo("Wild Caster +"),
+            CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
+                new CustomNameInfo("Wild Casting +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
-            WildCaster_2.Available = false; 
-            WildCaster_2.AvailableInCharacterCreation = false;
-            WildCaster_2.CanRemove = false;
-            WildCaster_2.CanSwap = false;
-            WildCaster_2.Conflicting.AddRange(new string[] { "FocusedCaster", "FocusedCaster_2" });
-            WildCaster_2.CostInCharacterCreation = 2;
-            WildCaster_2.IsActive = true; 
-            WildCaster_2.Upgrade = null;
+            WildCasting_2.Available = false; 
+            WildCasting_2.AvailableInCharacterCreation = false;
+            WildCasting_2.CanRemove = false;
+            WildCasting_2.CanSwap = false;
+            WildCasting_2.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
+            WildCasting_2.CostInCharacterCreation = 2;
+            WildCasting_2.IsActive = true; 
+            WildCasting_2.Upgrade = null;
 
             // Distortion Field
             #endregion

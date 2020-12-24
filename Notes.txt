@@ -9,9 +9,10 @@ TEST NOTES
 	Can only aim North
 	No rapid fire
 
+
 HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
 
-- Trained Blinking teleports you to... nowhere!
+- Move all Magic traits to a scale of 0-100
 
 - Trait incompatibilities:
 	Weapon Traits: Stubby Fingers, Sausage Fingers
@@ -53,6 +54,14 @@ that gives me an idea
 "force glove"
 5 uses
 lets you pick up items form get distance and tehn toss them
+
+
+    Seperation Anxiety; cost: -3
+        If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
+
+    Arrogant; cost: -4
+        People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
+
 
 
 1.2.2

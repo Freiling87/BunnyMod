@@ -173,7 +173,7 @@ namespace BunnyMod
 			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 8;
 
-			pyromancy.OnPressed = delegate (InvItem item, Agent agent)
+			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
 			{
 				if (item.invItemCount == 0)
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
@@ -195,13 +195,8 @@ namespace BunnyMod
 							bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 					}
 
-					item.invItemCount -= 5;
+					item.invItemCount --;
 				}
-			};
-
-			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float secondsHeld)
-			{
-				// Rapid Fire here?
 			};
 
 			pyromancy.Recharge = (item, myAgent) =>

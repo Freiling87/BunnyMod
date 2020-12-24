@@ -3,7 +3,7 @@
 TEST NOTES
 
 - Chronomancy
-	Values for time shift appear to be reversed. Normal use moves the whole game forward at hyperspeed. 
+	Flags appear to persist between runs.
 
 - Pyromancy
 	Can only aim North
@@ -63,6 +63,10 @@ lets you pick up items form get distance and tehn toss them
         People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
 
 
+uwumacaronitime,VP of mushroomToday at 12:47 PM
+oh btw
+theres probably a reason you cant teleport while falling or jumping into water
+so in case you havent you probably should put a restriction on blink for that
 
 1.2.2
 - Test whether setting Available to false is actually working for upgrade traits

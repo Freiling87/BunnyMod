@@ -63,9 +63,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] BeerCan {
+        public static byte[] Chronomancy {
             get {
-                object obj = ResourceManager.GetObject("BeerCan", resourceCulture);
+                object obj = ResourceManager.GetObject("Chronomancy", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Blink {
+        public static byte[] Pyromancy {
             get {
-                object obj = ResourceManager.GetObject("Blink", resourceCulture);
+                object obj = ResourceManager.GetObject("Pyromancy", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -83,29 +83,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Fireball {
+        public static byte[] Telemancy {
             get {
-                object obj = ResourceManager.GetObject("Fireball", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] Spear {
-            get {
-                object obj = ResourceManager.GetObject("Spear", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] WhiskeyBottle {
-            get {
-                object obj = ResourceManager.GetObject("WhiskeyBottle", resourceCulture);
+                object obj = ResourceManager.GetObject("Telemancy", resourceCulture);
                 return ((byte[])(obj));
             }
         }

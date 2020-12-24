@@ -40,5 +40,20 @@ IDEAS
 	During slowdown, your character's speed is given a +4
 	i'm sure you could make it a status effect like fast, but faster
 
+	waveToday at 10:43 AM
+telekinesis? the throw ability but you can pick up from a distance
+SolivanToday at 10:53 AM
+- Necromancy (summon zombie followers)
+Grimm ZToday at 10:54 AM
+Sacrifice? Lose hp (or use corpse)and get damage up
+SolivanToday at 10:57 AM
+yes
+GenEricToday at 11:30 AM
+that gives me an idea
+"force glove"
+5 uses
+lets you pick up items form get distance and tehn toss them
+
+
 1.2.2
 - Test whether setting Available to false is actually working for upgrade traits

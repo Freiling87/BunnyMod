@@ -106,7 +106,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
-    <None Include="Properties\Resources\Blink.bin" />
+    <None Include="Properties\Resources\Pyromancy.bin" />
+    <None Include="Properties\Resources\Telemancy.bin" />
+    <None Include="Properties\Resources\Chronomancy.bin" />
     <None Include="Properties\Resources\Fireball.bin" />
     <None Include="Properties\Resources\Spear.bin" />
     <None Include="Properties\Resources\WhiskeyBottle.bin" />

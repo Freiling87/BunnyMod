@@ -380,8 +380,8 @@ namespace BunnyMod
             FocusedCaster.Conflicting.AddRange(new string[] { "WildCaster", "WildCaster_2" });
             FocusedCaster.CostInCharacterCreation = 2;
             FocusedCaster.IsActive = true; 
-            FocusedCaster.Recommendations.AddRange(new string[] { "Blink" });
-            FocusedCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
+            FocusedCaster.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            FocusedCaster.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             FocusedCaster.Upgrade = "FocusedCaster_2";
 
             CustomTrait FocusedCaster_2 = RogueLibs.CreateCustomTrait("FocusedCaster_2", true,
@@ -430,8 +430,8 @@ namespace BunnyMod
             StrongGagReflex.CanSwap = false;
             StrongGagReflex.CostInCharacterCreation = 2;
             StrongGagReflex.IsActive = true; 
-            StrongGagReflex.Recommendations.AddRange(new string[] { "Blink" });
-            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Blink" });
+            StrongGagReflex.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             StrongGagReflex.Upgrade = "StrongGagReflex_2";
 
             CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,
@@ -454,8 +454,8 @@ namespace BunnyMod
             WildCaster.Conflicting.AddRange(new string[] { "FocusedCaster", "FocusedCaster_2" });
             WildCaster.CostInCharacterCreation = 2;
             WildCaster.IsActive = true; 
-            WildCaster.Recommendations.AddRange(new string[] { "Blink" });
-            WildCaster.SpecialAbilities.AddRange(new string[] { "Blink" });
+            WildCaster.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            WildCaster.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             WildCaster.Upgrade = "WildCaster_2";
 
             CustomTrait WildCaster_2 = RogueLibs.CreateCustomTrait("WildCaster_2", true,

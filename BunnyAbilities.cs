@@ -16,17 +16,25 @@ namespace BunnyMod
 		public void Awake()
 		{
 			InitializeAbilities();
+
+			BunnyHeader.MainInstance.PatchPostfix(typeof(Agent), "FindSpeed", GetType(), "Agent_FindSpeed", new Type[0] {});
+
+			CustomName superFast = RogueLibs.CreateCustomName("SuperFast", "StatusEffect",
+				new CustomNameInfo("Super Fast"));
+			CustomName superSlow = RogueLibs.CreateCustomName("SuperSlow", "StatusEffect",
+				new CustomNameInfo("Super Slow"));
 		}
 		public static void InitializeAbilities()
 		{
 			#region Chronomancy
-			bool timeWarp = false;
+			bool spedUp = false;
+			bool slowedDown = false;
 
 			Sprite spriteChronomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Chronomancy);
 
 			CustomAbility chronomancy = RogueLibs.CreateCustomAbility("Chronomancy", spriteChronomancy, true,
 				new CustomNameInfo("Chronomancy"),
-				new CustomNameInfo("You can slow down time for everyone but yourself. Sometimes you accidentally do the opposite."),
+				new CustomNameInfo("You can slow down time for everyone but yourself. Sometimes you accidentally do the opposite. Your cardiologist is very concerned."),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -48,35 +56,69 @@ namespace BunnyMod
 
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (RollForMiscast(agent, item.invItemCount))
-					ChronomancyMiscast(agent, item.invItemCount);
-
-				if (item.invItemCount >= 20)
+				if (spedUp)
+				{
+					spedUp = false;
+					ChronomancyDecast(agent);
+				}
+				else if (slowedDown)
 				{
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 					agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
 				}
 				else
 				{
-					item.invItemCount += ManaCost(agent);
-
-					if (item.invItemCount >= 20)
+					if (RollForMiscast(agent, item.invItemCount))
+					{
+						slowedDown = true;
 						ChronomancyMiscast(agent, item.invItemCount);
+					}
+					else
+					{
+						spedUp = true;
+						item.invItemCount += ChronomancyAccrual(agent);
 
-					ChronomancyCast(agent);
+						if (item.invItemCount >= 20)
+						{
+							spedUp = false;
+							slowedDown = true;
+							ChronomancyDecast(agent);
+							ChronomancyMiscast(agent, item.invItemCount);
+						}
+						else
+							spedUp = true;
+							ChronomancyCast(agent);
+					}
 				}
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
+				if (spedUp)
 				{
-					item.invItemCount--;
+					item.invItemCount += ChronomancyAccrual(agent);
 
-					if (item.invItemCount == 20)
+					if (item.invItemCount >= 20)
 					{
-						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						spedUp = false;
+						slowedDown = true;
+						ChronomancyMiscast(agent, item.invItemCount);
+					}
+				}
+				else // Inactive
+				{
+					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
+					{
+						item.invItemCount--;
+
+						if (item.invItemCount == 0)
+						{
+							agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+							agent.gc.audioHandler.Play(agent, "Recharge");
+
+							slowedDown = false;
+							ChronomancyDecast(agent);
+							agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						}
 					}
 				}
 			};
@@ -311,27 +353,43 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Chronomancy
+		public static int ChronomancyAccrual(Agent agent)
+		{
+			int increment;
+
+			if (agent.statusEffects.hasTrait("WildCaster"))
+				increment = UnityEngine.Random.Range(1, 3);
+			else if (agent.statusEffects.hasTrait("WildCaster_2"))
+				increment = UnityEngine.Random.Range(0, 4);
+			else
+				increment = 2;
+
+			return increment;
+		}
 		public static void ChronomancyCast(Agent agent)
 		{
-			int durationMin = 5;
-			int durationMax = 10;
-
-			if (agent.statusEffects.hasTrait("MagicTraining"))
-			{
-				durationMin += 3;
-				durationMax += 3;
-			}
-
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-			agent.gc.StartCoroutine(agent.gc.SetSecondaryTimeScale(0.5f, 5f));
-			agent.statusEffects.AddStatusEffect("Fast", 5);
+			agent.gc.mainTimeScale = 0.5f;
+			agent.statusEffects.RemoveStatusEffect("SuperSlow");
+			agent.statusEffects.AddStatusEffect("SuperFast");
+		}
+		public static void ChronomancyDecast(Agent agent)
+		{
+			agent.SpawnParticleEffect("Spawn", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "Spawn");
+
+			agent.gc.mainTimeScale = 1f;
+			agent.statusEffects.RemoveStatusEffect("SuperFast");
+			agent.statusEffects.RemoveStatusEffect("SuperSlow");
+			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
 		public static void ChronomancyMiscast(Agent agent, int degree)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-			agent.gc.audioHandler.Play(agent, "ToiletTeleportOut");
+			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
+
 			switch (UnityEngine.Random.Range(1, 3))
 			{
 				case 1:
@@ -345,8 +403,9 @@ namespace BunnyMod
 					break;
 			}
 
-			agent.gc.StartCoroutine(agent.gc.SetSecondaryTimeScale(1.2f, degree));
-			agent.statusEffects.AddStatusEffect("Slow", (int)(degree / 1.2f));
+			agent.gc.mainTimeScale = 2f;
+			agent.statusEffects.RemoveStatusEffect("SuperFast");
+			agent.statusEffects.AddStatusEffect("SuperSlow");
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		#endregion
@@ -437,6 +496,20 @@ namespace BunnyMod
 			agent.statusEffects.ChangeHealth(-agent.inventory.equippedSpecialAbility.invItemCount);
 			agent.statusEffects.AddStatusEffect("Dizzy", 5);
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		#endregion
+
+		#region Agent
+		public static void Agent_FindSpeed(Agent __instance, ref int __result) // Postfix
+		{
+			if (__instance.statusEffects.hasStatusEffect("SuperSlow"))
+			{
+				__result /= 2;
+			}
+			else if (__instance.statusEffects.hasStatusEffect("SuperFast"))
+			{
+				__result *= 2;
+			}
 		}
 		#endregion
 	}

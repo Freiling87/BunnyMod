@@ -1,11 +1,25 @@
-﻿- Current focus: try to prefer guards over nesting
-
-TEST NOTES
+﻿
+=== TEST NOTES =================================================================
 
 - Chronomancy
 	Flags appear to persist between runs.
+		This one is now ready to test, using Abby's bitwise and extension method advice
 
-HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
+- Telemancy 
+	One last run for balancing values, then can call it finalized.
+
+
+=== HIGH PRIORITY or TRIVIAL √ ==================================================
+
+Chronomancy:
+	The triggers for cinematic slow-mo are throwing off your flags. You probably need pre- and post-fixes to simply deactivate those if the ability is available.
+
+- Test whether setting Available to false is actually working for upgrade traits
+
+- Stove:
+	Make noise when operated
+	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
+
 
 - Move all Magic traits to a scale of 0-100
 
@@ -22,13 +36,18 @@ HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
 
-LOW PRIORITY	√
+
+=== LOW PRIORITY √ =============================================================
 
 - Object interactions show a "Cancelled" message even though they went through successfully.
 - Stoves appear to no longer rotate toward walls
 - Auto-trayed items may include those you can't use/equip
 
-IDEAS 
+- Create Agent magic remora
+	Hold off on this. Extension method and bitwise values in un-used variables might be all we need for now.
+
+
+=== IDEAS ======================================================================
 
     Seperation Anxiety; cost: -3
         If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
@@ -36,11 +55,49 @@ IDEAS
     Arrogant; cost: -4
         People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
 
+	Annoying;
+		Everyone's annoyed to begin with
+
 
 uwumacaronitime,VP of mushroomToday at 12:47 PM
 oh btw
 theres probably a reason you cant teleport while falling or jumping into water
 so in case you havent you probably should put a restriction on blink for that
 
+
+=== RELEASE NOTES ==============================================================
+
 1.2.2
-- Test whether setting Available to false is actually working for upgrade traits
+- Chronomancy
+- Finalization and renaming of Telemancy and generalist magic traits
+
+
+=== OTHER ======================================================================
+BITWISE OPERATIONS:
+you can use unused fields in the InvItem, like InvItem.otherDamage. These will work even if you restart the game.
+Getting 1st bit: (item.otherDamage & 0b_0001) != 0
+Getting 2nd bit: (item.otherDamage & 0b_0010) != 0
+Getting 3rd bit: (item.otherDamage & 0b_0100) != 0
+and so on
+
+Setting 1st bit: item.otherDamage |= 0b_0001
+Setting 2nd bit: item.otherDamage |= 0b_0010
+Setting 3rd bit: item.otherDamage |= 0b_0100
+
+you can replace these with methods:
+
+public static bool IsFirstThingActive(int bitfield)
+    => (bitfield & 0b_0001) != 0;
+
+public static void SetFirstThing(ref int bitfield, bool value)
+{
+    if (value) bitfield |= 0b_0001;
+    else bitfield &= ~0b_0001;
+}
+
+&	Binary AND Operator copies a bit to the result if it exists in both operands.
+|	Binary OR Operator copies a bit if it exists in either operand.
+^	Binary XOR Operator copies the bit if it is set in one operand but not both.
+~	Binary Ones Complement Operator is unary and has the effect of 'flipping' bits.
+<<	Binary Left Shift Operator. The left operands value is moved left by the number of bits specified by the right operand.
+>>	Binary Right Shift Operator. The left operands value is moved right by the number of bits specified by the right operand.

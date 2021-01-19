@@ -396,30 +396,30 @@ namespace BunnyMod
             FocusedCasting_2.IsActive = true; 
             FocusedCasting_2.Upgrade = null;
 
-            CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
+            CustomTrait MagicPower = RogueLibs.CreateCustomTrait("MagicPower", true,
                 new CustomNameInfo("Magic Training"),
                 new CustomNameInfo("Improves your skills with any Magic Special Ability."));
-            MagicTraining.Available = true;
-            MagicTraining.AvailableInCharacterCreation = true; // Disable after finishing
-            MagicTraining.CostInCharacterCreation = 3;
-            MagicTraining.CanRemove = false;
-            MagicTraining.CanSwap = false;
-            MagicTraining.Conflicting.AddRange(new string[] { });
-            MagicTraining.IsActive = true;
-            MagicTraining.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            MagicTraining.Upgrade = "MagicTraining_2";
+            MagicPower.Available = true;
+            MagicPower.AvailableInCharacterCreation = true; // Disable after finishing
+            MagicPower.CostInCharacterCreation = 3;
+            MagicPower.CanRemove = false;
+            MagicPower.CanSwap = false;
+            MagicPower.Conflicting.AddRange(new string[] { });
+            MagicPower.IsActive = true;
+            MagicPower.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicPower.Upgrade = "MagicPower_2";
 
-            CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait("MagicTraining_2", true,
+            CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
-            MagicTraining_2.Available = true;
-            MagicTraining_2.AvailableInCharacterCreation = false;
-            MagicTraining_2.CanRemove = false;
-            MagicTraining_2.CanSwap = false;
-            MagicTraining_2.Conflicting.AddRange(new string[] { });
-            MagicTraining_2.IsActive = true;
-            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            MagicTraining_2.Upgrade = null;
+            MagicPower_2.Available = true;
+            MagicPower_2.AvailableInCharacterCreation = false;
+            MagicPower_2.CanRemove = false;
+            MagicPower_2.CanSwap = false;
+            MagicPower_2.Conflicting.AddRange(new string[] { });
+            MagicPower_2.IsActive = true;
+            MagicPower_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicPower_2.Upgrade = null;
 
             CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
                 new CustomNameInfo("Strong Gag Reflex"),

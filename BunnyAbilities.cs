@@ -1,4 +1,6 @@
-﻿using RogueLibsCore;
+﻿using System;
+
+using RogueLibsCore;
 using UnityEngine;
 
 namespace BunnyMod
@@ -9,13 +11,12 @@ namespace BunnyMod
 		public void Awake()
 		{
 			InitializeAbilities();
+
+			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
 		}
-		public static void InitializeAbilities()
+		public static void InitializeAbilities() // Main
 		{
 			#region Chronomancy
-			bool spedUp = false;
-			bool slowedDown = false;
-			bool coolDown = false;
 
 			Sprite spriteChronomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Chronomancy);
 
@@ -35,6 +36,7 @@ namespace BunnyMod
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
+
 				});
 
 			chronomancy.Available = true;
@@ -43,18 +45,20 @@ namespace BunnyMod
 
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (coolDown)
+				int bitField = item.agent.statusEffects.GetBitfield();
+
+				if (ChronomancyIsCoolingDown(bitField))
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				else
 				{
-					coolDown = true;
+					ChronomancySetCoolingDown(ref bitField, true);
 
-					if (spedUp)
+					if (ChronomancyIsSpedUp(bitField))
 					{
-						spedUp = false;
+						ChronomancySetSpedUp(ref bitField, false);
 						ChronomancyDecast(agent);
 					}
-					else if (slowedDown)
+					else if (ChronomancyIsSlowedDown(bitField))
 					{
 						item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 						agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
@@ -63,23 +67,23 @@ namespace BunnyMod
 					{
 						if (TelemancyRollForMiscast(agent, item.invItemCount))
 						{
-							slowedDown = true;
+							ChronomancySetSlowedDown(ref bitField, true);
 							ChronomancyMiscast(agent, item.invItemCount);
 						}
 						else
 						{
-							spedUp = true;
+							ChronomancySetSpedUp(ref bitField, true);
 							item.invItemCount += ChronomancyManaCost(agent);
 
 							if (item.invItemCount >= 20)
 							{
-								spedUp = false;
-								slowedDown = true;
+								ChronomancySetSpedUp(ref bitField, false);
+								ChronomancySetSlowedDown(ref bitField, true);
 								ChronomancyDecast(agent);
 								ChronomancyMiscast(agent, item.invItemCount);
 							}
 							else
-								spedUp = true;
+								ChronomancySetSpedUp(ref bitField, true);
 							ChronomancyCast(agent);
 						}
 					}
@@ -87,34 +91,35 @@ namespace BunnyMod
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
-				coolDown = false;
+				int bitField = agent.statusEffects.GetBitfield();
 
-				if (spedUp)
+				ChronomancySetCoolingDown(ref bitField, false);
+
+				if (ChronomancyIsSpedUp(bitField))
 				{
 					item.invItemCount += ChronomancyManaCost(agent);
 
-					if (item.invItemCount >= 20)
+					if (item.invItemCount >= 100)
 					{
-						spedUp = false;
-						slowedDown = true;
+						ChronomancySetSpedUp(ref bitField, false);
+						ChronomancySetSlowedDown(ref bitField, true);
 						ChronomancyMiscast(agent, item.invItemCount);
 					}
 				}
-				else // Inactive
+				else
 				{
 					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
+						item.invItemCount -= 5;
+
+					if (item.invItemCount == 0)
 					{
-						item.invItemCount--;
+						ChronomancySetSlowedDown(ref bitField, false);
 
-						if (item.invItemCount == 0)
-						{
-							agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-							agent.gc.audioHandler.Play(agent, "Recharge");
+						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+						agent.gc.audioHandler.Play(agent, "Recharge");
 
-							slowedDown = false;
-							ChronomancyDecast(agent);
-							agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-						}
+						ChronomancyDecast(agent);
+						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 					}
 				}
 			};
@@ -163,7 +168,7 @@ namespace BunnyMod
 				{
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
 				}
-				
+
 				if (CryomancyRollForMiscast(agent, 0))
 				{
 					CryomancyMiscast(agent, 20);
@@ -433,8 +438,7 @@ namespace BunnyMod
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
 		#endregion
-		#region Aimatomancy // Blood Magic
-		// Harm self or destroy corpse for boosts
+		#region Hematomancy // Blood Magic
 		#endregion
 		#region Chronomancy
 		public static void ChronomancyCast(Agent agent)
@@ -442,21 +446,29 @@ namespace BunnyMod
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-			agent.gc.mainTimeScale = 0.5f;
+			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
+			agent.gc.mainTimeScale = 0.33f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() * 2;
+			agent.speedMax = agent.FindSpeed() * 3;
 		}
 		public static void ChronomancyDecast(Agent agent)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
+			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
 			agent.gc.mainTimeScale = 1f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.FindSpeed();
 		}
+		public static bool ChronomancyIsCoolingDown(int bitfield) =>
+			(bitfield & 0b_0001) != 0;
+		public static bool ChronomancyIsSlowedDown(int bitfield) =>
+			(bitfield & 0b_0010) != 0;
+		public static bool ChronomancyIsSpedUp(int bitfield) =>
+			(bitfield & 0b_0100) != 0;
 		public static int ChronomancyManaCost(Agent agent)
 		{
 			int increment;
@@ -488,11 +500,27 @@ namespace BunnyMod
 					break;
 			}
 
-			agent.gc.mainTimeScale = 2f;
+			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
+			agent.gc.mainTimeScale = 3f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() / 2;
+			agent.speedMax = agent.FindSpeed() / 3;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		public static void ChronomancySetCoolingDown(ref int bitfield, bool value)
+		{
+			if (value) bitfield |= 0b_0001;
+			else bitfield &= ~0b_0001;
+		}
+		public static void ChronomancySetSlowedDown(ref int bitfield, bool value)
+		{
+			if (value) bitfield |= 0b_0010;
+			else bitfield &= ~0b_0010;
+		}
+		public static void ChronomancySetSpedUp(ref int bitfield, bool value)
+		{
+			if (value) bitfield |= 0b_0100;
+			else bitfield &= ~0b_0100;
 		}
 		#endregion
 		#region Cryomancy
@@ -521,12 +549,12 @@ namespace BunnyMod
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 			{
 				minimum -= 5;
 				maximum -= 5;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 			{
 				minimum -= 2;
 				maximum -= 2;
@@ -563,9 +591,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 75;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
@@ -597,12 +625,12 @@ namespace BunnyMod
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 			{
 				minimum -= 5;
 				maximum -= 5;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 			{
 				minimum -= 2;
 				maximum -= 2;
@@ -639,22 +667,22 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 75;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
 		#endregion
 		#region Kinetomancy // Telekinesis
-
 		#endregion
 		#region Megaleiomancy //Charm Person
-
 		#endregion
 		#region Necromancy
-		// Summon Zombies from corpses, automatically alleid
+		// 1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
+		// 2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
+		// 3 Zombies will join your party / Turn ghosts into large number of crystals
 		// Miscast turns all of them hostile, or summons hostile ghosts
 		// When close to a ghost, you can turn them into mana crystals
 		#endregion
@@ -690,9 +718,9 @@ namespace BunnyMod
 		{
 			int chance = 100;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("MagicPower"))
 				chance -= 10;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait("MagicPower_2"))
 				chance -= 20;
 			if (agent.statusEffects.hasTrait("WildCasting"))
 				chance -= 15;
@@ -720,9 +748,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 25;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 				risk *= (4 / 5);
 
 			return UnityEngine.Random.Range(0, 10000) <= risk;
@@ -737,12 +765,12 @@ namespace BunnyMod
 			float rangeNear = 3f; //
 			float rangeFar = 6f; //
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 			{
 				rangeNear -= 2.5f;
 				rangeFar -= 2f;
 			}
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("MagicPower"))
 			{
 				rangeNear -= 1.5f;
 				rangeFar -= 1f;
@@ -763,7 +791,7 @@ namespace BunnyMod
 			{
 				float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
 
-				if (agent.statusEffects.hasTrait("MagicTraining"))
+				if (agent.statusEffects.hasTrait("MagicPower"))
 					targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
 				else
 					targetPosition = currentPosition + distance * UnityEngine.Random.insideUnitCircle.normalized;
@@ -793,22 +821,22 @@ namespace BunnyMod
 			}
 			return currentPosition;
 		}
-		public static int TelemancyManaCost(Agent agent) 
+		public static int TelemancyManaCost(Agent agent)
 		{
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 			{
 				minimum -= 10;
 				maximum -= 10;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 			{
 				minimum -= 5;
 				maximum -= 5;
 			}
-			
+
 			if (agent.statusEffects.hasTrait("WildCasting"))
 			{
 				minimum -= UnityEngine.Random.Range(-3, 5);
@@ -848,7 +876,7 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("StrongGagReflex_2"))
 				degree /= 4;
 
-			agent.statusEffects.ChangeHealth(- degree);
+			agent.statusEffects.ChangeHealth(-degree);
 			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
@@ -866,13 +894,34 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 75;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait("MagicPower"))
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
 		#endregion
+
+		#region StatusEffects
+		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
+		{
+			if (abilityName == "Chronomancy")
+			{
+				ref int target = ref __instance.agent.inventory.equippedSpecialAbility.otherDamage;
+
+				ChronomancySetCoolingDown(ref target, false);
+				ChronomancySetSlowedDown(ref target, false);
+				ChronomancySetSpedUp(ref target, false);
+			}
+		}
+		#endregion
+	}
+	public static class Extensions
+	{
+		public static ref int GetBitfield(this StatusEffects se)
+			=> ref se.agent.inventory.equippedSpecialAbility.otherDamage;
+			// This field is used solely because the SOR codebase never makes use of it. 
+			// Its function is orthogonal to its name, so this extension method is used to obscure it to avoid confusion.
 	}
 }

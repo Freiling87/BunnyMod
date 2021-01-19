@@ -4,13 +4,24 @@ TEST NOTES
 
 - Chronomancy
 	Flags appear to persist between runs.
+	It appears to deactivate slow-mo when a vanilla cinematic slowmo would deactivate
+
+- Pyromancy
+	Reduce velocity boost of WildCasting
+	Reduce Miscast reduction of MagicTraining
+
+- Telemancy
+	Currently, it miscasts at >35
+
 
 HIGH PRIORITY or TRIVIAL TO IMPLEMENT √
+
+- Tamper Tantrum still shows 30 as tamper cost
 
 - Move all Magic traits to a scale of 0-100
 
 - Trait incompatibilities:
-	Weapon Traits: Stubby Fingers, Sausage Fingers
+	Weapon Traits: Stubby Fingers, Sausage Fingers, Draw no blood, pacifist
 	Afraid of Loud Noises / Draw No Blood
 
 - Fridge not showing button text for showchest
@@ -35,6 +46,9 @@ IDEAS
 
     Arrogant; cost: -4
         People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
+
+	SACRIFICE
+		You can only regain health by burning corpses
 
 
 uwumacaronitime,VP of mushroomToday at 12:47 PM

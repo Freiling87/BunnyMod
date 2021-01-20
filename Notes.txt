@@ -3,6 +3,13 @@
 
 - Chronomancy
 	Flags appear to persist between runs.
+
+- Pyromancy
+	Reduce velocity boost of WildCasting
+	Reduce Miscast reduction of MagicTraining
+
+- Telemancy
+	Currently, it miscasts at >35
 		This one is now ready to test, using Abby's bitwise and extension method advice
 
 
@@ -15,8 +22,20 @@
 
 === HIGH PRIORITY or TRIVIAL √ ==================================================
 
-Chronomancy:
-	The triggers for cinematic slow-mo are throwing off your flags. You probably need pre- and post-fixes to simply deactivate those if the ability is available.
+[Message: Bunny Mod] Stove (1478): MoveNext
+[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+Stack trace:
+ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__21.MoveNext () (at <83f44a28b0e149b58d3aad6915e73629>:0)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+Stove:DamagedObject(PlayfieldObject, Single)
+ObjectReal:Damage(PlayfieldObject, Boolean)
+MeleeHitbox:HitObject(GameObject, Boolean)
+MeleeColliderBox:OnTriggerEnter2D(Collider2D)
+
+[Message: Bunny Mod] 3
 
 Telemancy 
 	The level-1 version of this is pretty horrible.
@@ -24,6 +43,18 @@ Telemancy
 - Stove:
 	Make noise when operated
 	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
+
+- Tamper Tantrum still shows 30 as tamper cost
+
+- Trait incompatibilities:
+	Weapon Traits: Stubby Fingers, Sausage Fingers, Draw no blood, pacifist
+	Afraid of Loud Noises / Draw No Blood
+
+- Fridge not showing button text for showchest
+
+- Stove name hovers after use. Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
+
+- Extend weapon ban traits to Use-Items, not just Equip-Items 
 
 - Stove name hovers after use. Can't tamper w stove after cooking on it. 
 	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
@@ -45,11 +76,16 @@ Telemancy
 
 === IDEAS ======================================================================
 
+Chronomancy - Special trait for fast-punching so you can be a fast-punching type of person
+
     Seperation Anxiety; cost: -3
         If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
 
     Arrogant; cost: -4
         People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
+
+	SACRIFICE
+		You can only regain health by burning corpses
 
 	Annoying;
 		Everyone's annoyed to begin with

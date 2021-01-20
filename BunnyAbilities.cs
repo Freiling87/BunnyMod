@@ -32,6 +32,7 @@ namespace BunnyMod
 					item.Categories.Add("NPCsCantPickup");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
+					item.otherDamage = 0; // This is used for storing Bitwise variables in the Extension Method class below
 					item.isWeapon = false;
 					item.initCount = 0;
 					item.maxAmmo = 100;
@@ -87,7 +88,8 @@ namespace BunnyMod
 				else
 				{
 					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
-						item.invItemCount -= 5;
+					{
+						item.invItemCount = Math.Min(0, item.invItemCount - 5);
 
 					if (item.invItemCount == 100)
 					{
@@ -522,16 +524,19 @@ namespace BunnyMod
 		}
 		public static void ChronomancySetCoolingDown(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetCoolingDown " + value);
 			if (value) bitfield |= 0b_0001;
 			else bitfield &= ~0b_0001;
 		}
 		public static void ChronomancySetSlowedDown(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetSlowedDown " + value);
 			if (value) bitfield |= 0b_0010;
 			else bitfield &= ~0b_0010;
 		}
 		public static void ChronomancySetSpedUp(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetSpedUp " + value);
 			if (value) bitfield |= 0b_0100;
 			else bitfield &= ~0b_0100;
 		}

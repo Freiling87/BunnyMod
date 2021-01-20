@@ -3,7 +3,6 @@
 
 - Chronomancy
 	Flags appear to persist between runs.
-	It appears to deactivate slow-mo when a vanilla cinematic slowmo would deactivate
 
 - Pyromancy
 	Reduce velocity boost of WildCasting
@@ -19,8 +18,20 @@
 
 === HIGH PRIORITY or TRIVIAL √ ==================================================
 
-Chronomancy:
-	The triggers for cinematic slow-mo are throwing off your flags. You probably need pre- and post-fixes to simply deactivate those if the ability is available.
+[Message: Bunny Mod] Stove (1478): MoveNext
+[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+Stack trace:
+ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__21.MoveNext () (at <83f44a28b0e149b58d3aad6915e73629>:0)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+Stove:DamagedObject(PlayfieldObject, Single)
+ObjectReal:Damage(PlayfieldObject, Boolean)
+MeleeHitbox:HitObject(GameObject, Boolean)
+MeleeColliderBox:OnTriggerEnter2D(Collider2D)
+
+[Message: Bunny Mod] 3
 
 - Test whether setting Available to false is actually working for upgrade traits
 
@@ -28,10 +39,7 @@ Chronomancy:
 	Make noise when operated
 	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
 
-
 - Tamper Tantrum still shows 30 as tamper cost
-
-- Move all Magic traits to a scale of 0-100
 
 - Trait incompatibilities:
 	Weapon Traits: Stubby Fingers, Sausage Fingers, Draw no blood, pacifist
@@ -58,6 +66,8 @@ Chronomancy:
 
 
 === IDEAS ======================================================================
+
+Chronomancy - Special trait for fast-punching so you can be a fast-punching type of person
 
     Seperation Anxiety; cost: -3
         If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)

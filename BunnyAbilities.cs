@@ -30,6 +30,7 @@ namespace BunnyMod
 					item.Categories.Add("NPCsCantPickup");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
+					item.otherDamage = 0; // This is used for storing Bitwise variables in the Extension Method class below
 					item.isWeapon = false;
 					item.initCount = 0;
 					item.itemType = ""; //
@@ -93,7 +94,8 @@ namespace BunnyMod
 			{
 				int bitField = agent.statusEffects.GetBitfield();
 
-				ChronomancySetCoolingDown(ref bitField, false);
+				if (ChronomancyIsCoolingDown(bitField))
+					ChronomancySetCoolingDown(ref bitField, false);
 
 				if (ChronomancyIsSpedUp(bitField))
 				{
@@ -109,17 +111,19 @@ namespace BunnyMod
 				else
 				{
 					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
-						item.invItemCount -= 5;
-
-					if (item.invItemCount == 0)
 					{
-						ChronomancySetSlowedDown(ref bitField, false);
+						item.invItemCount = Math.Min(0, item.invItemCount - 5);
 
-						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
+						if (item.invItemCount == 0)
+						{
+							ChronomancySetSlowedDown(ref bitField, false);
 
-						ChronomancyDecast(agent);
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+							agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+							agent.gc.audioHandler.Play(agent, "Recharge");
+
+							ChronomancyDecast(agent);
+							agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						}
 					}
 				}
 			};
@@ -509,16 +513,19 @@ namespace BunnyMod
 		}
 		public static void ChronomancySetCoolingDown(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetCoolingDown " + value);
 			if (value) bitfield |= 0b_0001;
 			else bitfield &= ~0b_0001;
 		}
 		public static void ChronomancySetSlowedDown(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetSlowedDown " + value);
 			if (value) bitfield |= 0b_0010;
 			else bitfield &= ~0b_0010;
 		}
 		public static void ChronomancySetSpedUp(ref int bitfield, bool value)
 		{
+			BunnyHeader.Log("SetSpedUp " + value);
 			if (value) bitfield |= 0b_0100;
 			else bitfield &= ~0b_0100;
 		}

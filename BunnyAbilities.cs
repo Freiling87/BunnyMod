@@ -1,5 +1,7 @@
 ﻿using System;
-
+using System.Reflection;
+using System.Threading.Tasks;
+using HarmonyLib;
 using RogueLibsCore;
 using UnityEngine;
 
@@ -32,11 +34,11 @@ namespace BunnyMod
 					item.dontSelectNPC = true;
 					item.isWeapon = false;
 					item.initCount = 0;
+					item.maxAmmo = 100;
 					item.itemType = ""; //
-					item.rechargeAmountInverse = item.initCount;
+					//item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
-
 				});
 
 			chronomancy.Available = true;
@@ -49,77 +51,53 @@ namespace BunnyMod
 
 				if (ChronomancyIsCoolingDown(bitField))
 					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				else if (ChronomancyIsSlowedDown(bitField))
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+					agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
+				}
+				else if (ChronomancyIsSpedUp(bitField))
+					ChronomancyDecastManual(agent, bitField);
+					//ChronomancyStartCoolDown(bitField); // Move this down the if-chain
 				else
 				{
-					ChronomancySetCoolingDown(ref bitField, true);
-
-					if (ChronomancyIsSpedUp(bitField))
-					{
-						ChronomancySetSpedUp(ref bitField, false);
-						ChronomancyDecast(agent);
-					}
-					else if (ChronomancyIsSlowedDown(bitField))
-					{
-						item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-						agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
-					}
+					if (RollForMiscast(agent, item.invItemCount))
+						//ChronomancySetSlowedDown(ref bitField, true);
+						ChronomancyMiscast(agent, item.invItemCount);
 					else
-					{
-						if (TelemancyRollForMiscast(agent, item.invItemCount))
-						{
-							ChronomancySetSlowedDown(ref bitField, true);
-							ChronomancyMiscast(agent, item.invItemCount);
-						}
-						else
-						{
-							ChronomancySetSpedUp(ref bitField, true);
-							item.invItemCount += ChronomancyManaCost(agent);
-
-							if (item.invItemCount >= 20)
-							{
-								ChronomancySetSpedUp(ref bitField, false);
-								ChronomancySetSlowedDown(ref bitField, true);
-								ChronomancyDecast(agent);
-								ChronomancyMiscast(agent, item.invItemCount);
-							}
-							else
-								ChronomancySetSpedUp(ref bitField, true);
-							ChronomancyCast(agent);
-						}
-					}
+						//ChronomancySetSpedUp(ref bitField, true);
+						ChronomancyCast(agent, bitField);
 				}
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
 				int bitField = agent.statusEffects.GetBitfield();
 
-				ChronomancySetCoolingDown(ref bitField, false);
+				//ChronomancySetCoolingDown(ref bitField, false); Replaced with Async Task
 
 				if (ChronomancyIsSpedUp(bitField))
 				{
-					item.invItemCount += ChronomancyManaCost(agent);
+					item.invItemCount -= ChronomancyManaCost(agent);
 
-					if (item.invItemCount >= 100)
-					{
-						ChronomancySetSpedUp(ref bitField, false);
-						ChronomancySetSlowedDown(ref bitField, true);
+					if (item.invItemCount < 0)
+						//ChronomancySetSpedUp(ref bitField, false);
+						//ChronomancySetSlowedDown(ref bitField, true);
 						ChronomancyMiscast(agent, item.invItemCount);
-					}
 				}
 				else
 				{
 					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
 						item.invItemCount -= 5;
 
-					if (item.invItemCount == 0)
+					if (item.invItemCount == 100)
 					{
-						ChronomancySetSlowedDown(ref bitField, false);
+						//ChronomancySetSlowedDown(ref bitField, false);
 
 						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
+						agent.gc.audioHandler.Play(agent, "Recharge"); // Move these to a recharge function
 
-						ChronomancyDecast(agent);
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+						ChronomancyDecastManual(agent, bitField); // Set to automatic when done
+						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable(); // move this
 					}
 				}
 			};
@@ -321,7 +299,7 @@ namespace BunnyMod
 				}
 				else
 				{
-					if (TelemancyRollForMiscast(agent, 0))
+					if (RollForMiscast(agent, 0))
 					{
 						PyromancyMiscast(agent, 20);
 						burntOut = true;
@@ -383,7 +361,7 @@ namespace BunnyMod
 
 			telemancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (TelemancyRollForMiscast(agent, item.invItemCount))
+				if (RollForMiscast(agent, item.invItemCount))
 					TelemancyMiscast(agent);
 
 				if (item.invItemCount <= 0)
@@ -437,11 +415,32 @@ namespace BunnyMod
 			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
+		public static bool RollForMiscast(Agent agent, int modifier)
+		{
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 50;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 25;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 150;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 75;
+
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicPower"))
+				risk *= (4 / 5);
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
 		#endregion
 		#region Hematomancy // Blood Magic
 		#endregion
 		#region Chronomancy
-		public static void ChronomancyCast(Agent agent)
+		public static void ChronomancyCast(Agent agent, int bitField)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
@@ -452,8 +451,14 @@ namespace BunnyMod
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() * 3;
 		}
-		public static void ChronomancyDecast(Agent agent)
+		public static void ChronomancyDecastAutomatic(Agent agent, int bitField) // TODO
 		{
+
+		}
+		public static void ChronomancyDecastManual(Agent agent, int bitField)
+		{
+			ChronomancySetSpedUp(ref bitField, false);
+
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
@@ -462,6 +467,25 @@ namespace BunnyMod
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.FindSpeed();
+		}
+		public static void ChronomancyDialogueCantDo(Agent agent) // Include Audio here // TODO
+		{
+
+		}
+		public static void ChronomancyDialogueMiscast(Agent agent) // Include Audio here
+		{
+			switch (UnityEngine.Random.Range(1, 3))
+			{
+				case 1:
+					agent.Say("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...");
+					break;
+				case 2:
+					agent.Say("Bullet Time? More like Bullshit Time!");
+					break;
+				case 3:
+					agent.Say("(Slow Motion Noises)");
+					break;
+			}
 		}
 		public static bool ChronomancyIsCoolingDown(int bitfield) =>
 			(bitfield & 0b_0001) != 0;
@@ -487,18 +511,7 @@ namespace BunnyMod
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
 
-			switch (UnityEngine.Random.Range(1, 3))
-			{
-				case 1:
-					agent.Say("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...");
-					break;
-				case 2:
-					agent.Say("Bullet Time? More like Bullshit Time!");
-					break;
-				case 3:
-					agent.Say("(Slow Motion Noises)");
-					break;
-			}
+			ChronomancyDialogueMiscast(agent);
 
 			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
 			agent.gc.mainTimeScale = 3f;
@@ -521,6 +534,18 @@ namespace BunnyMod
 		{
 			if (value) bitfield |= 0b_0100;
 			else bitfield &= ~0b_0100;
+		}
+		public static async Task ChronomancyStartCoolDown(int bitfield)
+		{
+			ChronomancySetCoolingDown(ref bitfield, true);
+
+			await Task.Delay(5000);
+
+			while (true)
+			{
+				ChronomancySetCoolingDown(ref bitfield, false);
+				await Task.Delay(1000);
+			}
 		}
 		#endregion
 		#region Cryomancy
@@ -879,27 +904,6 @@ namespace BunnyMod
 			agent.statusEffects.ChangeHealth(-degree);
 			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
-		}
-		public static bool TelemancyRollForMiscast(Agent agent, int modifier)
-		{
-			int risk = 100 + modifier;
-
-			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 50;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 25;
-
-			if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 150;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 75;
-
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
-				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower"))
-				risk *= (4 / 5);
-
-			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
 		#endregion
 

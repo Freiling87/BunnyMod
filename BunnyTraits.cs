@@ -293,7 +293,7 @@ namespace BunnyMod
             AfraidOfLoudNoises.AvailableInCharacterCreation = true;
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
-            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "DrawNoBlood" });
+            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "CantUseGuns", "CantUseWeapons2", "DrawNoBlood" });
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -305,7 +305,7 @@ namespace BunnyMod
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast" });
+            DrawNoBlood.Conflicting.AddRange(new string[] { "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
             DrawNoBlood.CostInCharacterCreation = -4;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
@@ -795,7 +795,7 @@ namespace BunnyMod
                 modifier = 8;
             if (luckType == "ThiefToolsMayNotSubtract")
                 modifier = 10;
-            if (luckType == "CanceToSlowEnemies")
+            if (luckType == "ChanceToSlowEnemies")
                 modifier = 4;
 
             if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Charmed"))

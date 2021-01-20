@@ -5,40 +5,36 @@
 	Flags appear to persist between runs.
 		This one is now ready to test, using Abby's bitwise and extension method advice
 
-- Telemancy 
-	One last run for balancing values, then can call it finalized.
 
+
+- Document if NegaFud bug is addressed
+
+- Test whether setting Available to false is actually working for upgrade traits
+
+- Verify if correct Tool durability cost is displaying in menus.
 
 === HIGH PRIORITY or TRIVIAL √ ==================================================
 
 Chronomancy:
 	The triggers for cinematic slow-mo are throwing off your flags. You probably need pre- and post-fixes to simply deactivate those if the ability is available.
 
-- Test whether setting Available to false is actually working for upgrade traits
+Telemancy 
+	The level-1 version of this is pretty horrible.
 
 - Stove:
 	Make noise when operated
 	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
 
-
-- Move all Magic traits to a scale of 0-100
-
-- Trait incompatibilities:
-	Weapon Traits: Stubby Fingers, Sausage Fingers
-	Afraid of Loud Noises / Draw No Blood
-
-- Fridge not showing button text for showchest
-
-- Stove name hovers after use. Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
-
-- Extend weapon ban traits to Use-Items, not just Equip-Items 
-
+- Stove name hovers after use. Can't tamper w stove after cooking on it. 
+	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
 
+- Extend weapon ban traits to Use-Items, not just Equip-Items 
 
 === LOW PRIORITY √ =============================================================
 
+- Fridge not showing button text for showchest
 - Object interactions show a "Cancelled" message even though they went through successfully.
 - Stoves appear to no longer rotate toward walls
 - Auto-trayed items may include those you can't use/equip

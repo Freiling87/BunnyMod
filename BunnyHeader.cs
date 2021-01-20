@@ -65,12 +65,13 @@ namespace BunnyMod
 		}
 		public static void InvokeRepeating(object instance, string method, float delay, float interval)
 		{
-			MethodInfo method2 = AccessTools.Method(instance.GetType(), method);
-			Task task = InvokeRepeating2(instance, method2, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
+			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
+			Task task = InvokeRepeating2(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
 		}
 		private static async Task InvokeRepeating2(object instance, MethodInfo method, int delay, int interval)
 		{
 			await Task.Delay(delay);
+
 			while (true)
 			{
 				method.Invoke(instance, new object[0]);

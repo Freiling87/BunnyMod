@@ -395,12 +395,15 @@ namespace BunnyMod
 		{
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
             int num = rawFud.invItemCount;
-            rawFud.invItemCount -= num;
 
-            if (rawFud.invItemCount <= 0)
-            {
-                __instance.interactingAgent.inventory.DestroyItem(rawFud);
-            }
+            //rawFud.invItemCount -= num;
+
+            //if (rawFud.invItemCount <= 0)
+            //{
+            //    __instance.interactingAgent.inventory.DestroyItem(rawFud);
+            //}
+
+            __instance.interactingAgent.inventory.SubtractFromItemCount(rawFud, num); // Hopefully addresses negaFud bug
 
             InvItem cookedFud = new InvItem();
             cookedFud.invItemName = "HotFud";
@@ -833,8 +836,6 @@ namespace BunnyMod
         public static void Stove_UseWrenchToDetonate(Stove __instance) // Non-Patch 
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-
-            BunnyHeader.ConsoleMessage.LogMessage("Stove_UseWrenchToDetonate");
 
             if (__instance.gc.serverPlayer)
             {

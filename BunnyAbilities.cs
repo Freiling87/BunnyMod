@@ -32,9 +32,9 @@ namespace BunnyMod
 					item.Categories.Add("NPCsCantPickup");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
-					item.otherDamage = 0; // This is used for storing Bitwise variables in the Extension Method class below
+					item.otherDamage = 0; // Bitwise variable field, see Extension method class below
 					item.isWeapon = false;
-					item.initCount = 0;
+					item.initCount = 100;
 					item.maxAmmo = 100;
 					item.itemType = ""; //
 					//item.rechargeAmountInverse = item.initCount;
@@ -50,23 +50,15 @@ namespace BunnyMod
 			{
 				int bitField = item.agent.statusEffects.GetBitfield();
 
-				if (ChronomancyIsCoolingDown(bitField))
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-				else if (ChronomancyIsSlowedDown(bitField))
-				{
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-					agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
-				}
-				else if (ChronomancyIsSpedUp(bitField))
-					ChronomancyDecastManual(agent, bitField);
-					//ChronomancyStartCoolDown(bitField); // Move this down the if-chain
+				if (ChronomancyIsCoolingDown(bitField) || ChronomancyIsMiscast(bitField))
+					ChronomancyDialogueCantDo(agent);
+				else if (ChronomancyIsCast(bitField))
+					ChronomancyDecast(agent, bitField);
 				else
 				{
 					if (RollForMiscast(agent, item.invItemCount))
-						//ChronomancySetSlowedDown(ref bitField, true);
-						ChronomancyMiscast(agent, item.invItemCount);
+						ChronomancyMiscast(agent, item.invItemCount, bitField);
 					else
-						//ChronomancySetSpedUp(ref bitField, true);
 						ChronomancyCast(agent, bitField);
 				}
 			};
@@ -74,40 +66,25 @@ namespace BunnyMod
 			{
 				int bitField = agent.statusEffects.GetBitfield();
 
-				//ChronomancySetCoolingDown(ref bitField, false); Replaced with Async Task
-
-				if (ChronomancyIsSpedUp(bitField))
+				if (ChronomancyIsCast(bitField))
 				{
 					item.invItemCount -= ChronomancyManaCost(agent);
 
 					if (item.invItemCount < 0)
-						//ChronomancySetSpedUp(ref bitField, false);
-						//ChronomancySetSlowedDown(ref bitField, true);
-						ChronomancyMiscast(agent, item.invItemCount);
+						ChronomancyMiscast(agent, item.invItemCount, bitField);
 				}
 				else
-				{
-					if (item.invItemCount > 0 && agent.statusEffects.CanRecharge())
+					if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
 					{
-						item.invItemCount = Math.Min(0, item.invItemCount - 5);
+						item.invItemCount = Math.Min(100, item.invItemCount + 5);
 
-					if (item.invItemCount == 100)
-					{
-						//ChronomancySetSlowedDown(ref bitField, false);
-
-						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge"); // Move these to a recharge function
-
-						ChronomancyDecastManual(agent, bitField); // Set to automatic when done
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable(); // move this
+						if (item.invItemCount == 100)
+							ChronomancyRecharge(agent, ref bitField);
 					}
-				}
 			};
-
 			chronomancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
-
-			#endregion
+			#endregion Chronomancy
 			#region Cryomancy
 			Sprite spriteCryomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Cryomancy);
 
@@ -442,39 +419,41 @@ namespace BunnyMod
 		#region Hematomancy // Blood Magic
 		#endregion
 		#region Chronomancy
+
+		// For other Particles: BulletTrailShrinkRay, BulletHitMindControl, ExplosionEMP, ExplosionMindControl, BulletHitShrinkRay, Hack, SmokePuffs, ExplosionStomp, ExplosionWarp, ExplosionPowerSap, Electrocution
+
 		public static void ChronomancyCast(Agent agent, int bitField)
 		{
-			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "Spawn");
+			ChronomancySetCast(ref bitField, true);
 
-			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
-			agent.gc.mainTimeScale = 0.33f;
+			agent.SpawnParticleEffect("BulletTrailShrinkRay", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "LockdownWallDown");
+
+			agent.gc.mainTimeScale = 0.25f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() * 3;
+			agent.speedMax = agent.FindSpeed() * 4;
 		}
-		public static void ChronomancyDecastAutomatic(Agent agent, int bitField) // TODO
+		public static void ChronomancyDecast(Agent agent, int bitField)
 		{
+			ChronomancyStartCoolDown(agent, bitField);
+			ChronomancySetCast(ref bitField, false);
 
-		}
-		public static void ChronomancyDecastManual(Agent agent, int bitField)
-		{
-			ChronomancySetSpedUp(ref bitField, false);
+			agent.SpawnParticleEffect("BulletHitMindControl", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "LockdownWallUp");
 
-			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "Spawn");
-
-			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
 			agent.gc.mainTimeScale = 1f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.FindSpeed();
+			agent.speedMax = agent.FindSpeed();
 		}
-		public static void ChronomancyDialogueCantDo(Agent agent) // Include Audio here // TODO
+		public static void ChronomancyDialogueCantDo(Agent agent)
 		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
 
+			agent.Say("I need to take a \"time out!\" Get it? But seriously, my heart will stop.");
 		}
-		public static void ChronomancyDialogueMiscast(Agent agent) // Include Audio here
+		public static void ChronomancyDialogueMiscast(Agent agent)
 		{
 			switch (UnityEngine.Random.Range(1, 3))
 			{
@@ -491,9 +470,9 @@ namespace BunnyMod
 		}
 		public static bool ChronomancyIsCoolingDown(int bitfield) =>
 			(bitfield & 0b_0001) != 0;
-		public static bool ChronomancyIsSlowedDown(int bitfield) =>
+		public static bool ChronomancyIsMiscast(int bitfield) =>
 			(bitfield & 0b_0010) != 0;
-		public static bool ChronomancyIsSpedUp(int bitfield) =>
+		public static bool ChronomancyIsCast(int bitfield) =>
 			(bitfield & 0b_0100) != 0;
 		public static int ChronomancyManaCost(Agent agent)
 		{
@@ -508,19 +487,37 @@ namespace BunnyMod
 
 			return increment;
 		}
-		public static void ChronomancyMiscast(Agent agent, int degree)
+		public static void ChronomancyMiscast(Agent agent, int degree, int bitfield)
 		{
-			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
+			ChronomancyStartCoolDown(agent, bitfield); // TODO: Ensure that this duration is equal to miscast duration
+			ChronomancySetMiscast(ref bitfield, true);
 
+			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
+			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
 			ChronomancyDialogueMiscast(agent);
 
-			agent.gc.prevTimeScale = agent.gc.mainTimeScale; //
-			agent.gc.mainTimeScale = 3f;
+			agent.gc.mainTimeScale = 4f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() / 3;
+			agent.speedMax = agent.FindSpeed() / 4;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		public static void ChronomancyRecharge(Agent agent, ref int bitfield)
+		{
+			ChronomancySetCoolingDown(ref bitfield, false);
+
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			agent.gc.audioHandler.Play(agent, "Recharge");
+
+			if (ChronomancyIsMiscast(bitfield))
+			{
+				agent.gc.mainTimeScale = 1f;
+				agent.statusEffects.RemoveStatusEffect("Fast");
+				agent.statusEffects.RemoveStatusEffect("Slow");
+				agent.speedMax = agent.FindSpeed();
+
+				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+			}
 		}
 		public static void ChronomancySetCoolingDown(ref int bitfield, bool value)
 		{
@@ -528,29 +525,28 @@ namespace BunnyMod
 			if (value) bitfield |= 0b_0001;
 			else bitfield &= ~0b_0001;
 		}
-		public static void ChronomancySetSlowedDown(ref int bitfield, bool value)
+		public static void ChronomancySetMiscast(ref int bitfield, bool value)
 		{
 			BunnyHeader.Log("SetSlowedDown " + value);
 			if (value) bitfield |= 0b_0010;
 			else bitfield &= ~0b_0010;
 		}
-		public static void ChronomancySetSpedUp(ref int bitfield, bool value)
+		public static void ChronomancySetCast(ref int bitfield, bool value)
 		{
 			BunnyHeader.Log("SetSpedUp " + value);
 			if (value) bitfield |= 0b_0100;
 			else bitfield &= ~0b_0100;
 		}
-		public static async Task ChronomancyStartCoolDown(int bitfield)
+		public static async Task ChronomancyStartCoolDown(Agent agent, int bitfield)
 		{
 			ChronomancySetCoolingDown(ref bitfield, true);
 
-			await Task.Delay(5000);
+			await Task.Delay(4000);
 
-			while (true)
-			{
-				ChronomancySetCoolingDown(ref bitfield, false);
-				await Task.Delay(1000);
-			}
+			while (ChronomancyIsMiscast(bitfield))
+				await Task.Delay(1000); 
+			
+			ChronomancyRecharge(agent, ref bitfield);
 		}
 		#endregion
 		#region Cryomancy
@@ -920,8 +916,8 @@ namespace BunnyMod
 				ref int target = ref __instance.agent.inventory.equippedSpecialAbility.otherDamage;
 
 				ChronomancySetCoolingDown(ref target, false);
-				ChronomancySetSlowedDown(ref target, false);
-				ChronomancySetSpedUp(ref target, false);
+				ChronomancySetMiscast(ref target, false);
+				ChronomancySetCast(ref target, false);
 			}
 		}
 		#endregion

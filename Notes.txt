@@ -2,7 +2,11 @@
 === TEST NOTES =================================================================
 
 - Chronomancy
-	Flags appear to persist between runs.
+	Decast is empty?
+	Particles persist at origin when casting
+	Lockdown sound isn't the one we want
+	ItemCount is not decreasing when active
+	When deactivated, player speed is still quadrupled
 
 - Pyromancy
 	Reduce velocity boost of WildCasting

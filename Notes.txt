@@ -26,6 +26,12 @@
 
 === HIGH PRIORITY or TRIVIAL √ ==================================================
 
+BULLET MODDING
+
+Unused variables:
+	string substance
+
+
 [Message: Bunny Mod] Stove (1478): MoveNext
 [Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 Stack trace:

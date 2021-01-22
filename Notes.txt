@@ -2,15 +2,14 @@
 === TEST NOTES =================================================================
 
 - Chronomancy
-	Decast is empty?
-	Particles persist at origin when casting
-	Lockdown sound isn't the one we want
 	ItemCount is not decreasing when active
 	When deactivated, player speed is still quadrupled
 
 - Pyromancy
-	Reduce velocity boost of WildCasting
-	Reduce Miscast reduction of MagicTraining
+	Reduce Miscast reduction of MagicTraining / Might need Float operations to do this correctly
+	Reduce Miscast chance with Wild Casting
+	Increase upgrade prices of all Magic traits
+	Slow down rate of opportunity of recharge, it can trigger radpidly 
 
 - Telemancy
 	Currently, it miscasts at >35
@@ -25,6 +24,9 @@
 - Verify if correct Tool durability cost is displaying in menus.
 
 === HIGH PRIORITY or TRIVIAL √ ==================================================
+
+BEFORE RELEASE:
+	Make a promo character for each special ability or trait group, to promote the mod and community at large.
 
 BULLET MODDING
 

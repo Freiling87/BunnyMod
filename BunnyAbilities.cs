@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using HarmonyLib;
@@ -37,7 +38,7 @@ namespace BunnyMod
 					item.initCount = 100;
 					item.maxAmmo = 100;
 					item.itemType = ""; //
-					//item.rechargeAmountInverse = item.initCount;
+					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
 				});
@@ -419,7 +420,7 @@ namespace BunnyMod
 			agent.SpawnParticleEffect("BulletHitMindControl", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "LockdownWallDown");
 
-			ChronomancySetCast(ref bitField, true);
+			ChronomancySetCast(agent, true);
 
 			agent.gc.mainTimeScale = 0.25f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
@@ -431,7 +432,7 @@ namespace BunnyMod
 			agent.SpawnParticleEffect("BulletHitMindControl", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "LockdownWallUp");
 
-			ChronomancySetCast(ref bitField, false);
+			ChronomancySetCast(agent, false);
 
 			agent.gc.mainTimeScale = 1f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
@@ -498,8 +499,8 @@ namespace BunnyMod
 			ChronomancyDialogueMiscast(agent);
 
 			if (ChronomancyIsCast(bitfield))
-				ChronomancySetCast(ref bitfield, false);
-			ChronomancySetMiscast(ref bitfield, true);
+				ChronomancySetCast(agent, false);
+			ChronomancySetMiscast(agent, true);
 
 			ChronomancyStartCoolDown(agent, bitfield); // TODO: Ensure that this duration is equal to miscast duration
 
@@ -515,11 +516,11 @@ namespace BunnyMod
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
 			if (ChronomancyIsCoolingDown(bitfield))
-				ChronomancySetCoolingDown(ref bitfield, false);
+				ChronomancySetCoolingDown(agent, false);
 
 			if (ChronomancyIsMiscast(bitfield))
 			{
-				ChronomancySetMiscast(ref bitfield, false);
+				ChronomancySetMiscast(agent, false);
 
 				agent.gc.mainTimeScale = 1f;
 				agent.statusEffects.RemoveStatusEffect("Fast");
@@ -529,30 +530,30 @@ namespace BunnyMod
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
 		}
-		public static void ChronomancySetCoolingDown(ref int bitfield, bool value)
+		public static void ChronomancySetCoolingDown(Agent agent, bool value)
 		{
 			BunnyHeader.Log("SetCoolingDown " + value);
 
-			if (value) bitfield |= 0b_0001;
-			else bitfield &= ~0b_0001;
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
-		public static void ChronomancySetMiscast(ref int bitfield, bool value)
+		public static void ChronomancySetMiscast(Agent agent, bool value)
 		{
 			BunnyHeader.Log("SetSlowedDown " + value);
 
-			if (value) bitfield |= 0b_0010;
-			else bitfield &= ~0b_0010;
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-		public static void ChronomancySetCast(ref int bitfield, bool value)
+		public static void ChronomancySetCast(Agent agent, bool value)
 		{
 			BunnyHeader.Log("SetSpedUp " + value);
 
-			if (value) bitfield |= 0b_0100;
-			else bitfield &= ~0b_0100;
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
 		public static async Task ChronomancyStartCoolDown(Agent agent, int bitfield)
 		{
-			ChronomancySetCoolingDown(ref bitfield, true);
+			ChronomancySetCoolingDown(agent, true);
 
 			await Task.Delay(4000);
 
@@ -644,7 +645,8 @@ namespace BunnyMod
 			agent.gun.HideGun();
 
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
-			bullet.speed = bullet.speed * 3 / 2; //
+			bullet.speed *= 3 / 2; //
+			bullet.cameFromWeapon = "ChainLightning";
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
@@ -697,6 +699,26 @@ namespace BunnyMod
 		{
 			agent.statusEffects.AddStatusEffect("Electrocuted", degree);
 		}
+		public static void ElectromancyRebound(GameObject hitObject, Bullet bullet)
+		{
+			int numberOfChains = 1;
+
+			for (int i = 0; i <= numberOfChains; i++)
+			{
+				Bullet newBullet = bullet.agent.gc.spawnerMain.SpawnBullet(hitObject.transform.position, bulletStatus.Taser, bullet.agent);
+				newBullet.speed *= 3 / 2;
+				newBullet.agent = bullet.agent;
+
+				if (ElectromancyRollForRebound(bullet.agent, 0))
+					newBullet.cameFromWeapon = "ChainLightning"; // Only apply this if the skill successfully rolled for a rebound.
+
+				Vector2 origin = hitObject.transform.position;
+				Agent closest = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
+
+				newBullet.movement.RotateToAgent(closest);
+				//newBullet.movement.AutoAim(__instance.agent, closest, newBullet);
+			}
+		}
 		public static bool ElectromancyRollForMiscast(Agent agent, int modifier)
 		{
 			int risk = 100 + modifier;
@@ -717,6 +739,11 @@ namespace BunnyMod
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
+		public static bool ElectromancyRollForRebound(Agent agent, int modifier)
+		{
+
+			return true;
 		}
 		#endregion
 		#region Hematomancy // Blood Magic
@@ -928,17 +955,22 @@ namespace BunnyMod
 		}
 		#endregion
 
+		#region Bullet
+		public static void Bullet_BulletHitEffect(GameObject hitObject, Bullet __instance) // Postfix
+		{
+			if (__instance.cameFromWeapon == "ChainLightning" && __instance.agent.inventory.equippedSpecialAbility.invItemName == "Electromancy")
+				ElectromancyRebound(hitObject, __instance);
+		}
+		#endregion
 		#region StatusEffects
+		public static void StatusEffects_AddStatusEffectSpecial() // Postfix
+		{
+			// TODO
+		}
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
-			if (abilityName == "Chronomancy")
-			{
-				ref int target = ref __instance.agent.inventory.equippedSpecialAbility.otherDamage;
-
-				ChronomancySetCoolingDown(ref target, false);
-				ChronomancySetMiscast(ref target, false);
-				ChronomancySetCast(ref target, false);
-			}
+			if (abilityName == "Chronomancy" || abilityName == "Electromancy")
+				__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
 		}
 		#endregion
 	}

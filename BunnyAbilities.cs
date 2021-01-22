@@ -427,7 +427,7 @@ namespace BunnyMod
 		public static void ChronomancyDecast(Agent agent)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "SlideWhistle");
+			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
 
 			ChronomancySetCast(agent, false);
 
@@ -481,11 +481,11 @@ namespace BunnyMod
 			int increment;
 
 			if (agent.statusEffects.hasTrait("WildCasting"))
-				increment = UnityEngine.Random.Range(1, 3);
+				increment = UnityEngine.Random.Range(4, 6);
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				increment = UnityEngine.Random.Range(0, 4);
+				increment = UnityEngine.Random.Range(3, 7);
 			else
-				increment = 2;
+				increment = 5;
 
 			return increment;
 		}

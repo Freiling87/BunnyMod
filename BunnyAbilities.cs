@@ -15,6 +15,11 @@ namespace BunnyMod
 		{
 			InitializeAbilities();
 
+			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "BulletHitEffect", GetType(), "Bullet_BulletHitEffect", new Type[1] { typeof(GameObject) });
+
+			BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
+
+			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddStatusEffectSpecial", GetType(), "StatusEffects_AddStatusEffectSpecial", new Type[4] { typeof(String), typeof(Agent), typeof(Agent), typeof(bool) });
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
 		}
 		public static void InitializeAbilities() // Main
@@ -50,15 +55,13 @@ namespace BunnyMod
 
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				ref int bitField = ref item.agent.statusEffects.GetBitfield();
-
-				if (ChronomancyIsCoolingDown(agent) || ChronomancyIsMiscast(agent))
+				if (ChronomancyIsWindingUp(agent) || ChronomancyIsMiscast(agent))
 					ChronomancyDialogueCantDo(agent);
 				else if (ChronomancyIsCast(agent))
 					ChronomancyDecast(agent);
 				else
 				{
-					if (RollForMiscast(agent, 100 - item.invItemCount))
+					if (ChronomancyRollForMiscast(agent, 100 - item.invItemCount))
 						ChronomancyMiscast(agent, 100 - item.invItemCount);
 					else
 						ChronomancyCast(agent);
@@ -66,8 +69,6 @@ namespace BunnyMod
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
-				ref int bitField = ref agent.statusEffects.GetBitfield();
-
 				if (ChronomancyIsCast(agent))
 				{
 					item.invItemCount -= ChronomancyManaCost(agent);
@@ -82,7 +83,7 @@ namespace BunnyMod
 					if (item.invItemCount == 100)
 						ChronomancyRecharge(agent);
 				}
-				else if (item.invItemCount == 100 && ChronomancyIsMiscast(agent) || ChronomancyIsCoolingDown(agent))
+				else if (item.invItemCount == 100 && ChronomancyIsMiscast(agent) || ChronomancyIsWindingUp(agent))
 					ChronomancyRecharge(agent);
 			};
 			chronomancy.RechargeInterval = (item, myAgent) =>
@@ -252,7 +253,6 @@ namespace BunnyMod
 					item.rapidFire = true;
 					item.rechargeAmountInverse = item.initCount;
 					item.shadowOffset = 2;
-					item.specialMeleeTexture = true;
 					item.stackable = true;
 					item.thiefCantSteal = true;
 					item.weaponCode = weaponType.WeaponProjectile;
@@ -262,28 +262,24 @@ namespace BunnyMod
 			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 8;
 
-			bool burntOut = false;
-
 			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
 			{
-				if (item.invItemCount == 0)
+				if (!PyromancyIsBurnedOut(agent))
 				{
-					item.agent.gc.audioHandler.Play(item.agent, "MindControlEnd");
-					burntOut = true;
-				}
-				else if (PyromancyRollForMiscast(agent, -75))
-				{
-					PyromancyMiscast(agent, 20);
-					burntOut = true;
-				}
-				else
-				{
-					PyromancyCast(agent);
-					if (PyromancyManaCost(agent))
-						item.invItemCount--;
+					if (PyromancyRollForMiscast(agent, -75))
+						PyromancyMiscast(agent, 20);
+					else
+					{
+						PyromancyCast(agent);
+
+						if (PyromancyManaCost(agent))
+							item.invItemCount--;
+
+						if (item.invItemCount <= 0)
+							PyromancySetBurnedOut(agent, true);
+					}
 				}
 			};
-
 			pyromancy.Recharge = (item, myAgent) =>
 			{
 				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
@@ -291,17 +287,9 @@ namespace BunnyMod
 					item.invItemCount++;
 
 					if (item.invItemCount == 100)
-					{
-						if (burntOut)
-							burntOut = false;
-
-						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
-						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-					}
+						PyromancyRecharge(myAgent);
 				}
 			};
-
 			pyromancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 			#endregion
@@ -332,7 +320,7 @@ namespace BunnyMod
 
 			telemancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (RollForMiscast(agent, item.invItemCount))
+				if (ChronomancyRollForMiscast(agent, item.invItemCount)) // Split off to own Miscast Roll function
 					TelemancyMiscast(agent);
 
 				if (item.invItemCount <= 0)
@@ -379,38 +367,18 @@ namespace BunnyMod
 		}
 		#endregion
 
-		#region Magic General
+		#region Magic
 		public static Vector2 MouseIngamePosition()
 		{
 			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
 			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
-		public static bool RollForMiscast(Agent agent, int modifier)
-		{
-			int risk = 100 + modifier;
-
-			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 50;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 25;
-
-			if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 150;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 75;
-
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
-				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower"))
-				risk *= (4 / 5);
-
-			return (UnityEngine.Random.Range(0, 10000) <= risk);
-		}
-		#endregion
 		#region Chronomancy
 
-		// For other Particles:  ExplosionEMP, ExplosionMindControl, BulletHitShrinkRay, Hack, SmokePuffs, ExplosionStomp, ExplosionWarp, ExplosionPowerSap, Electrocution
+		// TODO: Try modifying Agent.SpeedStatMod instead of Agent.SpeedMax
+
+		public static float baseTimeScale;
 
 		public static void ChronomancyCast(Agent agent)
 		{
@@ -419,7 +387,7 @@ namespace BunnyMod
 
 			ChronomancySetCast(agent, true);
 
-			agent.gc.mainTimeScale = 0.25f;
+			agent.gc.selectedTimeScale = 0.25f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() * 4;
@@ -431,12 +399,12 @@ namespace BunnyMod
 
 			ChronomancySetCast(agent, false);
 
-			agent.gc.mainTimeScale = 1f;
+			agent.gc.selectedTimeScale = 1f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed();
 
-			ChronomancyStartCoolDown(agent);
+			ChronomancyStartWindingUp(agent);
 		}
 		public static void ChronomancyDialogueCantDo(Agent agent)
 		{
@@ -470,11 +438,11 @@ namespace BunnyMod
 					break;
 			}
 		}
-		public static bool ChronomancyIsCoolingDown(Agent agent) =>
+		public static bool ChronomancyIsCast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		public static bool ChronomancyIsMiscast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
-		public static bool ChronomancyIsCast(Agent agent) =>
+		public static bool ChronomancyIsWindingUp(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		public static int ChronomancyManaCost(Agent agent)
 		{
@@ -499,9 +467,9 @@ namespace BunnyMod
 				ChronomancySetCast(agent, false);
 			ChronomancySetMiscast(agent, true);
 
-			ChronomancyStartCoolDown(agent); // TODO: Ensure that this duration is equal to miscast duration
+			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
-			agent.gc.mainTimeScale = 4f;
+			agent.gc.selectedTimeScale = 4f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() / 4;
@@ -512,14 +480,14 @@ namespace BunnyMod
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
-			if (ChronomancyIsCoolingDown(agent))
-				ChronomancySetCoolingDown(agent, false);
+			if (ChronomancyIsWindingUp(agent))
+				ChronomancySetWindingUp(agent, false);
 
 			if (ChronomancyIsMiscast(agent))
 			{
 				ChronomancySetMiscast(agent, false);
 
-				agent.gc.mainTimeScale = 1f;
+				agent.gc.selectedTimeScale = 1f;
 				agent.statusEffects.RemoveStatusEffect("Fast");
 				agent.statusEffects.RemoveStatusEffect("Slow");
 				agent.speedMax = agent.FindSpeed();
@@ -527,9 +495,30 @@ namespace BunnyMod
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
 		}
-		public static void ChronomancySetCoolingDown(Agent agent, bool value)
+		public static bool ChronomancyRollForMiscast(Agent agent, int modifier)
 		{
-			BunnyHeader.Log("SetCoolingDown " + value);
+			int risk = 100 + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 50;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 25;
+
+			if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 150;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 75;
+
+			if (agent.statusEffects.hasTrait("MagicPower_2"))
+				risk *= (3 / 5);
+			else if (agent.statusEffects.hasTrait("MagicPower"))
+				risk *= (4 / 5);
+
+			return (UnityEngine.Random.Range(0, 10000) <= risk);
+		}
+		public static void ChronomancySetCast(Agent agent, bool value)
+		{
+			BunnyHeader.Log("SetCast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
@@ -541,16 +530,16 @@ namespace BunnyMod
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-		public static void ChronomancySetCast(Agent agent, bool value)
+		public static void ChronomancySetWindingUp(Agent agent, bool value)
 		{
-			BunnyHeader.Log("SetCast " + value);
+			BunnyHeader.Log("SetCoolingDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
-		public static async Task ChronomancyStartCoolDown(Agent agent)
+		public static async Task ChronomancyStartWindingUp(Agent agent)
 		{
-			ChronomancySetCoolingDown(agent, true);
+			ChronomancySetWindingUp(agent, true);
 
 			await Task.Delay(4000);
 
@@ -644,6 +633,7 @@ namespace BunnyMod
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
 			bullet.speed *= 3 / 2; //
 			bullet.cameFromWeapon = "ChainLightning";
+			bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
@@ -696,8 +686,9 @@ namespace BunnyMod
 		{
 			agent.statusEffects.AddStatusEffect("Electrocuted", degree);
 		}
-		public static void ElectromancyRebound(GameObject hitObject, Bullet bullet)
+		public static void ElectromancyImpact(GameObject hitObject, Bullet bullet)
 		{
+
 			int numberOfChains = 1;
 
 			for (int i = 0; i <= numberOfChains; i++)
@@ -757,10 +748,16 @@ namespace BunnyMod
 		// When close to a ghost, you can turn them into mana crystals
 		#endregion
 		#region Pyromancy
+		public static void PyromancyBurnOut(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "MindControlEnd");
+
+			PyromancySetBurnedOut(agent, true);
+		}
 		public static void PyromancyCast(Agent agent)
 		{
 			agent.gun.HideGun();
-			agent.gc.audioHandler.Play(agent, "FireConstant"); // FlamethrowerEnd
+			//agent.gc.audioHandler.Play(agent, "FireConstant"); // Still won't stop. Not sure how to stop it.
 
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
@@ -785,6 +782,42 @@ namespace BunnyMod
 			else
 				bullet.speed = 6;
 		}
+		public static void PyromancyDialogueCantDo(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			switch (UnityEngine.Random.Range(1, 2))
+			{
+				case 1:
+					agent.Say("I'm burned out.");
+					break;
+				case 2:
+					agent.Say("Please wait. I don't feel like exploding right now.");
+					break;
+			}
+		}
+		public static void PyromancyDialogueMiscast(Agent agent)
+		{
+			switch (UnityEngine.Random.Range(1, 4))
+			{
+				case 1:
+					agent.Say("Not very stoked right now.");
+					break;
+				case 2:
+					agent.Say("Haha my skin is melting lol XDDD");
+					break;
+				case 3:
+					agent.Say("Flame off! Flame off!");
+					break;
+				case 4:
+					agent.Say("I shidded an farded an burst into flame.");
+					break;
+			}
+		}
+		public static bool PyromancyIsBurnedOut(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+		public static bool PyromancyIsMiscast(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		public static bool PyromancyManaCost(Agent agent)
 		{
 			int chance = 100;
@@ -804,6 +837,21 @@ namespace BunnyMod
 		{
 			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
 			agent.statusEffects.ChangeHealth(-degree);
+
+			PyromancySetBurnedOut(agent, true);
+		}
+		public static void PyromancyRecharge(Agent agent) //TODO
+		{
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			agent.gc.audioHandler.Play(agent, "Recharge");
+
+			if (PyromancyIsBurnedOut(agent))
+				PyromancySetBurnedOut(agent, false);
+
+			if (PyromancyIsMiscast(agent))
+				PyromancySetMiscast(agent, false);
+
+			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
 		public static bool PyromancyRollForMiscast(Agent agent, int modifier)
 		{
@@ -826,6 +874,20 @@ namespace BunnyMod
 
 			return UnityEngine.Random.Range(0, 10000) <= risk;
 		}
+		public static void PyromancySetBurnedOut(Agent agent, bool value)
+		{
+			BunnyHeader.Log("PyromancySetBurnedOut " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
+		}
+		public static void PyromancySetMiscast(Agent agent, bool value)
+		{
+			BunnyHeader.Log("PyromancySetBurnedOut " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
+		}
 		#endregion
 		#region Telemancy
 		public static Vector2 TelemancyCast(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls)
@@ -833,8 +895,8 @@ namespace BunnyMod
 			TileInfo tileInfo = agent.gc.tileInfo;
 			Vector2 currentPosition = agent.curPosition;
 			Vector2 targetPosition;
-			float rangeNear = 3f; //
-			float rangeFar = 6f; //
+			float rangeNear = 2.5f;
+			float rangeFar = 5.5f;
 
 			if (agent.statusEffects.hasTrait("MagicPower_2"))
 			{
@@ -952,31 +1014,31 @@ namespace BunnyMod
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		#endregion
+		#endregion
 
 		#region Bullet
 		public static void Bullet_BulletHitEffect(GameObject hitObject, Bullet __instance) // Postfix
 		{
 			if (__instance.cameFromWeapon == "ChainLightning" && __instance.agent.inventory.equippedSpecialAbility.invItemName == "Electromancy")
-				ElectromancyRebound(hitObject, __instance);
+				ElectromancyImpact(hitObject, __instance);
+		}
+		#endregion
+		#region LoadLevel
+		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
+		{
+			baseTimeScale = GameController.gameController.selectedTimeScale;
 		}
 		#endregion
 		#region StatusEffects
-		public static void StatusEffects_AddStatusEffectSpecial() // Postfix
+		public static void StatusEffects_AddStatusEffectSpecial(string effect, Agent damagerAgent, Agent causingAgent, bool shooting, StatusEffects __instance, ref string __result) // Postfix
 		{
 			// TODO
 		}
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
-			if (abilityName == "Chronomancy" || abilityName == "Electromancy")
+			if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy")
 				__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
 		}
 		#endregion
-	}
-	public static class Extensions
-	{
-		public static ref int GetBitfield(this StatusEffects se)
-			=> ref se.agent.inventory.equippedSpecialAbility.otherDamage;
-			// This field is used solely because the SOR codebase never makes use of it. 
-			// Its function is orthogonal to its name, so this extension method is used to obscure it to avoid confusion.
 	}
 }

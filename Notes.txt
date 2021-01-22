@@ -32,6 +32,7 @@ BULLET MODDING
 
 Unused variables:
 	string substance
+	int damageMod
 
 
 [Message: Bunny Mod] Stove (1478): MoveNext

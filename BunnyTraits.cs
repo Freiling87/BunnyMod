@@ -360,7 +360,7 @@ namespace BunnyMod
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
                 new CustomNameInfo("Unlucky +"),
                 new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
-            Cursed_2.Available = false;
+            Cursed_2.Available = true;
             Cursed_2.AvailableInCharacterCreation = true;
             Cursed_2.CanRemove = true;
             Cursed_2.CanSwap = false;
@@ -412,7 +412,7 @@ namespace BunnyMod
             CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
-            MagicPower_2.Available = true;
+            MagicPower_2.Available = false;
             MagicPower_2.AvailableInCharacterCreation = false;
             MagicPower_2.CanRemove = false;
             MagicPower_2.CanSwap = false;

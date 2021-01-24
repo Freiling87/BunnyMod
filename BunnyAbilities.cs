@@ -388,6 +388,7 @@ namespace BunnyMod
 			ChronomancySetCast(agent, true);
 
 			agent.gc.selectedTimeScale = 0.25f;
+			agent.gc.mainTimeScale = 0.25f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() * 4;
@@ -399,7 +400,8 @@ namespace BunnyMod
 
 			ChronomancySetCast(agent, false);
 
-			agent.gc.selectedTimeScale = 1f;
+			agent.gc.selectedTimeScale = baseTimeScale;
+			agent.gc.mainTimeScale = baseTimeScale;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed();
@@ -470,6 +472,7 @@ namespace BunnyMod
 			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
 			agent.gc.selectedTimeScale = 4f;
+			agent.gc.mainTimeScale = 4f;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() / 4;
@@ -487,7 +490,8 @@ namespace BunnyMod
 			{
 				ChronomancySetMiscast(agent, false);
 
-				agent.gc.selectedTimeScale = 1f;
+				agent.gc.selectedTimeScale = baseTimeScale;
+				agent.gc.mainTimeScale = baseTimeScale;
 				agent.statusEffects.RemoveStatusEffect("Fast");
 				agent.statusEffects.RemoveStatusEffect("Slow");
 				agent.speedMax = agent.FindSpeed();
@@ -701,10 +705,18 @@ namespace BunnyMod
 					newBullet.cameFromWeapon = "ChainLightning"; // Only apply this if the skill successfully rolled for a rebound.
 
 				Vector2 origin = hitObject.transform.position;
-				Agent closest = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
+				Agent closestAgent = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
 
-				newBullet.movement.RotateToAgent(closest);
-				//newBullet.movement.AutoAim(__instance.agent, closest, newBullet);
+				Vector3 target;
+
+				if (closestAgent != null)
+					target = closestAgent.curPosition;
+				else
+					target = newBullet.curPosition + UnityEngine.Random.insideUnitCircle.normalized;
+
+				newBullet.movement.RotateToPosition(target);
+				//newBullet.movement.RotateToAgent(closest);
+				//newBullet.movement.AutoAim(bullet.agent, closest, newBullet);
 			}
 		}
 		public static bool ElectromancyRollForMiscast(Agent agent, int modifier)
@@ -730,8 +742,9 @@ namespace BunnyMod
 		}
 		public static bool ElectromancyRollForRebound(Agent agent, int modifier)
 		{
+			int chance = 50 + modifier;
 
-			return true;
+			return (chance > UnityEngine.Random.Range(1, 100));
 		}
 		#endregion
 		#region Hematomancy // Blood Magic

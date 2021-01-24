@@ -2,24 +2,39 @@
 === TEST NOTES =================================================================
 
 - Chronomancy
-	ItemCount is not decreasing when active
-	When deactivated, player speed is still quadrupled
+	All set. Now add balance and upgrades.
+
+	Still needs a trigger cooldown, however.
+
+	Candidate variables to modify:
+		Mana cost increment
+		Timescales
+
+	Uniques:
+		Stomp when exiting
+
 
 - Pyromancy
 	Reduce Miscast reduction of MagicTraining / Might need Float operations to do this correctly
 	Reduce Miscast chance with Wild Casting
 	Increase upgrade prices of all Magic traits
-	Slow down rate of opportunity of recharge, it can trigger radpidly 
+	Add a delay between use and recharge, and between use and use.
 
 - Telemancy
 	Currently, it miscasts at >35
-		This one is now ready to test, using Abby's bitwise and extension method advice
+	The very base level of this trait needs to be at least somewhat useful.
+	Change Wild Casting to increase the rate of rechard or lower the cost of casting.
+	Focused casting can benefit accuracy.
+	Uniques:
+		EMP on teleport?
+		Stun on teleport?
 
-
+- Electromancy
 
 - Document if NegaFud bug is addressed
 
 - Test whether setting Available to false is actually working for upgrade traits
+	The code changes were made, now just keep an eye out.
 
 - Verify if correct Tool durability cost is displaying in menus.
 

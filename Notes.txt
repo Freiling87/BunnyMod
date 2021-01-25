@@ -10,9 +10,6 @@
 		Mana cost increment
 		Timescales
 
-	Uniques:
-		Stomp when exiting
-
 
 - Pyromancy
 	Reduce Miscast reduction of MagicTraining / Might need Float operations to do this correctly
@@ -103,6 +100,11 @@ Telemancy
 
 
 === IDEAS ======================================================================
+
+Magic items:
+	- Mana Crystals (decay slowly but unpredictably, increase recharge speed)
+	- Miscast Crystals (Rare, but absorb a miscast and shatter)
+	- Ultrachungus Crystals (Temporarily boost your ability to obscene levels)
 
 Chronomancy - Special trait for fast-punching so you can be a fast-punching type of person
 

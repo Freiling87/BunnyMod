@@ -62,9 +62,9 @@ namespace BunnyMod
 				else
 				{
 					if (ChronomancyRollForMiscast(agent, 100 - item.invItemCount))
-						ChronomancyMiscast(agent, 100 - item.invItemCount);
+						ChronomancyMiscast(agent, 4);
 					else
-						ChronomancyCast(agent);
+						ChronomancyCast(agent, 4);
 				}
 			};
 			chronomancy.Recharge = (item, agent) =>
@@ -380,18 +380,16 @@ namespace BunnyMod
 
 		public static float baseTimeScale;
 
-		public static void ChronomancyCast(Agent agent)
+		public static void ChronomancyCast(Agent agent, float speedupfactor)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
 
 			ChronomancySetCast(agent, true);
 
-			agent.gc.selectedTimeScale = 0.25f;
-			agent.gc.mainTimeScale = 0.25f;
-			agent.statusEffects.RemoveStatusEffect("Fast");
-			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() * 4;
+			agent.gc.selectedTimeScale /= speedupfactor;
+			agent.gc.mainTimeScale /= speedupfactor;
+			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
 		}
 		public static void ChronomancyDecast(Agent agent)
 		{
@@ -400,10 +398,10 @@ namespace BunnyMod
 
 			ChronomancySetCast(agent, false);
 
+			//TODO: Eliminate redundancies between Recharge and DeCast
+
 			agent.gc.selectedTimeScale = baseTimeScale;
 			agent.gc.mainTimeScale = baseTimeScale;
-			agent.statusEffects.RemoveStatusEffect("Fast");
-			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed();
 
 			ChronomancyStartWindingUp(agent);
@@ -459,7 +457,7 @@ namespace BunnyMod
 
 			return increment;
 		}
-		public static void ChronomancyMiscast(Agent agent, int degree)
+		public static void ChronomancyMiscast(Agent agent, float slowdownFactor)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
@@ -471,11 +469,11 @@ namespace BunnyMod
 
 			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
-			agent.gc.selectedTimeScale = 4f;
-			agent.gc.mainTimeScale = 4f;
+			agent.gc.selectedTimeScale *= slowdownFactor;
+			agent.gc.mainTimeScale *= slowdownFactor;
 			agent.statusEffects.RemoveStatusEffect("Fast");
 			agent.statusEffects.RemoveStatusEffect("Slow");
-			agent.speedMax = agent.FindSpeed() / 4;
+			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		public static void ChronomancyRecharge(Agent agent)
@@ -488,12 +486,12 @@ namespace BunnyMod
 
 			if (ChronomancyIsMiscast(agent))
 			{
+				//TODO: Eliminate redundancies between Recharge and DeCast
+
 				ChronomancySetMiscast(agent, false);
 
 				agent.gc.selectedTimeScale = baseTimeScale;
 				agent.gc.mainTimeScale = baseTimeScale;
-				agent.statusEffects.RemoveStatusEffect("Fast");
-				agent.statusEffects.RemoveStatusEffect("Slow");
 				agent.speedMax = agent.FindSpeed();
 
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();

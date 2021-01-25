@@ -223,6 +223,9 @@ namespace BunnyMod
         }
         public static void Initialize_Traits()
         {
+            FieldInfo unlockField = AccessTools.Field(typeof(CustomUnlock), "unlock");
+            Unlock TraitUnlocked; 
+
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
@@ -369,7 +372,7 @@ namespace BunnyMod
             Cursed_2.IsActive = false;
             Cursed_2.Upgrade = null;
 			#endregion
-			#region Magic
+			#region Magic - General
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
                 new CustomNameInfo("Focused Casting"),
                 new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));
@@ -378,11 +381,14 @@ namespace BunnyMod
             FocusedCasting.CanRemove = false;
             FocusedCasting.CanSwap = false;
             FocusedCasting.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
-            FocusedCasting.CostInCharacterCreation = 2;
+            FocusedCasting.CostInCharacterCreation = 3;
             FocusedCasting.IsActive = true; 
             FocusedCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             FocusedCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             FocusedCasting.Upgrade = "FocusedCasting_2";
+
+            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting);
+            TraitUnlocked.cost3 = 5;
 
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
                 new CustomNameInfo("Focused Casting +"),
@@ -392,22 +398,28 @@ namespace BunnyMod
             FocusedCasting_2.CanRemove = false;
             FocusedCasting_2.CanSwap = false;
             FocusedCasting_2.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
-            FocusedCasting_2.CostInCharacterCreation = 2;
+            FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true; 
             FocusedCasting_2.Upgrade = null;
+
+            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting_2);
+            TraitUnlocked.cost3 = 10;
 
             CustomTrait MagicPower = RogueLibs.CreateCustomTrait("MagicPower", true,
                 new CustomNameInfo("Magic Training"),
                 new CustomNameInfo("Improves your skills with any Magic Special Ability."));
             MagicPower.Available = true;
-            MagicPower.AvailableInCharacterCreation = true; // Disable after finishing
-            MagicPower.CostInCharacterCreation = 3;
+            MagicPower.AvailableInCharacterCreation = true;
+            MagicPower.CostInCharacterCreation = 5;
             MagicPower.CanRemove = false;
             MagicPower.CanSwap = false;
             MagicPower.Conflicting.AddRange(new string[] { });
             MagicPower.IsActive = true;
             MagicPower.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower.Upgrade = "MagicPower_2";
+
+            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower);
+            TraitUnlocked.cost3 = 5;
 
             CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
                 new CustomNameInfo("Magic Training +"),
@@ -421,28 +433,8 @@ namespace BunnyMod
             MagicPower_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower_2.Upgrade = null;
 
-            CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
-                new CustomNameInfo("Strong Gag Reflex"),
-                new CustomNameInfo("You can tolerate the physical side-effects of magic better than before. You're also very popular downtown."));
-            StrongGagReflex.Available = true; 
-            StrongGagReflex.AvailableInCharacterCreation = true;
-            StrongGagReflex.CanRemove = false;
-            StrongGagReflex.CanSwap = false;
-            StrongGagReflex.CostInCharacterCreation = 2;
-            StrongGagReflex.IsActive = true; 
-            StrongGagReflex.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            StrongGagReflex.Upgrade = "StrongGagReflex_2";
-
-            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,
-                new CustomNameInfo("Strong Gag Reflex +"),
-                new CustomNameInfo("You can eat a hotdog in one bite. This also helps with your little magic hobby. Now get out there and throat some Glizzies!"));
-            StrongGagReflex_2.Available = false; 
-            StrongGagReflex_2.AvailableInCharacterCreation = false;
-            StrongGagReflex_2.CanRemove = false;
-            StrongGagReflex_2.CanSwap = false;
-            StrongGagReflex_2.IsActive = true; 
-            StrongGagReflex_2.Upgrade = null;
+            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower_2);
+            TraitUnlocked.cost3 = 5;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
@@ -452,11 +444,14 @@ namespace BunnyMod
             WildCasting.CanRemove = false;
             WildCasting.CanSwap = false;
             WildCasting.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
-            WildCasting.CostInCharacterCreation = 2;
+            WildCasting.CostInCharacterCreation = 3;
             WildCasting.IsActive = true; 
             WildCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             WildCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             WildCasting.Upgrade = "WildCasting_2";
+
+            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting);
+            TraitUnlocked.cost3 = 5;
 
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
                 new CustomNameInfo("Wild Casting +"),
@@ -466,11 +461,85 @@ namespace BunnyMod
             WildCasting_2.CanRemove = false;
             WildCasting_2.CanSwap = false;
             WildCasting_2.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
-            WildCasting_2.CostInCharacterCreation = 2;
+            WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true; 
             WildCasting_2.Upgrade = null;
 
-            // Distortion Field
+            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting_2);
+            TraitUnlocked.cost3 = 10;
+            #endregion
+            #region Magic - Chronomancy
+            CustomTrait BulletTimeCriticals = RogueLibs.CreateCustomTrait("BulletTimeCriticals", true,
+                new CustomNameInfo("Bullet Time Criticals"),
+                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
+            BulletTimeCriticals.Available = true;
+            BulletTimeCriticals.AvailableInCharacterCreation = false;
+            BulletTimeCriticals.CanRemove = false;
+            BulletTimeCriticals.CanSwap = true;
+            BulletTimeCriticals.CostInCharacterCreation = 3;
+            BulletTimeCriticals.IsActive = true;
+            BulletTimeCriticals.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            BulletTimeCriticals.Upgrade = "BulletTimeCriticals_2";
+
+            CustomTrait BulletTimeCriticals_2 = RogueLibs.CreateCustomTrait("BulletTimeCriticals_2", true,
+                new CustomNameInfo("Bullet Time Criticals"),
+                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
+            BulletTimeCriticals_2.Available = true;
+            BulletTimeCriticals_2.AvailableInCharacterCreation = false;
+            BulletTimeCriticals_2.CanRemove = false;
+            BulletTimeCriticals_2.CanSwap = false;
+            BulletTimeCriticals_2.CostInCharacterCreation = 6;
+            BulletTimeCriticals_2.IsActive = true;
+            BulletTimeCriticals_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            BulletTimeCriticals_2.Upgrade = null;
+
+            CustomTrait RomperStomper = RogueLibs.CreateCustomTrait("RomperStomper", true,
+                new CustomNameInfo("Romper Stomper"),
+                new CustomNameInfo("Whenever you exit bullet time, you'll do a cool stompy thing to really seal the deal."));
+            RomperStomper.Available = true;
+            RomperStomper.AvailableInCharacterCreation = false;
+            RomperStomper.CanRemove = false;
+            RomperStomper.CanSwap = true;
+            RomperStomper.CostInCharacterCreation = 2;
+            RomperStomper.IsActive = true;
+            RomperStomper.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RomperStomper.Upgrade = "RomperStomper_2";
+
+            CustomTrait RomperStomper_2 = RogueLibs.CreateCustomTrait("RomperStomper_2", true,
+                new CustomNameInfo("Romper Stomper +"),
+                new CustomNameInfo("You make use of bullet time when you're at the buffet. It's showing."));
+            RomperStomper_2.Available = false;
+            RomperStomper_2.AvailableInCharacterCreation = false;
+            RomperStomper_2.CanRemove = false;
+            RomperStomper_2.CanSwap = false;
+            RomperStomper_2.CostInCharacterCreation = 4;
+            RomperStomper_2.IsActive = true;
+            RomperStomper_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RomperStomper_2.Upgrade = null;
+            #endregion
+            #region Magic - Telemancy
+            CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
+                new CustomNameInfo("Strong Gag Reflex"),
+                new CustomNameInfo("You can tolerate the physical side-effects of magic better than before. You're also very popular downtown."));
+            StrongGagReflex.Available = true;
+            StrongGagReflex.AvailableInCharacterCreation = true;
+            StrongGagReflex.CanRemove = false;
+            StrongGagReflex.CanSwap = false;
+            StrongGagReflex.CostInCharacterCreation = 2;
+            StrongGagReflex.IsActive = true;
+            StrongGagReflex.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            StrongGagReflex.Upgrade = "StrongGagReflex_2";
+
+            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,
+                new CustomNameInfo("Strong Gag Reflex +"),
+                new CustomNameInfo("You can eat a hotdog in one bite. This also helps with your little magic hobby. Now get out there and throat some Glizzies!"));
+            StrongGagReflex_2.Available = false;
+            StrongGagReflex_2.AvailableInCharacterCreation = false;
+            StrongGagReflex_2.CanRemove = false;
+            StrongGagReflex_2.CanSwap = false;
+            StrongGagReflex_2.IsActive = true;
+            StrongGagReflex_2.Upgrade = null;
             #endregion
             #region Stealth
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,

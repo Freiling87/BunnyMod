@@ -34,16 +34,16 @@ namespace BunnyMod
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
-					item.Categories.Add("Usable"); //
+					item.Categories.Add("Usable");
 					item.Categories.Add("NPCsCantPickup");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.otherDamage = 0; // Bitwise variable field, see Extension method class below
 					item.isWeapon = false;
-					item.initCount = 0;
+					item.initCount = 100;
 					item.rechargeAmountInverse = 100;
 					item.maxAmmo = 100;
-					item.itemType = ""; //
+					item.itemType = "";
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
@@ -61,20 +61,20 @@ namespace BunnyMod
 					ChronomancyDecast(agent);
 				else
 				{
-					if (ChronomancyRollForMiscast(agent, 100 - item.invItemCount))
-						ChronomancyMiscast(agent, 4);
+					if (ChronomancyRollForMiscast(agent, (float)(100 - item.invItemCount)/100))
+						ChronomancyMiscast(agent, ChronomancyCalcTimescale(agent, true));
 					else
-						ChronomancyCast(agent, 4);
+						ChronomancyCast(agent, ChronomancyCalcTimescale(agent, false));
 				}
 			};
 			chronomancy.Recharge = (item, agent) =>
 			{
 				if (ChronomancyIsCast(agent))
 				{
-					item.invItemCount -= ChronomancyManaCost(agent);
+					item.invItemCount -= ChronomancyCalcManaCost(agent);
 
 					if (item.invItemCount < 0)
-						ChronomancyMiscast(agent, item.invItemCount);
+						ChronomancyMiscast(agent, ChronomancyCalcTimescale(agent, true));
 				}
 				else if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
 				{
@@ -320,7 +320,7 @@ namespace BunnyMod
 
 			telemancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (ChronomancyRollForMiscast(agent, item.invItemCount)) // Split off to own Miscast Roll function
+				if (TelemancyRollForMiscast(agent, (float)(100 - item.invItemCount) / 100))
 					TelemancyMiscast(agent);
 
 				if (item.invItemCount <= 0)
@@ -376,10 +376,59 @@ namespace BunnyMod
 		}
 		#region Chronomancy
 
-		// TODO: Try modifying Agent.SpeedStatMod instead of Agent.SpeedMax
-
 		public static float baseTimeScale;
 
+		public static int ChronomancyCalcManaCost(Agent agent)
+		{
+			int increment = 5;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				increment += UnityEngine.Random.Range(-1, 1);
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				increment = UnityEngine.Random.Range(-3, 3);
+
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				increment -= 1;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				increment -= 2;
+
+			return increment;
+		}
+		public static float ChronomancyCalcTimescale(Agent agent, bool MisCast)
+		{
+			float timescale = 0.0f;
+
+			if (!MisCast)
+			{
+				timescale = 2.0f;
+
+				if (agent.statusEffects.hasTrait("WildCasting"))
+					timescale += 0.5f;
+				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+					timescale += 1.0f;
+
+				if (agent.statusEffects.hasTrait("MagicPower"))
+					timescale += 0.5f;
+				else if (agent.statusEffects.hasTrait("MagicPower_2"))
+					timescale += 1.0f;
+			}
+			else if (MisCast)
+			{
+				timescale = 4.0f;
+
+				if (agent.statusEffects.hasTrait("WildCasting"))
+					timescale += 1.0f;
+				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+					timescale += 2.0f;
+
+				if (agent.statusEffects.hasTrait("FocusedCasting"))
+					timescale -= 0.5f;
+				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+					timescale -= 1.0f;
+			}
+
+			return timescale;
+		}
 		public static void ChronomancyCast(Agent agent, float speedupfactor)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
@@ -444,19 +493,6 @@ namespace BunnyMod
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		public static bool ChronomancyIsWindingUp(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		public static int ChronomancyManaCost(Agent agent)
-		{
-			int increment;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				increment = UnityEngine.Random.Range(4, 6);
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				increment = UnityEngine.Random.Range(3, 7);
-			else
-				increment = 5;
-
-			return increment;
-		}
 		public static void ChronomancyMiscast(Agent agent, float slowdownFactor)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
@@ -497,26 +533,26 @@ namespace BunnyMod
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
 		}
-		public static bool ChronomancyRollForMiscast(Agent agent, int modifier)
+		public static bool ChronomancyRollForMiscast(Agent agent, float modifier)
 		{
-			int risk = 100 + modifier;
+			float risk = 1.0f + modifier;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 50;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 25;
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 0.25f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 0.50f;
 
-			if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 150;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 75;
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 0.75f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 1.50f;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
-				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			if (agent.statusEffects.hasTrait("MagicPower"))
 				risk *= (4 / 5);
+			else if (agent.statusEffects.hasTrait("MagicPower_2"))
+				risk *= (3 / 5);
 
-			return (UnityEngine.Random.Range(0, 10000) <= risk);
+			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
 		public static void ChronomancySetCast(Agent agent, bool value)
 		{
@@ -1023,6 +1059,27 @@ namespace BunnyMod
 			agent.statusEffects.ChangeHealth(-degree);
 			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+		}
+		public static bool TelemancyRollForMiscast(Agent agent, float modifier)
+		{
+			float risk = 1.0f + modifier;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 0.25f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 0.50f;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				risk += 0.75f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 1.50f;
+
+			if (agent.statusEffects.hasTrait("MagicPower"))
+				risk *= (4 / 5);
+			else if (agent.statusEffects.hasTrait("MagicPower_2"))
+				risk *= (3 / 5);
+
+			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
 		#endregion
 		#endregion

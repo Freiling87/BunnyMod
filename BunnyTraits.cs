@@ -493,29 +493,30 @@ namespace BunnyMod
             BulletTimeCriticals_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
             BulletTimeCriticals_2.Upgrade = null;
 
-            CustomTrait RomperStomper = RogueLibs.CreateCustomTrait("RomperStomper", true,
-                new CustomNameInfo("Romper Stomper"),
+            CustomTrait HammerTime = RogueLibs.CreateCustomTrait("HammerTime", true,
+                new CustomNameInfo("Hammer Time"),
                 new CustomNameInfo("Whenever you exit bullet time, you'll do a cool stompy thing to really seal the deal."));
-            RomperStomper.Available = true;
-            RomperStomper.AvailableInCharacterCreation = false;
-            RomperStomper.CanRemove = false;
-            RomperStomper.CanSwap = true;
-            RomperStomper.CostInCharacterCreation = 2;
-            RomperStomper.IsActive = true;
-            RomperStomper.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            RomperStomper.Upgrade = "RomperStomper_2";
+            HammerTime.Available = true;
+            HammerTime.AvailableInCharacterCreation = true;
+            HammerTime.CanRemove = false;
+            HammerTime.CanSwap = true;
+            HammerTime.CostInCharacterCreation = 2;
+            HammerTime.IsActive = true;
+            HammerTime.Recommendations.AddRange(new string[] { "Fatass" });
+            HammerTime.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            HammerTime.Upgrade = "HammerTime_2";
 
-            CustomTrait RomperStomper_2 = RogueLibs.CreateCustomTrait("RomperStomper_2", true,
-                new CustomNameInfo("Romper Stomper +"),
+            CustomTrait HammerTime_2 = RogueLibs.CreateCustomTrait("HammerTime_2", true,
+                new CustomNameInfo("Hammer Time +"),
                 new CustomNameInfo("You make use of bullet time when you're at the buffet. It's showing."));
-            RomperStomper_2.Available = false;
-            RomperStomper_2.AvailableInCharacterCreation = false;
-            RomperStomper_2.CanRemove = false;
-            RomperStomper_2.CanSwap = false;
-            RomperStomper_2.CostInCharacterCreation = 4;
-            RomperStomper_2.IsActive = true;
-            RomperStomper_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            RomperStomper_2.Upgrade = null;
+            HammerTime_2.Available = false;
+            HammerTime_2.AvailableInCharacterCreation = false;
+            HammerTime_2.CanRemove = false;
+            HammerTime_2.CanSwap = false;
+            HammerTime_2.CostInCharacterCreation = 4;
+            HammerTime_2.IsActive = true;
+            HammerTime_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            HammerTime_2.Upgrade = null;
             #endregion
             #region Magic - Telemancy
             CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,

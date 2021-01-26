@@ -399,30 +399,30 @@ namespace BunnyMod
             FocusedCasting_2.IsActive = true; 
             FocusedCasting_2.Upgrade = null;
 
-            CustomTrait MagicPower = RogueLibs.CreateCustomTrait("MagicPower", true,
+            CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
                 new CustomNameInfo("Magic Training"),
                 new CustomNameInfo("Improves your skills with any Magic Special Ability."));
-            MagicPower.Available = true;
-            MagicPower.AvailableInCharacterCreation = true;
-            MagicPower.CostInCharacterCreation = 5;
-            MagicPower.CanRemove = false;
-            MagicPower.CanSwap = false;
-            MagicPower.Conflicting.AddRange(new string[] { });
-            MagicPower.IsActive = true;
-            MagicPower.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            MagicPower.Upgrade = "MagicPower_2";
+            MagicTraining.Available = true;
+            MagicTraining.AvailableInCharacterCreation = true;
+            MagicTraining.CostInCharacterCreation = 5;
+            MagicTraining.CanRemove = false;
+            MagicTraining.CanSwap = false;
+            MagicTraining.Conflicting.AddRange(new string[] { });
+            MagicTraining.IsActive = true;
+            MagicTraining.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining.Upgrade = "MagicTraining_2";
 
-            CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
+            CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait("MagicTraining_2", true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
-            MagicPower_2.Available = false;
-            MagicPower_2.AvailableInCharacterCreation = false;
-            MagicPower_2.CanRemove = false;
-            MagicPower_2.CanSwap = false;
-            MagicPower_2.Conflicting.AddRange(new string[] { });
-            MagicPower_2.IsActive = true;
-            MagicPower_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            MagicPower_2.Upgrade = null;
+            MagicTraining_2.Available = false;
+            MagicTraining_2.AvailableInCharacterCreation = false;
+            MagicTraining_2.CanRemove = false;
+            MagicTraining_2.CanSwap = false;
+            MagicTraining_2.Conflicting.AddRange(new string[] { });
+            MagicTraining_2.IsActive = true;
+            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining_2.Upgrade = null;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
@@ -451,30 +451,28 @@ namespace BunnyMod
             WildCasting_2.Upgrade = null;
             #endregion
             #region Magic - Chronomancy
-            CustomTrait RATS = RogueLibs.CreateCustomTrait("FARTS", true,
+            CustomTrait FARTS = RogueLibs.CreateCustomTrait("FARTS", true,
                 new CustomNameInfo("F.A.R.T.S. Mk I"),
-                new CustomNameInfo("Fight-Tec Assisted Resistance Targeting System. A Cybernetic enhancement that improves your accuracy when time is slowed down."));
-            RATS.Available = true;
-            RATS.AvailableInCharacterCreation = true;
-            RATS.CanRemove = false;
-            RATS.CanSwap = true;
-            RATS.CostInCharacterCreation = 3;
-            RATS.IsActive = true;
-            RATS.Recommendations.AddRange(new string[] { "Chronomancy" });
-            RATS.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            RATS.Upgrade = "RATS_2";
+                new CustomNameInfo("Fight-Tec Assisted Resistance Targeting System. A Cybernetic enhancement that improves your general combat skills, with a double effect when time is slowed down. [Works alone or with: Improved Crit Chance, Un-Crits, ButterFinger-er, Kneecapper, and general shooting accuracy]"));
+            FARTS.Available = true;
+            FARTS.AvailableInCharacterCreation = true;
+            FARTS.CanRemove = false;
+            FARTS.CanSwap = true;
+            FARTS.CostInCharacterCreation = 3;
+            FARTS.IsActive = true;
+            FARTS.Recommendations.AddRange(new string[] { "Chronomancy", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
+            FARTS.Upgrade = "FARTS_2";
 
-            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("FARTS_2", true,
+            CustomTrait FARTS_2 = RogueLibs.CreateCustomTrait("FARTS_2", true,
                 new CustomNameInfo("F.A.R.T.S. Mk II"),
                 new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say."));
-            RATS_2.Available = true;
-            RATS_2.AvailableInCharacterCreation = false;
-            RATS_2.CanRemove = false;
-            RATS_2.CanSwap = false;
-            RATS_2.CostInCharacterCreation = 6;
-            RATS_2.IsActive = true;
-            RATS_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            RATS_2.Upgrade = null;
+            FARTS_2.Available = true;
+            FARTS_2.AvailableInCharacterCreation = false;
+            FARTS_2.CanRemove = false;
+            FARTS_2.CanSwap = false;
+            FARTS_2.CostInCharacterCreation = 6;
+            FARTS_2.IsActive = true;
+            FARTS_2.Upgrade = null;
 
             CustomTrait HammerTime = RogueLibs.CreateCustomTrait("HammerTime", true,
                 new CustomNameInfo("Hammer Time"),
@@ -809,60 +807,87 @@ namespace BunnyMod
 		#region PlayfieldObject
 		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
 		{
-            int modifier = 0;
+            Agent agent = __instance.playfieldObjectAgent;
+
+            int luckBonus = 0;
+            int luckMultiplier = 0;
+            bool FARTStargetable = false;
 
             if (luckType == "FreeShopItem2")
-                modifier = 10;
-            if (luckType == "DestroyGravestone")
-                modifier = -5;
-            if (luckType == "TurnTables")
-                modifier = 10;
-            if (luckType == "Joke")
-                modifier = 10;
-            if (luckType == "CritChance")
-                modifier = 3;
-            if (luckType == "ChanceAttacksDoZeroDamage")
-                modifier = 4;
-            if (luckType == "DoorDetonator")
-                modifier = 10;
-            if (luckType == "FreeShopItem")
-                modifier = 10;
-            if (luckType == "FindThreat")
-                modifier = 8;
-            if (luckType == "FindAskMayorHatPercentage")
-                modifier = 8;
-            if (luckType == "ChanceToKnockWeapons")
-                modifier = 5;
-            if (luckType == "SlotMachine")
-                modifier = 8;
-            if (luckType == "AttacksDamageAttacker")
-                modifier = 10;
-            if (luckType == "Hack")
-                modifier = 10;
-            if (luckType == "GunAim")
-                modifier = 5;
-            if (luckType == "SecurityCam")
-                modifier = 10;
-            if (luckType == "FindAskPercentage")
-                modifier = 8;
-            if (luckType == "ThiefToolsMayNotSubtract")
-                modifier = 10;
-            if (luckType == "ChanceToSlowEnemies")
-                modifier = 4;
+                luckBonus = 10;
+            else if (luckType == "DestroyGravestone")
+                luckBonus = -5;
+            else if (luckType == "TurnTables")
+                luckBonus = 10;
+            else if (luckType == "Joke")
+                luckBonus = 10;
+            else if (luckType == "CritChance")
+			{
+                luckBonus = 3;
+                FARTStargetable = true;
+            }
+            else if (luckType == "ChanceAttacksDoZeroDamage")
+			{
+                luckBonus = 4;
+                FARTStargetable = true;
+            }
+            else if (luckType == "DoorDetonator")
+                luckBonus = 10;
+            else if (luckType == "FreeShopItem")
+                luckBonus = 10;
+            else if (luckType == "FindThreat")
+                luckBonus = 8;
+            else if (luckType == "FindAskMayorHatPercentage")
+                luckBonus = 8;
+            else if (luckType == "ChanceToKnockWeapons")
+			{
+                luckBonus = 5;
+                FARTStargetable = true;
+            }
+            else if (luckType == "SlotMachine")
+                luckBonus = 8;
+            else if (luckType == "AttacksDamageAttacker")
+                luckBonus = 10;
+            else if (luckType == "Hack")
+                luckBonus = 10;
+            else if (luckType == "GunAim")
+			{
+                luckBonus = 5;
+                FARTStargetable = true;
+            }
+            else if (luckType == "SecurityCam")
+                luckBonus = 10;
+            else if (luckType == "FindAskPercentage")
+                luckBonus = 8;
+            else if (luckType == "ThiefToolsMayNotSubtract")
+                luckBonus = 10;
+            else if (luckType == "ChanceToSlowEnemies")
+			{
+                luckBonus = 4;
+                FARTStargetable = true;
+            }
 
-            if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Charmed"))
-                __result += modifier * 1;
-            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Charmed_2"))
-                __result += modifier * 2;
-            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Cursed"))
-                __result += modifier * -1;
-            else if (__instance.playfieldObjectAgent.statusEffects.hasTrait("Cursed_2"))
-                __result += modifier * -2;
+            if (agent.statusEffects.hasTrait("Charmed"))
+                luckMultiplier = 1;
+            else if (agent.statusEffects.hasTrait("Charmed_2"))
+                luckMultiplier = 2;
+            else if (agent.statusEffects.hasTrait("Cursed"))
+                luckMultiplier = -1;
+            else if (agent.statusEffects.hasTrait("Cursed_2"))
+                luckMultiplier = -2;
 
-            if (__result > 100)
-                __result = 100;
-            else if (__result < 0)
-                __result = 0;
+            if (FARTStargetable)
+            {
+                if (agent.statusEffects.hasTrait("FARTS"))
+                    luckMultiplier += 1;
+                if (agent.statusEffects.hasTrait("FARTS_2"))
+                    luckMultiplier += 2;
+
+                if (BunnyAbilities.ChronomancyIsCast(agent))
+                    luckMultiplier *= 2;
+            }
+
+            __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);
         }
 		#endregion
 		#region StatusEffects

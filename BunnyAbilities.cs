@@ -57,7 +57,7 @@ namespace BunnyMod
 
 			chronomancy.Available = true;
 			chronomancy.AvailableInCharacterCreation = true;
-			chronomancy.CostInCharacterCreation = 8;
+			chronomancy.CostInCharacterCreation = 10;
 
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
@@ -413,9 +413,9 @@ namespace BunnyMod
 				else if (agent.statusEffects.hasTrait("WildCasting_2"))
 					timescale += 1.0f;
 
-				if (agent.statusEffects.hasTrait("MagicPower"))
+				if (agent.statusEffects.hasTrait("MagicTraining"))
 					timescale += 0.5f;
-				else if (agent.statusEffects.hasTrait("MagicPower_2"))
+				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 					timescale += 1.0f;
 			}
 			else if (MisCast)
@@ -437,7 +437,7 @@ namespace BunnyMod
 		}
 		public static void ChronomancyCast(Agent agent, float speedupfactor)
 		{
-			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
+			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
 
 			ChronomancySetCast(agent, true);
@@ -448,7 +448,7 @@ namespace BunnyMod
 		}
 		public static async void ChronomancyDecast(Agent agent)
 		{
-			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
+			agent.SpawnParticleEffect("ExplosionWarp", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
 
 			//TODO: Eliminate redundancies between Recharge and DeCast
@@ -461,10 +461,10 @@ namespace BunnyMod
 				agent.stomping = true;
 				agent.Jump();
 
-				agent.gc.selectedTimeScale /= 4f;
-				agent.gc.mainTimeScale /= 4f;
+				agent.gc.selectedTimeScale /= 3f;
+				agent.gc.mainTimeScale /= 3f;
 
-				await Task.Delay(4000);
+				await Task.Delay((int)(1000 / agent.gc.mainTimeScale)); // Trying this out, as I think it uses real time rather than game time
 			}
 
 			agent.gc.selectedTimeScale = baseTimeScale;
@@ -565,9 +565,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				risk += 1.50f;
 
-			if (agent.statusEffects.hasTrait("MagicPower"))
+			if (agent.statusEffects.hasTrait("MagicTraining"))
 				risk *= (4 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower_2"))
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				risk *= (3 / 5);
 
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
@@ -597,7 +597,19 @@ namespace BunnyMod
 		{
 			ChronomancySetWindingUp(agent, true);
 
-			await Task.Delay(4000);
+			float duration = 4000f;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				duration -= 1000f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				duration -= 2000f;
+
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				duration -= 1000f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				duration -= 2000f;
+
+			await Task.Delay((int)duration);
 
 			while (ChronomancyIsMiscast(agent))
 				await Task.Delay(1000); 
@@ -631,12 +643,12 @@ namespace BunnyMod
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 			{
 				minimum -= 5;
 				maximum -= 5;
 			}
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				minimum -= 2;
 				maximum -= 2;
@@ -673,9 +685,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 75;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
@@ -689,7 +701,7 @@ namespace BunnyMod
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
 			bullet.speed *= 3 / 2; //
 			bullet.cameFromWeapon = "ChainLightning";
-			bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
+			//bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
@@ -714,12 +726,12 @@ namespace BunnyMod
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 			{
 				minimum -= 5;
 				maximum -= 5;
 			}
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				minimum -= 2;
 				maximum -= 2;
@@ -785,9 +797,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 75;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				risk *= (3 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				risk *= (4 / 5);
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
@@ -887,9 +899,9 @@ namespace BunnyMod
 		{
 			int chance = 100;
 
-			if (agent.statusEffects.hasTrait("MagicPower"))
+			if (agent.statusEffects.hasTrait("MagicTraining"))
 				chance -= 10;
-			else if (agent.statusEffects.hasTrait("MagicPower_2"))
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				chance -= 20;
 			if (agent.statusEffects.hasTrait("WildCasting"))
 				chance -= 15;
@@ -932,9 +944,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 25;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				risk *= 3 / 5;
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				risk *= 4 / 5;
 
 			return UnityEngine.Random.Range(0, 10000) <= risk;
@@ -963,12 +975,12 @@ namespace BunnyMod
 			float rangeNear = 2.5f;
 			float rangeFar = 5.5f;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 			{
 				rangeNear -= 2.5f;
 				rangeFar -= 2f;
 			}
-			if (agent.statusEffects.hasTrait("MagicPower"))
+			if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				rangeNear -= 1.5f;
 				rangeFar -= 1f;
@@ -989,7 +1001,7 @@ namespace BunnyMod
 			{
 				float distance = UnityEngine.Random.Range(rangeNear, rangeFar);
 
-				if (agent.statusEffects.hasTrait("MagicPower"))
+				if (agent.statusEffects.hasTrait("MagicTraining"))
 					targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
 				else
 					targetPosition = currentPosition + distance * UnityEngine.Random.insideUnitCircle.normalized;
@@ -1024,12 +1036,12 @@ namespace BunnyMod
 			int minimum = 20;
 			int maximum = 40;
 
-			if (agent.statusEffects.hasTrait("MagicPower_2"))
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
 			{
 				minimum -= 10;
 				maximum -= 10;
 			}
-			else if (agent.statusEffects.hasTrait("MagicPower"))
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				minimum -= 5;
 				maximum -= 5;
@@ -1092,9 +1104,9 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				risk += 1.50f;
 
-			if (agent.statusEffects.hasTrait("MagicPower"))
+			if (agent.statusEffects.hasTrait("MagicTraining"))
 				risk *= (4 / 5);
-			else if (agent.statusEffects.hasTrait("MagicPower_2"))
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				risk *= (3 / 5);
 
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
@@ -1106,9 +1118,10 @@ namespace BunnyMod
 		public static void AgentHitbox_LandedOnLand(AgentHitbox __instance) // Postfix
 		{
 			BunnyHeader.Log("AgentHitBox_LandedOnLand: IsCast" + ChronomancyIsCast(__instance.agent));
-			if (ChronomancyIsCast(__instance.agent))
+
+			if (ChronomancyIsCast(__instance.agent) && __instance.agent.stomping)
 			{
-				__instance.agent.stomping = true;
+				//__instance.agent.stomping = true; // possibly cause of always-stomp during chronomancy
 				__instance.agent.statusEffects.Stomp();
 				__instance.agent.stomping = false;
 			}
@@ -1132,6 +1145,8 @@ namespace BunnyMod
 			{
 				BunnyHeader.Log("Explosion_SetupExplosion detected HammerTime trait for Stomp");
 
+				__instance.explosionType = "Stomp"; // Hopefully will enable damage
+				// Okay, there's another trait: StompDamagesAgents, aka "Aftershocked". Enable that.
 				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
 
 				// ...

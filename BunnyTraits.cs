@@ -122,17 +122,7 @@ namespace BunnyMod
             Pusher_2.Upgrade = null;
             #endregion
             #region Equipment
-            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-                new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything *lightly*. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            Fatass.Available = true;
-            Fatass.AvailableInCharacterCreation = true;
-            Fatass.CanRemove = true;
-            Fatass.CanSwap = false;
-            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            Fatass.CostInCharacterCreation = 0;
-            Fatass.IsActive = true;
-            Fatass.Upgrade = null;
+
             #endregion
             #region Karma
             CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
@@ -223,9 +213,6 @@ namespace BunnyMod
         }
         public static void Initialize_Traits()
         {
-            FieldInfo unlockField = AccessTools.Field(typeof(CustomUnlock), "unlock");
-            Unlock TraitUnlocked; 
-
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
@@ -313,6 +300,19 @@ namespace BunnyMod
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
 
+            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+                new CustomNameInfo("Fatass"),
+                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            Fatass.Available = true;
+            Fatass.AvailableInCharacterCreation = true;
+            Fatass.CanRemove = true;
+            Fatass.CanSwap = false;
+            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            Fatass.CostInCharacterCreation = -1;
+            Fatass.IsActive = true;
+            Fatass.Recommendations.AddRange(new string[] { "Chronomancy", "Stomp" });
+            Fatass.Upgrade = null;
+
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
                 new CustomNameInfo("Fat Head"),
                 new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
@@ -387,9 +387,6 @@ namespace BunnyMod
             FocusedCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             FocusedCasting.Upgrade = "FocusedCasting_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
                 new CustomNameInfo("Focused Casting +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
@@ -401,9 +398,6 @@ namespace BunnyMod
             FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true; 
             FocusedCasting_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting_2);
-            TraitUnlocked.cost3 = 10;
 
             CustomTrait MagicPower = RogueLibs.CreateCustomTrait("MagicPower", true,
                 new CustomNameInfo("Magic Training"),
@@ -418,9 +412,6 @@ namespace BunnyMod
             MagicPower.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower.Upgrade = "MagicPower_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
@@ -432,9 +423,6 @@ namespace BunnyMod
             MagicPower_2.IsActive = true;
             MagicPower_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower_2);
-            TraitUnlocked.cost3 = 5;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
@@ -450,9 +438,6 @@ namespace BunnyMod
             WildCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             WildCasting.Upgrade = "WildCasting_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
                 new CustomNameInfo("Wild Casting +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
@@ -464,34 +449,31 @@ namespace BunnyMod
             WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true; 
             WildCasting_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting_2);
-            TraitUnlocked.cost3 = 10;
             #endregion
             #region Magic - Chronomancy
-            CustomTrait BulletTimeCriticals = RogueLibs.CreateCustomTrait("BulletTimeCriticals", true,
-                new CustomNameInfo("Bullet Time Criticals"),
-                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
-            BulletTimeCriticals.Available = true;
-            BulletTimeCriticals.AvailableInCharacterCreation = false;
-            BulletTimeCriticals.CanRemove = false;
-            BulletTimeCriticals.CanSwap = true;
-            BulletTimeCriticals.CostInCharacterCreation = 3;
-            BulletTimeCriticals.IsActive = true;
-            BulletTimeCriticals.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            BulletTimeCriticals.Upgrade = "BulletTimeCriticals_2";
+            CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
+                new CustomNameInfo("F.A.R.T.S. Mk I"),
+                new CustomNameInfo("Fight-Tec Assisted Resistance Targeting System. A Cybernetic enhancement that improves your accuracy when time is slowed down."));
+            RATS.Available = true;
+            RATS.AvailableInCharacterCreation = false;
+            RATS.CanRemove = false;
+            RATS.CanSwap = true;
+            RATS.CostInCharacterCreation = 3;
+            RATS.IsActive = true;
+            RATS.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RATS.Upgrade = "RATS_2";
 
-            CustomTrait BulletTimeCriticals_2 = RogueLibs.CreateCustomTrait("BulletTimeCriticals_2", true,
-                new CustomNameInfo("Bullet Time Criticals"),
-                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
-            BulletTimeCriticals_2.Available = true;
-            BulletTimeCriticals_2.AvailableInCharacterCreation = false;
-            BulletTimeCriticals_2.CanRemove = false;
-            BulletTimeCriticals_2.CanSwap = false;
-            BulletTimeCriticals_2.CostInCharacterCreation = 6;
-            BulletTimeCriticals_2.IsActive = true;
-            BulletTimeCriticals_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            BulletTimeCriticals_2.Upgrade = null;
+            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
+                new CustomNameInfo("F.A.R.T.S. Mk II"),
+                new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say."));
+            RATS_2.Available = true;
+            RATS_2.AvailableInCharacterCreation = false;
+            RATS_2.CanRemove = false;
+            RATS_2.CanSwap = false;
+            RATS_2.CostInCharacterCreation = 6;
+            RATS_2.IsActive = true;
+            RATS_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RATS_2.Upgrade = null;
 
             CustomTrait HammerTime = RogueLibs.CreateCustomTrait("HammerTime", true,
                 new CustomNameInfo("Hammer Time"),
@@ -502,21 +484,22 @@ namespace BunnyMod
             HammerTime.CanSwap = true;
             HammerTime.CostInCharacterCreation = 2;
             HammerTime.IsActive = true;
-            HammerTime.Recommendations.AddRange(new string[] { "Fatass" });
+            //HammerTime.Recommendations.AddRange(new string[] { "Fatass" });
             HammerTime.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            HammerTime.Upgrade = "HammerTime_2";
+            HammerTime.Upgrade = null; // "HammerTime_2";
 
-            CustomTrait HammerTime_2 = RogueLibs.CreateCustomTrait("HammerTime_2", true,
-                new CustomNameInfo("Hammer Time +"),
-                new CustomNameInfo("You make use of bullet time when you're at the buffet. It's showing."));
-            HammerTime_2.Available = false;
-            HammerTime_2.AvailableInCharacterCreation = false;
-            HammerTime_2.CanRemove = false;
-            HammerTime_2.CanSwap = false;
-            HammerTime_2.CostInCharacterCreation = 4;
-            HammerTime_2.IsActive = true;
-            HammerTime_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            HammerTime_2.Upgrade = null;
+            //CustomTrait HammerTime_2 = RogueLibs.CreateCustomTrait("HammerTime_2", true,
+            //    new CustomNameInfo("Hammer Time +"),
+            //    new CustomNameInfo("It's called Bullet Time, not Buffet Time. You are a big fat boy, and your stomps deal more damage to enemies and to your self-esteem."));
+            //HammerTime_2.Available = false;
+            //HammerTime_2.AvailableInCharacterCreation = false;
+            //HammerTime_2.CanRemove = false;
+            //HammerTime_2.CanSwap = false;
+            //HammerTime_2.CostInCharacterCreation = 4;
+            //HammerTime_2.IsActive = true;
+            //HammerTime_2.Recommendations.AddRange(new string[] { "Fatass" });
+            //HammerTime_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            //HammerTime_2.Upgrade = null;
             #endregion
             #region Magic - Telemancy
             CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
@@ -599,6 +582,8 @@ namespace BunnyMod
             // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
             // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
             // If you do an IL injection, do it at 787
+
+            // Consider other paths too, Path of Fire, etc.
         }
         #endregion
 
@@ -621,7 +606,7 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Postfix
         {
-            if (__instance.agent.statusEffects.hasTrait("Fatass"))
+            if (item!= null && __instance.agent.statusEffects.hasTrait("Fatass"))
 			{
                 __instance.UnequipArmor(sfx, true);
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
@@ -629,7 +614,7 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Postfix
 		{
-            if (__instance.agent.statusEffects.hasTrait("FatHead"))
+            if (item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
                 __instance.UnequipArmorHead(sfx, true);
                 __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
@@ -637,29 +622,25 @@ namespace BunnyMod
         }
         public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
         {
-            bool flag = false;
+            if (item == null)
+                return;
+
             Agent agent = __instance.agent;
 
-            if (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
+            if (agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
             {
-                //agent.Say("Mommy says I can't use sharp things!");
-                flag = true;
-            }
-            if (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
-            {
-                //agent.Say("I can't use that! It's too loooooud.");
-                flag = true;
-            }
-            if (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
-			{
-                //agent.Say("I don't use blunt weapons.");
-                flag = true;
-            }
-            //TODO: Instate dialogue to play only when weapon manually selected
-            if (flag)
-			{
+                agent.Say("Mommy says I can't use sharp things!");
                 __instance.UnequipWeapon();
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+            }
+            if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
+            {
+                agent.Say("I can't use that! It's too loooooud.");
+                __instance.UnequipWeapon();
+            }
+            if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+			{
+                agent.Say("I need something sharper.");
+                __instance.UnequipWeapon();
             }
         }
         public static bool InvDatabase_SubtractFromItemCount_a(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix

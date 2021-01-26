@@ -2,13 +2,15 @@
 === TEST NOTES =================================================================
 
 - Chronomancy
-	All set. Now add balance and upgrades.
-
 	Still needs a trigger cooldown, however.
 
 	Candidate variables to modify:
 		Mana cost increment
-		Timescales
+		Timescales (Done)
+
+	Uniques:
+		Hammertime
+		Criticals (FARTS)
 
 
 - Pyromancy
@@ -16,6 +18,15 @@
 	Reduce Miscast chance with Wild Casting
 	Increase upgrade prices of all Magic traits
 	Add a delay between use and recharge, and between use and use.
+
+	Uniques:
+		Path Of Fire - 
+			You can only regain health by burning corpses. 
+			Extra XP for killing firemen.
+			Extra XP for burning objects (like 1 per).
+			Take damage in Water.
+			Lose XP when you or firemen extinguish fires.
+		Big Quest - Burn a certain number of corpses
 
 - Telemancy
 	Currently, it miscasts at >35
@@ -25,6 +36,9 @@
 	Uniques:
 		EMP on teleport?
 		Stun on teleport?
+	Rework: 
+		Charge to cast, release when you feel like it or when charge at max.
+		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
 
 - Electromancy
 
@@ -35,13 +49,16 @@
 
 - Verify if correct Tool durability cost is displaying in menus.
 
+
+Fat Head message triggers on entering level.
+Also presumably occurs with other equipment traits.
+
 === HIGH PRIORITY or TRIVIAL √ ==================================================
 
 BEFORE RELEASE:
 	Make a promo character for each special ability or trait group, to promote the mod and community at large.
 
-BULLET MODDING
-
+BULLET MODDING (Re Electromancy & others)
 Unused variables:
 	string substance
 	int damageMod
@@ -59,11 +76,7 @@ Stove:DamagedObject(PlayfieldObject, Single)
 ObjectReal:Damage(PlayfieldObject, Boolean)
 MeleeHitbox:HitObject(GameObject, Boolean)
 MeleeColliderBox:OnTriggerEnter2D(Collider2D)
-
 [Message: Bunny Mod] 3
-
-Telemancy 
-	The level-1 version of this is pretty horrible.
 
 - Stove:
 	Make noise when operated
@@ -95,9 +108,9 @@ Telemancy
 - Stoves appear to no longer rotate toward walls
 - Auto-trayed items may include those you can't use/equip
 
-- Create Agent magic remora
-	Hold off on this. Extension method and bitwise values in un-used variables might be all we need for now.
-
+uwumacaronitime,VP of mushroomToday at 12:47 PM
+theres probably a reason you cant teleport while falling or jumping into water
+so in case you havent you probably should put a restriction on blink for that
 
 === IDEAS ======================================================================
 
@@ -106,25 +119,111 @@ Magic items:
 	- Miscast Crystals (Rare, but absorb a miscast and shatter)
 	- Ultrachungus Crystals (Temporarily boost your ability to obscene levels)
 
-Chronomancy - Special trait for fast-punching so you can be a fast-punching type of person
+Seperation Anxiety; cost: -3
+    If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
 
-    Seperation Anxiety; cost: -3
-        If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
+Arrogant; cost: -4
+    People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
 
-    Arrogant; cost: -4
-        People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
+SACRIFICE
+	You can only regain health by burning corpses
 
-	SACRIFICE
-		You can only regain health by burning corpses
+Annoying;
+	Everyone's annoyed to begin with
 
-	Annoying;
-		Everyone's annoyed to begin with
+BackPack - +inventory slots
 
+Upgrade Machine sells XP for extreme prices
 
-uwumacaronitime,VP of mushroomToday at 12:47 PM
-oh btw
-theres probably a reason you cant teleport while falling or jumping into water
-so in case you havent you probably should put a restriction on blink for that
+Body Spray: Anti-cologne, basically gives ideological clash to whoever uses it. (This would be cool in assassin quests if you could apply it to your target.)
+
+Fireball projectile - molotov on impact
+
+Make Keys, Money & Safe Combos not take up a slot
+
+Custom NPC: Tourist
+	Travels in groups, occasional goon
+	Behaves like Upper Cruster
+
+Make all traits accessible through Character Creator
+
+(4) elevator rest: 
+i know this is a rune from myzlats mod, but i dont see why it couldnt work in the base game
+heal ~17% of your hp at the start of a floor.
+(8) elevator rest +: 
+heal ~34% of your health at the start of a floor.
+
+Arthritis - Your weapon swing is slower, and fire rate is slower too. -1 point. Cancels: Stubby fingers, sausage fingers, near harmless, pacifist.
+
+Chubby - You lose health when eating unhealthy foods, and when you take any drugs. -2 points.
+
+Annoying - Everyone except prisoners and      objectives are in an annoyed state. -3 Points. Cancels: The Law, Random Reverance, Friend of the common folk, friend of the family.
+
+Infamous - Eveyone except Cops, Goons, Scientists and Non-Humans are initially hostile to you. -5 points. Cancels: Scientist Slayer, Specist, Blahd Crusher, Crepe slayer, Friend of the common folk, Random Reverence, Friend of the family.
+
+Unsavable - Cannot heal, even through level ups. -10 points. Cancels: Medical professional, strict cannibal, jugalarious, addict, [insert anything that heals you here.]
+
+chemical resistance (2): status effects cannot affect you
+aquaphobia (-1): take damage in water
+food intolerance (-3): cannot eat food
+
+New Mutator - Muggers In Everywhere!
+Mobsters Spawns In Every Floor.
+
+Generally Annoying trait - all annoyed
+
+New Trait - Masochist (-5)
+Like Addict, But You Don't Need Drugs.You Need Damage.Make Damage Yourself Every 60 Seconds.If 60 Seconds Pass Without Damaging Yourself, You Will Lose 3 Health Per 2 Seconds.
+
+removing traits:
+the same way you can gain + traits in the level up, there should be a chance for removing traits too (maybe called - traits?)
+eg: youre cannibal, level up and leave slums 1. You have a choice between im outtie, low cost jobs, and - malodorous.
+
+silent fingers (4): doing most actions produce significantly less noise, or no noise whatsoever, with the exception of alarms. (eg: arresting, breaking windows , enslaving, and (shooting guns?) make significantly less noise).
+
+merc machine:
+durability: med (~25)
+a vending machine you can hire mercenaries from. they have a slightly higher tolerance to to low hp (the "i dont feel so hot" thing) than normal. when hired, they will teleport in and follow you around. Mercinaries can be dismissed by interacting with them and selecting the interaction dismiss
+interactions:
+hire gangster: brings you into a sub-menu where you can choose between bhlads and crepes.
+> hire gangster (Bhlad): hires a gangster (bhlad) with a low-tier weapon. Base price: 30
+> hire gangster (Crepe): hires a gangster (crepe) with a low-tier weapon. Base price: 30
+hire goon: brings you into a sub-menu where you can choose between regular goons and supergoons.
+> hire goon (regular): hires a goon with a low to mid-tier weapon. Base price: 60
+> hire goon (supergoon): hires a supergoon with a mid-tier weapon. Base price: 80
+other hires: brings you into a sub-menu where you can choose various hires.
+> other hires (slum dweller): hires a slum dweller with the "cause a ruckus" ability. Base price: 15
+> other hires (thief): hires a slum dweller with the "break into door/window" ability. Will not fight. Base price: 25
+portable merc machine:
+base value: 70
+yeah, its exactly the same as the normal merc machine, but as an inventory item.
+
+Alright my idea is that npcs can become "fearful" of the player if you just torture them in some ways
+Such as killing all of their teammates
+Also stuff like eating corpses could give them fear
+Or just continuosly destroying alredy dead npcs could give fear
+When a npc is fearfull they will hide and try to evade you at all times
+If they are from a faction they could search for another npc of that faction and treath it as a safeplace
+There could be npcs that are unable to feel fear such as robots and zombies
+
+Overall rework of NPC view distance.
+	Probably increase the vanilla distance for balance.
+	+ Giant, Loud, Lights, etc.
+	- Diminutive, Darkness, etc.
+
+Beggar | 2 Points | Beg random people for something. Either get a food item or cigarettes. 50/50 Chance. Success will make Agent friendly, failure will annoy them.
+	You can reattempt but they might go hostile.
+
+Putting the "Drunk" status effect back into the game!
+how?: well it could only happear if you have certain traits here are some ideas:
+Low tolerance to alcohol: "you get badly drunk after some drinks"
+ When you drink to much beer you will get the drunk status and you accuracy and melee will go down temporarily but you can recover easily and if you just overdrink you can end up bafing removing all of you status effects wich is both good and bad (for example if you have poison this can save you)
+Bar Brawler: "You get more powerful after some drinks"
+ If you drink to much you will get drunk which gives you a + on melee
+Bonus:
+ A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
+ Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
+
 
 
 === RELEASE NOTES ==============================================================
@@ -132,34 +231,3 @@ so in case you havent you probably should put a restriction on blink for that
 1.2.2
 - Chronomancy
 - Finalization and renaming of Telemancy and generalist magic traits
-
-
-=== OTHER ======================================================================
-BITWISE OPERATIONS:
-you can use unused fields in the InvItem, like InvItem.otherDamage. These will work even if you restart the game.
-Getting 1st bit: (item.otherDamage & 0b_0001) != 0
-Getting 2nd bit: (item.otherDamage & 0b_0010) != 0
-Getting 3rd bit: (item.otherDamage & 0b_0100) != 0
-and so on
-
-Setting 1st bit: item.otherDamage |= 0b_0001
-Setting 2nd bit: item.otherDamage |= 0b_0010
-Setting 3rd bit: item.otherDamage |= 0b_0100
-
-you can replace these with methods:
-
-public static bool IsFirstThingActive(int bitfield)
-    => (bitfield & 0b_0001) != 0;
-
-public static void SetFirstThing(ref int bitfield, bool value)
-{
-    if (value) bitfield |= 0b_0001;
-    else bitfield &= ~0b_0001;
-}
-
-&	Binary AND Operator copies a bit to the result if it exists in both operands.
-|	Binary OR Operator copies a bit if it exists in either operand.
-^	Binary XOR Operator copies the bit if it is set in one operand but not both.
-~	Binary Ones Complement Operator is unary and has the effect of 'flipping' bits.
-<<	Binary Left Shift Operator. The left operands value is moved left by the number of bits specified by the right operand.
->>	Binary Right Shift Operator. The left operands value is moved right by the number of bits specified by the right operand.

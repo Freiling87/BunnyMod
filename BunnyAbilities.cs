@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,12 +16,17 @@ namespace BunnyMod
 		{
 			InitializeAbilities();
 
+			BunnyHeader.MainInstance.PatchPostfix(typeof(AgentHitbox), "LandedOnLand", GetType(), "AgentHitbox_LandedOnLand", new Type[0] { });
+
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "BulletHitEffect", GetType(), "Bullet_BulletHitEffect", new Type[1] { typeof(GameObject) });
+
+			BunnyHeader.MainInstance.PatchPrefix(typeof(Explosion), "SetupExplosion", GetType(), "Explosion_SetupExplosion", new Type[0] { });
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddStatusEffectSpecial", GetType(), "StatusEffects_AddStatusEffectSpecial", new Type[4] { typeof(String), typeof(Agent), typeof(Agent), typeof(bool) });
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
+			BunnyHeader.MainInstance.PatchPrefix(typeof(StatusEffects), "Stomp", GetType(), "StatusEffects_Stomp", new Type[0] { });
 		}
 		public static void InitializeAbilities() // Main
 		{
@@ -440,20 +446,34 @@ namespace BunnyMod
 			agent.gc.mainTimeScale /= speedupfactor;
 			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
 		}
-		public static void ChronomancyDecast(Agent agent)
+		public static async void ChronomancyDecast(Agent agent)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
 
-			ChronomancySetCast(agent, false);
-
 			//TODO: Eliminate redundancies between Recharge and DeCast
+
+			agent.speedMax = agent.FindSpeed();
+
+			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && 
+				(agent.statusEffects.hasTrait("HammerTime") || agent.statusEffects.hasTrait("HammerTime_2")))
+			{
+				agent.stomping = true;
+				agent.Jump();
+
+				agent.gc.selectedTimeScale /= 4f;
+				agent.gc.mainTimeScale /= 4f;
+
+				await Task.Delay(4000);
+			}
 
 			agent.gc.selectedTimeScale = baseTimeScale;
 			agent.gc.mainTimeScale = baseTimeScale;
-			agent.speedMax = agent.FindSpeed();
 
-			ChronomancyStartWindingUp(agent);
+			await Task.Delay(1000);
+
+			ChronomancySetCast(agent, false);
+			await ChronomancyStartWindingUp(agent);
 		}
 		public static void ChronomancyDialogueCantDo(Agent agent)
 		{
@@ -507,8 +527,6 @@ namespace BunnyMod
 
 			agent.gc.selectedTimeScale *= slowdownFactor;
 			agent.gc.mainTimeScale *= slowdownFactor;
-			agent.statusEffects.RemoveStatusEffect("Fast");
-			agent.statusEffects.RemoveStatusEffect("Slow");
 			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
@@ -556,21 +574,21 @@ namespace BunnyMod
 		}
 		public static void ChronomancySetCast(Agent agent, bool value)
 		{
-			BunnyHeader.Log("SetCast " + value);
+			//BunnyHeader.Log("SetCast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
 		public static void ChronomancySetMiscast(Agent agent, bool value)
 		{
-			BunnyHeader.Log("SetSlowedDown " + value);
+			//BunnyHeader.Log("SetSlowedDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
 		public static void ChronomancySetWindingUp(Agent agent, bool value)
 		{
-			BunnyHeader.Log("SetCoolingDown " + value);
+			//BunnyHeader.Log("SetCoolingDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
@@ -1084,11 +1102,80 @@ namespace BunnyMod
 		#endregion
 		#endregion
 
+		#region AgentHitbox
+		public static void AgentHitbox_LandedOnLand(AgentHitbox __instance) // Postfix
+		{
+			BunnyHeader.Log("AgentHitBox_LandedOnLand: IsCast" + ChronomancyIsCast(__instance.agent));
+			if (ChronomancyIsCast(__instance.agent))
+			{
+				__instance.agent.stomping = true;
+				__instance.agent.statusEffects.Stomp();
+				__instance.agent.stomping = false;
+			}
+		}
+		#endregion
 		#region Bullet
 		public static void Bullet_BulletHitEffect(GameObject hitObject, Bullet __instance) // Postfix
 		{
 			if (__instance.cameFromWeapon == "ChainLightning" && __instance.agent.inventory.equippedSpecialAbility.invItemName == "Electromancy")
 				ElectromancyImpact(hitObject, __instance);
+		}
+		#endregion
+		#region Explosion
+		public static bool Explosion_SetupExplosion(Explosion __instance) // Prefix
+		{
+			// see Explosion.immediateHit if these aren't doing damage.
+			// Appears safe to leave it as always false. That's good luck, since the rest of this algorithm will assume it.
+			// However, there's an "else" that doesn't seem reachable since I don't see any cases where immediateHit is null.
+
+			if (__instance.explosionType == "HammerTime")
+			{
+				BunnyHeader.Log("Explosion_SetupExplosion detected HammerTime trait for Stomp");
+
+				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
+
+				// ...
+
+				__instance.StartCoroutine(__instance.SpawnNoiseLate());
+				__instance.StartCoroutine(__instance.PlaySoundAfterTick());
+
+				__instance.circleCollider2D.enabled = true;
+				__instance.circleCollider2D.radius = 2.6f;
+
+				if (__instance.agent != null && (__instance.agent.statusEffects.hasTrait("Fatass")))
+					__instance.circleCollider2D.radius += 1.0f;
+				if (__instance.agent != null && __instance.agent.statusEffects.hasTrait("HammerTime_2"))
+					__instance.circleCollider2D.radius += 1.0f;
+
+				__instance.gc.spawnerMain.SpawnParticleEffect("ExplosionStomp", __instance.tr.position, 0f).transform.localScale = new Vector3(2f, 2f, 2f);
+				__instance.gc.FreezeFrames(1);
+
+				return false;
+			}
+			else if (__instance.explosionType == "Stomp" && __instance.agent.statusEffects.hasTrait("Fatass"))
+			{
+				BunnyHeader.Log("Explosion_SetupExplosion detected Fatass trait for Stomp");
+
+				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
+
+				// ...
+
+				__instance.StartCoroutine(__instance.SpawnNoiseLate());
+				__instance.StartCoroutine(__instance.PlaySoundAfterTick());
+
+				__instance.circleCollider2D.enabled = true;
+
+				if (__instance.agent != null && (__instance.agent.statusEffects.hasTrait("BiggerStompRadius") || (__instance.agent.oma.superSpecialAbility && __instance.agent.agentName == "Bouncer")))
+					__instance.circleCollider2D.radius = 4.4f;
+				else
+					__instance.circleCollider2D.radius = 3.6f;
+
+				__instance.gc.spawnerMain.SpawnParticleEffect("ExplosionStomp", __instance.tr.position, 0f).transform.localScale = new Vector3(2f, 2f, 2f);
+				__instance.gc.FreezeFrames(1);
+
+				return false;
+			}
+			return true;
 		}
 		#endregion
 		#region LoadLevel
@@ -1106,6 +1193,32 @@ namespace BunnyMod
 		{
 			if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy")
 				__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
+		}
+		public static bool StatusEffects_Stomp(StatusEffects __instance) // Replacement
+		{
+			__instance.agent.gc.spawnerMain.SpawnExplosion(__instance.agent, __instance.agent.tr.position, "Stomp");
+
+			float num = 8f;
+
+			if (__instance.agent.gc.challenges.Contains("LowHealth"))
+				num = 4f;
+
+			if (__instance.hasTrait("StompLessDamage") || __instance.hasTrait("HammerTime") || __instance.hasTrait("HammerTime_2") || (__instance.agent.agentName == "Bouncer" && __instance.agent.oma.superSpecialAbility))
+				num *= 0.5f;
+
+			if (__instance.hasTrait("HammerTime") || __instance.hasTrait("HammerTime_2"))
+				num *= 0.0f;
+
+			if (__instance.agent.health <= num)
+				num = __instance.agent.health - 1f;
+
+			__instance.agent.statusEffects.ChangeHealth(-num);
+
+			MethodInfo stomp2 = AccessTools.DeclaredMethod(typeof(StatusEffects), "Stomp2");
+			IEnumerator enumerator = (IEnumerator)stomp2.Invoke(__instance, new object[0]);
+			__instance.StartCoroutine(enumerator);
+
+			return false;
 		}
 		#endregion
 	}

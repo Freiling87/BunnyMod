@@ -451,19 +451,20 @@ namespace BunnyMod
             WildCasting_2.Upgrade = null;
             #endregion
             #region Magic - Chronomancy
-            CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
+            CustomTrait RATS = RogueLibs.CreateCustomTrait("FARTS", true,
                 new CustomNameInfo("F.A.R.T.S. Mk I"),
                 new CustomNameInfo("Fight-Tec Assisted Resistance Targeting System. A Cybernetic enhancement that improves your accuracy when time is slowed down."));
             RATS.Available = true;
-            RATS.AvailableInCharacterCreation = false;
+            RATS.AvailableInCharacterCreation = true;
             RATS.CanRemove = false;
             RATS.CanSwap = true;
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
+            RATS.Recommendations.AddRange(new string[] { "Chronomancy" });
             RATS.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
             RATS.Upgrade = "RATS_2";
 
-            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
+            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("FARTS_2", true,
                 new CustomNameInfo("F.A.R.T.S. Mk II"),
                 new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say."));
             RATS_2.Available = true;

@@ -10,6 +10,8 @@
 
 	Uniques:
 		Hammertime
+			Triggers when exiting water, even if you don't have the trait.
+			Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
 		Criticals (FARTS)
 
 

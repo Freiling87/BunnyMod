@@ -223,9 +223,6 @@ namespace BunnyMod
         }
         public static void Initialize_Traits()
         {
-            FieldInfo unlockField = AccessTools.Field(typeof(CustomUnlock), "unlock");
-            Unlock TraitUnlocked; 
-
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
@@ -387,9 +384,6 @@ namespace BunnyMod
             FocusedCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             FocusedCasting.Upgrade = "FocusedCasting_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
                 new CustomNameInfo("Focused Casting +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
@@ -401,9 +395,6 @@ namespace BunnyMod
             FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true; 
             FocusedCasting_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(FocusedCasting_2);
-            TraitUnlocked.cost3 = 10;
 
             CustomTrait MagicPower = RogueLibs.CreateCustomTrait("MagicPower", true,
                 new CustomNameInfo("Magic Training"),
@@ -418,9 +409,6 @@ namespace BunnyMod
             MagicPower.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower.Upgrade = "MagicPower_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait MagicPower_2 = RogueLibs.CreateCustomTrait("MagicPower_2", true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
@@ -432,9 +420,6 @@ namespace BunnyMod
             MagicPower_2.IsActive = true;
             MagicPower_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicPower_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(MagicPower_2);
-            TraitUnlocked.cost3 = 5;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
@@ -450,9 +435,6 @@ namespace BunnyMod
             WildCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             WildCasting.Upgrade = "WildCasting_2";
 
-            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting);
-            TraitUnlocked.cost3 = 5;
-
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
                 new CustomNameInfo("Wild Casting +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
@@ -464,40 +446,37 @@ namespace BunnyMod
             WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true; 
             WildCasting_2.Upgrade = null;
-
-            TraitUnlocked = (Unlock)unlockField.GetValue(WildCasting_2);
-            TraitUnlocked.cost3 = 10;
             #endregion
             #region Magic - Chronomancy
-            CustomTrait BulletTimeCriticals = RogueLibs.CreateCustomTrait("BulletTimeCriticals", true,
-                new CustomNameInfo("Bullet Time Criticals"),
-                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
-            BulletTimeCriticals.Available = true;
-            BulletTimeCriticals.AvailableInCharacterCreation = false;
-            BulletTimeCriticals.CanRemove = false;
-            BulletTimeCriticals.CanSwap = true;
-            BulletTimeCriticals.CostInCharacterCreation = 3;
-            BulletTimeCriticals.IsActive = true;
-            BulletTimeCriticals.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            BulletTimeCriticals.Upgrade = "BulletTimeCriticals_2";
+            CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
+                new CustomNameInfo("R.A.T.S. Mk I"),
+                new CustomNameInfo("Resistance-Tech Assisted Targeting System. A Cybernetic enhancement that improves your accuracy when time is slowed down."));
+            RATS.Available = true;
+            RATS.AvailableInCharacterCreation = false;
+            RATS.CanRemove = false;
+            RATS.CanSwap = true;
+            RATS.CostInCharacterCreation = 3;
+            RATS.IsActive = true;
+            RATS.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RATS.Upgrade = "RATS_2";
 
-            CustomTrait BulletTimeCriticals_2 = RogueLibs.CreateCustomTrait("BulletTimeCriticals_2", true,
-                new CustomNameInfo("Bullet Time Criticals"),
-                new CustomNameInfo("When Bullet Time is active, you have an increased chance to land critical hits."));
-            BulletTimeCriticals_2.Available = true;
-            BulletTimeCriticals_2.AvailableInCharacterCreation = false;
-            BulletTimeCriticals_2.CanRemove = false;
-            BulletTimeCriticals_2.CanSwap = false;
-            BulletTimeCriticals_2.CostInCharacterCreation = 6;
-            BulletTimeCriticals_2.IsActive = true;
-            BulletTimeCriticals_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            BulletTimeCriticals_2.Upgrade = null;
+            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
+                new CustomNameInfo("R.A.T.S. Mk II"),
+                new CustomNameInfo("Various bug fixes and performance improvements. That's all the fucking update notes say."));
+            RATS_2.Available = true;
+            RATS_2.AvailableInCharacterCreation = false;
+            RATS_2.CanRemove = false;
+            RATS_2.CanSwap = false;
+            RATS_2.CostInCharacterCreation = 6;
+            RATS_2.IsActive = true;
+            RATS_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
+            RATS_2.Upgrade = null;
 
             CustomTrait RomperStomper = RogueLibs.CreateCustomTrait("RomperStomper", true,
                 new CustomNameInfo("Romper Stomper"),
                 new CustomNameInfo("Whenever you exit bullet time, you'll do a cool stompy thing to really seal the deal."));
             RomperStomper.Available = true;
-            RomperStomper.AvailableInCharacterCreation = false;
+            RomperStomper.AvailableInCharacterCreation = true;
             RomperStomper.CanRemove = false;
             RomperStomper.CanSwap = true;
             RomperStomper.CostInCharacterCreation = 2;

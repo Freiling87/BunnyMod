@@ -435,7 +435,7 @@ namespace BunnyMod
             __instance.lowInteractionPriority = true;
         }
         #endregion
-  //      #region Refrigerator
+        #region Refrigerator
   //      public static IEnumerator Refrigerator_AboutToRun(Refrigerator __instance) // Non-Patch
   //      {
   //          BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
@@ -684,7 +684,7 @@ namespace BunnyMod
   //          //TODO: See Item.FireworksFire if you want to turn this into randomly shooting Freeze Rays
   //      }
   //      public static Dictionary<Refrigerator, Refrigerator_Remora> Refrigerator_Variables = new Dictionary<Refrigerator, Refrigerator_Remora>();
-  //      #endregion
+        #endregion
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance)
         {

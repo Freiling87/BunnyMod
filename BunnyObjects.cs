@@ -21,6 +21,7 @@ namespace BunnyMod
 
             #region Patches - Object Base
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
             BunnyHeader.MainInstance.PatchPostfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons");
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating");
             BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
@@ -37,13 +38,13 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden");
 			#endregion
 			#region Patches - Objects
-			BunnyHeader.MainInstance.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars");
+			BunnyHeader.MainInstance.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars");
+            BunnyHeader.MainInstance.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars");
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars");
+            BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars", new Type[0] { });
 
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
@@ -53,10 +54,11 @@ namespace BunnyMod
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
 
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars");
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars");
+            BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DestroyMe3", GetType(), "Stove_DestroyMe3", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars", new Type[0] { });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars");
+            BunnyHeader.MainInstance.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars", new Type[0] { });
 
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
 			#endregion
@@ -106,6 +108,25 @@ namespace BunnyMod
             
             return true;
         }
+        public static bool ObjectReal_DestroyMe3(ObjectReal __instance) // Prefix
+		{
+            if (__instance is Stove)
+			{
+                if (__instance.gc.serverPlayer && !__instance.spawnedExplosion)
+                {
+                    Debug.Log("Spawn Stove Explosion");
+
+                    __instance.spawnedExplosion = true;
+                    Explosion explosion = __instance.gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
+
+                    if (Stove_Variables[(Stove)__instance].noOwnCheckCountdown)
+                        explosion.noOwnCheck = true;
+                }
+                __instance.gc.audioHandler.Stop(__instance, "GeneratorHiss");
+            }
+
+            return true;
+		}
         public static void ObjectReal_DetermineButtons(ObjectReal __instance) // Postfix
         {
             //ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
@@ -712,9 +733,7 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
-
             __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
-
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -784,6 +803,15 @@ namespace BunnyMod
 
             return false;
         }
+        public static bool Stove_DestroyMe3(Stove __instance) // Replacement
+		{
+            if (__instance.gc.serverPlayer || !__instance.objectBeingThrown)
+            {
+                __instance.gc.spawnerMain.SpawnFire(__instance.tossedBy, __instance.tr.position);
+                __instance.gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
+            }
+            return false;
+        }
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
@@ -791,12 +819,8 @@ namespace BunnyMod
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
             
             int numCooked = rawFud.invItemCount;
-
-            rawFud.invItemCount -= numCooked;
-
-            //if (rawFud.invItemCount <= 0)
-            //    __instance.interactingAgent.inventory.DestroyItem(rawFud);
-            // isn't this redundant to the above? Test with a barbecue to verify quantity removed vs. grilled
+            //rawFud.invItemCount -= numCooked;
+            __instance.interactingAgent.inventory.ChangeItemCount(rawFud, -numCooked);
 
             InvItem cookedFud = new InvItem()
             {
@@ -809,6 +833,7 @@ namespace BunnyMod
             cookedFud.ShowPickingUpText(__instance.interactingAgent);
 
             __instance.gc.audioHandler.Play(__instance, "Grill");
+            __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
         }
         public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {

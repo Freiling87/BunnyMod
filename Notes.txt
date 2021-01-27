@@ -1,68 +1,43 @@
 ﻿
 === TEST NOTES =================================================================
 
-[Message: Bunny Mod] Stove (1420): ObjectReal_Interact
-[Message: Bunny Mod] Stove (1420): ObjectReal_PressedButton
-[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
-[Message: Bunny Mod] Stove (1420): ObjectReal_FinishedOperating
-[Message: Bunny Mod] Stove (1420): Stove_UseWrenchToDetonate
-[Message: Bunny Mod] Stove (1420): ObjectReal_MakeNonFunctional
-[Message: Bunny Mod] Stove (1420): ObjectReal_DestroyMe
-[Info   : Unity Log] Window Lose Focus
+--- BALANCING ----------------------------------------------
 
-^^ Tamper, figure out how to blow it up
+Telemancy
+	Currently, it miscasts at >35
+	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
+	Focused casting can benefit accuracy.
 
+--- BUGS ---------------------------------------------------
 
-[Message: Bunny Mod] Stove (1235): MoveNext
-[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-Stack trace:
-ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__21.MoveNext () (at <a70e2b5aea984926bd50ca802e6b2708>:0)
-UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-Stove:DamagedObject(PlayfieldObject, Single)
-ObjectReal:Damage(PlayfieldObject, Boolean)
-MeleeHitbox:HitObject(GameObject, Boolean)
-MeleeColliderBox:OnTriggerEnter2D(Collider2D)
+Fat Head message triggers on entering level.
+	Also presumably occurs with other equipment traits.
 
-^^^ Stove animation
+Verify if correct Tool durability cost is displaying in menus.
 
+Test whether setting Available to false is actually working for upgrade traits
+	The code changes were made, now just keep an eye out.
+
+NegaFud 
 
 On Exit to Base, then freeze on loading screen:
+	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
+	[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
 
-[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
-[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
+--- IMPLEMENTATIONS ----------------------------------------
 
-[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-Stack trace:
-BunnyMod.BunnyAbilities.StatusEffects_GiveSpecialAbility (System.String abilityName, StatusEffects __instance) (at <a70e2b5aea984926bd50ca802e6b2708>:0)
-StatusEffects.GiveSpecialAbility (System.String abilityName) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-Agent.SetupAgentStats (System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-SpawnerMain.TransformAgent (Agent myAgent, System.String agentType, System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-SpawnerMain.TransformAgent (Agent myAgent, System.String agentType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-LoadLevel+<SetupMore2_2>d__144.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+Chronomancy
+	Hammertime Triggers when exiting water, even if you don't have the trait.
+		This no longer occurs, the actual stomp was apparently broken somewhere. Need to check commits 2-5 before this one to verify what was changed.
+	Hammertime Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
 
+Electromancy
+	Split only triggers when it hits a wall, not an agent.
 
-- Chronomancy
-	Uniques:
-		Hammertime
-			Triggers when exiting water, even if you don't have the trait.
-			Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
-
-- Pyromancy
-	Reduce Miscast reduction of MagicTraining / Might need Float operations to do this correctly
-	Reduce Miscast chance with Wild Casting
-	Increase upgrade prices of all Magic traits
+Pyromancy
 	Add a delay between use and recharge, and between use and use.
 
-
-- Telemancy
-	Currently, it miscasts at >35
-	The very base level of this trait needs to be at least somewhat useful.
-	Change Wild Casting to increase the rate of rechard or lower the cost of casting.
-	Focused casting can benefit accuracy.
+Telemancy
 	Uniques:
 		EMP on teleport?
 		Stun on teleport?
@@ -70,20 +45,7 @@ UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumer
 		Charge to cast, release when you feel like it or when charge at max.
 		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
 
-- Electromancy
-
-- Document if NegaFud bug is addressed
-
-- Test whether setting Available to false is actually working for upgrade traits
-	The code changes were made, now just keep an eye out.
-
-- Verify if correct Tool durability cost is displaying in menus.
-
-
-Fat Head message triggers on entering level.
-Also presumably occurs with other equipment traits.
-
-=== HIGH PRIORITY or TRIVIAL √ ==================================================
+=== HIGH PRIORITY or TRIVIAL ====================================================
 
 BEFORE RELEASE:
 	Make a promo character for each special ability or trait group, to promote the mod and community at large.
@@ -93,32 +55,10 @@ Unused variables:
 	string substance
 	int damageMod
 
-
-[Message: Bunny Mod] Stove (1478): MoveNext
-[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-Stack trace:
-ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__21.MoveNext () (at <83f44a28b0e149b58d3aad6915e73629>:0)
-UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-Stove:DamagedObject(PlayfieldObject, Single)
-ObjectReal:Damage(PlayfieldObject, Boolean)
-MeleeHitbox:HitObject(GameObject, Boolean)
-MeleeColliderBox:OnTriggerEnter2D(Collider2D)
-[Message: Bunny Mod] 3
-
 - Stove:
 	Make noise when operated
 	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
 
-- Tamper Tantrum still shows 30 as tamper cost
-
-- Trait incompatibilities:
-	Weapon Traits: Stubby Fingers, Sausage Fingers, Draw no blood, pacifist
-	Afraid of Loud Noises / Draw No Blood
-
-- Fridge not showing button text for showchest
 
 - Stove name hovers after use. Can't tamper w stove after cooking on it. Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
 
@@ -131,16 +71,15 @@ MeleeColliderBox:OnTriggerEnter2D(Collider2D)
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 
-=== LOW PRIORITY √ =============================================================
+=== LOW PRIORITY or TEMPORARILY SHELVED ========================================
 
 - Fridge not showing button text for showchest
-- Object interactions show a "Cancelled" message even though they went through successfully.
-- Stoves appear to no longer rotate toward walls
-- Auto-trayed items may include those you can't use/equip
 
-uwumacaronitime,VP of mushroomToday at 12:47 PM
-theres probably a reason you cant teleport while falling or jumping into water
-so in case you havent you probably should put a restriction on blink for that
+- Object interactions show a "Cancelled" message even though they went through successfully.
+
+- Stoves appear to no longer rotate toward walls
+
+- Auto-trayed items may include those you can't use/equip
 
 === IDEAS ======================================================================
 

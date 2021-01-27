@@ -272,7 +272,7 @@ namespace BunnyMod
 			{
 				if (!PyromancyIsBurnedOut(agent))
 				{
-					if (PyromancyRollForMiscast(agent, -75))
+					if (PyromancyRollForMiscast(agent, 0))
 						PyromancyMiscast(agent, 20);
 					else
 					{
@@ -910,7 +910,7 @@ namespace BunnyMod
 		public static void PyromancyMiscast(Agent agent, int degree)
 		{
 			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
-			agent.statusEffects.ChangeHealth(-degree);
+			//agent.statusEffects.ChangeHealth(-degree); // If you want this in, you'll need to adjust it based on fire resistance first
 
 			PyromancySetBurnedOut(agent, true);
 		}
@@ -927,26 +927,25 @@ namespace BunnyMod
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
-		public static bool PyromancyRollForMiscast(Agent agent, int modifier)
+		public static bool PyromancyRollForMiscast(Agent agent, float modifier)
 		{
-			int risk = 100 + modifier;
+			float risk = 1.000f + modifier;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 66;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 33;
-
-			if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 50;
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk -= 0.500f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk -= 0.750f;
 			else if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 25;
+				risk += 0.250f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk += 0.500f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				risk *= 3 / 5;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
-				risk *= 4 / 5;
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= 0.75f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= 0.50f;
 
-			return UnityEngine.Random.Range(0, 10000) <= risk;
+			return risk >= UnityEngine.Random.Range(0f, 100f);
 		}
 		public static void PyromancySetBurnedOut(Agent agent, bool value)
 		{
@@ -1118,7 +1117,6 @@ namespace BunnyMod
 
 			if (ChronomancyIsCast(__instance.agent) && __instance.agent.stomping)
 			{
-				__instance.agent.stomping = true;
 				__instance.agent.statusEffects.Stomp();
 				__instance.agent.stomping = false;
 			}
@@ -1203,7 +1201,7 @@ namespace BunnyMod
 		}
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
-			if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy")
+			if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy" && __instance.agent.inventory.equippedSpecialAbility != null)
 				__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
 		}
 		public static bool StatusEffects_Stomp(StatusEffects __instance) // Replacement

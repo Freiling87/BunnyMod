@@ -510,8 +510,8 @@ namespace BunnyMod
             StrongGagReflex.CanSwap = false;
             StrongGagReflex.CostInCharacterCreation = 2;
             StrongGagReflex.IsActive = true;
-            StrongGagReflex.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            StrongGagReflex.Recommendations.AddRange(new string[] { "Telemancy" });
+            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Telemancy" });
             StrongGagReflex.Upgrade = "StrongGagReflex_2";
 
             CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,

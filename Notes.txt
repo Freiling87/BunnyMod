@@ -3,6 +3,8 @@
 
 --- BALANCING ----------------------------------------------
 
+Draw No Blood is nearly identical but worse than Loud Noises. Maybe bump it up to 5 points.
+
 Telemancy
 	Currently, it miscasts at >35
 	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
@@ -23,6 +25,10 @@ NegaFud
 On Exit to Base, then freeze on loading screen:
 	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
 	[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
+
+Pyromancy
+	Something caused BurnedOut to stay true even when recharged.
+		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
 
 --- IMPLEMENTATIONS ----------------------------------------
 
@@ -381,4 +387,5 @@ Big Quest - Burn a certain number of corpses
 
 1.2.2
 - Chronomancy
-- Finalization and renaming of Telemancy and generalist magic traits
+- Renamed existing magic traits
+- stoves now explode like molotovs when destroyed

@@ -16,7 +16,7 @@ namespace BunnyMod
 		{
 			InitializeAbilities();
 
-			BunnyHeader.MainInstance.PatchPostfix(typeof(AgentHitbox), "LandedOnLand", GetType(), "AgentHitbox_LandedOnLand", new Type[0] { });
+			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentHitbox), "LandedOnLand", GetType(), "AgentHitbox_LandedOnLand", new Type[0] { });
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "BulletHitEffect", GetType(), "Bullet_BulletHitEffect", new Type[1] { typeof(GameObject) });
 
@@ -452,8 +452,7 @@ namespace BunnyMod
 
 			agent.speedMax = agent.FindSpeed();
 
-			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && 
-				(agent.statusEffects.hasTrait("HammerTime") || agent.statusEffects.hasTrait("HammerTime_2")))
+			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && agent.statusEffects.hasTrait("HammerTime"))
 			{
 				agent.stomping = true;
 				agent.Jump();
@@ -1111,15 +1110,49 @@ namespace BunnyMod
 		#endregion
 
 		#region AgentHitbox
-		public static void AgentHitbox_LandedOnLand(AgentHitbox __instance) // Postfix
+		public static bool AgentHitbox_LandedOnLand(AgentHitbox __instance) // Prefix
 		{
-			BunnyHeader.Log("AgentHitBox_LandedOnLand: IsCast " + ChronomancyIsCast(__instance.agent) + "; agent.stomping: " + __instance.agent.stomping);
+			Agent agent = __instance.agent;
 
-			if (ChronomancyIsCast(__instance.agent) && __instance.agent.stomping)
+			if (ChronomancyIsCast(agent) && agent.stomping)
 			{
-				__instance.agent.statusEffects.Stomp();
-				__instance.agent.stomping = false;
+				if (agent.isPlayer > 0 && agent.localPlayer)
+					__instance.gc.playerControl.SetCantPressGameplayButtons("Jump", 0, agent.isPlayer - 1);
+
+				if (!__instance.gc.serverPlayer && agent.localPlayer)
+					agent.objectMult.CallCmdLandOnLand();
+
+				agent.pathfindingAI.rePath = true;
+				agent.jumped = false;
+				agent.justGotUp = true;
+				agent.agentSpriteAnimator.Play("AgentSpriteNoAnim");
+
+				MethodInfo setAgentSpritePosLate = AccessTools.DeclaredMethod(typeof(AgentHitbox), "SetAgentSpritePosLate");
+				IEnumerator setAgentSpritePosLate_Enumerator = (IEnumerator)setAgentSpritePosLate.Invoke(__instance, new object[0]);
+				__instance.StartCoroutine(setAgentSpritePosLate_Enumerator);
+
+				//if (!agent.stomping)
+				//	__instance.gc.audioHandler.Play(agent, "Land");
+
+				agent.justLanded = true;
+				agent.clientRecentlyLandedOnLand = false;
+				agent.clientRecentlyLandedOnWater = false;
+
+				MethodInfo justLandedFrame = AccessTools.DeclaredMethod(typeof(AgentHitbox), "JustLandedFrame");
+				IEnumerator justLandedFrame_Enumerator = (IEnumerator)justLandedFrame.Invoke(__instance, new object[0]);
+				__instance.StartCoroutine(justLandedFrame_Enumerator);
+
+				agent.SetOverHole(false);
+				agent.movement.SetPhysics(agent.movement.curPhysicsType);
+
+				if (agent.localPlayer)
+					agent.statusEffects.Stomp();
+
+				agent.stomping = false;
+
+				return false;
 			}
+			return true;
 		}
 		#endregion
 		#region Bullet
@@ -1213,10 +1246,10 @@ namespace BunnyMod
 			if (__instance.agent.gc.challenges.Contains("LowHealth"))
 				num = 4f;
 
-			if (__instance.hasTrait("StompLessDamage") || __instance.hasTrait("HammerTime") || __instance.hasTrait("HammerTime_2") || (__instance.agent.agentName == "Bouncer" && __instance.agent.oma.superSpecialAbility))
+			if (__instance.hasTrait("StompLessDamage") || __instance.hasTrait("HammerTime") || (__instance.agent.agentName == "Bouncer" && __instance.agent.oma.superSpecialAbility))
 				num *= 0.5f;
 
-			if (__instance.hasTrait("HammerTime") || __instance.hasTrait("HammerTime_2"))
+			if (__instance.hasTrait("HammerTime"))
 				num *= 0.0f;
 
 			if (__instance.agent.health <= num)

@@ -1,14 +1,28 @@
 ﻿
 === TEST NOTES =================================================================
 
---- BALANCING ----------------------------------------------
+--- IMPLEMENTATIONS ----------------------------------------
 
-Draw No Blood is nearly identical but worse than Loud Noises. Maybe bump it up to 5 points.
+Chronomancy
+	Stomp no longer working
+		Determined the cause. Now making a prefix for LandedOnLand.
+Hammertime Triggers when exiting water, even if you don't have the trait.
+		This no longer occurs, the actual stomp was apparently broken somewhere. Need to check commits 2-5 before this one to verify what was changed.
+	Hammertime Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
+
+Electromancy
+	Split only triggers when it hits a wall, not an agent.
+
+Pyromancy
+	Add a delay between use and recharge, and between use and use.
 
 Telemancy
-	Currently, it miscasts at >35
-	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
-	Focused casting can benefit accuracy.
+	Uniques:
+		EMP on teleport?
+		Stun on teleport?
+	Rework: 
+		Charge to cast, release when you feel like it or when charge at max.
+		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
 
 --- BUGS ---------------------------------------------------
 
@@ -30,26 +44,14 @@ Pyromancy
 	Something caused BurnedOut to stay true even when recharged.
 		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
 
---- IMPLEMENTATIONS ----------------------------------------
+--- BALANCING ----------------------------------------------
 
-Chronomancy
-	Hammertime Triggers when exiting water, even if you don't have the trait.
-		This no longer occurs, the actual stomp was apparently broken somewhere. Need to check commits 2-5 before this one to verify what was changed.
-	Hammertime Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
-
-Electromancy
-	Split only triggers when it hits a wall, not an agent.
-
-Pyromancy
-	Add a delay between use and recharge, and between use and use.
+Draw No Blood is nearly identical but worse than Loud Noises. Maybe bump it up to 5 points.
 
 Telemancy
-	Uniques:
-		EMP on teleport?
-		Stun on teleport?
-	Rework: 
-		Charge to cast, release when you feel like it or when charge at max.
-		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
+	Currently, it miscasts at >35
+	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
+	Focused casting can benefit accuracy.
 
 === HIGH PRIORITY or TRIVIAL ====================================================
 

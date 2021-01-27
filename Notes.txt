@@ -1,16 +1,55 @@
 ﻿
 === TEST NOTES =================================================================
 
+[Message: Bunny Mod] Stove (1420): ObjectReal_Interact
+[Message: Bunny Mod] Stove (1420): ObjectReal_PressedButton
+[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
+[Message: Bunny Mod] Stove (1420): ObjectReal_FinishedOperating
+[Message: Bunny Mod] Stove (1420): Stove_UseWrenchToDetonate
+[Message: Bunny Mod] Stove (1420): ObjectReal_MakeNonFunctional
+[Message: Bunny Mod] Stove (1420): ObjectReal_DestroyMe
+[Info   : Unity Log] Window Lose Focus
+
+^^ Tamper, figure out how to blow it up
+
+
+[Message: Bunny Mod] Stove (1235): MoveNext
+[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+Stack trace:
+ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__21.MoveNext () (at <a70e2b5aea984926bd50ca802e6b2708>:0)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+Stove:DamagedObject(PlayfieldObject, Single)
+ObjectReal:Damage(PlayfieldObject, Boolean)
+MeleeHitbox:HitObject(GameObject, Boolean)
+MeleeColliderBox:OnTriggerEnter2D(Collider2D)
+
+^^^ Stove animation
+
+
+On Exit to Base, then freeze on loading screen:
+
+[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
+[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
+
+[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+Stack trace:
+BunnyMod.BunnyAbilities.StatusEffects_GiveSpecialAbility (System.String abilityName, StatusEffects __instance) (at <a70e2b5aea984926bd50ca802e6b2708>:0)
+StatusEffects.GiveSpecialAbility (System.String abilityName) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+Agent.SetupAgentStats (System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+SpawnerMain.TransformAgent (Agent myAgent, System.String agentType, System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+SpawnerMain.TransformAgent (Agent myAgent, System.String agentType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+LoadLevel+<SetupMore2_2>d__144.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+
+
 - Chronomancy
 	Uniques:
 		Hammertime
 			Triggers when exiting water, even if you don't have the trait.
 			Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
-		Criticals (FARTS)
-	FART Dweller
-		Firefighter body but blue
-		Chronomancy, FARTS, Pistol, 
-
 
 - Pyromancy
 	Reduce Miscast reduction of MagicTraining / Might need Float operations to do this correctly
@@ -18,14 +57,6 @@
 	Increase upgrade prices of all Magic traits
 	Add a delay between use and recharge, and between use and use.
 
-	Uniques:
-		Path Of Fire - 
-			You can only regain health by burning corpses. 
-			Extra XP for killing firemen.
-			Extra XP for burning objects (like 1 per).
-			Take damage in Water.
-			Lose XP when you or firemen extinguish fires.
-		Big Quest - Burn a certain number of corpses
 
 - Telemancy
 	Currently, it miscasts at >35
@@ -397,7 +428,14 @@ Bar Brawler: "You get more powerful after some drinks"
 Bonus:
  A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
  Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
-
+ 
+Path Of Fire - 
+	You can only regain health by burning corpses. 
+	Extra XP for killing firemen.
+	Extra XP for burning objects (like 1 per).
+	Take damage in Water.
+	Lose XP when you or firemen extinguish fires.
+Big Quest - Burn a certain number of corpses
 
 
 === RELEASE NOTES ==============================================================

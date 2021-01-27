@@ -883,8 +883,9 @@ namespace BunnyMod
                 if (agent.statusEffects.hasTrait("FARTS_2"))
                     luckMultiplier += 2;
 
-                if (BunnyAbilities.ChronomancyIsCast(agent))
-                    luckMultiplier *= 2;
+                if (agent.isPlayer != 0 && agent.specialAbility == "Chronomancy")
+                    if (BunnyAbilities.ChronomancyIsCast(agent))
+                        luckMultiplier *= 2;
             }
 
             __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);

@@ -448,10 +448,7 @@ namespace BunnyMod
 		}
 		public static async void ChronomancyDecast(Agent agent)
 		{
-			agent.SpawnParticleEffect("ExplosionWarp", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
-
-			//TODO: Eliminate redundancies between Recharge and DeCast
 
 			agent.speedMax = agent.FindSpeed();
 
@@ -464,7 +461,7 @@ namespace BunnyMod
 				agent.gc.selectedTimeScale /= 3f;
 				agent.gc.mainTimeScale /= 3f;
 
-				await Task.Delay((int)(1000 / agent.gc.mainTimeScale)); // Trying this out, as I think it uses real time rather than game time
+				await Task.Delay((int)(500 / agent.gc.mainTimeScale)); // May need to do a base amount divided by timescale, but first attempt didn't 
 			}
 
 			agent.gc.selectedTimeScale = baseTimeScale;
@@ -1117,11 +1114,11 @@ namespace BunnyMod
 		#region AgentHitbox
 		public static void AgentHitbox_LandedOnLand(AgentHitbox __instance) // Postfix
 		{
-			BunnyHeader.Log("AgentHitBox_LandedOnLand: IsCast" + ChronomancyIsCast(__instance.agent));
+			BunnyHeader.Log("AgentHitBox_LandedOnLand: IsCast " + ChronomancyIsCast(__instance.agent) + "; agent.stomping: " + __instance.agent.stomping);
 
 			if (ChronomancyIsCast(__instance.agent) && __instance.agent.stomping)
 			{
-				//__instance.agent.stomping = true; // possibly cause of always-stomp during chronomancy
+				__instance.agent.stomping = true;
 				__instance.agent.statusEffects.Stomp();
 				__instance.agent.stomping = false;
 			}
@@ -1145,7 +1142,7 @@ namespace BunnyMod
 			{
 				BunnyHeader.Log("Explosion_SetupExplosion detected HammerTime trait for Stomp");
 
-				__instance.explosionType = "Stomp"; // Hopefully will enable damage
+				//__instance.explosionType = "Stomp"; // Hopefully will enable damage... but on test it no longer stuns enemies??
 				// Okay, there's another trait: StompDamagesAgents, aka "Aftershocked". Enable that.
 				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
 

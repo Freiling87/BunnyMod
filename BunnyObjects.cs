@@ -233,9 +233,10 @@ namespace BunnyMod
                     if (!__instance.gc.serverPlayer)
                         __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "MakeNonFunctional");
 
-                    __instance.timer = 10f;
+                    __instance.timer = 5f;
                     __instance.timeCountdownClock = (int)__instance.timer;
                     BunnyHeaderTools.InvokeRepeating(Stove_Variables[(Stove)__instance], "Countdown", 0.01f, 1f);
+
                     __instance.interactable = false;
                     Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
                     Stove_Variables[(Stove)__instance].countdownCauser = Stove_Variables[(Stove)__instance].savedDamagerObject;
@@ -720,10 +721,15 @@ namespace BunnyMod
             __instance.cantMakeFollowersAttack = true;
 
 			yield return new WaitForSeconds(3f);
-            if (!__instance.destroying)
-                __instance.DestroyMe(Stove_Variables[__instance].savedDamagerObject);
 
-			yield break;
+            if (!__instance.destroying)
+			{
+                BunnyHeader.Log("Firebomb 1");
+                __instance.gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
+                __instance.DestroyMe(Stove_Variables[__instance].savedDamagerObject);
+            }
+
+            yield break;
         }
         public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
 		{
@@ -768,14 +774,13 @@ namespace BunnyMod
 
             if (damageAmount >= __instance.damageThreshold)
             {
-                BunnyHeader.ConsoleMessage.LogMessage("Lemma 2");
+                BunnyHeader.ConsoleMessage.LogMessage("Firebomb 2");
 
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
+
+                __instance.gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
                 __instance.DestroyMe(damagerObject);
             }
-            //TODO: Consider flame spit instead of flame particle
-
-            BunnyHeader.ConsoleMessage.LogMessage("3");
 
             return false;
         }
@@ -840,7 +845,7 @@ namespace BunnyMod
             if (__instance.gc.serverPlayer)
             {
                 __instance.MakeNonFunctional(__instance.interactingAgent);
-                __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30);
+                __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30); //TODO
                 __instance.interactingAgent.skillPoints.AddPoints("TamperGeneratorPoints");
                 __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
                 return;

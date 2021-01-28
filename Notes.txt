@@ -12,7 +12,7 @@ Electromancy
 
 Pyromancy
 	Add a delay between use and recharge, and between use and use.
-
+	item.Categories.Add("Weapons"); // Might this set off sensors?
 Telemancy
 	Uniques:
 		EMP on teleport?
@@ -87,6 +87,41 @@ Unused variables:
 - Auto-trayed items may include those you can't use/equip
 
 === IDEAS ======================================================================
+
+Stealth Overhaul
+	Visual detection
+		Variable name is called "hardToSeeFromDistance", trait is same but capitalized
+		base = 1
+		Blends in Nicely or Goon = 1.7
+		Upgraded or Super-special = 2.5
+	Light Rules
+		Hack computer to switch off lights
+		Depending on the District, lights have a chance to be flickering. More frequent in Slums, decreases as you progress.
+		Destroying a generator shuts off Lights in the Chunk? (How do you handle multiple buildings per chunk, or multiple generators per building?)
+	Bodies
+		Seeing a body for the first time should send other property owners into full search mode (like when an alarm goes off while hacking). 
+			Any way to keep them in a longer panic state? Finding a body should be disastrous for stealth, not a momentary setback
+				Maybe have Alarm buttons on every level, and they run to press one if they find a body. 
+					This would need to be a mutator
+		If they're unconcious, they'll wake them up after searching the area
+
+	Light Variables
+		Agent.extraLight
+		Agent.hasLight
+		Agent.LightingTypeMedNon
+		Agent.lightBrightnessTiming
+		Agent.MostRecentLandPosLight
+		Agent.MostRecentLandPosLight2
+		Agent.rogueLight
+	****Agent.SetLightBrightness
+		gc.lightingType
+		gc.spawnerMain.SetLighting()
+		ObjectReal.noLight
+		SpawnerMain 7100
+		TileInfo.TurnOffLights
+		TileInfo.noLightColliders
+
+	Hiding in a box should slightly reduce movement speed (by like 0.5)
 
 Big Quests
 Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
@@ -379,6 +414,8 @@ Path Of Fire -
 	Extra XP for burning objects (like 1 per).
 	Take damage in Water.
 	Lose XP when you or firemen extinguish fires.
+	Firefighters are always hostile and will use their water cannons against you.
+	Perpetual Particle Effect on character - flames or smoke
 Big Quest - Burn a certain number of corpses
 
 **Gunplay Overhaul [Mod idea]:**

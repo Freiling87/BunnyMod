@@ -65,6 +65,8 @@ namespace BunnyMod
         }
         public void FixedUpdate()
         {
+            //TODO: Move this to occur at appropriate times rather than on update.
+
             List<Stove> stoveList = new List<Stove>();
 
             foreach (KeyValuePair<Stove, Stove_Remora> pair in Stove_Variables)

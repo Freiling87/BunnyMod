@@ -4,10 +4,7 @@
 --- IMPLEMENTATIONS ----------------------------------------
 
 Chronomancy
-	Stomp no longer working
-		Determined the cause. Now making a prefix for LandedOnLand.
-Hammertime Triggers when exiting water, even if you don't have the trait.
-		This no longer occurs, the actual stomp was apparently broken somewhere. Need to check commits 2-5 before this one to verify what was changed.
+	Hammertime Triggers when exiting water, even if you don't have the trait.
 	Hammertime Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
 
 Electromancy
@@ -384,6 +381,50 @@ Path Of Fire -
 	Lose XP when you or firemen extinguish fires.
 Big Quest - Burn a certain number of corpses
 
+**Gunplay Overhaul [Mod idea]:**
+
+	Mechanics:
+	- Guns deal more damage
+	- Bullets are smaller and faster
+	- Ranged skill only affects accuracy and fire-rate, not gun damage
+	- Accuracy is reduced while moving, and with followup shots due to recoil
+	- Shotgun has increased destructive power: can destroy wooden doors in a single shot, nearly guaranteed OHKO at close range
+
+	Mods:
+	- Silencers have a weaker effect on shotguns and revolvers (shotguns are loud af, and revolvers are not sealed gas systems)
+	- Rate of Fire mod is removed completely (replaced by new mods)
+	- Autofire Mod: Full automatic fire. Considered illegal if cops or bots catch you with it. Pistol, Shotgun, Assault Rifle
+	- Binary Trigger: Fires two shots in quick succession. Not illegal. Pistol, Assault Rifle
+	- Flash Hider: If view distance/stealth is reworked, enemies can't see you as well in the dark. This would mitigate how much more visible shooting makes you. Any gun
+	- FMJ Ammo: Reduces damage, but ignores armor. All but shotgun
+	- Foregrip: Increases fire speed and reduces recoil for shotgun. Reduces recoil for Assault Rifle and Machinegun.
+	- Hacksaw: Expands weapon spread. Shotgun, Assault Rifle, Revolver (But why would you do that?)
+	- JHP Ammo: Increases damage, but weaker against armor. All but shotgun
+	- Muzzle Brake: Gun mod that reduces recoil. Any gun
+	- +P Ammo: Increases damage and projectile speed, but makes recoil worse. Any gun
+	- Red Dot: Reduces the accuracy penalties of movement and follow-up shots. Pistol, Assault Rifle, Shotgun
+	- Scope: Allows you to move the targeting reticle further away from your character (similar to when using Laptop, etc.). Increases accuracy when stationary. Rifle, Assault Rifle, Shotgun
+
+	Guns:
+	- Assault Rifle: High damage, high accuracy, single shot but highly moddable.
+	- Rifle: Extreme damage, high accuracy, but shooting takes a windup before firing. Windup is reduced by Ranged skill.
+
+	Traits:
+	- Double-Tapper: Ranged weapon equivalent to Backstabber, but only works in close range.
+	- **Run & Gun**: Better accuracy when firing while moving.
+	- **Iron Wrists**: Less recoil.
+	- **Headshot**: Stationary shots with a scope when recoil is at zero are always fatal.
+
+
+Hematomancy // Blood Magic
+Kinetomancy // Telekinesis
+Megaleiomancy //Charm Person
+Necromancy
+// 1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
+// 2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
+// 3 Zombies will join your party / Turn ghosts into large number of crystals
+// Miscast turns all of them hostile, or summons hostile ghosts
+// When close to a ghost, you can turn them into mana crystals
 
 === RELEASE NOTES ==============================================================
 

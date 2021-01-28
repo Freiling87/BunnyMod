@@ -30,8 +30,25 @@ namespace BunnyMod
 		}
 		public static void InitializeAbilities() // Main
 		{
-			#region Chronomancy
+			Chronomancy_Initialize();
+			//Cryomancy_Initialize();
+			//Electromancy_Initialize();
+			Pyromancy_Initialize();
+			Telemancy_Initialize();
+		}
+		#endregion
 
+		#region Magic
+		public static Vector2 MouseIngamePosition()
+		{
+			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
+			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
+		}
+		#region Chronomancy
+		public static float baseTimeScale;
+		public static void Chronomancy_Initialize()
+		{
 			Sprite spriteChronomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Chronomancy);
 
 			CustomAbility chronomancy = RogueLibs.CreateCustomAbility("Chronomancy", spriteChronomancy, true,
@@ -67,7 +84,7 @@ namespace BunnyMod
 					ChronomancyDecast(agent);
 				else
 				{
-					if (ChronomancyRollForMiscast(agent, (float)(100 - item.invItemCount)/100))
+					if (ChronomancyRollForMiscast(agent, (float)(100 - item.invItemCount) / 100))
 						ChronomancyMiscast(agent, ChronomancyCalcTimescale(agent, true));
 					else
 						ChronomancyCast(agent, ChronomancyCalcTimescale(agent, false));
@@ -94,296 +111,7 @@ namespace BunnyMod
 			};
 			chronomancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
-			#endregion Chronomancy
-			#region Cryomancy
-			Sprite spriteCryomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Cryomancy);
-
-			CustomAbility cryomancy = RogueLibs.CreateCustomAbility("Cryomancy", spriteCryomancy, true,
-				new CustomNameInfo("Cryomancy"),
-				new CustomNameInfo("You can shoot a Freeze Ray from your hands. Your ice cream never melts."),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("Weapons");
-					item.Categories.Add("NPCsCantPickUp");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.gunKnockback = 0;
-					item.isWeapon = true;
-					item.rapidFire = false;
-					item.initCount = 100;
-					item.itemType = "WeaponProjectile";
-					//item.LoadItemSprite("Fireball");
-					item.rapidFire = false;
-					item.rechargeAmountInverse = item.initCount;
-					item.shadowOffset = 2;
-					item.specialMeleeTexture = true;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-					item.weaponCode = weaponType.WeaponProjectile;
-				});
-
-			cryomancy.Available = true;
-			cryomancy.AvailableInCharacterCreation = true;
-			cryomancy.CostInCharacterCreation = 8;
-
-			bool icedOut = false;
-
-			cryomancy.OnPressed = delegate (InvItem item, Agent agent)
-			{
-				if (icedOut)
-				{
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-				}
-
-				if (CryomancyRollForMiscast(agent, 0))
-				{
-					CryomancyMiscast(agent, 20);
-					icedOut = true;
-				}
-				else
-				{
-					CryomancyCast(agent);
-					item.invItemCount -= CryomancyManaCost(agent);
-				}
-			};
-
-			cryomancy.Recharge = (item, myAgent) =>
-			{
-				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
-				{
-					item.invItemCount++;
-
-					if (item.invItemCount == 100)
-					{
-						if (icedOut)
-							icedOut = false;
-
-						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
-						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-					}
-				}
-			};
-
-			cryomancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
-
-			#endregion
-			#region Electromancy
-			Sprite spriteElectromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Electromancy);
-
-			CustomAbility electromancy = RogueLibs.CreateCustomAbility("Electromancy", spriteElectromancy, true,
-				new CustomNameInfo("Electromancy"),
-				new CustomNameInfo("You can shoot a little bolt of lightning from your hands. Do not try to charge your phone with it."),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("Weapons");
-					item.Categories.Add("NPCsCantPickUp");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.gunKnockback = 0;
-					item.isWeapon = true;
-					item.rapidFire = false;
-					item.initCount = 100;
-					item.itemType = "WeaponProjectile";
-					item.rapidFire = false;
-					item.rechargeAmountInverse = item.initCount;
-					item.shadowOffset = 2;
-					item.specialMeleeTexture = true;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-					item.weaponCode = weaponType.WeaponProjectile;
-				});
-
-			electromancy.Available = true;
-			electromancy.AvailableInCharacterCreation = true;
-			electromancy.CostInCharacterCreation = 8;
-
-			bool zappedOut = false; // Move to Bitfield variable
-
-			electromancy.OnPressed = delegate (InvItem item, Agent agent)
-			{
-				if (zappedOut)
-					ElectromancyDialogueCantDo(agent);
-				else if (ElectromancyRollForMiscast(agent, 0))
-					ElectromancyMiscast(agent, 20);
-				else
-				{
-					ElectromancyCast(agent);
-					item.invItemCount -= ElectromancyManaCost(agent);
-				}
-			};
-			electromancy.Recharge = (item, myAgent) =>
-			{
-				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
-				{
-					item.invItemCount++;
-
-					if (item.invItemCount == 100)
-					{
-						if (zappedOut)
-							zappedOut = false;
-
-						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
-						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
-						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-					}
-				}
-			};
-
-			electromancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
-			#endregion
-			#region Pyromancy
-
-			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
-
-			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
-				new CustomNameInfo("Pyromancy"),
-				new CustomNameInfo("You can throw fire from your hands. This tends to fix a lot of your problems, and create much worse ones."),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("Weapons");
-					item.Categories.Add("NPCsCantPickUp");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.gunKnockback = 0;
-					item.isWeapon = true;
-					item.rapidFire = true; //testing
-					item.initCount = 100;
-					item.itemType = "WeaponProjectile";
-					item.LoadItemSprite("Fireball");
-					item.rapidFire = true;
-					item.rechargeAmountInverse = item.initCount;
-					item.shadowOffset = 2;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-					item.weaponCode = weaponType.WeaponProjectile;
-				});
-
-			pyromancy.Available = true;
-			pyromancy.AvailableInCharacterCreation = true;
-			pyromancy.CostInCharacterCreation = 8;
-
-			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
-			{
-				if (!PyromancyIsBurnedOut(agent))
-				{
-					if (PyromancyRollForMiscast(agent, 0))
-						PyromancyMiscast(agent, 20);
-					else
-					{
-						PyromancyCast(agent);
-
-						if (PyromancyManaCost(agent))
-							item.invItemCount--;
-
-						if (item.invItemCount <= 0)
-							PyromancySetBurnedOut(agent, true);
-					}
-				}
-			};
-			pyromancy.Recharge = (item, myAgent) =>
-			{
-				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
-				{
-					item.invItemCount++;
-
-					if (item.invItemCount == 100)
-						PyromancyRecharge(myAgent);
-				}
-			};
-			pyromancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
-			#endregion
-			#region Telemancy
-			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
-
-			CustomAbility telemancy = RogueLibs.CreateCustomAbility("Telemancy", spriteTelemancy, true,
-				new CustomNameInfo("Telemancy"),
-				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("Usable"); //
-					item.Categories.Add("NPCsCantPickup");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.isWeapon = false;
-					item.initCount = 100;
-					item.itemType = ""; //
-					item.rechargeAmountInverse = item.initCount;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-				});
-
-			telemancy.Available = true;
-			telemancy.AvailableInCharacterCreation = true;
-			telemancy.CostInCharacterCreation = 8;
-
-			telemancy.OnPressed = delegate (InvItem item, Agent agent)
-			{
-				if (TelemancyRollForMiscast(agent, (float)(100 - item.invItemCount) / 100))
-					TelemancyMiscast(agent);
-
-				if (item.invItemCount <= 0)
-				{
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
-					agent.Say("I need to give it a rest or my head will explode. I've seen it happen.");
-				}
-				else
-				{
-					agent.SpawnParticleEffect("Spawn", agent.curPosition);
-
-					Vector3 targetLocation = TelemancyCast(agent, false, false, true, true, true);
-
-					agent.Teleport(targetLocation, false, true);
-					agent.rb.velocity = Vector2.zero;
-
-					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
-					GameController.gameController.audioHandler.Play(agent, "Spawn");
-
-					item.invItemCount -= TelemancyManaCost(agent);
-
-					if (item.invItemCount <= 0)
-						TelemancyMiscast(agent);
-				}
-			};
-			telemancy.Recharge = (item, agent) =>
-			{
-				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
-				{
-					item.invItemCount++;
-
-					if (item.invItemCount == 100)
-					{
-						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
-						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-					}
-				}
-			};
-
-			telemancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
-			#endregion
 		}
-		#endregion
-
-		#region Magic
-		public static Vector2 MouseIngamePosition()
-		{
-			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
-			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
-		}
-		#region Chronomancy
-
-		public static float baseTimeScale;
-
 		public static int ChronomancyCalcManaCost(Agent agent)
 		{
 			int increment = 5;
@@ -614,6 +342,81 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Cryomancy
+		public static void Cryomancy_Initialize()
+		{
+			Sprite spriteCryomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Cryomancy);
+
+			CustomAbility cryomancy = RogueLibs.CreateCustomAbility("Cryomancy", spriteCryomancy, true,
+				new CustomNameInfo("Cryomancy"),
+				new CustomNameInfo("You can shoot a Freeze Ray from your hands. Your ice cream never melts."),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
+					item.isWeapon = true;
+					item.rapidFire = false;
+					item.initCount = 100;
+					item.itemType = "WeaponProjectile";
+					//item.LoadItemSprite("Fireball");
+					item.rapidFire = false;
+					item.rechargeAmountInverse = item.initCount;
+					item.shadowOffset = 2;
+					item.specialMeleeTexture = true;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
+				});
+
+			cryomancy.Available = true;
+			cryomancy.AvailableInCharacterCreation = true;
+			cryomancy.CostInCharacterCreation = 8;
+
+			bool icedOut = false;
+
+			cryomancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (icedOut)
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+				}
+
+				if (CryomancyRollForMiscast(agent, 0))
+				{
+					CryomancyMiscast(agent, 20);
+					icedOut = true;
+				}
+				else
+				{
+					CryomancyCast(agent);
+					item.invItemCount -= CryomancyManaCost(agent);
+				}
+			};
+
+			cryomancy.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+					{
+						if (icedOut)
+							icedOut = false;
+
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			cryomancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
+		}
 		public static void CryomancyCast(Agent agent)
 		{
 			agent.gun.HideGun();
@@ -690,6 +493,73 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Electromancy
+		public static void Electromancy_Initialize()
+		{
+			Sprite spriteElectromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Electromancy);
+
+			CustomAbility electromancy = RogueLibs.CreateCustomAbility("Electromancy", spriteElectromancy, true,
+				new CustomNameInfo("Electromancy"),
+				new CustomNameInfo("You can shoot a little bolt of lightning from your hands. Do not try to charge your phone with it."),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
+					item.isWeapon = true;
+					item.rapidFire = false;
+					item.initCount = 100;
+					item.itemType = "WeaponProjectile";
+					item.rapidFire = false;
+					item.rechargeAmountInverse = item.initCount;
+					item.shadowOffset = 2;
+					item.specialMeleeTexture = true;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
+				});
+
+			electromancy.Available = true;
+			electromancy.AvailableInCharacterCreation = true;
+			electromancy.CostInCharacterCreation = 8;
+
+			bool zappedOut = false; // Move to Bitfield variable
+
+			electromancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (zappedOut)
+					ElectromancyDialogueCantDo(agent);
+				else if (ElectromancyRollForMiscast(agent, 0))
+					ElectromancyMiscast(agent, 20);
+				else
+				{
+					ElectromancyCast(agent);
+					item.invItemCount -= ElectromancyManaCost(agent);
+				}
+			};
+			electromancy.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+					{
+						if (zappedOut)
+							zappedOut = false;
+
+						myAgent.statusEffects.CreateBuffText("Recharged", myAgent.objectNetID);
+						myAgent.gc.audioHandler.Play(myAgent, "Recharge");
+						myAgent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			electromancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
+		}
 		public static void ElectromancyCast(Agent agent)
 		{
 			agent.gun.HideGun();
@@ -807,20 +677,70 @@ namespace BunnyMod
 			return (chance > UnityEngine.Random.Range(1, 100));
 		}
 		#endregion
-		#region Hematomancy // Blood Magic
-		#endregion
-		#region Kinetomancy // Telekinesis
-		#endregion
-		#region Megaleiomancy //Charm Person
-		#endregion
-		#region Necromancy
-		// 1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
-		// 2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
-		// 3 Zombies will join your party / Turn ghosts into large number of crystals
-		// Miscast turns all of them hostile, or summons hostile ghosts
-		// When close to a ghost, you can turn them into mana crystals
-		#endregion
 		#region Pyromancy
+		public static void Pyromancy_Initialize()
+		{
+			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
+
+			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
+				new CustomNameInfo("Pyromancy"),
+				new CustomNameInfo("You can throw fire from your hands. This tends to fix a lot of your problems, and create much worse ones."),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Weapons");
+					item.Categories.Add("NPCsCantPickUp");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.gunKnockback = 0;
+					item.isWeapon = true;
+					item.rapidFire = true; //testing
+					item.initCount = 100;
+					item.itemType = "WeaponProjectile";
+					item.LoadItemSprite("Fireball");
+					item.rapidFire = true;
+					item.rechargeAmountInverse = item.initCount;
+					item.shadowOffset = 2;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+					item.weaponCode = weaponType.WeaponProjectile;
+				});
+
+			pyromancy.Available = true;
+			pyromancy.AvailableInCharacterCreation = true;
+			pyromancy.CostInCharacterCreation = 8;
+
+			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
+			{
+				if (!PyromancyIsBurnedOut(agent))
+				{
+					if (PyromancyRollForMiscast(agent, 0))
+						PyromancyMiscast(agent, 20);
+					else
+					{
+						PyromancyCast(agent);
+
+						if (PyromancyManaCost(agent))
+							item.invItemCount--;
+
+						if (item.invItemCount <= 0)
+							PyromancyBurnOut(agent);
+					}
+				}
+			};
+			pyromancy.Recharge = (item, myAgent) =>
+			{
+				if (item.invItemCount < item.rechargeAmountInverse && myAgent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+						PyromancyRecharge(myAgent);
+				}
+			};
+			pyromancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
+		}
 		public static void PyromancyBurnOut(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "MindControlEnd");
@@ -909,13 +829,14 @@ namespace BunnyMod
 		public static void PyromancyMiscast(Agent agent, int degree)
 		{
 			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
+
 			//agent.statusEffects.ChangeHealth(-degree); // If you want this in, you'll need to adjust it based on fire resistance first
 
-			PyromancySetBurnedOut(agent, true);
+			PyromancyBurnOut(agent);
 		}
 		public static void PyromancyRecharge(Agent agent) //TODO
 		{
-			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			agent.statusEffects.CreateBuffText("Rekindled", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
 			if (PyromancyIsBurnedOut(agent))
@@ -962,6 +883,78 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Telemancy
+		public static void Telemancy_Initialize()
+		{
+			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
+
+			CustomAbility telemancy = RogueLibs.CreateCustomAbility("Telemancy", spriteTelemancy, true,
+				new CustomNameInfo("Telemancy"),
+				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("Usable"); //
+					item.Categories.Add("NPCsCantPickup");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.isWeapon = false;
+					item.initCount = 100;
+					item.itemType = ""; //
+					item.rechargeAmountInverse = item.initCount;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+				});
+
+			telemancy.Available = true;
+			telemancy.AvailableInCharacterCreation = true;
+			telemancy.CostInCharacterCreation = 8;
+
+			telemancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (TelemancyRollForMiscast(agent, (float)(100 - item.invItemCount) / 100))
+					TelemancyMiscast(agent);
+
+				if (item.invItemCount <= 0)
+				{
+					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+					agent.Say("I need to give it a rest or my head will explode. I've seen it happen.");
+				}
+				else
+				{
+					agent.SpawnParticleEffect("Spawn", agent.curPosition);
+
+					Vector3 targetLocation = TelemancyCast(agent, false, false, true, true, true);
+
+					agent.Teleport(targetLocation, false, true);
+					agent.rb.velocity = Vector2.zero;
+
+					agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
+					GameController.gameController.audioHandler.Play(agent, "Spawn");
+
+					item.invItemCount -= TelemancyManaCost(agent);
+
+					if (item.invItemCount <= 0)
+						TelemancyMiscast(agent);
+				}
+			};
+			telemancy.Recharge = (item, agent) =>
+			{
+				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
+				{
+					item.invItemCount++;
+
+					if (item.invItemCount == 100)
+					{
+						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+						agent.gc.audioHandler.Play(agent, "Recharge");
+						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+					}
+				}
+			};
+
+			telemancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
+		}
 		public static Vector2 TelemancyCast(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls)
 		{
 			TileInfo tileInfo = agent.gc.tileInfo;

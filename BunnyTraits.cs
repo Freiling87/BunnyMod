@@ -25,7 +25,7 @@ namespace BunnyMod
         public void Awake()
         {
             Initialize_Names();
-            Initialize_Traits();
+            Initialize_Traits_Active();
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
@@ -211,7 +211,7 @@ namespace BunnyMod
             TrapperKeeper.Upgrade = null;
             #endregion
         }
-        public static void Initialize_Traits()
+        public static void Initialize_Traits_Active()
         {
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
@@ -451,28 +451,28 @@ namespace BunnyMod
             WildCasting_2.Upgrade = null;
             #endregion
             #region Magic - Chronomancy
-            CustomTrait FARTS = RogueLibs.CreateCustomTrait("FARTS", true,
-                new CustomNameInfo("F.A.R.T.S. Mk I"),
-                new CustomNameInfo("Fight-Tec Assisted Resistance Targeting System. A Cybernetic enhancement that improves your general combat skills, with a double effect when time is slowed down. [Works alone or with: Improved Crit Chance, Un-Crits, ButterFinger-er, Kneecapper, and general shooting accuracy]"));
-            FARTS.Available = true;
-            FARTS.AvailableInCharacterCreation = true;
-            FARTS.CanRemove = false;
-            FARTS.CanSwap = true;
-            FARTS.CostInCharacterCreation = 3;
-            FARTS.IsActive = true;
-            FARTS.Recommendations.AddRange(new string[] { "Chronomancy", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
-            FARTS.Upgrade = "FARTS_2";
+            CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
+                new CustomNameInfo("R.A.T.S. Mk VI"),
+                new CustomNameInfo("Resistance-Tec Assisted Targeting System. The latest cybernetic enhancement to shooting accuracy, crit chance, & some combat traits with a double effect when time is slowed down."));
+            RATS.Available = true;
+            RATS.AvailableInCharacterCreation = true;
+            RATS.CanRemove = false;
+            RATS.CanSwap = true;
+            RATS.CostInCharacterCreation = 3;
+            RATS.IsActive = true;
+            RATS.Recommendations.AddRange(new string[] { "Chronomancy", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
+            RATS.Upgrade = "RATS_2";
 
-            CustomTrait FARTS_2 = RogueLibs.CreateCustomTrait("FARTS_2", true,
-                new CustomNameInfo("F.A.R.T.S. Mk II"),
-                new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say."));
-            FARTS_2.Available = true;
-            FARTS_2.AvailableInCharacterCreation = false;
-            FARTS_2.CanRemove = false;
-            FARTS_2.CanSwap = false;
-            FARTS_2.CostInCharacterCreation = 6;
-            FARTS_2.IsActive = true;
-            FARTS_2.Upgrade = null;
+            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
+                new CustomNameInfo("R.A.T.S. Mk VII"),
+                new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say. Also, they took out the headphone jack??"));
+            RATS_2.Available = true;
+            RATS_2.AvailableInCharacterCreation = true;
+            RATS_2.CanRemove = false;
+            RATS_2.CanSwap = false;
+            RATS_2.CostInCharacterCreation = 12;
+            RATS_2.IsActive = true;
+            RATS_2.Upgrade = null;
 
             CustomTrait HammerTime = RogueLibs.CreateCustomTrait("HammerTime", true,
                 new CustomNameInfo("Hammer Time"),
@@ -811,7 +811,7 @@ namespace BunnyMod
 
             int luckBonus = 0;
             int luckMultiplier = 0;
-            bool FARTStargetable = false;
+            bool RATStargetable = false;
 
             if (luckType == "FreeShopItem2")
                 luckBonus = 10;
@@ -824,12 +824,12 @@ namespace BunnyMod
             else if (luckType == "CritChance")
 			{
                 luckBonus = 3;
-                FARTStargetable = true;
+                RATStargetable = true;
             }
             else if (luckType == "ChanceAttacksDoZeroDamage")
 			{
                 luckBonus = 4;
-                FARTStargetable = true;
+                RATStargetable = true;
             }
             else if (luckType == "DoorDetonator")
                 luckBonus = 10;
@@ -842,7 +842,7 @@ namespace BunnyMod
             else if (luckType == "ChanceToKnockWeapons")
 			{
                 luckBonus = 5;
-                FARTStargetable = true;
+                RATStargetable = true;
             }
             else if (luckType == "SlotMachine")
                 luckBonus = 8;
@@ -853,7 +853,7 @@ namespace BunnyMod
             else if (luckType == "GunAim")
 			{
                 luckBonus = 5;
-                FARTStargetable = true;
+                RATStargetable = true;
             }
             else if (luckType == "SecurityCam")
                 luckBonus = 10;
@@ -864,7 +864,7 @@ namespace BunnyMod
             else if (luckType == "ChanceToSlowEnemies")
 			{
                 luckBonus = 4;
-                FARTStargetable = true;
+                RATStargetable = true;
             }
 
             if (agent.statusEffects.hasTrait("Charmed"))
@@ -876,11 +876,11 @@ namespace BunnyMod
             else if (agent.statusEffects.hasTrait("Cursed_2"))
                 luckMultiplier = -2;
 
-            if (FARTStargetable)
+            if (RATStargetable)
             {
-                if (agent.statusEffects.hasTrait("FARTS"))
+                if (agent.statusEffects.hasTrait("RATS"))
                     luckMultiplier += 1;
-                if (agent.statusEffects.hasTrait("FARTS_2"))
+                if (agent.statusEffects.hasTrait("RATS_2"))
                     luckMultiplier += 2;
 
                 if (agent.isPlayer != 0 && agent.specialAbility == "Chronomancy")

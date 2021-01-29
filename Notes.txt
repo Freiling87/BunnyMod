@@ -3,6 +3,9 @@
 
 --- IMPLEMENTATIONS ----------------------------------------
 
+All
+	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
+
 Chronomancy
 	Roolover to Overcast can trigger at Zero, should be less than zero.
 		Reorganized DeCast method - test
@@ -16,6 +19,7 @@ Pyromancy
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
 			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
 		Ring of Fire - Shorter range, 
+	Still don't have a delay between cast and recharge
 
 Telemancy
 	Uniques:
@@ -24,6 +28,17 @@ Telemancy
 	Rework: 
 		Charge to cast, release when you feel like it or when charge at max.
 		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
+		The lower your charge, the higher chance of (ascending):
+			Light & visual effect, attracting attention
+			Tiny Stroke
+			Large amount of damage
+		MisCast:
+			Random place in level
+			Random item from inventory is dropped and then disappears
+		On Hold:
+			Mana --
+			charge ++
+			Should these be coequal?
 
 --- BUGS ---------------------------------------------------
 

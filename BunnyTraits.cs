@@ -458,6 +458,7 @@ namespace BunnyMod
             RATS.AvailableInCharacterCreation = true;
             RATS.CanRemove = false;
             RATS.CanSwap = true;
+            RATS.Conflicting.AddRange(new string[] { "RATS_2" });
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
             RATS.Recommendations.AddRange(new string[] { "Chronomancy", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
@@ -470,6 +471,7 @@ namespace BunnyMod
             RATS_2.AvailableInCharacterCreation = true;
             RATS_2.CanRemove = false;
             RATS_2.CanSwap = false;
+            RATS_2.Conflicting.AddRange(new string[] { "RATS" });
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;

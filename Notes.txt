@@ -4,15 +4,19 @@
 --- IMPLEMENTATIONS ----------------------------------------
 
 Chronomancy
-	Hammertime Triggers when exiting water, even if you don't have the trait.
-	Hammertime Still doesn't do any damage to others. Hopefully there's a way, not sure what Vanilla Stomp does.
+	Roolover to Overcast can trigger at Zero, should be less than zero.
+		Reorganized DeCast method - test
 
 Electromancy
 	Split only triggers when it hits a wall, not an agent.
 
 Pyromancy
-	Add a delay between use and recharge, and between use and use.
 	item.Categories.Add("Weapons"); // Might this set off sensors?
+	Uniques
+		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
+			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
+		Ring of Fire - Shorter range, 
+
 Telemancy
 	Uniques:
 		EMP on teleport?

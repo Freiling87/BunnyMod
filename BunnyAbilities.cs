@@ -38,13 +38,14 @@ namespace BunnyMod
 		}
 		#endregion
 
-		#region Magic
+		#region Magic General
 		public static Vector2 MouseIngamePosition()
 		{
 			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
 			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
+		#endregion
 		#region Chronomancy
 		public static float baseTimeScale;
 		public static void Chronomancy_Initialize()
@@ -260,6 +261,8 @@ namespace BunnyMod
 
 			agent.speedMax = agent.FindSpeed();
 
+			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
+
 			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && agent.statusEffects.hasTrait("HammerTime"))
 			{
 				agent.stomping = true;
@@ -276,7 +279,6 @@ namespace BunnyMod
 
 			await Task.Delay(1000);
 
-			ChronomancySetCast(agent, false);
 			await ChronomancyStartWindingUp(agent);
 		}
 		public static void ChronomancyStartMiscast(Agent agent, float slowdownFactor)
@@ -531,12 +533,12 @@ namespace BunnyMod
 			{
 				if (zappedOut)
 					ElectromancyDialogueCantDo(agent);
-				else if (ElectromancyRollForMiscast(agent, 0))
-					ElectromancyMiscast(agent, 20);
+				else if (ElectromancyRollMiscast(agent, 0))
+					ElectromancyStartMiscast(agent, 20);
 				else
 				{
-					ElectromancyCast(agent);
-					item.invItemCount -= ElectromancyManaCost(agent);
+					ElectromancyStartCast(agent);
+					item.invItemCount -= ElectromancyRollManaCost(agent);
 				}
 			};
 			electromancy.Recharge = (item, myAgent) =>
@@ -560,34 +562,53 @@ namespace BunnyMod
 			electromancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 		}
-		public static void ElectromancyCast(Agent agent)
-		{
-			agent.gun.HideGun();
-
-			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
-			bullet.speed *= 3 / 2; //
-			bullet.cameFromWeapon = "ChainLightning";
-			//bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
-
-			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
-				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
-			else if (agent.target.AttackTowardTarget())
-				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
-			else
-				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
-
-			if (agent.gc.sessionDataBig.autoAim != "Off")
-			{
-				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
-				if (agent.gc.percentChance(myChance))
-					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
-			}
-		}
 		public static void ElectromancyDialogueCantDo(Agent agent)
 		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			switch (UnityEngine.Random.Range(1, 2))
+			{
+				case 1:
+					agent.Say("Ion wanna do that right now!.");
+					break;
+				case 2:
+					agent.Say("I'm gonna take the blue pill for a sec.");
+					break;
+			}
+		}
+		public static void ElectromancyDialogueMiscast(Agent agent)
+		{
 
 		}
-		public static int ElectromancyManaCost(Agent agent)
+		public static void ElectromancyOnImpact(GameObject hitObject, Bullet bullet)
+		{
+			int numberOfChains = 1;
+
+			for (int i = 0; i <= numberOfChains; i++)
+			{
+				Bullet newBullet = bullet.agent.gc.spawnerMain.SpawnBullet(hitObject.transform.position, bulletStatus.Taser, bullet.agent);
+				newBullet.speed *= 3 / 2;
+				newBullet.agent = bullet.agent;
+
+				if (ElectromancyRollRebound(bullet.agent, 0))
+					newBullet.cameFromWeapon = "ChainLightning"; // Only apply this if the skill successfully rolled for a rebound.
+
+				Vector2 origin = hitObject.transform.position;
+				Agent closestAgent = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
+
+				Vector3 target;
+
+				if (closestAgent != null)
+					target = closestAgent.curPosition;
+				else
+					target = newBullet.curPosition + UnityEngine.Random.insideUnitCircle.normalized;
+
+				newBullet.movement.RotateToPosition(target);
+				//newBullet.movement.RotateToAgent(closest);
+				//newBullet.movement.AutoAim(bullet.agent, closest, newBullet);
+			}
+		}
+		public static int ElectromancyRollManaCost(Agent agent)
 		{
 			int minimum = 20;
 			int maximum = 40;
@@ -616,40 +637,7 @@ namespace BunnyMod
 
 			return UnityEngine.Random.Range(minimum, maximum);
 		}
-		public static void ElectromancyMiscast(Agent agent, int degree)
-		{
-			agent.statusEffects.AddStatusEffect("Electrocuted", degree);
-		}
-		public static void ElectromancyImpact(GameObject hitObject, Bullet bullet)
-		{
-
-			int numberOfChains = 1;
-
-			for (int i = 0; i <= numberOfChains; i++)
-			{
-				Bullet newBullet = bullet.agent.gc.spawnerMain.SpawnBullet(hitObject.transform.position, bulletStatus.Taser, bullet.agent);
-				newBullet.speed *= 3 / 2;
-				newBullet.agent = bullet.agent;
-
-				if (ElectromancyRollForRebound(bullet.agent, 0))
-					newBullet.cameFromWeapon = "ChainLightning"; // Only apply this if the skill successfully rolled for a rebound.
-
-				Vector2 origin = hitObject.transform.position;
-				Agent closestAgent = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
-
-				Vector3 target;
-
-				if (closestAgent != null)
-					target = closestAgent.curPosition;
-				else
-					target = newBullet.curPosition + UnityEngine.Random.insideUnitCircle.normalized;
-
-				newBullet.movement.RotateToPosition(target);
-				//newBullet.movement.RotateToAgent(closest);
-				//newBullet.movement.AutoAim(bullet.agent, closest, newBullet);
-			}
-		}
-		public static bool ElectromancyRollForMiscast(Agent agent, int modifier)
+		public static bool ElectromancyRollMiscast(Agent agent, int modifier)
 		{
 			int risk = 100 + modifier;
 
@@ -670,11 +658,38 @@ namespace BunnyMod
 
 			return (UnityEngine.Random.Range(0, 10000) <= risk);
 		}
-		public static bool ElectromancyRollForRebound(Agent agent, int modifier)
+		public static bool ElectromancyRollRebound(Agent agent, int modifier)
 		{
 			int chance = 50 + modifier;
 
 			return (chance > UnityEngine.Random.Range(1, 100));
+		}
+		public static void ElectromancyStartCast(Agent agent)
+		{
+			agent.gun.HideGun();
+
+			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
+			bullet.speed *= 3 / 2; //
+			bullet.cameFromWeapon = "ChainLightning";
+			//bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
+
+			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
+			else if (agent.target.AttackTowardTarget())
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
+			else
+				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
+
+			if (agent.gc.sessionDataBig.autoAim != "Off")
+			{
+				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
+				if (agent.gc.percentChance(myChance))
+					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
+			}
+		}
+		public static void ElectromancyStartMiscast(Agent agent, int degree)
+		{
+			agent.statusEffects.AddStatusEffect("Electrocuted", degree);
 		}
 		#endregion
 		#region Pyromancy
@@ -774,7 +789,7 @@ namespace BunnyMod
 					agent.Say("Flame off! Flame off!");
 					break;
 				case 4:
-					agent.Say("I shidded an farded an burst into flame.");
+					agent.Say("I shidded an farded an bursteded into flames.");
 					break;
 			}
 		}
@@ -840,28 +855,6 @@ namespace BunnyMod
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
-		public static async Task PyromancyStartCoolingDown(Agent agent)
-		{
-			PyromancySetCoolingDown(agent, true);
-
-			float duration = 4000f;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				duration -= 1250f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				duration -= 2500f;
-
-			if (agent.statusEffects.hasTrait("MagicTraining"))
-				duration -= 750f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				duration -= 1500f;
-
-			duration = Mathf.Max(0f, duration);
-
-			await Task.Delay((int)duration);
-
-			PyromancySetCoolingDown(agent, false);
-		}
 		public static void PyromancyStartBurnout(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "MindControlEnd");
@@ -870,10 +863,8 @@ namespace BunnyMod
 		}
 		public static void PyromancyStartCast(Agent agent)
 		{
-			agent.gun.HideGun();
-			//agent.gc.audioHandler.Play(agent, "FireConstant"); // Still won't stop. Not sure how to stop it.
-
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
+			bullet.gc.audioHandler.Play(bullet, "fireConstant");
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
@@ -896,17 +887,39 @@ namespace BunnyMod
 			else
 				bullet.speed = 6;
 		}
+		public static async Task PyromancyStartCoolingDown(Agent agent)
+		{
+			PyromancySetCoolingDown(agent, true);
+
+			float duration = 2000f;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				duration -= 625f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				duration -= 1250f;
+
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				duration -= 375f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				duration -= 750f;
+
+			duration = Mathf.Max(0f, duration);
+
+			await Task.Delay((int)duration);
+
+			PyromancySetCoolingDown(agent, false);
+		}
 		public static void PyromancyStartMiscast(Agent agent, int degree)
 		{
 			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
 
-			//agent.statusEffects.ChangeHealth(-degree); // If you want this in, you'll need to adjust it based on fire resistance first
+			PyromancyDialogueMiscast(agent);
 
 			PyromancyStartBurnout(agent);
 		}
 		public static void PyromancyStartRecharge(Agent agent) //TODO
 		{
-			agent.statusEffects.CreateBuffText("Rekindled", agent.objectNetID);
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
 			if (PyromancyIsBurnedOut(agent))
@@ -1136,7 +1149,6 @@ namespace BunnyMod
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
 		#endregion
-		#endregion
 
 		#region AgentHitbox
 		public static bool AgentHitbox_LandedOnLand(AgentHitbox __instance) // Prefix
@@ -1159,9 +1171,6 @@ namespace BunnyMod
 				MethodInfo setAgentSpritePosLate = AccessTools.DeclaredMethod(typeof(AgentHitbox), "SetAgentSpritePosLate");
 				IEnumerator setAgentSpritePosLate_Enumerator = (IEnumerator)setAgentSpritePosLate.Invoke(__instance, new object[0]);
 				__instance.StartCoroutine(setAgentSpritePosLate_Enumerator);
-
-				//if (!agent.stomping)
-				//	__instance.gc.audioHandler.Play(agent, "Land");
 
 				agent.justLanded = true;
 				agent.clientRecentlyLandedOnLand = false;
@@ -1188,7 +1197,7 @@ namespace BunnyMod
 		public static void Bullet_BulletHitEffect(GameObject hitObject, Bullet __instance) // Postfix
 		{
 			if (__instance.cameFromWeapon == "ChainLightning" && __instance.agent.inventory.equippedSpecialAbility.invItemName == "Electromancy")
-				ElectromancyImpact(hitObject, __instance);
+				ElectromancyOnImpact(hitObject, __instance);
 		}
 		#endregion
 		#region Explosion

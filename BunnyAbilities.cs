@@ -156,17 +156,17 @@ namespace BunnyMod
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		public static int ChronomancyRollManaCost(Agent agent)
 		{
-			int increment = 5;
+			int increment = 10;
 
 			if (agent.statusEffects.hasTrait("WildCasting"))
-				increment += UnityEngine.Random.Range(-1, 1);
+				increment += UnityEngine.Random.Range(-2, 2);
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				increment = UnityEngine.Random.Range(-3, 3);
+				increment = UnityEngine.Random.Range(-5, 5);
 
 			if (agent.statusEffects.hasTrait("FocusedCasting"))
-				increment -= 1;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
 				increment -= 2;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				increment -= 4;
 
 			return increment;
 		}
@@ -193,16 +193,20 @@ namespace BunnyMod
 		}
 		public static float ChronomancyRollTimescale(Agent agent, bool MisCast)
 		{
-			float timescale = 0.0f;
+			float timescale = 0.00f;
 
 			if (!MisCast)
 			{
-				timescale = 2.0f;
+				timescale = 2.00f;
 
-				if (agent.statusEffects.hasTrait("WildCasting"))
-					timescale += 0.5f;
+				if (agent.statusEffects.hasTrait("FocusedCasting"))
+					timescale += 0.25f;
+				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+					timescale += 0.50f;
+				else if (agent.statusEffects.hasTrait("WildCasting"))
+					timescale += 0.75f;
 				else if (agent.statusEffects.hasTrait("WildCasting_2"))
-					timescale += 1.0f;
+					timescale += 1.50f;
 
 				if (agent.statusEffects.hasTrait("MagicTraining"))
 					timescale += 0.5f;
@@ -211,17 +215,21 @@ namespace BunnyMod
 			}
 			else if (MisCast)
 			{
-				timescale = 4.0f;
-
-				if (agent.statusEffects.hasTrait("WildCasting"))
-					timescale += 1.0f;
-				else if (agent.statusEffects.hasTrait("WildCasting_2"))
-					timescale += 2.0f;
+				timescale = 4.00f;
 
 				if (agent.statusEffects.hasTrait("FocusedCasting"))
-					timescale -= 0.5f;
+					timescale -= 0.75f;
 				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-					timescale -= 1.0f;
+					timescale -= 1.50f;
+				else if (agent.statusEffects.hasTrait("WildCasting"))
+					timescale += 0.50f;
+				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+					timescale += 1.00f;
+
+				if (agent.statusEffects.hasTrait("MagicTraining"))
+					timescale -= 0.25f;
+				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+					timescale -= 0.50f;
 			}
 
 			return timescale;

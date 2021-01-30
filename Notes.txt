@@ -14,6 +14,7 @@ Electromancy
 	Split only triggers when it hits a wall, not an agent.
 
 Pyromancy
+	Aiming is now broken, always points north
 	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Uniques
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
@@ -22,6 +23,7 @@ Pyromancy
 	Still don't have a delay between cast and recharge
 
 Telemancy
+	After reorganization, activated rapid fire as long as held. Didn't even miscast.
 	Uniques:
 		EMP on teleport?
 		Stun on teleport?
@@ -49,8 +51,6 @@ Verify if correct Tool durability cost is displaying in menus.
 
 Test whether setting Available to false is actually working for upgrade traits
 	The code changes were made, now just keep an eye out.
-
-NegaFud 
 
 On Exit to Base, then freeze on loading screen:
 	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars

@@ -82,7 +82,7 @@ namespace BunnyMod
 					ChronomancyDialogueCantDo(agent);
 				else if (ChronomancyIsCast(agent))
 					ChronomancyStartDecast(agent);
-				else if (ChronomancyRollMiscast(agent, (float)(100 - item.invItemCount) / 100))
+				else if (ChronomancyRollMiscast(agent, (float)(100f - item.invItemCount) / 100f))
 					ChronomancyStartMiscast(agent, ChronomancyRollTimescale(agent, true));
 				else
 					ChronomancyStartCast(agent, ChronomancyRollTimescale(agent, false));
@@ -858,15 +858,12 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			switch (UnityEngine.Random.Range(1, 2))
-			{
-				case 1:
-					agent.Say("I'm burned out.");
-					break;
-				case 2:
-					agent.Say("Please wait. I don't feel like exploding right now.");
-					break;
-			}
+			string[] dialogue = new string[] {
+				"I'm burned out.",
+				"Hang on. I don't feel like exploding right now."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void PyromancyDialogueCast(Agent agent) // Not used yet
 		{
@@ -874,32 +871,34 @@ namespace BunnyMod
 
 			string[] dialogue = new string[] {
 				"Die! Burn! Die! Die!",
-				"Burn, baby, burn!"
+				"Burn, baby, burn!",
+				"BURN-ie 2024!",
+				"Yer fired! Get it?"
 			};
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void PyromancyDialogueMiscast(Agent agent)
 		{
-			switch (UnityEngine.Random.Range(1, 4))
-			{
-				case 1:
-					agent.Say("Not very stoked right now.");
-					break;
-				case 2:
-					agent.Say("Haha my skin is melting lol XDDD");
-					break;
-				case 3:
-					agent.Say("Flame off! Flame off!");
-					break;
-				case 4:
-					agent.Say("I shidded an farded an bursteded into flames.");
-					break;
-			}
+			string[] dialogue = new string[] {
+				"Not very stoked right now.",
+				"Haha my skin is melting lol XDDD",
+				"Flame off! Flame off!",
+				"I shidded an farded an bursteded into flames."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void PyromancyDialogueRecharge(Agent agent)
 		{
+			string[] dialogue = new string[] {
+				"Ready to burn!",
+				"I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do both.",
+				"(Laughs maniacally)",
+				"Why are the innocent so fun to burn?"
+			};
 
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static bool PyromancyIsBurnedOut(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
@@ -907,6 +906,12 @@ namespace BunnyMod
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		public static bool PyromancyIsMiscast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
+		public static void PyromancyLogBooleans(Agent agent)
+		{
+			BunnyHeader.Log("Pyromancy IsBurnedOut: " + PyromancyIsBurnedOut(agent));
+			BunnyHeader.Log("Pyromancy IsCoolingDown: " + PyromancyIsCoolingDown(agent));
+			BunnyHeader.Log("Pyromancy IsMiscast: " + PyromancyIsMiscast(agent));
+		}
 		public static bool PyromancyRollManaCost(Agent agent)
 		{
 			int chance = 100;
@@ -972,7 +977,7 @@ namespace BunnyMod
 		public static void PyromancyStartCast(Agent agent)
 		{
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
-			bullet.gc.audioHandler.Play(bullet, "fireConstant");
+			//bullet.gc.audioHandler.Play(bullet, "fireConstant"); // Only apparent addition when seeking bug that breaks aiming. It's possible it's aborting the rest of this method because bullet can't access gc.
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
@@ -1019,14 +1024,19 @@ namespace BunnyMod
 		}
 		public static void PyromancyStartMiscast(Agent agent, int degree)
 		{
-			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
+			BunnyHeader.Log("PyromancyStartMiscast");
+			PyromancyLogBooleans(agent);
 
 			PyromancyDialogueMiscast(agent);
+
+			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
 
 			PyromancyStartBurnout(agent);
 		}
 		public static void PyromancyStartRecharge(Agent agent) //TODO
 		{
+			BunnyHeader.Log("PyromancyStartRecharge");
+
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
@@ -1075,11 +1085,13 @@ namespace BunnyMod
 
 			telemancy.OnHeld = delegate (InvItem item, Agent agent, ref float time)
 			{
+				BunnyHeader.Log("Telemancy OnHeld;\nTelemancy Charge: " + telemancyCharge);
+
 				if (!TelemancyIsReturning(agent) && telemancyCharge < 100 && item.invItemCount >= 1)
 				{
 					int curCost = TelemancyRollManaCost(agent);
 
-					if (TelemancyRollMiscast(agent, curCost))
+					if (TelemancyRollMiscast(agent, (100 - telemancyCharge) / 10f))
 						TelemancyStartMiscast(agent);
 					else 
 					{
@@ -1095,6 +1107,7 @@ namespace BunnyMod
 			telemancy.OnReleased = delegate (InvItem item, Agent agent)
 			{
 				TelemancyStartCast(agent, telemancyCharge);
+				TelemancyStartReturn(agent);
 			};
 
 			telemancy.Recharge = (item, agent) =>
@@ -1109,24 +1122,51 @@ namespace BunnyMod
 			};
 
 			telemancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.1f) : null;
+				item.invItemCount > 0 ? new WaitForSeconds(0.25f) : null;
 		}
 		public static void TelemancyDialogueCantDo(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
-			agent.Say("I need to give it a rest or my head will explode. I've seen it happen.");
+
+			string[] dialogue = new string[] {
+				"I need to give it a rest or my head will explode. I've seen it happen.",
+				"Slow down! Haven't you seen The Fly?"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void TelemancyDialogueCast(Agent agent)
 		{
+			agent.SpawnParticleEffect("Spawn", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
+			string[] dialogue = new string[] {
+				"Vwip!",
+				"Nothing personal, kid."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void TelemancyDialogueMiscast(Agent agent)
 		{
+			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
 
+			string[] dialogue = new string[] {
+			"I smell burning toast.",
+			"Blurgh. (Drool)", 
+			"I pink I bust hab a stwoke.",
+			"My head a splode."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void TelemancyDialogueRecharge(Agent agent)
 		{
+			string[] dialogue = new string[] {
+				"Who needs Scotty? I'll beam my damn self up."
+			};
 
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static bool TelemancyIsReturning(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
@@ -1240,9 +1280,9 @@ namespace BunnyMod
 			}
 			return currentPosition;
 		}
-		public static bool TelemancyRollMiscast(Agent agent, float modifier)
+		public static bool TelemancyRollMiscast(Agent agent, float percentAddedChance)
 		{
-			float risk = 1.0f + modifier;
+			float risk = 1.0f + percentAddedChance;
 
 			if (agent.statusEffects.hasTrait("FocusedCasting"))
 				risk -= 0.25f;
@@ -1291,35 +1331,17 @@ namespace BunnyMod
 		}
 		public static void TelemancyStartCast(Agent agent, float charge)
 		{
-			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-
 			Vector2 targetLocation = TelemancyRollDestination(agent, false, false, true, true, true);
 
 			agent.Teleport(targetLocation, false, true);
 
 			agent.rb.velocity = Vector2.zero;
 
-			agent.SpawnParticleEffect("Spawn", agent.tr.position, false);
-			GameController.gameController.audioHandler.Play(agent, "Spawn");
+			TelemancyDialogueCast(agent);
 		}
 		public static void TelemancyStartMiscast(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
-			switch (UnityEngine.Random.Range(1, 4))
-			{
-				case 1:
-					agent.Say("I smell burning toast.");
-					break;
-				case 2:
-					agent.Say("Blurgh. (Drool)");
-					break;
-				case 3:
-					agent.Say("I pink I bust hab a stroke.");
-					break;
-				case 4:
-					agent.Say("My head a splode.");
-					break;
-			}
+			TelemancyDialogueMiscast(agent);
 
 			int degree = 20;
 
@@ -1330,6 +1352,7 @@ namespace BunnyMod
 
 			agent.statusEffects.ChangeHealth(-degree);
 			agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
+
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
 		public static void TelemancyStartRecharge(Agent agent)
@@ -1337,9 +1360,15 @@ namespace BunnyMod
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+
+			TelemancySetReturning(agent, false);
 		}
-		public static void TelemancyStartReturn(Agent agent)
+		public static async void TelemancyStartReturn(Agent agent)
 		{
+			TelemancySetReturning(agent, true);
+
+			await Task.Delay(5000);
+
 
 		}
 		#endregion

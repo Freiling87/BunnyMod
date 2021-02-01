@@ -15,11 +15,14 @@ Electromancy
 
 Pyromancy
 	Aiming is now broken, always points north
+		The newest change is OnReleased going into cooldown, but that doesn't appear to explain the new behavior. 
 	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Uniques
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
 			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
-		Ring of Fire - Shorter range, 
+		Ring of Fire - Shortest range, 360 degree flame
+		Brimstone Feet - Second upgrade of Fireproof Skin. No longer stopped by fire, nor put it out when colliding with it.
+
 	Still don't have a delay between cast and recharge
 
 Telemancy
@@ -37,6 +40,7 @@ Telemancy
 		MisCast:
 			Random place in level
 			Random item from inventory is dropped and then disappears
+			Strong Gag Reflex is not unique enough to be its own thing.
 		On Hold:
 			Mana --
 			charge ++
@@ -481,6 +485,14 @@ Necromancy
 // 3 Zombies will join your party / Turn ghosts into large number of crystals
 // Miscast turns all of them hostile, or summons hostile ghosts
 // When close to a ghost, you can turn them into mana crystals
+
+
+Alignment Traits:
+	Friend of The Army (soldiers are allies) :Soldier: 
+	Crepe Chum (crepes are allies) :GangsterCrepe: 
+	Blahd Buddy (Blahd are allies) :GangsterBlahd: 
+	Friend of Nature (Gorillas are allies) :Gorilla:
+
 
 === RELEASE NOTES ==============================================================
 

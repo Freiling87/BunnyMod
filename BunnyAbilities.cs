@@ -48,6 +48,7 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Chronomancy
+
 		public static float baseTimeScale;
 		public static void Chronomancy_Initialize()
 		{
@@ -77,6 +78,7 @@ namespace BunnyMod
 			chronomancy.AvailableInCharacterCreation = true;
 			chronomancy.CostInCharacterCreation = 10;
 
+
 			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
 			{
 				if (ChronomancyIsWindingUp(agent) || ChronomancyIsMiscast(agent))
@@ -102,10 +104,10 @@ namespace BunnyMod
 				{
 					item.invItemCount += Math.Min(100 - item.invItemCount, 5);
 
-					if (item.invItemCount == 100)
+					if (item.invItemCount == 100 && !ChronomancyIsMiscast(agent))
 						ChronomancyStartRecharge(agent);
 				}
-				else if (item.invItemCount == 100 && ChronomancyIsMiscast(agent) || ChronomancyIsWindingUp(agent))
+				else if (item.invItemCount == 100 && !ChronomancyIsMiscast(agent) || ChronomancyIsWindingUp(agent))
 					ChronomancyStartRecharge(agent);
 			};
 			chronomancy.RechargeInterval = (item, myAgent) =>
@@ -123,7 +125,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void ChronomancyDialogueCast(Agent agent) // Not yet implemented
+		public static void ChronomancyDialogueCast(Agent agent) // TODO
 		{
 			string[] dialogue = 
 			{
@@ -153,8 +155,21 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static bool ChronomancyIsCast(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+		public static void ChronomancyDisplayTimescale(Agent agent)
+		{
+
+		}
+		public static bool ChronomancyIsCast(Agent agent)
+		{
+			try
+			{
+				return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 		public static bool ChronomancyIsMiscast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		public static bool ChronomancyIsWindingUp(Agent agent) =>
@@ -297,7 +312,7 @@ namespace BunnyMod
 
 			await ChronomancyStartWindingUp(agent);
 		}
-		public static void ChronomancyStartMiscast(Agent agent, float slowdownFactor)
+		public static async void ChronomancyStartMiscast(Agent agent, float slowdownFactor)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
@@ -305,6 +320,7 @@ namespace BunnyMod
 
 			if (ChronomancyIsCast(agent))
 				ChronomancySetCast(agent, false);
+
 			ChronomancySetMiscast(agent, true);
 
 			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
@@ -313,6 +329,10 @@ namespace BunnyMod
 			agent.gc.mainTimeScale *= slowdownFactor;
 			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+
+			await Task.Delay(5000);
+
+			ChronomancySetMiscast(agent, false);
 		}
 		public static void ChronomancyStartRecharge(Agent agent)
 		{
@@ -1912,8 +1932,15 @@ namespace BunnyMod
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
 			if (__instance.agent.inventory.equippedSpecialAbility != null)
+			{
 				if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy" || abilityName == "Telemancy")
 					__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
+
+				if (abilityName == "Chronomancy")
+				{
+				}
+			}
+
 			// TODO: If you need a Remora, put it here.
 		}
 		public static bool StatusEffects_Stomp(StatusEffects __instance) // Replacement

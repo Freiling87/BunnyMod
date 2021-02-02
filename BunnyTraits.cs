@@ -484,6 +484,7 @@ namespace BunnyMod
             HammerTime.AvailableInCharacterCreation = true;
             HammerTime.CanRemove = false;
             HammerTime.CanSwap = true;
+            HammerTime.Conflicting.AddRange(new string[] { "Stomp" });
             HammerTime.CostInCharacterCreation = 2;
             HammerTime.IsActive = true;
             HammerTime.Recommendations.AddRange(new string[] { "Fatass" }); // Pending completion of Stomp damage.
@@ -497,7 +498,8 @@ namespace BunnyMod
 			HammerTime_2.AvailableInCharacterCreation = false;
 			HammerTime_2.CanRemove = false;
 			HammerTime_2.CanSwap = false;
-			HammerTime_2.CostInCharacterCreation = 4;
+            HammerTime_2.Conflicting.AddRange(new string[] { "Stomp" });
+            HammerTime_2.CostInCharacterCreation = 4;
 			HammerTime_2.IsActive = true;
 			HammerTime_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
 			HammerTime_2.Upgrade = null;

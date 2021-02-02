@@ -1,27 +1,20 @@
 ﻿
 === TEST NOTES =================================================================
 
+--- REMINDERS ----------------------------------------------
+
+If you want to call an ability, trait, etc. complete:
+	Complete and win a run with it, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
+
 --- IMPLEMENTATIONS ----------------------------------------
 
 All
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
 	Magic Training upgrade is still $75
-	Return to Base after long Chronomancy run, stuck on loading screen:
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		BunnyMod.BunnyAbilities.StatusEffects_GiveSpecialAbility (System.String abilityName, StatusEffects __instance) (at <0b35684d13c64c73a02816acbf127cbc>:0)
-		StatusEffects.GiveSpecialAbility (System.String abilityName) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Agent.SetupAgentStats (System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		SpawnerMain.TransformAgent (Agent myAgent, System.String agentType, System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		SpawnerMain.TransformAgent (Agent myAgent, System.String agentType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		LoadLevel+<SetupMore2_2>d__144.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-
+		Addressed; Test
 
 Chronomancy
-	Roolover to Overcast can trigger at Zero, should be less than zero.
-		Reorganized DeCast method - test
-	*Something* is lowering character speed when hit by gunfire, and it's not giving the slow effect. Is there built-in Stopping power, or is it a Chronobug?
+	Thought I had run into some bugs, but make sure you really look at the trait list when you test. I had the one that raised your speed at low health, and it was throwing me off.
 	Hammertime doesn't do any damage to others. 
 	Hammertime's requirement for Chronomancy isn't working in the character builder.
 	Make "Operating" bars fill at normal speed when active

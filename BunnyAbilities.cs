@@ -114,7 +114,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"I need to take a \"time out!\" Get it? But seriously, my heart will stop.",
 				"I'm gonna take the blue pill for a sec."
 			};
@@ -123,7 +124,8 @@ namespace BunnyMod
 		}
 		public static void ChronomancyDialogueCast(Agent agent) // Not yet implemented
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				""
 			};
 
@@ -131,7 +133,8 @@ namespace BunnyMod
 		}
 		public static void ChronomancyDialogueMiscast(Agent agent)
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...",
 				"Bullet Time? More like Bullshit Time!",
 				"(Slow Motion Noises)",
@@ -142,7 +145,8 @@ namespace BunnyMod
 		}
 		public static void ChronomancyDialogueRecharge(Agent agent)
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue =
+			{
 				"It's Slowing-down-time... Time!"
 			};
 
@@ -599,7 +603,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Ion wanna do that right now!" ,
 				"Let me ground myself for a second.",
 				"Watt just happened??"
@@ -611,7 +616,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"I'm not ex-static about this." ,
 				"This kinda hertz!",
 				"Watt just happened??"
@@ -623,7 +629,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "Recharge");
 
-			string[] dialogue = new string[] {
+			string[] dialogue =
+			{
 				"Resistance is futile!" ,
 				"Don't forget to... *keep current*. Hah."
 			};
@@ -858,7 +865,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"I'm burned out.",
 				"Hang on. I don't feel like exploding right now."
 			};
@@ -869,7 +877,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "AgentLaugh");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Die! Burn! Die! Die!",
 				"Burn, baby, burn!",
 				"BURN-ie 2024!",
@@ -880,7 +889,8 @@ namespace BunnyMod
 		}
 		public static void PyromancyDialogueMiscast(Agent agent)
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Not very stoked right now.",
 				"Haha my skin is melting lol XDDD",
 				"Flame off! Flame off!",
@@ -891,7 +901,8 @@ namespace BunnyMod
 		}
 		public static void PyromancyDialogueRecharge(Agent agent)
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Ready to burn!",
 				"I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do both.",
 				"(Laughs maniacally)",
@@ -1128,7 +1139,8 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"I need to give it a rest or my head will explode. I've seen it happen.",
 				"Slow down! Haven't you seen The Fly?"
 			};
@@ -1140,29 +1152,32 @@ namespace BunnyMod
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Vwip!",
 				"Nothing personal, kid."
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count())]);
 		}
 		public static void TelemancyDialogueMiscast(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
 
-			string[] dialogue = new string[] {
-			"I smell burning toast.",
-			"Blurgh. (Drool)", 
-			"I pink I bust hab a stwoke.",
-			"My head a splode."
+			string[] dialogue = 
+			{
+				"I smell burning toast.",
+				"Blurgh. (Drool)", 
+				"I pink I bust hab a stwoke.",
+				"My head a splode."
 			};
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void TelemancyDialogueRecharge(Agent agent)
 		{
-			string[] dialogue = new string[] {
+			string[] dialogue = 
+			{
 				"Who needs Scotty? I'll beam my damn self up."
 			};
 

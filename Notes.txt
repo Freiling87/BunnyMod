@@ -5,24 +5,46 @@
 
 All
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
+	Magic Training upgrade is still $75
+	Return to Base after long Chronomancy run, stuck on loading screen:
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		BunnyMod.BunnyAbilities.StatusEffects_GiveSpecialAbility (System.String abilityName, StatusEffects __instance) (at <0b35684d13c64c73a02816acbf127cbc>:0)
+		StatusEffects.GiveSpecialAbility (System.String abilityName) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Agent.SetupAgentStats (System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		SpawnerMain.TransformAgent (Agent myAgent, System.String agentType, System.String transformationType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		SpawnerMain.TransformAgent (Agent myAgent, System.String agentType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		LoadLevel+<SetupMore2_2>d__144.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+
 
 Chronomancy
 	Roolover to Overcast can trigger at Zero, should be less than zero.
 		Reorganized DeCast method - test
+	*Something* is lowering character speed when hit by gunfire, and it's not giving the slow effect. Is there built-in Stopping power, or is it a Chronobug?
+	Hammertime doesn't do any damage to others. 
+	Hammertime's requirement for Chronomancy isn't working in the character builder.
+	Make "Operating" bars fill at normal speed when active
+	The way miscast is set up: it will trigger, but only last one second because recharge undoes the miscast.
+	***Now, when enemies jump, they jump forever.
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		BunnyMod.BunnyAbilities.ChronomancyIsCast (Agent agent) (at <0b35684d13c64c73a02816acbf127cbc>:0)
+		BunnyMod.BunnyAbilities.AgentHitbox_LandedOnLand (AgentHitbox __instance) (at <0b35684d13c64c73a02816acbf127cbc>:0)
+		AgentHitbox.LandedOnLand () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		AgentHitbox.Landed () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
 
 Electromancy
 	Split only triggers when it hits a wall, not an agent.
 
 Pyromancy
 	Aiming is now broken, always points north
-		The newest change is OnReleased going into cooldown, but that doesn't appear to explain the new behavior. 
 	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Uniques
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
 			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
-		Ring of Fire - Shortest range, 360 degree flame
-		Brimstone Feet - Second upgrade of Fireproof Skin. No longer stopped by fire, nor put it out when colliding with it.
-
+		Ring of Fire - Shorter range, 
 	Still don't have a delay between cast and recharge
 
 Telemancy
@@ -40,7 +62,6 @@ Telemancy
 		MisCast:
 			Random place in level
 			Random item from inventory is dropped and then disappears
-			Strong Gag Reflex is not unique enough to be its own thing.
 		On Hold:
 			Mana --
 			charge ++
@@ -486,13 +507,9 @@ Necromancy
 // Miscast turns all of them hostile, or summons hostile ghosts
 // When close to a ghost, you can turn them into mana crystals
 
-
-Alignment Traits:
-	Friend of The Army (soldiers are allies) :Soldier: 
-	Crepe Chum (crepes are allies) :GangsterCrepe: 
-	Blahd Buddy (Blahd are allies) :GangsterBlahd: 
-	Friend of Nature (Gorillas are allies) :Gorilla:
-
+Crit-prone
+	Enemies have a better chance of crit against you
+		Or just add that to Unlucky
 
 === RELEASE NOTES ==============================================================
 

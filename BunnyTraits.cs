@@ -310,7 +310,7 @@ namespace BunnyMod
             Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
             Fatass.CostInCharacterCreation = -1;
             Fatass.IsActive = true;
-            Fatass.Recommendations.AddRange(new string[] { "Chronomancy", "Stomp" });
+            Fatass.Recommendations.AddRange(new string[] { "HammerTime", "Stomp" });
             Fatass.Upgrade = null;
 
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
@@ -487,7 +487,7 @@ namespace BunnyMod
             HammerTime.Conflicting.AddRange(new string[] { "Stomp" });
             HammerTime.CostInCharacterCreation = 2;
             HammerTime.IsActive = true;
-            HammerTime.Recommendations.AddRange(new string[] { "Fatass" }); // Pending completion of Stomp damage.
+            HammerTime.Recommendations.AddRange(new string[] { "Fatass" });
             HammerTime.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
             HammerTime.Upgrade = "HammerTime_2";
 

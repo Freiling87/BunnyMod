@@ -107,8 +107,6 @@ namespace BunnyMod
 					if (item.invItemCount == 100 && !ChronomancyIsMiscast(agent))
 						ChronomancyStartRecharge(agent);
 				}
-				else if (item.invItemCount == 100 && !ChronomancyIsMiscast(agent) || ChronomancyIsWindingUp(agent))
-					ChronomancyStartRecharge(agent);
 			};
 			chronomancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
@@ -336,6 +334,8 @@ namespace BunnyMod
 		}
 		public static void ChronomancyStartRecharge(Agent agent)
 		{
+			BunnyHeader.Log("ChronomancyStartRecharge");
+
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 			agent.gc.audioHandler.Play(agent, "Recharge");
 

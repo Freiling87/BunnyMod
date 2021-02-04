@@ -296,7 +296,7 @@ namespace BunnyMod
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
             DrawNoBlood.Conflicting.AddRange(new string[] { "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
-            DrawNoBlood.CostInCharacterCreation = -4;
+            DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
 

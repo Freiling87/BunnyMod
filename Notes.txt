@@ -1,10 +1,25 @@
 ﻿
 === TEST NOTES =================================================================
 
---- REMINDERS ----------------------------------------------
+--- CURRENT TEST -------------------------------------------
 
-If you want to call an ability, trait, etc. complete:
-	Complete and win a run with it, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
+Fat Head message triggers on entering level.
+	Also presumably occurs with other equipment traits.
+
+Verify if correct Tool durability cost is displaying in menus.
+
+Test whether setting Available to false is actually working for upgrade traits
+	The code changes were made, now just keep an eye out.
+- Stoves appear to no longer rotate toward walls
+	Attempt, search 202102041042
+
+Chronomancy
+	Hammertime doesn't do any damage to others. 
+	Make "Operating" bars fill at normal speed when active
+
+Stove
+
+Telemancy
 
 --- IMPLEMENTATIONS ----------------------------------------
 
@@ -14,13 +29,7 @@ All
 Chronomancy
 	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 		Recharge now triggers constantly.
-	Hammertime doesn't do any damage to others. 
-		Test
 	Hammertime's requirement for Chronomancy isn't working in the character builder.
-	Make "Operating" bars fill at normal speed when active
-
-Electromancy
-	Split only triggers when it hits a wall, not an agent.
 
 Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
@@ -65,13 +74,6 @@ Telemancy
 
 --- BUGS ---------------------------------------------------
 
-Fat Head message triggers on entering level.
-	Also presumably occurs with other equipment traits.
-
-Verify if correct Tool durability cost is displaying in menus.
-
-Test whether setting Available to false is actually working for upgrade traits
-	The code changes were made, now just keep an eye out.
 
 On Exit to Base, then freeze on loading screen:
 	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
@@ -83,12 +85,15 @@ Pyromancy
 
 --- BALANCING ----------------------------------------------
 
-Draw No Blood is nearly identical but worse than Loud Noises. Maybe bump it up to 5 points.
-
 Telemancy
 	Currently, it miscasts at >35
 	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
 	Focused casting can benefit accuracy.
+	
+--- FINALIZING A RELEASE -----------------------------------
+
+If you want to call an ability, trait, etc. complete:
+	Complete and win a run with it, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
 
 === HIGH PRIORITY or TRIVIAL ====================================================
 
@@ -118,11 +123,13 @@ Unused variables:
 
 === SHELVED ====================================================================
 
+Electromancy
+	Split only triggers when it hits a wall, not an agent.
+
 - Fridge not showing button text for showchest
 
 - Object interactions show a "Cancelled" message even though they went through successfully.
 
-- Stoves appear to no longer rotate toward walls
 
 - Auto-trayed items may include those you can't use/equip
 
@@ -136,6 +143,8 @@ Show Chronomancy Timescale in statuses
 		But hold off on this for now. It's somewhat complex, might need a Remora, and will need a custom StatusEffect with a dynamic name. Beyond scope for something so minor for now.
 
 === IDEAS ======================================================================
+
+Custom Firebomb explosion without glass sound
 
 Stealth Overhaul
 	Visual detection
@@ -271,38 +280,72 @@ Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallwa
 
 Traits
 
-Moral Codes
-Chaotic - Get bonus XP for committing Chaotic acts, lose XP for committing Lawful ones.
-Lawful - Get bonus XP for committing Lawful acts, lose XP for committing Chaotic ones.
-Chaotic Acts:
-Killing fleeing enemy
-Backstabbing
-Breaking Tombstone
-Bribing Police
-Influencing the Election
-Mugging & Extorting
-Installing Malware
-Killing non-Guilty NPCs (will have Guilty-vision)
-Killing Sleeping NPCs
-Use of Poison Syringe, Cyanide, Rage Poison, Haterator
-Cannibalism, Blood Drinking
-Starting Fires
-Possession
-Lawful Acts:
-Killing Guilty NPCs (will have Guilty-vision)
-Use of Confusion Syringe, Sleep Darts, Chloroform
-Freeing Slaves or Gorillas
-Offering Motivation
-Spreading Happy Waves
-Earning achievements for nonviolence
-Use of Medical Professional
-Putting out Fires
-Giving money to begging Slum Dwellers (planned feature)
-Goon Quest
+Path traits
+	Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.
+
+	Chaotic Acts
+		Break Tombstone
+		Bribe Police
+		Influence Election
+		Mugging
+		Extortion
+		Install Malware
+		Kill non-Guilty NPC (Have guilty-vision)
+		Burn Walls
+		Set Fire
+	Orderly Acts
+		Arrest Guilty NPC
+		Kill Guilty NPC
+		Knockout Guilty NPC
+		Extinguish Fire
+		Goon Quest
+	Kind Acts
+		Offering Motivation
+		Spreading Happy Waves
+		Giving money to begging Slum Dwellers (planned feature)
+	Just Acts
+	Unjust Acts
+		Kill fleeing enemy
+		Kill Sleeping NPCs
+		Mugging
+		Possession
+		Extortion
+	Fire Acts
+		Kill Fireman
+		Kill anyone with fire
+		Burn object
+		Burn corpse
+		Burn wall
+	Water Acts
+		Put out fire
+	Acts of Commerce
+		Spend Money
+		Get Money
+	Uncategorized Acts
+		Use of Poison Syringe, Cyanide, Rage Poison, Haterator
+		Cannibalism, Blood Drinking
+		Use of Confusion Syringe, Sleep Darts, Chloroform
+
+	Path of Fire
+		You can only regain health by burning corpses. 
+		Take damage in Water.
+		Firefighters are always hostile and will use their water cannons against you.
+		Perpetual Particle Effect on character - flames or smoke
+		Big Quest - Burn a certain number of corpses
+	Path of Shadow
+		+ No Alarms
+		- Alarms
+		+ Backstabbing
+	Path of Justice - Basically just Cop XP portion split off for smaller trait
+		+ Arrest Guilty
+		+ Kill Guilty (less)
+		- Kill innocent
+		+ Freeing Slaves or Gorillas
+
 
 Drug Dealer
-Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
-Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
+	Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
+	Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
 
 General (Like Miscellaneous, not like an Army General)
 Alcoholic (-4) - Might be interesting to have an Addict trait but with alcohol.
@@ -340,7 +383,6 @@ Trapper Keeper - You can Interact with traps to add them to your inventory (Bear
 
 
 Special Abilities
-Blink - Teleport to a random nearby spot. Cast as a Cantrip.
 Fireball - The cause of, and solution to, all of your new problems.
 Preach - Works like Slum Dweller's Cause a Ruckus. Small chance to improve relationships and get Tithes.
 
@@ -457,15 +499,7 @@ Bonus:
  A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
  Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
  
-Path Of Fire - 
-	You can only regain health by burning corpses. 
-	Extra XP for killing firemen.
-	Extra XP for burning objects (like 1 per).
-	Take damage in Water.
-	Lose XP when you or firemen extinguish fires.
-	Firefighters are always hostile and will use their water cannons against you.
-	Perpetual Particle Effect on character - flames or smoke
-Big Quest - Burn a certain number of corpses
+
 
 **Gunplay Overhaul [Mod idea]:**
 

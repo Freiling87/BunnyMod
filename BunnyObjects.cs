@@ -367,9 +367,8 @@ namespace BunnyMod
                 Stove_Remora remora = new Stove_Remora();
                 Stove_Variables[stove] = remora;
                 remora.stoveHost = stove;
-                // Untested:
-                Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove");
-                Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
+                //Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove"); 202102041042
+                //Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
             }
             //else if (__instance is Refrigerator refrigerator)
             //{
@@ -842,10 +841,10 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
-            // Untested:
-            Stove_Variables[__instance].animateSpriteID = 0;
-            Stove_Variables[__instance].animateSpriteID2 = 0;
-            __instance.GetComponent<Animator>().enabled = false;
+            // Trying to deactivate this to determine if if will fix rotation. 202102041042
+            //Stove_Variables[__instance].animateSpriteID = 0;
+            //Stove_Variables[__instance].animateSpriteID2 = 0;
+            //__instance.GetComponent<Animator>().enabled = false;
             //
             Stove_Variables[__instance].savedDamagerObject = null;
             Stove_Variables[__instance].noOwnCheckCountdown = false;

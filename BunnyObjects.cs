@@ -367,8 +367,8 @@ namespace BunnyMod
                 Stove_Remora remora = new Stove_Remora();
                 Stove_Variables[stove] = remora;
                 remora.stoveHost = stove;
-                //Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove"); 202102041042
-                //Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
+                Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove"); //202102041042
+                Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
             }
             //else if (__instance is Refrigerator refrigerator)
             //{

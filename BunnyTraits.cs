@@ -487,7 +487,7 @@ namespace BunnyMod
             HammerTime.Conflicting.AddRange(new string[] { "Stomp" });
             HammerTime.CostInCharacterCreation = 2;
             HammerTime.IsActive = true;
-            HammerTime.Recommendations.AddRange(new string[] { "Fatass" });
+            HammerTime.Recommendations.AddRange(new string[] { "Chronomancy", "Fatass" });
             HammerTime.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
             HammerTime.Upgrade = "HammerTime_2";
 

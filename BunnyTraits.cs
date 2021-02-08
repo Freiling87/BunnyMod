@@ -27,6 +27,8 @@ namespace BunnyMod
             Initialize_Names();
             Initialize_Traits_Active();
 
+            BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
@@ -565,16 +567,6 @@ namespace BunnyMod
             TamperTantrum_2.Upgrade = null;
             #endregion
         }
-        public static string ToolCost(Agent agent)
-        {
-            if (agent.statusEffects.hasTrait("TamperTantrum"))
-                return "15";
-            if (agent.statusEffects.hasTrait("TamperTantrum_2"))
-                return "0";
-            return "30";
-
-            //TODO: Base this on SubtractFromItemCount prefix or vice versa to make always accurate
-        }
         #endregion
 
         #region Custom
@@ -588,8 +580,25 @@ namespace BunnyMod
 
             // Consider other paths too, Path of Fire, etc.
         }
+        public static string ToolCost(Agent agent, int baseCost)
+        {
+            if (agent.statusEffects.hasTrait("TamperTantrum"))
+                return (baseCost / 2).ToString();
+            if (agent.statusEffects.hasTrait("TamperTantrum_2"))
+                return "0";
+            return baseCost.ToString();
+        }
         #endregion
 
+        #region AgentInteractions
+        public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
+		{
+            if (extraCost.EndsWith("-30"))
+                extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
+            else if (extraCost.EndsWith("-20"))
+                extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
+		}
+        #endregion
         #region InvDatabase
         public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{

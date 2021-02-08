@@ -15,19 +15,8 @@ Stove
 		Attempt, search 202102041042
 
 Tampering
-	Verify if correct Tool durability cost is displaying in menus.
-		It was incorrect on a door, and correct on a stove. Both incremented correctly, however. You might need to do it case-by-case.
-			Find and analyze all the calls for DetermineButtons. You have a custom method ToolCost that makes the Stove buttons calculate correctly. You just need to point other objects' calls to that as an argument.
-				Broad list, NOT guaranteed that all of these include tampering
-					AgentInteractions(Slave)
-					Crate
-					Door
-					Generator
-					Generator2
-					Laser Emitter
-					Police Box
-					Satellite Dish
-				Now if we want to be elegant, we can detect when DetermineButtons is used, search for a particular string, and modify it formulaically. But that is a bit more complex than just brute-force prefixing all the DetermineButtons methods for all of the above.
+	Durability Cost increments correctly, but displays vanilla values in button menus
+		Attempt, test
 
 Telemancy
 

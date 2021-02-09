@@ -577,8 +577,6 @@ namespace BunnyMod
             // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
             // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
             // If you do an IL injection, do it at 787
-
-            // Consider other paths too, Path of Fire, etc.
         }
         public static string ToolCost(Agent agent, int baseCost)
         {

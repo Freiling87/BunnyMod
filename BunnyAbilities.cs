@@ -293,6 +293,8 @@ namespace BunnyMod
 			agent.gc.selectedTimeScale /= speedupfactor;
 			agent.gc.mainTimeScale /= speedupfactor;
 			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
+
+			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 		}
 		public static async void ChronomancyStartDecast(Agent agent)
 		{
@@ -319,6 +321,8 @@ namespace BunnyMod
 			await Task.Delay(1000);
 
 			await ChronomancyStartWindingUp(agent);
+
+			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 		}
 		public static async void ChronomancyStartMiscast(Agent agent, float slowdownFactor)
 		{
@@ -339,6 +343,8 @@ namespace BunnyMod
 			agent.gc.mainTimeScale *= slowdownFactor;
 			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
+
+			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 
 			await Task.Delay(5000);
 

@@ -5,18 +5,25 @@
 
 Chronomancy
 	Hammertime no longer working again.
-	Need log messages for Timescale and Hammertime. Timescale felt like it was not functioning properly this time.
-
-FlamingBarrel
-	It has code to be lightable with cigarette lighter. Have you ever tested this?
 
 Stove
 	No longer rotate toward walls
-		Attempt, search 202102041042
+	Hit by exploding generator:
+		[Message: Bunny Mod] Stove (1156): MoveNext
+
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__30.MoveNext () (at <f9fb3cdc1be5422e8b8eb75b25d271d9>:0)
+		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+		Stove:DamagedObject(PlayfieldObject, Single)
+		ObjectReal:Damage(PlayfieldObject, Boolean)
+		Explosion:ExplosionHit(GameObject, Boolean)
+		Explosion:OnTriggerEnter2D(Collider2D)
 
 Tampering
-	Durability Cost increments correctly, but displays vanilla values in button menus
-		Attempt, test
 
 Telemancy
 

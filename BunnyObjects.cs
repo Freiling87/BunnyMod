@@ -54,7 +54,7 @@ namespace BunnyMod
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PolicyBox_DetermineButtons", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PoliceBox_DetermineButtons", new Type[0] { });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars", new Type[0] { });
 
@@ -118,12 +118,33 @@ namespace BunnyMod
 		#region Custom
         public static void CorrectButtonCosts(ObjectReal objectReal)
 		{
+            // TODO: This will only catch one tamper operation per object
+            // Next you'd want to make a dictionary of buttonsExtra indexes and new versions of the labels 
+            // You can't do it within the loop because it will break execution
+
+            bool flag = false;
+            string newLabel = "";
+
             foreach (string buttonLabel in objectReal.buttonsExtra)
 			{
+                BunnyHeader.Log("Detected ButtonExtra: " + buttonLabel);
+
                 if (buttonLabel.EndsWith("-30"))
-                    buttonLabel.Replace("-30", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 30));
+				{
+                    newLabel = buttonLabel.Replace("-30", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 30));
+                    flag = true;
+                }
                 else if (buttonLabel.EndsWith("-20"))
-                    buttonLabel.Replace("-20", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 20));
+				{
+                    newLabel = buttonLabel.Replace("-20", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 20));
+                    flag = true;
+                }
+
+                if (flag)
+				{
+                    objectReal.buttonsExtra[objectReal.buttonsExtra.FindIndex(ind => ind.Equals(buttonLabel))] = newLabel;
+                    break;
+                }
             }
         }
 		#endregion

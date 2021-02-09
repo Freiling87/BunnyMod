@@ -38,7 +38,7 @@ namespace BunnyMod
 			new BunnyObjects().Awake();
 			new BunnyTraits().Awake();
 		}
-		#region ----Category Lists
+		#region Category Lists
 		public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
 		public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
 		public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };

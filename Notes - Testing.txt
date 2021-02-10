@@ -48,8 +48,8 @@ Telemancy
 		[Message: Bunny Mod] Telemancy OnHeld;
 		Telemancy Charge: 25
 			... Many many times. it's triggering on Held, not on release. Always 25 charge.
+				Abbysssal: the method is supposed to update the abilitys state, so just use the ref float time parameter
 		Also not recharging anymore.
-	After reorganization, activated rapid fire as long as held. Didn't even miscast.
 	Uniques:
 		EMP on teleport?
 		Stun on teleport?

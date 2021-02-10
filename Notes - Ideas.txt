@@ -21,6 +21,32 @@ Big Quests
 	Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
 
 Gameplay
+	Election Rebalance
+		Influencing the Election
+		Reputation Carryover
+			Depending on your ending electability for a District, NPCs will have a starting attitude on later floors.
+			-10 or lower: Hostile
+			-9 to -5: Annoyed
+			-4 to +4: Neutral
+			+5 to +10: Friendly
+			+10 to +15: Loyal
+			+15 or higher: Aligned
+			Slums: Gang Members
+			Industrial: Workers
+			Park: Gorillas, Cannibals if you have CWC
+			Downtown: Bouncer
+			Uptown: Upper Cruster
+		Faction Reputations
+			Same as Reputation Carryover, but influenced by behaviors
+				Blahds
+				Crepes
+				Mafia, Bouncers
+				Police
+				Workers, Slum Dwellers, Office Drones, Clerks
+				Upper Crusters, Doctors, Investment Bankers, Scientists
+	Mugging & Extorting
+		Add a 0.5s delay between failure and attack
+		Can go Submissive from Mugging (no one will die for pocket change)
 	removing traits:
 		the same way you can gain + traits in the level up, there should be a chance for removing traits too (maybe called - traits?)
 		eg: youre cannibal, level up and leave slums 1. You have a choice between im outtie, low cost jobs, and - malodorous.
@@ -161,47 +187,27 @@ NPCs
 		Behaves like Upper Cruster
 
 NPC Goals
-	Riot Behaviors
-		Rioters ignore cops
-			You can change this in LevelFeelings.Riot2, cops aren't mentioned there
 	Accosting
-		Generally want more accosting, to make the city feel like things are happening.
-		Gang Members - Will attempt to mug you like Mobsters, but for a smaller amount ($50).
-		Slum Dwellers - Will occasionally beg you for $5, and become annoyed if you refuse. Very small chance of going hostile. If you offer them food they'll just get annoyed.
-		Jocks - Might decide to punch you in the face. You know, as a prank.
-		CODE: 
-			LoadLevel.SetupMore3_3() has the code that designates them to be an actual gang.
-				It doesn't look like we can do anything in there, as gangbangers are already a gang equivalent to Mafia.
-					I compared the two and it doesn't look like any of the variables below are set differently.
-			Relationships.LastSaw
-				if (this.agent.talkText.myText.text == this.gc.nameDB.GetName(this.agent.agentName + "_Mug", "Dialogue") || this.agent.talkText.myText.text == this.gc.nameDB.GetName("NA_Mug", "Dialogue"))
-					So it's never called by name in a string, it's constructed by agent name. Search _mug instead.
-					The search for this string is returned as a bool, where it will only return true if an agent's name is Mafia.
-						Therefore, you may be able to enable this behavior simply by adding Names as Gangbanger_Mug & GangbangerB_Mug
-			Relationships.ProtectOwnedLight @ 4371 ←←←
-				Checks for Agent.HasMugged
-				otherAgent is the player, agent is the mobster
-			Comparison
-				Variable				Default			Gangs		Mafia
-				Agent.gangMembers
-				Agent.gangCount
-				Agent.gangLeader
-				Agent.gang
-				Agent.dontWalkGang
-				Agent.hasMugged			false
-				Agent.doingMugging		-1
-				Agent.gangMugging		0										All gangs have an Int ID and this shows which gang is currently mugging the agent. 0 is null.
-			Leads
-				interactingAgent.objectMult.ObjectAction(agent.ObjectNetID, "MugMoney");
-				PlayfieldObject.determineMoneyCost("Mug");
-				AgentInteractions.MugMoney
-				AgentInteractions.DetermineButtons @ 1098
-					has a mention of Mafia. It'd be ass-backward, but that wouldn't be so surprising.
-			BrainUpdate.GoalArbitrate() @2423
-				if (this.agent.gang != 0 && this.agent.doingMugging == -1 && !this.agent.hasEmployer)
-
-
-	Change NPC behaviors during some disasters. E.g., Zombie attacks will cause cops to stop enforcing minor laws like property destruction. Some NPCs will join you automatically for safety.
+		Cannibal - If you have CWC, they will ask to take a bite of you. You can agree or not. That's it.
+		Cop - Might solicit a little bribe. If you have Cop Debt, it goes towards that total.
+		Gang Member - Will attempt to mug you like Mobsters, but for a smaller amount ($15 * gang size).
+		Office Drone - Will blab about sports. You can choose to blab back and get a new relation, from Annoyed to Loyal.
+		Slum Dweller - 
+			Will occasionally beg you for money. Percent chance of outcome based on donation:
+						Hostile		Annoyed		Neutral		Friendly	Loyal		Aligned		Item Equivalent
+				$ 0			10			55			35			 0			 0			 0			--
+				$ 5			 0			 5			25			65			 5			 0			Banana
+				$10			 0			 0			 5			65			25			 5			Cigarettes/Beer
+				$20			 0			 0			 0			45 			45			10			Whiskey
+				$50			 0			 0			 0			 0			 0		   100			Sugar
+				$FU		   100			 0			 0			 0			 0			 0			Banana Peel
+		Scientist - Asks you to take a random pill or syringe. Gives you $20.
+		Wrestler - Challenges you to a duel, just like the player character. If you refuse, he gets annoyed.
+	Random Actions
+		Jock - Might decide to punch you in the face. You know, as a prank.
+	Cops
+		If there's a Computer in a Police Station, and an Annoyed or Hostile Cop stops chasing you, they'll go there and enter your information into the database. If they're successful, all cops on the level will match their attitude towards you if theirs isn't currently worse.
+			You can Hack the computer to undo this change.
 
 NPC Interactions
 	Bouncers - You can come in if for free if they see you smoke cigarettes. Because obviously it means you're cool.
@@ -216,8 +222,13 @@ NPC Interactions
 Mutators
 	All Walls Are Wood
 	All Walls Are Steel
+	Major disaster behavior changes
+		Cops don't enforce property damage laws
+		Some NPCs will join your party for safety
 	Riot
 		Add Arsonists to spawns
+		Rioters shouldn't ignore cops
+			You can change this in LevelFeelings.Riot2, cops aren't mentioned there
 	Mafia spawn on all levels
 		Would be extremely easy, just set LevelData.levelFeatures.Contains("Mafia") to true
 	District-related spawns
@@ -226,6 +237,56 @@ Mutators
 Objects
 	Cash Register - A tough locked object containing money, that may be unlocked through the chunk's Computer, Hacked, Lockpicked, or pried open with a Crowbar. Easier than a Safe, yes, but almost always within the view of their owner.
 	Chemistry Set - Sacrifice a syringe to identify that type.
+		Computer
+			Apartments
+			Arcade - Unlock cash compartments in all Arcade Games in the chunk. Each has $1-$10 inside.
+			Arena - Audience Participation Night: Release Rage Poison in vents.
+			Armory - Self-Destruct (Big bomb)
+			Bank - Cause Supercops to swarm the level. 
+			Bar - Drink Specials: Buying a round is cheaper
+			Bathhouse - Poison the Water!
+			Bathroom - 
+			Broadcasting Station - [Satellite actions cover this]
+			Cabin - Play Music (https://www.youtube.com/watch?v=puVYtkh-LO4)
+			Casino - Designate someone for security to become Hostile to
+			Cave - 
+			Church - 
+			City Park - 
+			Confiscation Center - 
+			Dance Club - Now Punch to the Left: Mind control everyone dancing
+			Deportation Center - 
+			Drug Den
+			Farm
+			Fire Station
+			Gated Community
+			Generic
+			Graveyard
+			Greenhouse
+			Hedge Maze
+			Hideout
+			Hospital
+			Hotel
+			House
+			Ice Rink
+			Lab
+			Mall
+			Mansion
+			Mayor's House
+			Mayor's Office
+			Military Outpost
+			Movie Theater
+			Music Hall
+			Office Building
+			Pit
+			Podium Park
+			Police Outpost/Police Station - All Clear: Set all Hostile Police to Annoyed; APB: Set all Police hostile to a target person
+			Prison
+			Private Club
+			Shack
+			Shop
+			Slave Shop
+			Uptown House
+			Zoo
 	Dumpster - A big metal dumpster that you can hide in, for settings where Bushes or Bathtubs aren't appropriate.
 	Oil Barrel - A Rust-colored barrel which creates an oil pool when destroyed.
 	Kitchen Fryer - When destroyed, leaves a pool of oil.

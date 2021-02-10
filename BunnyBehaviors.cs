@@ -10,13 +10,6 @@ using RogueLibsCore;
 
 namespace BunnyMod
 {
-	/*See:
-	 * int Agent.DoingMugging
-	 * AgentInteractions.MugMoney - if player, else ObjectAction
-	 * Relationships.ProtectOwnedLight
-	 * AgentInteractions.ThreatenMoney
-	 */
-
 	public class BunnyBehaviors
 	{
 		#region Generic
@@ -32,7 +25,9 @@ namespace BunnyMod
 		}
 		public void Initialize_Names()
 		{
-			// Need Gangbanger_Mug and GangbangerB_Mug
+			CustomName hobo_Mug = RogueLibs.CreateCustomName("Hobo_Mug", "Dialogue", new CustomNameInfo("Can you spare a few bucks, friendo?"));
+			CustomName gangbanger_Mug = RogueLibs.CreateCustomName("GangBanger_Mug", "Dialogue", new CustomNameInfo("The cash, hand it over!"));
+			CustomName gangbangerB_Mug = RogueLibs.CreateCustomName("GangBangerB_Mug", "Dialogue", new CustomNameInfo("Empty your pockets, bitch!"));
 		}
 		#endregion
 
@@ -49,14 +44,22 @@ namespace BunnyMod
 
 				if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB") && agent.gang != 0 && agent.gangMembers.Count > 1 && !gangsAssigned.Contains(agent.gang))
 				{
-					BunnyHeader.Log("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
-
 					agent.gangLeader = true;
 					gangsAssigned.Add(agent.gang);
-				}
-			}
 
-			// Find a way to iterate through gangs instead?
+					BunnyHeader.Log("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+				}
+				else if (agent.agentName == "Hobo")
+				{
+					Agent.gangCount++;
+					agent.gang = Agent.gangCount;
+					agent.gangLeader = true;
+					gangsAssigned.Add(agent.gang);
+
+					BunnyHeader.Log("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+				}
+
+			}
 		}
 		#endregion
 	}

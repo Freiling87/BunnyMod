@@ -3,6 +3,28 @@
 
 --- CURRENT TEST -------------------------------------------
 
+Gang Behaviors & Accosting
+	Roving gangs correctly set a leader and initiate mugging
+	Next is to create a custom name for the dialogue, and ensure their mug amount is smaller. 
+
+Generator2
+	Did not do any damage to anything when exploding
+	[Message: Bunny Mod] Window (1545): ObjectReal_Interact
+	[Message: Bunny Mod] Window (1545): ObjectReal_PressedButton
+	[Info   : Unity Log] ItemHitbox DestroyMe True - False
+	[Message: Bunny Mod] Generator2 (1264): ObjectReal_DestroyMe
+	[Info   : Unity Log] Spawn Generator2 Explosion
+	[Info   : Unity Log] SpawnExplosion -1
+	[Message: Bunny Mod] Explosion_SetupExplosion
+	[Message: Bunny Mod] ChronomancyIsCast: False
+	[Error  : Unity Log] Error in DestroyMe3: Generator2 (1264) (Generator2)
+	[Info   : Unity Log] Generator2 RemoveObjectLate 1
+	[Info   : Unity Log] Generator2 RemoveObjectLate2 - False
+	[Info   : Unity Log] Generator2 DestroyObjectExtras1 - False
+	[Info   : Unity Log] Generator2 DestroyObjectExtras2 - False
+	[Info   : Unity Log] Generator2 RemoveObjectLate3 - True
+	[Info   : Unity Log] Window Lose Focus
+
 Chronomancy
 	Hammertime no longer working again.
 

@@ -335,6 +335,8 @@ Special Abilities
 			3 Zombies will join your party / Turn ghosts into large number of crystals
 			Miscast turns all of them hostile, or summons hostile ghosts
 			When close to a ghost, you can turn them into mana crystals
+			Also:
+				https://www.reddit.com/r/streetsofrogue/comments/lhdwnx/my_third_entree_for_medieval_themed_characters/
 
 Traits
 	Path traits
@@ -437,6 +439,9 @@ Traits
 	Crit-prone
 		Enemies have a better chance of crit against you
 			Or just add that to Unlucky
+	Needy (-6 Points)
+		You have needs like the musician, but they are not beneficial to you or anybody else. (You need to go to the toilet, etc)
+		You need to use the nice toilet. Which always happens to be in some inconvenient place like the closet of a gang hideout. That timer is rapidly ticking down, and if you don't go to that specific toilet, you'll have an accident, and no NPC or shop owner, etc will want to talk to you.
 
 === SHELVED ====================================================================
 

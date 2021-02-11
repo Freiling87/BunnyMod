@@ -112,6 +112,8 @@ namespace BunnyMod
 
             CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText",
                 new CustomNameInfo("Open container"));
+
+            CustomName dontTouchStove = RogueLibs.CreateCustomName("DontTouchStove", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
         }
 		#endregion
 
@@ -215,11 +217,9 @@ namespace BunnyMod
                         __instance.buttons.Add("UseWrenchToDetonate");
                         __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent, 30));
                     }
+
                     if (__instance.interactingAgent.inventory.HasItem("Fud"))
-					{
                         __instance.buttons.Add("GrillFud");
-                    }
-                        
                 }
                 return;
             }
@@ -233,10 +233,8 @@ namespace BunnyMod
 
 			#region Patch
 			if (__instance is FlamingBarrel)
-            {
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
-            }
-            if (__instance is Stove)
+            else  if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
                     Stove_UseWrenchToDetonate((Stove)__instance);
@@ -261,7 +259,6 @@ namespace BunnyMod
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-            //TODO: Try StopInteraction() as a default, with other options as return.
 
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
             interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
@@ -277,14 +274,20 @@ namespace BunnyMod
                 __instance.StopInteraction();
             }
             else if (__instance is FlamingBarrel)
-            {
                 __instance.ShowObjectButtons();
-            }
             else if (__instance is Stove)
             {
+                Agent unfriendlyOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
+
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
-
+                else if (unfriendlyOwner != null)
+				{
+                    unfriendlyOwner.SayDialogue("DontTouchStove");
+                    unfriendlyOwner.relationships.AddStrikes(agent, 1);
+                    __instance.StopInteraction();
+                    return false;
+				}
                 __instance.ShowObjectButtons();
             }
 
@@ -911,6 +914,18 @@ namespace BunnyMod
             }
             return false;
         }
+        public static Agent Stove_FindOwner(Stove stove) // Non-Patch
+		{
+            for (int i = 0; i < stove.gc.agentList.Count; i++)
+            {
+                Agent agent = stove.gc.agentList[i];
+
+                if (agent.ownerID == stove.owner)
+                    return agent;
+            }
+
+            return null;
+        }
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
@@ -961,6 +976,21 @@ namespace BunnyMod
             __instance.faceAwayFromWalls = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
+        }
+        public static Agent Stove_UnfriendlyOwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
+		{
+            Agent agent = Stove_FindOwner(stove);
+
+            if (!(agent != null) || !(stove.interactingAgent != null))
+                return null;
+
+            Relationship relationship = agent.relationships.RelList2[interactingAgent.agentID];
+
+            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified &&
+                relationship.relTypeCode != relStatus.Neutral && relationship.relTypeCode != relStatus.Annoyed && relationship.relTypeCode != relStatus.Hostile)
+                return agent;
+
+            return null;
         }
         public static void Stove_UseWrenchToDetonate(Stove __instance) // Non-Patch 
         {

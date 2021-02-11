@@ -8,8 +8,12 @@ Chronomancy
 Stove
 	No longer rotate toward walls
 		Attempt, search 202102041042
+	Attempted Strike for grilling with unfriendly
 
 Telemancy
+
+Mugging
+	You don't need to do anything other than make a new button and set its price. The rest appears to be taken care of.
 
 --- IMPLEMENTATIONS ----------------------------------------
 

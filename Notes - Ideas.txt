@@ -1,4 +1,10 @@
-﻿=== IDEAS ======================================================================
+﻿=== PLANNING ===================================================================
+
+Roamers
+	Random.InitState - is this behavior? Havent' looked yet
+
+
+=== IDEAS ======================================================================
 
 Classes
 	Drug Dealer
@@ -182,9 +188,16 @@ Items
 	Body Spray: Anti-cologne, basically gives ideological clash to whoever uses it. (This would be cool in assassin quests if you could apply it to your target.)
 
 NPCs
-	Custom NPC: Tourist
+	Artist
+	Farmer
+	Detective
+	Junkie
+	Reporter
+	Security Guard
+	Tourist
 		Travels in groups, occasional goon
 		Behaves like Upper Cruster
+
 
 NPC Goals
 	Accosting
@@ -196,11 +209,26 @@ NPC Goals
 			Will occasionally beg you for money. Percent chance of outcome based on donation:
 						Hostile		Annoyed		Neutral		Friendly	Loyal		Aligned		Item Equivalent
 				$ 0			10			55			35			 0			 0			 0			--
-				$ 5			 0			 5			25			65			 5			 0			Banana
+				$ 5			 0			 5			25			65			 5			 0			Fud
 				$10			 0			 0			 5			65			25			 5			Cigarettes/Beer
 				$20			 0			 0			 0			45 			45			10			Whiskey
 				$50			 0			 0			 0			 0			 0		   100			Sugar
 				$FU		   100			 0			 0			 0			 0			 0			Banana Peel
+			When done, randomly generate dialogue:
+				"i can feel the shadows consuming me, quck i need your cash!"
+				"Gimme money so i can have my last fix before rapture 2.0 destroys us all!"
+				"c'mon you gotta protect me, the Illuminati spy-cams are coming!"
+				"they injected me with liquid Antichrist"
+				"fud 0 is real! Help fund my research to figure out where big fud is hiding it!"
+				"i control the elements! Gimme your money or perish!"
+				Alignment line: (only on a level that is a multiple of 2: EG: 1-2, 2-2, 3-2...) "Can't you feel it? a disaster is coming!"
+				Alignment line: "the gates of [silly call of Cthulhu sounding name] are going to open any second now, i can feel it!"
+				Alignment line "i can see them... the bars above peoples heads, theyre up to something, i know it!"
+				Alignment line:"beds are too soft to be real, its a ploy to get us in our most vulnerable state!"
+				Alignment line: "I'm getting closer to finding the big brother that watches over us all, i just need to figure out what 'someone' is code for..."
+				imma refer to lines where they aggro on you cus you gave them food or didnt pay them as aggro lines
+				Aggro line: "Illuminati scum!"
+				Aggro line: "i knew it! You captured michal jackson, didnt you? WHERE ARE YOU HIDING HIM?!?"
 		Scientist - Asks you to take a random pill or syringe. Gives you $20.
 		Wrestler - Challenges you to a duel, just like the player character. If you refuse, he gets annoyed.
 	Random Actions

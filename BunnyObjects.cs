@@ -997,10 +997,10 @@ namespace BunnyMod
             if (!(agent != null) || !(stove.interactingAgent != null))
                 return null;
 
-            Relationship relationship = agent.relationships.RelList2[interactingAgent.agentID];
+            relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 
             if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified &&
-                relationship.relTypeCode != relStatus.Neutral && relationship.relTypeCode != relStatus.Annoyed && relationship.relTypeCode != relStatus.Hostile)
+                relTypeCode != relStatus.Neutral && relTypeCode != relStatus.Annoyed && relTypeCode != relStatus.Hostile)
                 return agent;
 
             return null;

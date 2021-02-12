@@ -17,8 +17,9 @@ namespace BunnyMod
 		{
 			Initialize_Names();
 
-			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<string>) });
+			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
 			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
+			BunnyHeader.MainInstance.PatchPostfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
 
 			BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
 
@@ -29,14 +30,156 @@ namespace BunnyMod
 		}
 		public void Initialize_Names()
 		{
-			CustomName hobo_Mug = RogueLibs.CreateCustomName("Hobo_Mug", "Dialogue", new CustomNameInfo("Can you spare a few bucks, friendo?"));
-			CustomName hobo_GiveMoney1 = RogueLibs.CreateCustomName("Hobo_GiveMoney1", "Button", new CustomNameInfo("Give Money"));
-			CustomName hobo_GiveMoney2 = RogueLibs.CreateCustomName("Hobo_GiveMoney2", "Button", new CustomNameInfo("Give Money"));
-			CustomName hobo_GiveMoney3 = RogueLibs.CreateCustomName("Hobo_GiveMoney3", "Button", new CustomNameInfo("Give Money"));
-			CustomName hobo_GiveItem = RogueLibs.CreateCustomName("Hobo_GiveItem", "Button", new CustomNameInfo("Give Item"));
-			CustomName gangbanger_Mug = RogueLibs.CreateCustomName("Gangbanger_Mug", "Dialogue", new CustomNameInfo("The cash, hand it over!"));
-			CustomName gangbangerB_Mug = RogueLibs.CreateCustomName("GangbangerB_Mug", "Dialogue", new CustomNameInfo("Empty your pockets, bitch!"));
-			CustomName gangbanger_GiveMoney = RogueLibs.CreateCustomName("Gangbanger_GiveMoney", "Button", new CustomNameInfo("Give Money"));
+			#region ButtonText
+			string nameType = "ButtonText";
+			CustomName hobo_GiveMoney1 = RogueLibs.CreateCustomName("Hobo_GiveMoney1", nameType, new CustomNameInfo("Give Money"));
+			CustomName hobo_GiveMoney2 = RogueLibs.CreateCustomName("Hobo_GiveMoney2", nameType, new CustomNameInfo("Give Money"));
+			CustomName hobo_GiveMoney3 = RogueLibs.CreateCustomName("Hobo_GiveMoney3", nameType, new CustomNameInfo("Give Money"));
+			CustomName hobo_GiveItem = RogueLibs.CreateCustomName("Hobo_GiveItem", nameType, new CustomNameInfo("Give Item"));
+			CustomName gangbanger_GiveMoney = RogueLibs.CreateCustomName("Gangbanger_GiveMoney", nameType, new CustomNameInfo("Give Money"));
+			#endregion
+			#region Dialogue
+			nameType = "Dialogue";
+			CustomName hobo_CantAfford = RogueLibs.CreateCustomName("Hobo_CantAfford", nameType, new CustomNameInfo("Come on, don't hold out on me!"));
+			CustomName hobo_Donate_Aligned = RogueLibs.CreateCustomName("Hobo_Donate_Aligned", nameType, new CustomNameInfo("I knew it, you're Jesus! Hey Jesus, get this CIA microchip outta my head! Wabadoobaflooba! Yaba! Haba!"));
+			CustomName hobo_Donate_Annoyed = RogueLibs.CreateCustomName("Hobo_Donate_Annoyed", nameType, new CustomNameInfo("...Okay."));
+			CustomName hobo_Donate_Friendly = RogueLibs.CreateCustomName("Hobo_Donate_Friendly", nameType, new CustomNameInfo("Hey, thanks buddy!"));
+			CustomName hobo_Donate_Hostile = RogueLibs.CreateCustomName("Hobo_Donate_Hostile", nameType, new CustomNameInfo("Fuck you, asshole!"));
+			CustomName hobo_Donate_Loyal = RogueLibs.CreateCustomName("Hobo_Donate_Loyal", nameType, new CustomNameInfo("Oh, hell yeah!"));
+			CustomName hobo_Donate_Neutral = RogueLibs.CreateCustomName("Hobo_Donate_Neutral", nameType, new CustomNameInfo("Oh, uh... thanks, I guess?"));
+			CustomName hobo_DontWant = RogueLibs.CreateCustomName("Hobo_DontWant", nameType, new CustomNameInfo("Nah, what else you got?"));
+			CustomName hobo_Mug = RogueLibs.CreateCustomName("Hobo_Mug", nameType, new CustomNameInfo("Can you spare a few bucks, friendo?"));
+			CustomName gangbanger_CantAfford = RogueLibs.CreateCustomName("Gangbanger_CantAfford", nameType, new CustomNameInfo("Sucks to be you!"));
+			CustomName gangbanger_Mug = RogueLibs.CreateCustomName("Gangbanger_Mug", nameType, new CustomNameInfo("The cash, hand it over!"));
+			CustomName gangbangerB_Mug = RogueLibs.CreateCustomName("GangbangerB_Mug", nameType, new CustomNameInfo("Empty your pockets, bitch!"));
+			#endregion
+		}
+		#endregion
+
+		#region Custom
+		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, int moneyValue)
+		{
+			BunnyHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving $" + moneyValue);
+
+			// TODO: Write Hobo_AcceptDonation(Money)
+		}
+		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, InvItem invItem)
+		{
+			BunnyHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving " + invItem.invItemName);
+
+			int moneyValue;
+			string item = invItem.invItemName;
+
+			if (item == "BananaPeel")
+				moneyValue = -1;
+			else if (item == "Banana")
+				moneyValue = 0;
+			else if (item == "Fud")
+				moneyValue = 5;
+			else if (item == "Beer" || item == "Cigarettes")
+				moneyValue = 10;
+			else if (item == "Whiskey")
+				moneyValue = 20;
+			else if (item == "Sugar")
+				moneyValue = 50;
+			else
+			{
+				BunnyHeader.Log("Unacceptable item donated to " + hobo.agentName + hobo.agentID);
+				moneyValue = invItem.itemValue;
+			}
+
+			string newRelationship = Hobo_relStatusAfterDonation(hobo, interactingAgent, moneyValue).ToString("f");
+
+			BunnyHeader.Log("Hobo_AcceptDonation: item = " + item + ";  moneyValue = " + moneyValue + "; newRelationship = " + newRelationship);
+
+			Hobo_MugItem(hobo, interactingAgent, item, newRelationship);
+		}
+		public static void Hobo_MugItem(Agent agent, Agent interactingAgent, string itemName, string relStatus)
+		{
+			BunnyHeader.Log("Hobo_MugItem");
+
+			if (interactingAgent.gc.serverPlayer)
+			{
+				for (int i = 0; i < agent.gangMembers.Count; i++)
+					agent.gangMembers[i].hasMugged = true;
+
+				for (int j = 0; j < agent.gc.playerAgentList.Count; j++)
+					agent.gc.playerAgentList[j].gangMugging = 0;
+
+				agent.objectMult.SetGangMuggingOff();
+				agent.doingMugging = -1;
+				agent.SayDialogue("Bought"); // ←
+				agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+
+				agent.relationships.SetRel(interactingAgent, relStatus);
+
+				return;
+			}
+			interactingAgent.objectMult.ObjectAction(agent.objectNetID, "MugItem");
+		}
+		public static void Hobo_MugMoney(Agent agent, Agent interactingAgent, int moneyValue, string relStatus)
+		{
+			BunnyHeader.Log("Hobo_MugMoney");
+
+			if (interactingAgent.gc.serverPlayer)
+			{
+				for (int i = 0; i < agent.gangMembers.Count; i++)
+					agent.gangMembers[i].hasMugged = true;
+
+				for (int j = 0; j < agent.gc.playerAgentList.Count; j++)
+					agent.gc.playerAgentList[j].gangMugging = 0;
+
+				agent.objectMult.SetGangMuggingOff();
+				agent.doingMugging = -1;
+
+				agent.SayDialogue("hobo_Donate_" + relStatus); //
+				InvItem invItem = new InvItem();
+				invItem.invItemName = "Money";
+				invItem.invItemCount = agent.determineMoneyCost("Mug"); // ←
+				invItem.ItemSetup(true);
+				agent.inventory.AddItem(invItem);
+
+				agent.relationships.SetRel(interactingAgent, relStatus);
+
+				return;
+			}
+			interactingAgent.objectMult.ObjectAction(agent.objectNetID, "MugMoney"); // ←
+		}
+		public static relStatus Hobo_relStatusAfterDonation(Agent hobo, Agent interactingAgent, int moneyValue)
+		{
+			int[] reactionPercentages = new int[6] { 0, 0, 0, 0, 0, 0 };
+			List<relStatus> reactionOutcomes = new List<relStatus> { relStatus.Hostile, relStatus.Annoyed, relStatus.Neutral, relStatus.Friendly, relStatus.Loyal, relStatus.Aligned };
+
+			if (moneyValue == -1)
+				reactionPercentages = new int[] { 100, 0, 0, 0, 0, 0 };
+			if (moneyValue == 0)
+				reactionPercentages = new int[] { 10, 55, 35, 0, 0, 0 };
+			else if (moneyValue == 5)
+				reactionPercentages = new int[] { 0, 5, 25, 65, 5, 0 };
+			else if (moneyValue == 10)
+				reactionPercentages = new int[] { 0, 0, 5, 65, 25, 5 };
+			else if (moneyValue == 20)
+				reactionPercentages = new int[] { 0, 0, 0, 35, 55, 10 };
+			else if (moneyValue == 50)
+				reactionPercentages = new int[] { 0, 0, 0, 0, 0, 100 };
+
+			int[] reactionsWeighted = new int[7] { 0, 0, 0, 0, 0, 0, 0 }; // 0th 0 is floor for for-loop
+
+			for (int i = 1; i <= 6; i++) // 0th 0 used here
+				reactionsWeighted[i] = reactionsWeighted[i - 1] + reactionPercentages[i];
+
+			int roll = Mathf.Clamp(UnityEngine.Random.Range(1, 100), 1, 100);
+			int outcome = 1;
+
+			for (int j = 1; j <= 6; j++)
+			{
+				if (roll >= reactionsWeighted[j])
+					outcome = j;
+				else
+					break;
+			}
+
+			return reactionOutcomes[outcome];
 		}
 		#endregion
 
@@ -79,14 +222,17 @@ namespace BunnyMod
 				if (buttonText == "Hobo_GiveMoney1" || buttonText == "Hobo_GiveMoney2" || buttonText == "Hobo_GiveMoney3")
 				{
 					if (agent.moneySuccess(buttonPrice))
-						__instance.MugMoney(agent, interactingAgent);
+						Hobo_MugMoney(agent, interactingAgent, buttonPrice, Hobo_relStatusAfterDonation(agent, interactingAgent, buttonPrice).ToString("f"));
+					else
+						agent.SayDialogue("Hobo_CantAfford");
 
 					agent.StopInteraction();
 					return false; // Double-check that these aren't skipping anything important
 				}
 				else if (buttonText == "Hobo_GiveItem")
 				{
-
+					agent.ShowUseOn("Hobo_Donate");
+					return false;
 				}
 			}
 			else if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB"))
@@ -95,12 +241,33 @@ namespace BunnyMod
 				{
 					if (agent.moneySuccess(buttonPrice))
 						__instance.MugMoney(agent, interactingAgent);
+					else
+						agent.SayDialogue("Gangbanger_CantAfford");
 
 					agent.StopInteraction();
 					return false; // Double-check that these aren't skipping anything important
 				}
 			}
 			return true;
+		}
+		public static void AgentInteractions_UseItemOnObject(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType, ref bool __result) // Postfix
+		{
+			BunnyHeader.Log("AgentInteractions_UseItemOnObject: " + item.invItemName);
+
+			if (useOnType == "Hobo_Donate")
+			{
+				string itemName = item.invItemName;
+
+				if (itemName == "Banana" || itemName == "BananaPeel" || itemName == "Beer" || itemName == "Cigarettes" || itemName == "Fud" || itemName == "Sugar" || itemName == "Whiskey" )
+					Hobo_AcceptDonation(agent, interactingAgent, item);
+				else
+				{
+					agent.SayDialogue("Hobo_DontWant");
+					agent.gc.audioHandler.Play(interactingAgent, "CantDo");
+				}
+
+				__result = true;
+			}
 		}
 		#endregion
 		#region LoadLevel
@@ -123,57 +290,39 @@ namespace BunnyMod
 				}
 				else if (agent.agentName == "Hobo")
 				{
-					// Do we want to limit this to roaming or stationary? Or just have all of them do it? Only testing will tell.
+					if (agent.gc.percentChance(33))
+					{
+						Agent.gangCount++;
+						agent.gang = Agent.gangCount;
+						agent.gangLeader = true;
+						gangsAssigned.Add(agent.gang);
 
-					Agent.gangCount++;
-					agent.gang = Agent.gangCount;
-					agent.gangLeader = true;
-					gangsAssigned.Add(agent.gang);
-
-					BunnyHeader.Log("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+						BunnyHeader.Log("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+					}
 				}
-
 			}
 		}
 		#endregion
 		#region PlayfieldObject
-		public static int PlayfieldObject_determineMoneyCost(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result) // Postfix // Uncapitalized in source
+		public static void PlayfieldObject_determineMoneyCost(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result) // Postfix // Uncapitalized in source
 		{                              // ↑ [sic]
+			BunnyHeader.Log("PlayfieldObject_determineMoneyCost: transactionType " + transactionType);
+
 			Agent agent = (Agent)__instance;
 			float num = __result;
 			int levelMultiplier = Mathf.Clamp(__instance.gc.sessionDataBig.curLevelEndless, 1, 15);
 			int gangsizeMultiplier = agent.gangMembers.Count;
 
 			if (transactionType == "Mug_Gangbanger")
-			{
-				num = (float)(50 + levelMultiplier * 15);
-			}
-			else if (transactionType == "Mug_Hobo")
-			{
-				num = (float)(50 + levelMultiplier * 5);
-			}
+				num = (float)(levelMultiplier * 10 + gangsizeMultiplier * 15);
+			else if (transactionType == "Hobo_GiveMoney1")
+				num = (float)(5);
+			else if (transactionType == "Hobo_GiveMoney2")
+				num = (float)(20);
+			else if (transactionType == "Hobo_GiveMoney3")
+				num = (float)(50);
 
-			if (agent.isPlayer == 0)
-			{
-				string rel = agent.relationships.GetRel(__instance.interactingAgent);
-
-				if (rel == "Friendly")
-					num *= 0.9f;
-				else if (rel == "Loyal")
-					num *= 0.8f;
-				else if (rel == "Aligned")
-					num *= 0.7f;
-				else if (rel == "Submissive")
-					num *= 0.6f;
-			}
-
-			if (__instance.gc.challenges.Contains("HighCost"))
-				num *= 1.4f;
-
-			if (__instance.gc.challenges.Contains("QuickGame"))
-				num *= 0.8f;
-
-			return __result;
+			__result = (int)num;
 		}
 		#endregion
 	}

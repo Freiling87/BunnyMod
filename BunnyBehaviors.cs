@@ -18,6 +18,7 @@ namespace BunnyMod
 			Initialize_Names();
 
 			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<string>) });
+			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
 
 			BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
 
@@ -42,6 +43,8 @@ namespace BunnyMod
 		#region AgentInteractions
 		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
 		{
+			BunnyHeader.Log("AgentInteractions_DetermineButtons: " + agent.agentName + "; GangMugging: " + agent.gangMugging);
+
 			if (agent.agentName == "Hobo")
 			{
 				agent.gc.audioHandler.Play(agent, "AgentTalk");
@@ -67,9 +70,37 @@ namespace BunnyMod
 			}
 			return true;
 		}
-		public static void AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance)
+		public static bool AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance) // Prefix
 		{
+			BunnyHeader.Log("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
 
+			if (agent.agentName == "Hobo")
+			{
+				if (buttonText == "Hobo_GiveMoney1" || buttonText == "Hobo_GiveMoney2" || buttonText == "Hobo_GiveMoney3")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						__instance.MugMoney(agent, interactingAgent);
+
+					agent.StopInteraction();
+					return false; // Double-check that these aren't skipping anything important
+				}
+				else if (buttonText == "Hobo_GiveItem")
+				{
+
+				}
+			}
+			else if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB"))
+			{
+				if (buttonText == "GangBanger_GiveMoney")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						__instance.MugMoney(agent, interactingAgent);
+
+					agent.StopInteraction();
+					return false; // Double-check that these aren't skipping anything important
+				}
+			}
+			return true;
 		}
 		#endregion
 		#region LoadLevel

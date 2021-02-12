@@ -107,17 +107,16 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "ButtonText",
-                new CustomNameInfo("Dispense Ice"));
+            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "ButtonText", new CustomNameInfo("Dispense Ice"));
 
-            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText",
-                new CustomNameInfo("Open container"));
+            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText", new CustomNameInfo("Open container"));
 
-            CustomName dontTouchStove = RogueLibs.CreateCustomName("DontTouchStove", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
+            CustomName stove_DontTouchAngry = RogueLibs.CreateCustomName("stove_DontTouchAngry", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
+            CustomName stove_NotThrilled = RogueLibs.CreateCustomName("stove_NotThrilled", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
         }
-		#endregion
+        #endregion
 
-		#region Custom
+        #region Custom
         public static void CorrectButtonCosts(ObjectReal objectReal)
 		{
             // TODO: This will only catch one tamper operation per object
@@ -277,16 +276,30 @@ namespace BunnyMod
                 __instance.ShowObjectButtons();
             else if (__instance is Stove)
             {
-                Agent unfriendlyOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
+                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
+
+                Agent noticingOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
+                Agent interactingAgent = __instance.interactingAgent;
+                relStatus relationship = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
-                else if (unfriendlyOwner != null)
+
+                BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: " + relationship);
+                
+                if (noticingOwner != null)
 				{
-                    unfriendlyOwner.SayDialogue("DontTouchStove");
-                    unfriendlyOwner.relationships.AddStrikes(agent, 1);
-                    __instance.StopInteraction();
-                    return false;
+                    if (relationship == relStatus.Annoyed || relationship == relStatus.Neutral || relationship == relStatus.Hostile)
+					{
+                        noticingOwner.SayDialogue("stove_DontTouchAngry");
+                        noticingOwner.relationships.AddStrikes(agent, 1);
+                        __instance.StopInteraction();
+                        return false;
+                    }
+                    else if (relationship == relStatus.Friendly || relationship == relStatus.Aligned || relationship == relStatus.Loyal || relationship == relStatus.Submissive)
+					{
+                        noticingOwner.SayDialogue("stove_NotThrilled");
+					}
 				}
                 __instance.ShowObjectButtons();
             }

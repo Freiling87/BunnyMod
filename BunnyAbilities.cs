@@ -342,6 +342,9 @@ namespace BunnyMod
 			agent.gc.selectedTimeScale *= slowdownFactor;
 			agent.gc.mainTimeScale *= slowdownFactor;
 			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
+
+			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + agent.speedMax);
+
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 
 			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
@@ -372,6 +375,8 @@ namespace BunnyMod
 
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
+
+			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 
 			ChronomancyDialogueRecharge(agent);
 		}

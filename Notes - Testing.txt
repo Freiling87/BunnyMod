@@ -1,4 +1,6 @@
-﻿
+﻿								this.gc.spawnerMain.SpawnNoise(this.tr.position, 0.5f, null, null, myAgent);
+
+
 === TEST NOTES =================================================================
 
 --- CURRENT TEST -------------------------------------------
@@ -9,6 +11,17 @@ Stove
 	No longer rotate toward walls
 		Attempt, search 202102041042
 	Attempted Strike for grilling with unfriendly
+	Attempted use in view of owner:
+		ssage: Bunny Mod] Stove (1121): ObjectReal_Interact
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <20039b338ab040bdb3bcf6026cff51c1>:0)
+		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+		[Warning: RogueLibs] SPECIAL RELEASE 0
 
 Telemancy
 

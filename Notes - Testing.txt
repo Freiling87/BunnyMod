@@ -1,5 +1,4 @@
-﻿								this.gc.spawnerMain.SpawnNoise(this.tr.position, 0.5f, null, null, myAgent);
-
+﻿
 
 === TEST NOTES =================================================================
 
@@ -7,56 +6,115 @@
 
 Chronomancy
 	Stomp no longer working
-		[Message: Bunny Mod] AgentHitBox_LandedOnLand
-		[Message: Bunny Mod] ChronomancyIsCast: False
-		[Message: Bunny Mod] ChronomancyIsMiscast: False
-		[Message: Bunny Mod] ChronomancyIsWindindUp: False
-		[Message: Bunny Mod] Agent.stomping: True
+		See Explosion
+
+
+Explosion broken:
+	[Info   : Unity Log] SpawnExplosion -1
+	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+	Stack trace:
+	BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <977ab8ceb7a742499e5797d180c7c56b>:0)
+	Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <977ab8ceb7a742499e5797d180c7c56b>:0)
+	Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		At least, normal explosions are working again.
+		
+
+	[Info   : Unity Log] SpawnExplosion -1
+	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+	Stack trace:
+	BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
+	Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
+	Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
 Stove
 	No longer rotate toward walls
 		Attempt, search 202102041042
-	Attempted Strike for grilling with unfriendly
-	Attempted use in view of owner:
-		ssage: Bunny Mod] Stove (1121): ObjectReal_Interact
+	Dialogue
+		E_Stove_DontTouchAngry
+			Didn't find Name
+			Also, he was Friendly so he should have allowed that.
+	Finding owner
+		[Message: Bunny Mod] Stove_FindOwner
+		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 1; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 2; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 3; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 4; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 5; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 6; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 7; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 8; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 9; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 10; OwnerID = 2
+		[Message: Bunny Mod] Checking Agent 11; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 12; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 13; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 14; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 15; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 16; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 17; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 18; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 19; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 20; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 21; OwnerID = 4
+		[Message: Bunny Mod] Checking Agent 22; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 23; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 24; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 25; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 26; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 27; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 28; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 29; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 30; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 31; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 32; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 33; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 34; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 35; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 36; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 37; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 38; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 39; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 40; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 41; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 42; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 43; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 44; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 45; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 46; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 47; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 48; OwnerID = 1
 		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 		Stack trace:
-		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <20039b338ab040bdb3bcf6026cff51c1>:0)
+		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
 		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-		[Warning: RogueLibs] SPECIAL RELEASE 0
-	Explosion broken:
-		[Message: Bunny Mod] Explosion_SetupExplosion
-		[Message: Bunny Mod] ChronomancyIsCast: False
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		BunnyMod.BunnyAbilities.ChronomancyIsMiscast (Agent agent) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
-		BunnyMod.BunnyAbilities.ChronomancyLogVariables (Agent agent) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
-		BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
-		Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
-		Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
 Telemancy
 
 Mugging
-	You don't need to do anything other than make a new button and set its price. The rest appears to be taken care of.
 	On attempt interact after beg:
-		[Message: Bunny Mod] AgentInteractions_DetermineButtons: Hobo; GangMugging: 0
-		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType Hobo_GiveMoney1
+		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo70; GangMugging: 2
+		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1304)
+		[Message: Bunny Mod] PlayfieldObject_DetermineMoneyCost: num = 0; LevelMult = 1; gangsizeMult = 0
 		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 		Stack trace:
 		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost, System.String extraCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyBehaviors.AgentInteractions_DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1, AgentInteractions __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		BunnyMod.BunnyBehaviors.AgentInteractions_DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1, AgentInteractions __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
 		AgentInteractions.DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Agent.DetermineButtons () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		PlayfieldObject.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
@@ -64,7 +122,6 @@ Mugging
 		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
 
 --- IMPLEMENTATIONS ----------------------------------------
 

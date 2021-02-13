@@ -276,6 +276,8 @@ namespace BunnyMod
                 __instance.ShowObjectButtons();
             else if (__instance is Stove)
             {
+                BunnyHeader.Log("Stove Interaction begun");
+
                 __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
 
                 Agent noticingOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
@@ -294,6 +296,7 @@ namespace BunnyMod
                         noticingOwner.SayDialogue("stove_DontTouchAngry");
                         noticingOwner.relationships.AddStrikes(agent, 1);
                         __instance.StopInteraction();
+
                         return false;
                     }
                     else if (relationship == relStatus.Friendly || relationship == relStatus.Aligned || relationship == relStatus.Loyal || relationship == relStatus.Submissive)
@@ -392,21 +395,50 @@ namespace BunnyMod
             {
                 __instance.StartFireInObject();
                 __instance.StopInteraction();
+
                 return false;
             }
             if (buttonText == "GrillFud")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    __instance.gc.audioHandler.Play(__instance, "GrillOperate");
+                    //__instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
+
                 return false;
             }
             if (buttonText == "UseWrenchToDetonate")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    //__instance.gc.audioHandler.Play(__instance, "Hack");
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
             }
             if (buttonText == "DispenseIce")
 			{
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-			}
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    //__instance.gc.audioHandler.Play(__instance, "Hack");
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
+            }
             #endregion Patch
             if (buttonText == "CollectPart")
 			{
@@ -929,11 +961,17 @@ namespace BunnyMod
         }
         public static Agent Stove_FindOwner(Stove stove) // Non-Patch
 		{
+            BunnyHeader.Log("Stove_FindOwner");
+
+            // relationships.owncheck
+
             for (int i = 0; i < stove.gc.agentList.Count; i++)
             {
                 Agent agent = stove.gc.agentList[i];
 
-                if (agent.ownerID == stove.owner)
+                BunnyHeader.Log("Checking Agent " + i + "; OwnerID = " + agent.ownerID);
+
+                if (agent.startingChunk == stove.startingChunk && agent.ownerID == stove.owner)
                     return agent;
             }
 
@@ -992,10 +1030,14 @@ namespace BunnyMod
         }
         public static Agent Stove_UnfriendlyOwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
 		{
+            BunnyHeader.Log(stove.name + ": Stove_UnfriendlyOwnerWatching");
+
             Agent agent = Stove_FindOwner(stove);
 
-            if (!(agent != null) || !(stove.interactingAgent != null))
+            if (agent == null || stove.interactingAgent == null)
                 return null;
+
+            BunnyHeader.Log(stove.name + ": " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
 
             relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 

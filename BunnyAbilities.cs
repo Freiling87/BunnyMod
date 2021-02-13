@@ -1483,7 +1483,7 @@ namespace BunnyMod
 		{
 			Agent agent = __instance.agent;
 
-			BunnyHeader.Log("AgentHitBox_LandedOnLand");
+			BunnyHeader.Log("AgentHitBox_LandedOnLand: agent.stomping = " + agent.stomping);
 			ChronomancyLogVariables(agent);
 
 			if (ChronomancyIsCast(agent) && agent.stomping)
@@ -1552,8 +1552,8 @@ namespace BunnyMod
 			// Appears safe to leave it as always false. That's good luck, since the rest of this algorithm will assume it.
 			// However, there's an "else" that doesn't seem reachable since I don't see any cases where immediateHit is null.
 
-			BunnyHeader.Log("Explosion_SetupExplosion");
-			ChronomancyLogVariables(__instance.agent);
+			BunnyHeader.Log("Explosion_SetupExplosion: type = " + __instance.explosionType + "; Fatass = " + __instance.agent.statusEffects.hasTrait("Fatass"));
+			//ChronomancyLogVariables(__instance.agent);
 
 			if (__instance.explosionType == "HammerTime")
 			{

@@ -6,6 +6,12 @@
 --- CURRENT TEST -------------------------------------------
 
 Chronomancy
+	Stomp no longer working
+		[Message: Bunny Mod] AgentHitBox_LandedOnLand
+		[Message: Bunny Mod] ChronomancyIsCast: False
+		[Message: Bunny Mod] ChronomancyIsMiscast: False
+		[Message: Bunny Mod] ChronomancyIsWindindUp: False
+		[Message: Bunny Mod] Agent.stomping: True
 
 Stove
 	No longer rotate toward walls
@@ -22,11 +28,43 @@ Stove
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
 		[Warning: RogueLibs] SPECIAL RELEASE 0
+	Explosion broken:
+		[Message: Bunny Mod] Explosion_SetupExplosion
+		[Message: Bunny Mod] ChronomancyIsCast: False
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		BunnyMod.BunnyAbilities.ChronomancyIsMiscast (Agent agent) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		BunnyMod.BunnyAbilities.ChronomancyLogVariables (Agent agent) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
 Telemancy
 
 Mugging
 	You don't need to do anything other than make a new button and set its price. The rest appears to be taken care of.
+	On attempt interact after beg:
+		[Message: Bunny Mod] AgentInteractions_DetermineButtons: Hobo; GangMugging: 0
+		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType Hobo_GiveMoney1
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost, System.String extraCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyBehaviors.AgentInteractions_DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1, AgentInteractions __instance) (at <ae58de974d6d4a1c9ea54cb7de3a03fd>:0)
+		AgentInteractions.DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Agent.DetermineButtons () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		PlayfieldObject.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Agent.Interact (Agent otherAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
 
 --- IMPLEMENTATIONS ----------------------------------------
 

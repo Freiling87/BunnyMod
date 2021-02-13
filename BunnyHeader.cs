@@ -29,13 +29,13 @@ namespace BunnyMod
 		public void Awake()
 		{
 			MainInstance = this;
-
 			ConsoleMessage = Logger;
 
 			new BunnyAbilities().Awake();
 			new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
 			new BunnyObjects().Awake();
+			//new BunnySprites().Awake();
 			new BunnyTraits().Awake();
 		}
 		#region Category Lists

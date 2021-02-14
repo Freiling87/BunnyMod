@@ -111,8 +111,8 @@ namespace BunnyMod
 
             CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText", new CustomNameInfo("Open container"));
 
-            CustomName stove_DontTouchAngry = RogueLibs.CreateCustomName("stove_DontTouchAngry", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
-            CustomName stove_NotThrilled = RogueLibs.CreateCustomName("stove_NotThrilled", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
+            CustomName stove_DontTouchAngry = RogueLibs.CreateCustomName("Stove_DontTouchAngry", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
+            CustomName stove_NotThrilled = RogueLibs.CreateCustomName("Stove_NotThrilled", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
         }
         #endregion
 
@@ -282,7 +282,7 @@ namespace BunnyMod
 
                 Agent noticingOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
                 Agent interactingAgent = __instance.interactingAgent;
-                relStatus relationship = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
+                string relationship = agent.relationships.GetRel(interactingAgent);
 
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
@@ -291,17 +291,17 @@ namespace BunnyMod
                 
                 if (noticingOwner != null)
 				{
-                    if (relationship == relStatus.Annoyed || relationship == relStatus.Neutral || relationship == relStatus.Hostile)
+                    if (relationship == "Annoyed" || relationship == "Neutral" || relationship == "Hostile")
 					{
-                        noticingOwner.SayDialogue("stove_DontTouchAngry");
+                        noticingOwner.SayDialogue("Stove_DontTouchAngry");
                         noticingOwner.relationships.AddStrikes(agent, 1);
                         __instance.StopInteraction();
 
                         return false;
                     }
-                    else if (relationship == relStatus.Friendly || relationship == relStatus.Aligned || relationship == relStatus.Loyal || relationship == relStatus.Submissive)
+                    else if (relationship == "Friendly" || relationship == "Aligned" || relationship == "Loyal" || relationship == "Submissive")
 					{
-                        noticingOwner.SayDialogue("stove_NotThrilled");
+                        noticingOwner.SayDialogue("Stove_NotThrilled");
 					}
 				}
                 __instance.ShowObjectButtons();
@@ -464,7 +464,7 @@ namespace BunnyMod
                 Stove_Remora remora = new Stove_Remora();
                 Stove_Variables[stove] = remora;
                 remora.stoveHost = stove;
-                Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove"); //202102041042
+                Stove_Variables[(Stove)__instance].animateSpriteID = __instance.spr.GetSpriteIdByName("Stove");
                 Stove_Variables[(Stove)__instance].animateSpriteID2 = __instance.spr.GetSpriteIdByName("Stove");
             }
             //else if (__instance is Refrigerator refrigerator)
@@ -880,7 +880,7 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
-            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -932,7 +932,7 @@ namespace BunnyMod
 
             if (damageAmount >= 15f && !__instance.startedFlashing)
             {
-                BunnyHeader.ConsoleMessage.LogMessage("Lemma 1");
+                BunnyHeader.ConsoleMessage.LogMessage("Stove_DamagedObject: Lemma 1");
 
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
                 __instance.StartCoroutine(Stove_AboutToExplode(__instance));
@@ -940,7 +940,7 @@ namespace BunnyMod
 
             if (damageAmount >= __instance.damageThreshold)
             {
-                BunnyHeader.ConsoleMessage.LogMessage("Firebomb 2");
+                BunnyHeader.ConsoleMessage.LogMessage("Stove_DamagedObject: Firebomb 2");
 
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
 
@@ -961,7 +961,7 @@ namespace BunnyMod
         }
         public static Agent Stove_FindOwner(Stove stove) // Non-Patch
 		{
-            BunnyHeader.Log("Stove_FindOwner");
+            BunnyHeader.Log("Stove_FindOwner: startingChunk = " + stove.startingChunk+ "; OwnerID = " + stove.owner);
 
             // relationships.owncheck
 
@@ -1005,7 +1005,7 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
-            // Trying to deactivate this to determine if if will fix rotation. 202102041042
+            // Trying to deactivate this to determine if if will fix rotation.
             //Stove_Variables[__instance].animateSpriteID = 0;
             //Stove_Variables[__instance].animateSpriteID2 = 0;
             //__instance.GetComponent<Animator>().enabled = false;

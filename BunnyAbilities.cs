@@ -1552,8 +1552,17 @@ namespace BunnyMod
 			// Appears safe to leave it as always false. That's good luck, since the rest of this algorithm will assume it.
 			// However, there's an "else" that doesn't seem reachable since I don't see any cases where immediateHit is null.
 
-			BunnyHeader.Log("Explosion_SetupExplosion: type = " + __instance.explosionType + "; Fatass = " + __instance.agent.statusEffects.hasTrait("Fatass"));
-			//ChronomancyLogVariables(__instance.agent);
+			BunnyHeader.Log("Explosion_SetupExplosion: type = " + __instance.explosionType);
+
+			try
+			{
+				BunnyHeader.Log(__instance.agent.agentName);
+			}
+			catch
+			{
+				BunnyHeader.Log("WARNING: Explosion.Agent is nullable");
+				// If this triggers, you can still check for traits in same if(), just make them after a trait-only explosion type
+			}
 
 			if (__instance.explosionType == "HammerTime")
 			{

@@ -8,92 +8,40 @@ Chronomancy
 	Stomp no longer working
 		See Explosion
 
-
 Explosion broken:
-	[Info   : Unity Log] SpawnExplosion -1
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <977ab8ceb7a742499e5797d180c7c56b>:0)
-	Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <977ab8ceb7a742499e5797d180c7c56b>:0)
-	Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		At least, normal explosions are working again.
-		
-
-	[Info   : Unity Log] SpawnExplosion -1
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	BunnyMod.BunnyAbilities.Explosion_SetupExplosion (Explosion __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-	Explosion.SetupExplosion () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients, Agent explosionOwner, PlayfieldObject realSource) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	SpawnerMain.SpawnExplosion (PlayfieldObject sourceObject, UnityEngine.Vector3 explosionPos, System.String explosionType, System.Boolean immediateHit, System.Int32 explosionNetID, System.Boolean hitMultPlayer, System.Boolean mustSpawnOnClients) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	BunnyMod.BunnyObjects.Stove_DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount, Stove __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-	Stove.DamagedObject (PlayfieldObject damagerObject, System.Single damageAmount) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	ObjectReal.Damage (PlayfieldObject damagerObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	MeleeHitbox.HitObject (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	MeleeColliderBox.OnTriggerEnter2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
 Stove
 	No longer rotate toward walls
-		Attempt, search 202102041042
-	Dialogue
-		E_Stove_DontTouchAngry
-			Didn't find Name
-			Also, he was Friendly so he should have allowed that.
+	Use with Friendly
+		[Message: Bunny Mod] Checking Agent 18; OwnerID = 1
+		[Message: Bunny Mod] Stove (1266): Friendly
+		[Message: Bunny Mod] ObjectReal_Interact: noticingOwner GangbangerB; RelStatus:
+		[Message: Bunny Mod] Stove (1266): ObjectReal_Interact
+		[Message: Bunny Mod] Stove Interaction begun
+		[Message: Bunny Mod] Stove (1266): Stove_UnfriendlyOwnerWatching
+		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 17; OwnerID = 1
+	Animation
+		[Message: Bunny Mod] Stove (1187): Stove_DamagedObject
+		[Message: Bunny Mod] Lemma 1
+		[Message: Bunny Mod] Stove (1187): MoveNext
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__30.MoveNext () (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
+		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+		Stove:DamagedObject(PlayfieldObject, Single)
+		ObjectReal:Damage(PlayfieldObject, Boolean)
+		MeleeHitbox:HitObject(GameObject, Boolean)
+		MeleeColliderBox:OnTriggerEnter2D(Collider2D)
+			Attempted changing to LastHitByAgent
 	Finding owner
 		[Message: Bunny Mod] Stove_FindOwner
 		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
 		[Message: Bunny Mod] Checking Agent 1; OwnerID = 1
 		[Message: Bunny Mod] Checking Agent 2; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 3; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 4; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 5; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 6; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 7; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 8; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 9; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 10; OwnerID = 2
-		[Message: Bunny Mod] Checking Agent 11; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 12; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 13; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 14; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 15; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 16; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 17; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 18; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 19; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 20; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 21; OwnerID = 4
-		[Message: Bunny Mod] Checking Agent 22; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 23; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 24; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 25; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 26; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 27; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 28; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 29; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 30; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 31; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 32; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 33; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 34; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 35; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 36; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 37; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 38; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 39; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 40; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 41; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 42; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 43; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 44; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 45; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 46; OwnerID = 1
+		[...]
 		[Message: Bunny Mod] Checking Agent 47; OwnerID = 1
 		[Message: Bunny Mod] Checking Agent 48; OwnerID = 1
 		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
@@ -103,12 +51,13 @@ Stove
 		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Entered new logging to find nullref
 Telemancy
 
 Mugging
 	On attempt interact after beg:
-		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo70; GangMugging: 2
-		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1304)
+		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo34; GangMugging: 2
+		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1104)
 		[Message: Bunny Mod] PlayfieldObject_DetermineMoneyCost: num = 0; LevelMult = 1; gangsizeMult = 0
 		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 		Stack trace:
@@ -122,6 +71,8 @@ Mugging
 		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		[Message: Bunny Mod] ChronomancyRollTimescale: 2.75
+		[Message: Bunny Mod] Timescale: 0.3636364
 
 --- IMPLEMENTATIONS ----------------------------------------
 

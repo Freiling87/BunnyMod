@@ -188,7 +188,7 @@ namespace BunnyMod
 		#region AgentInteractions
 		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
 		{
-			BunnyHeader.Log("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; GangMugging: " + interactingAgent.gangMugging);
+			BunnyHeader.Log("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
 
 			if (agent.agentName == "Hobo")
 			{
@@ -196,6 +196,8 @@ namespace BunnyMod
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 				{
+					BunnyHeader.Log("AgentInteractions_DetermineButtons: Adding Buttons");
+
 					__instance.AddButton("Hobo_GiveMoney1", agent.determineMoneyCost("Hobo_GiveMoney1"));
 					__instance.AddButton("Hobo_GiveMoney2", agent.determineMoneyCost("Hobo_GiveMoney2"));
 					__instance.AddButton("Hobo_GiveMoney3", agent.determineMoneyCost("Hobo_GiveMoney3"));
@@ -307,7 +309,7 @@ namespace BunnyMod
 		#endregion
 		#region PlayfieldObject
 		public static void PlayfieldObject_determineMoneyCost(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result) // Postfix // Uncapitalized in source
-		{                              // ↑ [sic]
+		{                               // ↑ [sic]
 			BunnyHeader.Log("PlayfieldObject_determineMoneyCost: transactionType = " + transactionType +"; PFO = " + __instance.name);
 
 			Agent agent = (Agent)__instance;
@@ -320,11 +322,11 @@ namespace BunnyMod
 			if (transactionType == "Mug_Gangbanger")
 				num = (float)(levelMultiplier * 10 + gangsizeMultiplier * 15);
 			else if (transactionType == "Hobo_GiveMoney1")
-				num = (float)(5);
+				num = 05f;
 			else if (transactionType == "Hobo_GiveMoney2")
-				num = (float)(20);
+				num = 20f;
 			else if (transactionType == "Hobo_GiveMoney3")
-				num = (float)(50);
+				num = 50f;
 			else
 				BunnyHeader.Log("Bad string passed to PlayfieldObject_determineMoneyCost");
 

@@ -427,6 +427,8 @@ Traits
 			+ Kill Guilty (less)
 			- Kill innocent
 			+ Freeing Slaves or Gorillas
+	hit-and-run (4): gain speed for 5s after a kill.
+	adrenaline rush (4): gain strength for 5s after a kill.
 	Alcoholic (-4) - Might be interesting to have an Addict trait but with alcohol.
 	Animal Whisperer - Gorillas and Werewolves are Loyal
 	Bonkist (2) - Backstabbing with a blunt weapon leaves the target Dizzy, if they survive. (Considering making this a small chance with all blunt hits, not just backstabs)

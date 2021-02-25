@@ -2,10 +2,11 @@
 
 Chronomancy
 	Stomp no longer working
-		See Explosion
-	Use Altar sound effect instead of Necronomicon, it's called "MakeOffering"
+		Search all methods with Stomp as a string, ensure that all are patched.
 
-Explosion broken:
+FlamingBarrel & Stove
+	Name Hover
+		Occurs after FinishedOperating
 
 Stove
 	No longer rotate toward walls
@@ -17,6 +18,7 @@ Stove
 		[Message: Bunny Mod] Stove Interaction begun
 		[Message: Bunny Mod] Stove (1266): Stove_UnfriendlyOwnerWatching
 		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 17; OwnerID = 1
+			Find a way to iterate only within the chunk?
 	Animation
 		[Message: Bunny Mod] Stove (1187): Stove_DamagedObject
 		[Message: Bunny Mod] Lemma 1
@@ -41,14 +43,16 @@ Stove
 		[...]
 		[Message: Bunny Mod] Checking Agent 47; OwnerID = 1
 		[Message: Bunny Mod] Checking Agent 48; OwnerID = 1
+		[Message: Bunny Mod] Stove (1440): Neutral
 		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 		Stack trace:
-		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
+		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <1b1943de74604b399bd9336fe1366be8>:0)
 		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Entered new logging to find nullref
+			This example is when the owner is present. Without an owner, it's identical minus the Relationship message.
 Telemancy
 
 === TASKS ======================================================================
@@ -145,6 +149,7 @@ BEFORE RELEASE:
 	Complete and win a run with each new feature, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
 	Make a promo character for each special ability or trait group, to promote the mod and community at large.
 	Increment the Version number!
+	Update Sprites
 
 1.2.2
 - Added Chronomancy & Pyromancy

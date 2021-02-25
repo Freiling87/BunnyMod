@@ -27,6 +27,8 @@ namespace BunnyMod
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
 
+			BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectMult), "SpawnExplosion", GetType(), "ObjectMult_SpawnExplosion", new Type[1] { typeof(Explosion) });
+
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddStatusEffectSpecial", GetType(), "StatusEffects_AddStatusEffectSpecial", new Type[4] { typeof(String), typeof(Agent), typeof(Agent), typeof(bool) });
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
 			BunnyHeader.MainInstance.PatchPrefix(typeof(StatusEffects), "Stomp", GetType(), "StatusEffects_Stomp", new Type[0] { });
@@ -178,7 +180,6 @@ namespace BunnyMod
 			BunnyHeader.Log("ChronomancyIsCast: " + ChronomancyIsCast(agent));
 			BunnyHeader.Log("ChronomancyIsMiscast: " + ChronomancyIsMiscast(agent));
 			BunnyHeader.Log("ChronomancyIsWindindUp: " + ChronomancyIsWindingUp(agent));
-			BunnyHeader.Log("Agent.stomping: " + agent.stomping);
 		}
 		public static int ChronomancyRollManaCost(Agent agent)
 		{
@@ -286,7 +287,7 @@ namespace BunnyMod
 		public static void ChronomancyStartCast(Agent agent, float speedupfactor)
 		{
 			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
 			ChronomancySetCast(agent, true);
 
@@ -298,22 +299,22 @@ namespace BunnyMod
 		}
 		public static async void ChronomancyStartDecast(Agent agent)
 		{
-			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
 			agent.speedMax = agent.FindSpeed();
-
-			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && agent.statusEffects.hasTrait("HammerTime"))
 			{
 				agent.stomping = true;
 				agent.Jump();
 
-				agent.gc.selectedTimeScale /= 3f;
-				agent.gc.mainTimeScale /= 3f;
+				agent.gc.selectedTimeScale /= 2f;
+				agent.gc.mainTimeScale /= 2f;
 
-				await Task.Delay((int)(500 / agent.gc.mainTimeScale)); // May need to do a base amount divided by timescale, but first attempt didn't 
+				await Task.Delay((int)(500 / agent.gc.mainTimeScale)); 
 			}
+
+			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			agent.gc.selectedTimeScale = baseTimeScale;
 			agent.gc.mainTimeScale = baseTimeScale;
@@ -1548,27 +1549,13 @@ namespace BunnyMod
 		#region Explosion
 		public static bool Explosion_SetupExplosion(Explosion __instance) // Prefix
 		{
-			// see Explosion.immediateHit if these aren't doing damage.
-			// Appears safe to leave it as always false. That's good luck, since the rest of this algorithm will assume it.
-			// However, there's an "else" that doesn't seem reachable since I don't see any cases where immediateHit is null.
-
 			BunnyHeader.Log("Explosion_SetupExplosion: type = " + __instance.explosionType);
-
-			try
-			{
-				BunnyHeader.Log(__instance.agent.agentName);
-			}
-			catch
-			{
-				BunnyHeader.Log("WARNING: Explosion.Agent is nullable");
-				// If this triggers, you can still check for traits in same if(), just make them after a trait-only explosion type
-			}
 
 			if (__instance.explosionType == "HammerTime")
 			{
-				BunnyHeader.Log("Explosion_SetupExplosion detected HammerTime trait for Stomp");
+				BunnyHeader.Log("HammerTime type explosion detected");
 
-				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
+				 __instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
 
 				__instance.StartCoroutine(__instance.SpawnNoiseLate());
 				__instance.StartCoroutine(__instance.PlaySoundAfterTick());
@@ -1616,6 +1603,46 @@ namespace BunnyMod
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			baseTimeScale = GameController.gameController.selectedTimeScale;
+		}
+		#endregion
+		#region ObjectMult
+		public static bool ObjectMult_SpawnExplosion(Explosion myExplosion, ObjectMult __instance) // Postfix
+		{
+			BunnyHeader.Log("ObjectMult_SpawnExplosion: explosionType = " + myExplosion.explosionType);
+
+			if (myExplosion.explosionType == "HammerTime")
+			{
+				byte explosionTypeByte = 14;
+
+				if (__instance.gc.multiplayerMode && __instance.gc.loadComplete)
+				{
+					if (__instance.gc.serverPlayer)
+					{
+						if (myExplosion.agent != null)
+						{
+							__instance.CallRpcSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer, myExplosion.mustSpawnOnClients);
+
+							return false;
+						}
+						__instance.CallRpcSpawnExplosion(NetworkInstanceId.Invalid, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer, myExplosion.mustSpawnOnClients);
+
+						return false;
+					}
+					else if (myExplosion.agent != null)
+					{
+						if (myExplosion.agent.localPlayer && !myExplosion.mustSpawnOnClients)
+						{
+							__instance.CallCmdSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer);
+
+							return false;
+						}
+						if (myExplosion.mustHitOnServer && !myExplosion.mustSpawnOnClients)
+							__instance.CallCmdSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, false);
+					}
+				}
+			}
+
+			return true;
 		}
 		#endregion
 		#region StatusEffects

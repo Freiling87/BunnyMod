@@ -866,7 +866,7 @@ namespace BunnyMod
 		{
             // TODO: This one is why it's blinking but not breaking.
 
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": Stove_AboutToExplode");
 
             __instance.interactable = false;
 
@@ -880,6 +880,9 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
+
+            BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
+
             __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 

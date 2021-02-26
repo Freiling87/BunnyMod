@@ -18,6 +18,7 @@ Chronomancy
 FlamingBarrel & Stove
 	Name Hover
 		Occurs after FinishedOperating
+		Attempt 202102261630
 
 Stove
 	Rotation

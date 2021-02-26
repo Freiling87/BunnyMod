@@ -230,18 +230,22 @@ namespace BunnyMod
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-			#region Patch
 			if (__instance is FlamingBarrel)
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
             else  if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
+				{
                     Stove_UseWrenchToDetonate((Stove)__instance);
+                    __instance.StopInteraction(); // Attempt 202102261630
+                }
 
                 if (__instance.operatingItem.invItemName == "Fud")
+                {
                     Stove_GrilledFud((Stove)__instance);
+                    __instance.StopInteraction(); // Attempt 202102261630
+                }
             }
-            #endregion
 
             if (!__instance.interactingAgent.interactionHelper.interactingFar)
             {

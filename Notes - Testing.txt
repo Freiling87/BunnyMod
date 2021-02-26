@@ -3,6 +3,17 @@
 Chronomancy
 	Stomp no longer working
 		Search all methods with Stomp as a string, ensure that all are patched.
+			Ignored the following:
+				ObjectMultAgent.convertIntToSpecialAbility
+				ObjectMultAgent.convertSpecialAbilityToInt
+				PlayfieldObject.FindDamage
+				ObjectMult.GetExplosionType
+					This one has a chain under analyses of Cmd/Rpc methods that appear to do more than logging. May need to add HammerTime to the byte list.
+					In the meantime, ObjectMult.SpawnExplosion sets the byte to 14 (stomp) so it should perform identically in some respects.
+				Explosion.HasLOSExplosion
+					Leaving this one alone may allow it to destroy Steel Doors. Test that before concluding you can skip this.
+				Explosion.PlaySoundAfterTick
+					Analysis claims unused, but that may be a quirk of DNSpy - I think it is used.
 
 FlamingBarrel & Stove
 	Name Hover

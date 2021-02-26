@@ -350,13 +350,13 @@ namespace BunnyMod
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
-            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); //Verbose
+            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); // Verbose when enabled
 
             if (__instance is Stove)
             {
                 Stove_Remora remora = Stove_Variables[(Stove)__instance];
 
-                Stove_AnimationSequence((Stove)__instance); //Untested
+                //Stove_AnimationSequence((Stove)__instance); // Attempt 202102261601
 
                 if (__instance.timer > 0f)
                 {
@@ -367,15 +367,19 @@ namespace BunnyMod
                         if (__instance.startedFlashing)
                         {
                             __instance.DestroyMe(remora.savedDamagerObject);
+
                             return false;
                         }
+
                         remora.noOwnCheckCountdown = true;
                         remora.savedDamagerObject = remora.countdownCauser;
                         __instance.DestroyMe(remora.countdownCauser);
                     }
                 }
+
                 return false;
             }
+
             return true;
         }
         public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance) // Replacement
@@ -883,7 +887,7 @@ namespace BunnyMod
 
             BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
 
-            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -900,8 +904,8 @@ namespace BunnyMod
 
             yield break;
         }
-        public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
-		{
+        public static void Stove_AnimationSequence(Stove __instance) // Non-Patch // Deactivating, Attempt 202102261601 
+        {
             // BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name); // Verbose
 
             Stove_Remora remora = Stove_Variables[__instance];
@@ -1013,11 +1017,13 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
+
             // Trying to deactivate this to determine if if will fix rotation.
             //Stove_Variables[__instance].animateSpriteID = 0;
             //Stove_Variables[__instance].animateSpriteID2 = 0;
             //__instance.GetComponent<Animator>().enabled = false;
             //
+
             Stove_Variables[__instance].savedDamagerObject = null;
             Stove_Variables[__instance].noOwnCheckCountdown = false;
             Stove_Variables[__instance].countdownCauser = null;
@@ -1029,10 +1035,9 @@ namespace BunnyMod
         }
         public static void Stove_SetVars(Stove __instance) // Postfix
         {
-            __instance.animates = true;
+            // __instance.animates = true; // Attempt 202102261601
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
-            __instance.faceAwayFromWalls = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
         }

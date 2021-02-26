@@ -20,50 +20,16 @@ FlamingBarrel & Stove
 		Occurs after FinishedOperating
 
 Stove
-	No longer rotate toward walls
-	Use with Friendly
-		[Message: Bunny Mod] Checking Agent 18; OwnerID = 1
-		[Message: Bunny Mod] Stove (1266): Friendly
-		[Message: Bunny Mod] ObjectReal_Interact: noticingOwner GangbangerB; RelStatus:
-		[Message: Bunny Mod] Stove (1266): ObjectReal_Interact
-		[Message: Bunny Mod] Stove Interaction begun
-		[Message: Bunny Mod] Stove (1266): Stove_UnfriendlyOwnerWatching
-		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 17; OwnerID = 1
-			Find a way to iterate only within the chunk?
+	Rotation
+		Attempt 202102261601
+	Use near Owner
+		Use with Friendly
+			Ready
+		Use with Annoyed
+			Ready
 	Animation
-		[Message: Bunny Mod] Stove (1187): Stove_DamagedObject
-		[Message: Bunny Mod] Lemma 1
-		[Message: Bunny Mod] Stove (1187): MoveNext
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__30.MoveNext () (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-		Stove:DamagedObject(PlayfieldObject, Single)
-		ObjectReal:Damage(PlayfieldObject, Boolean)
-		MeleeHitbox:HitObject(GameObject, Boolean)
-		MeleeColliderBox:OnTriggerEnter2D(Collider2D)
-			Attempted changing to LastHitByAgent
-	Finding owner
-		[Message: Bunny Mod] Stove_FindOwner
-		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 1; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 2; OwnerID = 1
-		[...]
-		[Message: Bunny Mod] Checking Agent 47; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 48; OwnerID = 1
-		[Message: Bunny Mod] Stove (1440): Neutral
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <1b1943de74604b399bd9336fe1366be8>:0)
-		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Entered new logging to find nullref
-			This example is when the owner is present. Without an owner, it's identical minus the Relationship message.
+		Ready
+
 Telemancy
 
 === TASKS ======================================================================

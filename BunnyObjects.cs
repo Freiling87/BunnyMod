@@ -280,7 +280,7 @@ namespace BunnyMod
 
                 __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
 
-                Agent noticingOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
+                Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
                 Agent interactingAgent = __instance.interactingAgent;
                 string relationship = agent.relationships.GetRel(interactingAgent);
 
@@ -975,7 +975,12 @@ namespace BunnyMod
                 BunnyHeader.Log("Checking Agent " + i + "; OwnerID = " + agent.ownerID);
 
                 if (agent.startingChunk == stove.startingChunk && agent.ownerID == stove.owner)
+				{
+                    BunnyHeader.Log("Found Stove Owner: " + agent.agentName);
+
                     return agent;
+                }
+                    
             }
 
             return null;
@@ -1031,7 +1036,7 @@ namespace BunnyMod
             __instance.hasUpdate = true;
             __instance.interactable = true;
         }
-        public static Agent Stove_UnfriendlyOwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
+        public static Agent Stove_OwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
 		{
             BunnyHeader.Log(stove.name + ": Stove_UnfriendlyOwnerWatching");
 
@@ -1040,12 +1045,11 @@ namespace BunnyMod
             if (agent == null || stove.interactingAgent == null)
                 return null;
 
-            BunnyHeader.Log(stove.name + ": " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
+            BunnyHeader.Log(stove.name + ": Owner " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
 
             relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 
-            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified &&
-                relTypeCode != relStatus.Neutral && relTypeCode != relStatus.Annoyed && relTypeCode != relStatus.Hostile)
+            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified)
                 return agent;
 
             return null;

@@ -40,6 +40,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>Libraries\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="AstarPathfindingProject">
+      <HintPath>Libraries\AstarPathfindingProject.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>Libraries\BepInEx.dll</HintPath>
     </Reference>

@@ -230,18 +230,22 @@ namespace BunnyMod
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
-			#region Patch
 			if (__instance is FlamingBarrel)
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
             else  if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
+				{
                     Stove_UseWrenchToDetonate((Stove)__instance);
+                    __instance.StopInteraction(); // Attempt 202102261630
+                }
 
                 if (__instance.operatingItem.invItemName == "Fud")
+                {
                     Stove_GrilledFud((Stove)__instance);
+                    __instance.StopInteraction(); // Attempt 202102261630
+                }
             }
-            #endregion
 
             if (!__instance.interactingAgent.interactionHelper.interactingFar)
             {
@@ -280,7 +284,7 @@ namespace BunnyMod
 
                 __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
 
-                Agent noticingOwner = Stove_UnfriendlyOwnerWatching(agent, (Stove)__instance);
+                Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
                 Agent interactingAgent = __instance.interactingAgent;
                 string relationship = agent.relationships.GetRel(interactingAgent);
 
@@ -350,13 +354,13 @@ namespace BunnyMod
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
-            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); //Verbose
+            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); // Verbose when enabled
 
             if (__instance is Stove)
             {
                 Stove_Remora remora = Stove_Variables[(Stove)__instance];
 
-                Stove_AnimationSequence((Stove)__instance); //Untested
+                //Stove_AnimationSequence((Stove)__instance); // Attempt 202102261601
 
                 if (__instance.timer > 0f)
                 {
@@ -367,15 +371,19 @@ namespace BunnyMod
                         if (__instance.startedFlashing)
                         {
                             __instance.DestroyMe(remora.savedDamagerObject);
+
                             return false;
                         }
+
                         remora.noOwnCheckCountdown = true;
                         remora.savedDamagerObject = remora.countdownCauser;
                         __instance.DestroyMe(remora.countdownCauser);
                     }
                 }
+
                 return false;
             }
+
             return true;
         }
         public static bool ObjectReal_PressedButton(string buttonText, int buttonPrice, ObjectReal __instance) // Replacement
@@ -866,7 +874,7 @@ namespace BunnyMod
 		{
             // TODO: This one is why it's blinking but not breaking.
 
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
+            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": Stove_AboutToExplode");
 
             __instance.interactable = false;
 
@@ -880,7 +888,10 @@ namespace BunnyMod
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
-            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
+
+            BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
+
+            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -897,8 +908,8 @@ namespace BunnyMod
 
             yield break;
         }
-        public static void Stove_AnimationSequence(Stove __instance) // Non-Patch
-		{
+        public static void Stove_AnimationSequence(Stove __instance) // Non-Patch // Deactivating, Attempt 202102261601 
+        {
             // BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name); // Verbose
 
             Stove_Remora remora = Stove_Variables[__instance];
@@ -972,7 +983,12 @@ namespace BunnyMod
                 BunnyHeader.Log("Checking Agent " + i + "; OwnerID = " + agent.ownerID);
 
                 if (agent.startingChunk == stove.startingChunk && agent.ownerID == stove.owner)
+				{
+                    BunnyHeader.Log("Found Stove Owner: " + agent.agentName);
+
                     return agent;
+                }
+                    
             }
 
             return null;
@@ -1005,11 +1021,13 @@ namespace BunnyMod
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
+
             // Trying to deactivate this to determine if if will fix rotation.
             //Stove_Variables[__instance].animateSpriteID = 0;
             //Stove_Variables[__instance].animateSpriteID2 = 0;
             //__instance.GetComponent<Animator>().enabled = false;
             //
+
             Stove_Variables[__instance].savedDamagerObject = null;
             Stove_Variables[__instance].noOwnCheckCountdown = false;
             Stove_Variables[__instance].countdownCauser = null;
@@ -1021,14 +1039,13 @@ namespace BunnyMod
         }
         public static void Stove_SetVars(Stove __instance) // Postfix
         {
-            __instance.animates = true;
+            // __instance.animates = true; // Attempt 202102261601
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
-            __instance.faceAwayFromWalls = true;
             __instance.hasUpdate = true;
             __instance.interactable = true;
         }
-        public static Agent Stove_UnfriendlyOwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
+        public static Agent Stove_OwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
 		{
             BunnyHeader.Log(stove.name + ": Stove_UnfriendlyOwnerWatching");
 
@@ -1037,12 +1054,11 @@ namespace BunnyMod
             if (agent == null || stove.interactingAgent == null)
                 return null;
 
-            BunnyHeader.Log(stove.name + ": " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
+            BunnyHeader.Log(stove.name + ": Owner " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
 
             relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 
-            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified &&
-                relTypeCode != relStatus.Neutral && relTypeCode != relStatus.Annoyed && relTypeCode != relStatus.Hostile)
+            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified)
                 return agent;
 
             return null;

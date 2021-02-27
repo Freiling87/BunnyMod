@@ -7,6 +7,7 @@ using HarmonyLib;
 using RogueLibsCore;
 using UnityEngine;
 using UnityEngine.Networking;
+using Pathfinding;
 
 namespace BunnyMod
 {
@@ -23,9 +24,12 @@ namespace BunnyMod
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "BulletHitEffect", GetType(), "Bullet_BulletHitEffect", new Type[1] { typeof(GameObject) });
 
+			BunnyHeader.MainInstance.PatchPrefix(typeof(Explosion), "ExplosionHit", GetType(), "Explosion_ExplosionHit", new Type[2] { typeof(GameObject), typeof(bool) });
 			BunnyHeader.MainInstance.PatchPrefix(typeof(Explosion), "SetupExplosion", GetType(), "Explosion_SetupExplosion", new Type[0] { });
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
+
+			BunnyHeader.MainInstance.PatchPrefix(typeof(ObjectMult), "SpawnExplosion", GetType(), "ObjectMult_SpawnExplosion", new Type[1] { typeof(Explosion) });
 
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddStatusEffectSpecial", GetType(), "StatusEffects_AddStatusEffectSpecial", new Type[4] { typeof(String), typeof(Agent), typeof(Agent), typeof(bool) });
 			BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
@@ -178,7 +182,6 @@ namespace BunnyMod
 			BunnyHeader.Log("ChronomancyIsCast: " + ChronomancyIsCast(agent));
 			BunnyHeader.Log("ChronomancyIsMiscast: " + ChronomancyIsMiscast(agent));
 			BunnyHeader.Log("ChronomancyIsWindindUp: " + ChronomancyIsWindingUp(agent));
-			BunnyHeader.Log("Agent.stomping: " + agent.stomping);
 		}
 		public static int ChronomancyRollManaCost(Agent agent)
 		{
@@ -286,7 +289,7 @@ namespace BunnyMod
 		public static void ChronomancyStartCast(Agent agent, float speedupfactor)
 		{
 			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
 			ChronomancySetCast(agent, true);
 
@@ -298,22 +301,22 @@ namespace BunnyMod
 		}
 		public static async void ChronomancyStartDecast(Agent agent)
 		{
-			GameController.gameController.audioHandler.Play(agent, "UseNecronomicon");
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
 			agent.speedMax = agent.FindSpeed();
-
-			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			if (!agent.underWater && !agent.jumped && !agent.melee.attackAnimPlaying && agent.statusEffects.hasTrait("HammerTime"))
 			{
 				agent.stomping = true;
 				agent.Jump();
 
-				agent.gc.selectedTimeScale /= 3f;
-				agent.gc.mainTimeScale /= 3f;
+				agent.gc.selectedTimeScale /= 2f;
+				agent.gc.mainTimeScale /= 2f;
 
-				await Task.Delay((int)(500 / agent.gc.mainTimeScale)); // May need to do a base amount divided by timescale, but first attempt didn't 
+				await Task.Delay((int)(500 / agent.gc.mainTimeScale)); 
 			}
+
+			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			agent.gc.selectedTimeScale = baseTimeScale;
 			agent.gc.mainTimeScale = baseTimeScale;
@@ -1546,29 +1549,336 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Explosion
+		public static bool Explosion_ExplosionHit(GameObject hitObject, bool fromClient, Explosion __instance, ref float ___canHit) // Prefix
+		{
+			if (__instance.explosionType != "HammerTime")
+				return true;
+
+			if (hitObject.CompareTag("AgentSprite"))
+			{
+				try
+				{
+					hitObject = hitObject.GetComponent<AgentColliderBox>().objectSprite.go;
+				}
+				catch
+				{
+					hitObject = hitObject.transform.Find("AgentHitboxColliders").transform.GetChild(0).GetComponent<AgentColliderBox>().objectSprite.go;
+				}
+			}
+
+			if (!__instance.objectList.Contains(hitObject) && ___canHit > 0f) // Used ref float to access private var
+			{
+				__instance.objectList.Add(hitObject);
+
+				bool isLocalPlayerHitByServerPlayer = false;
+
+				if (__instance.gc.multiplayerMode)
+				{
+					if (!__instance.gc.serverPlayer && __instance.mustSpawnOnClients)
+					{
+						bool flag2 = false;
+
+						if (hitObject.CompareTag("AgentSprite") && hitObject.GetComponent<ObjectSprite>().agent.localPlayer)
+							flag2 = true;
+
+						if (!flag2)
+							return false;
+					}
+					if (__instance.agent != null)
+					{
+						if (hitObject.CompareTag("AgentSprite"))
+						{
+							Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
+
+							if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && hitAgent.localPlayer)
+								isLocalPlayerHitByServerPlayer = true;
+						}
+						if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && !fromClient && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer && !__instance.mustSpawnOnClients)
+						{
+							if (hitObject.CompareTag("Wall"))
+							{
+								if (hitObject.name.Contains("Steel") && !__instance.destroySteel)
+									__instance.initialHitSteel = true;
+								else if (hitObject.name.Contains("Glass"))
+									__instance.initialHitGlass = true;
+								else
+								{
+									bool flag3 = __instance.HasLOSExplosion(hitObject);
+
+									if ((!hitObject.name.Contains("Steel") || __instance.destroySteel) && flag3)
+										__instance.initialBreak = true;
+								}
+							}
+
+							__instance.FakeHit(hitObject);
+
+							return false;
+						}
+					}
+				}
+
+				if (hitObject.CompareTag("ObjectRealSprite"))
+				{
+					ObjectReal objectReal;
+
+					if (hitObject.name.Contains("ExtraSprite"))
+						objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
+					else
+						objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
+
+					if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
+					{
+						__instance.FakeHit(hitObject);
+
+						return false;
+					}
+					if (__instance.HasLOSExplosion(objectReal.go) || __instance.explosionType == "PowerSap" || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
+					{
+						if (__instance.damage > 0)
+						{
+							if (!objectReal.notRealObject)
+							{
+								objectReal.damagerExplosion = __instance;
+								int num = __instance.damage;
+
+								if (__instance.destroySteel)
+									__instance.damage = 200;
+
+								objectReal.Damage(__instance, fromClient);
+								__instance.damage = num;
+								__instance.SpawnNoiseIfNotSpawned();
+
+								if (__instance.agent != null && __instance.gc.serverPlayer && !__instance.noOwnCheck)
+									__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
+							}
+						}
+
+						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
+						{
+							__instance.agent.objectMult.CallCmdExplosionHitObject(objectReal.objectNetID, __instance.explosionNetID);
+
+							return false;
+						}
+					}
+				}
+				else if (hitObject.CompareTag("ItemImage"))
+				{
+					Item item = hitObject.GetComponent<ObjectSprite>().item;
+
+					if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
+					{
+						__instance.FakeHit(hitObject);
+
+						return false;
+					}
+
+					if (item != null && __instance.HasLOSExplosion(item.go) && !item.justSpilled)
+					{
+						if (__instance.damage > 0)
+						{
+							if (item.containerExplosion != __instance)
+								item.Damage(__instance, fromClient);
+
+							if (!fromClient)
+								item.movement.KnockBack(__instance.gameObject, 300f, __instance);
+
+							if (item.justSpilled)
+								item.justSpilled = false;
+
+							if (__instance.agent != null)
+							{
+								if (item.startingOwner != 0 && __instance.gc.serverPlayer && !__instance.noOwnCheck)
+									__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
+
+								item.thrower = __instance.agent;
+							}
+						}
+
+						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
+						{
+							__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(item);
+							Quaternion rotation = item.tr.rotation;
+							Vector3 vector = __instance.tr.position - item.tr.position;
+							vector.Normalize();
+							float z = Mathf.Atan2(vector.y, vector.x) * 57.29578f;
+							item.tr.rotation = Quaternion.Euler(0f, 0f, z);
+							item.itemHelperTr.localRotation = Quaternion.identity;
+							item.itemHelperTr.localPosition = Vector3.zero;
+							item.itemHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
+							Vector3 position = item.itemHelperTr.position;
+							item.itemHelperTr.localPosition = Vector3.zero;
+							item.tr.rotation = rotation;
+
+							if (__instance.damage > 0)
+							{
+								__instance.agent.objectMult.CallCmdExplosionHitObject2(item.objectNetID, __instance.explosionNetID, position, 300, item.tr.position);
+
+								return false;
+							}
+						}
+					}
+				}
+				else if (hitObject.CompareTag("AgentSprite"))
+				{
+					Agent agent2 = hitObject.GetComponent<ObjectSprite>().agent;
+					
+					if (__instance.gc.levelType == "Tutorial" && __instance.realSource != null && __instance.realSource.objectName == "Television")
+						return false;
+					
+					if (__instance.gc.serverPlayer && __instance.agent == null && agent2.isPlayer > 0 && !agent2.localPlayer && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
+					{
+						__instance.FakeHit(hitObject);
+					
+						return false;
+					}
+					if (__instance.gc.multiplayerMode && __instance.agent != null)
+					{
+						if (!__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
+						{
+							if (__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+					
+								return false;
+							}
+
+							if (__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+								
+								return false;
+							}
+							
+							if (__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && agent2.isPlayer > 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+							
+								return false;
+							}
+
+							if (!__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+							
+								return false;
+							}
+
+							if (!__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+							
+								return false;
+							}
+
+							if (!__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+							
+								return false;
+							}
+						}
+						if (!__instance.gc.serverPlayer && __instance.agent.isPlayer != 0 && !__instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
+						{
+							__instance.FakeHit(hitObject);
+							
+							return false;
+						}
+					}
+					if ((__instance.HasLOSExplosion(agent2.go) || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime") && !agent2.ghost && !__instance.gc.cinematic && (!(__instance.agent == agent2) || !__instance.agent.statusEffects.hasTrait("ExplosionsDontDamageCauser") || (!(__instance.explosionType == "Normal") && !(__instance.explosionType == "Big") && !(__instance.explosionType == "Huge") && !(__instance.explosionType == "Ridiculous"))))
+					{
+						if (__instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
+							{
+								if (__instance.agent != agent2 && !fromClient && __instance.agent.DontHitAlignedCheck(agent2) && !agent2.jumped && !agent2.underWater && !agent2.fellInHole)
+								{
+									__instance.damage = 0;
+
+									if (agent2.hitByRocket == Vector3.zero)
+										if (!fromClient)
+											agent2.movement.KnockBack(__instance.gameObject, 150f, __instance);
+									else
+									{
+										if (!fromClient)
+											agent2.movement.KnockBackRocket(agent2.hitByRocket, 150f, __instance);
+
+										agent2.hitByRocket = Vector3.zero;
+									}
+
+									if (__instance.agent.statusEffects.hasTrait("StompDamagesAgents") || (__instance.agent.agentName == "Bouncer" && __instance.agent.oma.superSpecialAbility))
+									{
+										__instance.damage = 10;
+
+										if (__instance.agent.isPlayer == 0 || agent2.isPlayer == 0 || __instance.gc.pvp)
+											agent2.Damage(__instance, fromClient);
+									}
+
+									if (__instance.gc.serverPlayer)
+										if (!agent2.preventStatusEffects)
+										{
+											if (!__instance.agent.invisible && agent2.movement.HasLOSAgent360(__instance.agent))
+												agent2.statusEffects.AddStatusEffect("Dizzy", __instance.agent, __instance.agent);
+											else
+												agent2.statusEffects.AddStatusEffect("Dizzy", null, __instance.agent);
+										}
+									else if (!agent2.preventStatusEffects)
+									{
+										if (!__instance.agent.invisible)
+											__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", __instance.agent.objectNetID, true, false, -1);
+										else
+											__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", NetworkInstanceId.Invalid, true, false, -1);
+									}
+
+									__instance.damage = 0;
+								}
+							}
+
+						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer == 0)
+						{
+							__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(agent2);
+
+							if (agent2.hitByRocket == Vector3.zero)
+							{
+								Quaternion rotation2 = agent2.tr.rotation;
+								Vector3 vector3 = __instance.tr.position - agent2.tr.position;
+								vector3.Normalize();
+								float z2 = Mathf.Atan2(vector3.y, vector3.x) * 57.29578f;
+								agent2.tr.rotation = Quaternion.Euler(0f, 0f, z2);
+								agent2.agentHelperTr.localRotation = Quaternion.identity;
+								agent2.agentHelperTr.localPosition = Vector3.zero;
+								agent2.agentHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
+								Vector3 position2 = agent2.agentHelperTr.position;
+								agent2.agentHelperTr.localPosition = Vector3.zero;
+								agent2.tr.rotation = rotation2;
+								__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position2, 150, agent2.tr.position);
+
+								return false;
+							}
+
+							Quaternion localRotation = __instance.explosionHelperTr.localRotation;
+							__instance.explosionHelperTr.eulerAngles = agent2.hitByRocket;
+							__instance.explosionHelperTr.localPosition = Vector3.zero;
+							__instance.explosionHelperTr.localPosition = new Vector3(0f, 10f, 0f);
+							Vector3 position3 = __instance.explosionHelperTr.position;
+							__instance.explosionHelperTr.localPosition = Vector3.zero;
+							__instance.explosionHelperTr.localRotation = localRotation;
+							__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position3, 150, agent2.tr.position);
+
+							return false;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
 		public static bool Explosion_SetupExplosion(Explosion __instance) // Prefix
 		{
-			// see Explosion.immediateHit if these aren't doing damage.
-			// Appears safe to leave it as always false. That's good luck, since the rest of this algorithm will assume it.
-			// However, there's an "else" that doesn't seem reachable since I don't see any cases where immediateHit is null.
-
 			BunnyHeader.Log("Explosion_SetupExplosion: type = " + __instance.explosionType);
-
-			try
-			{
-				BunnyHeader.Log(__instance.agent.agentName);
-			}
-			catch
-			{
-				BunnyHeader.Log("WARNING: Explosion.Agent is nullable");
-				// If this triggers, you can still check for traits in same if(), just make them after a trait-only explosion type
-			}
 
 			if (__instance.explosionType == "HammerTime")
 			{
-				BunnyHeader.Log("Explosion_SetupExplosion detected HammerTime trait for Stomp");
+				BunnyHeader.Log("HammerTime type explosion detected");
 
-				__instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
+				 __instance.gc.playerAgent.objectMult.SpawnExplosion(__instance);
 
 				__instance.StartCoroutine(__instance.SpawnNoiseLate());
 				__instance.StartCoroutine(__instance.PlaySoundAfterTick());
@@ -1586,7 +1896,7 @@ namespace BunnyMod
 
 				return false;
 			}
-			else if (__instance.explosionType == "Stomp" && __instance.agent.statusEffects.hasTrait("Fatass"))
+			else if ((__instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime") && __instance.agent.statusEffects.hasTrait("Fatass"))
 			{
 				BunnyHeader.Log("Explosion_SetupExplosion detected Fatass trait for Stomp");
 
@@ -1616,6 +1926,46 @@ namespace BunnyMod
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			baseTimeScale = GameController.gameController.selectedTimeScale;
+		}
+		#endregion
+		#region ObjectMult
+		public static bool ObjectMult_SpawnExplosion(Explosion myExplosion, ObjectMult __instance) // Postfix
+		{
+			BunnyHeader.Log("ObjectMult_SpawnExplosion: explosionType = " + myExplosion.explosionType);
+
+			if (myExplosion.explosionType == "HammerTime")
+			{
+				byte explosionTypeByte = 14;
+
+				if (__instance.gc.multiplayerMode && __instance.gc.loadComplete)
+				{
+					if (__instance.gc.serverPlayer)
+					{
+						if (myExplosion.agent != null)
+						{
+							__instance.CallRpcSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer, myExplosion.mustSpawnOnClients);
+
+							return false;
+						}
+						__instance.CallRpcSpawnExplosion(NetworkInstanceId.Invalid, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer, myExplosion.mustSpawnOnClients);
+
+						return false;
+					}
+					else if (myExplosion.agent != null)
+					{
+						if (myExplosion.agent.localPlayer && !myExplosion.mustSpawnOnClients)
+						{
+							__instance.CallCmdSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, myExplosion.mustHitOnServer);
+
+							return false;
+						}
+						if (myExplosion.mustHitOnServer && !myExplosion.mustSpawnOnClients)
+							__instance.CallCmdSpawnExplosion(myExplosion.agent.objectNetID, myExplosion.tr.position, explosionTypeByte, myExplosion.immediateHit, myExplosion.explosionNetID, false);
+					}
+				}
+			}
+
+			return true;
 		}
 		#endregion
 		#region StatusEffects

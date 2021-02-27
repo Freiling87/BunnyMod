@@ -1,88 +1,114 @@
-﻿
-
-=== TEST NOTES =================================================================
-
---- CURRENT TEST -------------------------------------------
+﻿=== TEST NOTES =================================================================
 
 Chronomancy
 	Stomp no longer working
-		[Message: Bunny Mod] AgentHitBox_LandedOnLand: agent.stomping = True
-		[Message: Bunny Mod] ChronomancyIsCast: False
-		[Message: Bunny Mod] ChronomancyIsMiscast: False
-		[Message: Bunny Mod] ChronomancyIsWindindUp: False
-		[Message: Bunny Mod] Agent.stomping: True
-		[Info   : Unity Log] Window Lose Focus
-		[Message: Bunny Mod] ChronomancyStartRecharge
-Explosion broken:
+		Search all methods with Stomp as a string, ensure that all are patched.
+			Ignored the following:
+				ObjectMultAgent.convertIntToSpecialAbility
+				ObjectMultAgent.convertSpecialAbilityToInt
+				PlayfieldObject.FindDamage
+				ObjectMult.GetExplosionType
+					This one has a chain under analyses of Cmd/Rpc methods that appear to do more than logging. May need to add HammerTime to the byte list.
+					In the meantime, ObjectMult.SpawnExplosion sets the byte to 14 (stomp) so it should perform identically in some respects.
+				Explosion.HasLOSExplosion
+					Leaving this one alone may allow it to destroy Steel Doors. Test that before concluding you can skip this.
+				Explosion.PlaySoundAfterTick
+					Analysis claims unused, but that may be a quirk of DNSpy - I think it is used.
+
+FlamingBarrel & Stove
+	Name Hover
+		Occurs after FinishedOperating
+		Attempt 202102261630
 
 Stove
-	No longer rotate toward walls
-	Use with Friendly
-		[Message: Bunny Mod] Checking Agent 18; OwnerID = 1
-		[Message: Bunny Mod] Stove (1266): Friendly
-		[Message: Bunny Mod] ObjectReal_Interact: noticingOwner GangbangerB; RelStatus:
-		[Message: Bunny Mod] Stove (1266): ObjectReal_Interact
-		[Message: Bunny Mod] Stove Interaction begun
-		[Message: Bunny Mod] Stove (1266): Stove_UnfriendlyOwnerWatching
-		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 17; OwnerID = 1
-	use with Neutral, unaware:
-		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 19; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 1; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 2; OwnerID = 4
-		[Message: Bunny Mod] Checking Agent 3; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 4; OwnerID = 2
-		[Message: Bunny Mod] Checking Agent 5; OwnerID = 1
-		[Message: Bunny Mod] Stove (1137): Neutral
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <50e757efea5847c5bdef5cefe1cc4e58>:0)
-		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	Destruction
+		Endless:
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	Use near Owner
+		Search only STove's chunk fro owner
+		Buttons not appearing
+			[Message: Bunny Mod] Found Stove Owner: Worker
+			[Message: Bunny Mod] Stove (1440): Owner Hostile
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <610abf956e1d4a4c914d7287dde20a54>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
 	Animation
-		[Message: Bunny Mod] Stove (1187): Stove_DamagedObject
-		[Message: Bunny Mod] Lemma 1
-		[Message: Bunny Mod] Stove (1187): MoveNext
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__30.MoveNext () (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-		Stove:DamagedObject(PlayfieldObject, Single)
-		ObjectReal:Damage(PlayfieldObject, Boolean)
-		MeleeHitbox:HitObject(GameObject, Boolean)
-		MeleeColliderBox:OnTriggerEnter2D(Collider2D)
-			Attempted changing to LastHitByAgent
-	Finding owner
-		[Message: Bunny Mod] Stove_FindOwner
-		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
-		[Message: Bunny Mod] Checking Agent 1; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 2; OwnerID = 1
-		[...]
-		[Message: Bunny Mod] Checking Agent 47; OwnerID = 1
-		[Message: Bunny Mod] Checking Agent 48; OwnerID = 1
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Entered new logging to find nullref
+		Ready
+
 Telemancy
 
-Mugging
-	Attempt to pay Hobo:
-	Attempt to pay Gangbanger:
+=== TASKS ======================================================================
 
---- IMPLEMENTATIONS ----------------------------------------
+--- BUGS ---------------------------------------------------
+
+- Stove:
+	Make noise when operated
+	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
+
+- Stove name hovers after use. Can't tamper w stove after cooking on it. 
+	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
+- Stove blinks when damaged but never actually blows up
+	This calls Stove.MoveNext, which is not one of mine.
+
+- Extend weapon ban traits to Use-Items, not just Equip-Items 
+
 
 Fat Head message triggers on entering level.
 	Also presumably occurs with other equipment traits.
+
+On Exit to Base, then freeze on loading screen:
+	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
+	[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
+
+Pyromancy
+	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
+	item.Categories.Add("Weapons"); // Might this set off sensors?
+	Something caused BurnedOut to stay true even when recharged.
+		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
+
+Telemancy
+	[Warning: RogueLibs] SPECIAL HOLD 0.0333638
+	[Message: Bunny Mod] Telemancy OnHeld;
+	Telemancy Charge: 0
+	[Warning: RogueLibs] SPECIAL HOLD 0.0501201
+	[Message: Bunny Mod] Telemancy OnHeld;
+	Telemancy Charge: 25
+	[Warning: RogueLibs] SPECIAL HOLD 0.0665654
+	[Message: Bunny Mod] Telemancy OnHeld;
+	Telemancy Charge: 25
+		... Many many times. it's triggering on Held, not on release. Always 25 charge.
+			Abbysssal: the method is supposed to update the abilitys state, so just use the ref float time parameter
+	Also not recharging anymore.
+	
+--- IMPLEMENTATIONS ----------------------------------------
 
 All
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
@@ -94,10 +120,7 @@ Chronomancy
 	Hammertime no longer working again.
 	Need log messages for Timescale and Hammertime. Timescale felt like it was not functioning properly this time.
 
-
 Pyromancy
-	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Uniques
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
 			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
@@ -105,19 +128,6 @@ Pyromancy
 	Still don't have a delay between cast and recharge
 
 Telemancy
-	Test:
-		[Warning: RogueLibs] SPECIAL HOLD 0.0333638
-		[Message: Bunny Mod] Telemancy OnHeld;
-		Telemancy Charge: 0
-		[Warning: RogueLibs] SPECIAL HOLD 0.0501201
-		[Message: Bunny Mod] Telemancy OnHeld;
-		Telemancy Charge: 25
-		[Warning: RogueLibs] SPECIAL HOLD 0.0665654
-		[Message: Bunny Mod] Telemancy OnHeld;
-		Telemancy Charge: 25
-			... Many many times. it's triggering on Held, not on release. Always 25 charge.
-				Abbysssal: the method is supposed to update the abilitys state, so just use the ref float time parameter
-		Also not recharging anymore.
 	Uniques:
 		EMP on teleport?
 		Stun on teleport?
@@ -136,50 +146,46 @@ Telemancy
 			charge ++
 			Should these be coequal?
 
---- BUGS ---------------------------------------------------
-
-On Exit to Base, then freeze on loading screen:
-	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
-	[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
-
-Pyromancy
-	Something caused BurnedOut to stay true even when recharged.
-		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
-
 --- BALANCING ----------------------------------------------
 
 Telemancy
 	Currently, it miscasts at >35
 	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
 	Focused casting can benefit accuracy.
-	
---- FINALIZING A RELEASE -----------------------------------
-
-If you want to call an ability, trait, etc. complete:
-	Complete and win a run with it, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
-
-Increment version number in Header file
-
-=== HIGH PRIORITY or TRIVIAL ====================================================
-
-BEFORE RELEASE:
-	Make a promo character for each special ability or trait group, to promote the mod and community at large.
-
-- Stove:
-	Make noise when operated
-	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
-
-- Stove name hovers after use. Can't tamper w stove after cooking on it. 
-	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
-- Stove blinks when damaged but never actually blows up
-	This calls Stove.MoveNext, which is not one of mine.
-
-- Extend weapon ban traits to Use-Items, not just Equip-Items 
 
 === RELEASE NOTES ==============================================================
 
+BEFORE RELEASE:
+	Complete and win a run with each new feature, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
+	Make a promo character for each special ability or trait group, to promote the mod and community at large.
+	Increment the Version number!
+	Update Sprites
+
 1.2.2
-- Chronomancy
-- Renamed existing magic traits
+- Added Chronomancy & Pyromancy
+- Reworked Telemancy completely, and renamed existing general magic traits
 - Stoves now explode like Molotovs when destroyed
 - Fixed various bugs
+
+=== NEXT RELEASE ===============================================================
+
+Mugging
+	Disable until next release! This is Scope Creep.
+	On attempt interact after beg:
+		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo34; GangMugging: 2
+		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1104)
+		[Message: Bunny Mod] PlayfieldObject_DetermineMoneyCost: num = 0; LevelMult = 1; gangsizeMult = 0
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost, System.String extraCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyBehaviors.AgentInteractions_DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1, AgentInteractions __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
+		AgentInteractions.DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Agent.DetermineButtons () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		PlayfieldObject.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Agent.Interact (Agent otherAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		[Message: Bunny Mod] ChronomancyRollTimescale: 2.75
+		[Message: Bunny Mod] Timescale: 0.3636364

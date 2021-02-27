@@ -21,13 +21,45 @@ FlamingBarrel & Stove
 		Attempt 202102261630
 
 Stove
-	Rotation
-		Attempt 202102261601
+	Destruction
+		Endless:
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+			Stack trace:
+			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	Use near Owner
-		Use with Friendly
-			Ready
-		Use with Annoyed
-			Ready
+		Search only STove's chunk fro owner
+		Buttons not appearing
+			[Message: Bunny Mod] Found Stove Owner: Worker
+			[Message: Bunny Mod] Stove (1440): Owner Hostile
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <610abf956e1d4a4c914d7287dde20a54>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
 	Animation
 		Ready
 

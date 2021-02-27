@@ -347,6 +347,9 @@ Special Abilities
 				Tried using Explosion_ExplosionHit but it was a can of worms.
 		Electromancy
 			Split only triggers when it hits a wall, not an agent.
+		Morphomancy: Assume the appearance of someone else, and gain all of their relations to other NPCs
+			Having someone else's appearance costs 5 mana per second
+			Miscasting turns you into a gorilla temporarily
 		Pyromancy
 			Custom Firebomb explosion without glass sound
 		Fireball

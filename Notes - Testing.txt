@@ -6,8 +6,13 @@
 
 Chronomancy
 	Stomp no longer working
-		See Explosion
-
+		[Message: Bunny Mod] AgentHitBox_LandedOnLand: agent.stomping = True
+		[Message: Bunny Mod] ChronomancyIsCast: False
+		[Message: Bunny Mod] ChronomancyIsMiscast: False
+		[Message: Bunny Mod] ChronomancyIsWindindUp: False
+		[Message: Bunny Mod] Agent.stomping: True
+		[Info   : Unity Log] Window Lose Focus
+		[Message: Bunny Mod] ChronomancyStartRecharge
 Explosion broken:
 
 Stove
@@ -20,6 +25,22 @@ Stove
 		[Message: Bunny Mod] Stove Interaction begun
 		[Message: Bunny Mod] Stove (1266): Stove_UnfriendlyOwnerWatching
 		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 17; OwnerID = 1
+	use with Neutral, unaware:
+		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 19; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 0; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 1; OwnerID = 0
+		[Message: Bunny Mod] Checking Agent 2; OwnerID = 4
+		[Message: Bunny Mod] Checking Agent 3; OwnerID = 1
+		[Message: Bunny Mod] Checking Agent 4; OwnerID = 2
+		[Message: Bunny Mod] Checking Agent 5; OwnerID = 1
+		[Message: Bunny Mod] Stove (1137): Neutral
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <50e757efea5847c5bdef5cefe1cc4e58>:0)
+		ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	Animation
 		[Message: Bunny Mod] Stove (1187): Stove_DamagedObject
 		[Message: Bunny Mod] Lemma 1
@@ -55,24 +76,8 @@ Stove
 Telemancy
 
 Mugging
-	On attempt interact after beg:
-		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo34; GangMugging: 2
-		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1104)
-		[Message: Bunny Mod] PlayfieldObject_DetermineMoneyCost: num = 0; LevelMult = 1; gangsizeMult = 0
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost, System.String extraCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		AgentInteractions.AddButton (System.String buttonName, System.Int32 moneyCost) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyBehaviors.AgentInteractions_DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1, AgentInteractions __instance) (at <9db256fc31bb4b59aac3e9936a28b6a2>:0)
-		AgentInteractions.DetermineButtons (Agent agent, Agent interactingAgent, System.Collections.Generic.List`1[T] buttons1, System.Collections.Generic.List`1[T] buttonsExtra1, System.Collections.Generic.List`1[T] buttonPrices1) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Agent.DetermineButtons () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		PlayfieldObject.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Agent.Interact (Agent otherAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		[Message: Bunny Mod] ChronomancyRollTimescale: 2.75
-		[Message: Bunny Mod] Timescale: 0.3636364
+	Attempt to pay Hobo:
+	Attempt to pay Gangbanger:
 
 --- IMPLEMENTATIONS ----------------------------------------
 

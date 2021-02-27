@@ -17,6 +17,7 @@ namespace BunnyMod
 		{
 			Initialize_Names();
 
+			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
 			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
 			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
 			BunnyHeader.MainInstance.PatchPostfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
@@ -186,6 +187,10 @@ namespace BunnyMod
 		#endregion
 
 		#region AgentInteractions
+		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
+		{
+			BunnyHeader.Log("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
+		}
 		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
 		{
 			BunnyHeader.Log("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
@@ -298,6 +303,7 @@ namespace BunnyMod
 					{
 						Agent.gangCount++;
 						agent.gang = Agent.gangCount;
+						agent.gangMembers.Add(agent);
 						agent.gangLeader = true;
 						gangsAssigned.Add(agent.gang);
 
@@ -331,6 +337,8 @@ namespace BunnyMod
 				BunnyHeader.Log("Bad string passed to PlayfieldObject_determineMoneyCost");
 
 			__result = (int)num;
+
+			BunnyHeader.Log("PlayfieldObject_determineMoneyCost: result = " + __result);
 		}
 		#endregion
 	}

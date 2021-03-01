@@ -1484,13 +1484,14 @@ namespace BunnyMod
 		#region AgentHitbox
 		public static bool AgentHitbox_LandedOnLand(AgentHitbox __instance) // Prefix
 		{
-			Agent agent = __instance.agent;
+			BunnyHeader.Log("AgentHitBox_LandedOnLand: agent.stomping = " + __instance.agent.stomping);
 
-			BunnyHeader.Log("AgentHitBox_LandedOnLand: agent.stomping = " + agent.stomping);
-			ChronomancyLogVariables(agent);
-
-			if (ChronomancyIsCast(agent) && agent.stomping)
+			if (ChronomancyIsCast(__instance.agent) && __instance.agent.stomping)
 			{
+				Agent agent = __instance.agent;
+
+				ChronomancyLogVariables(agent);
+
 				if (agent.isPlayer > 0 && agent.localPlayer)
 					__instance.gc.playerControl.SetCantPressGameplayButtons("Jump", 0, agent.isPlayer - 1);
 
@@ -1524,7 +1525,8 @@ namespace BunnyMod
 
 				return false;
 			}
-			return true;
+			else
+				return true;
 		}
 		#endregion
 		#region Bullet
@@ -1551,242 +1553,245 @@ namespace BunnyMod
 		#region Explosion
 		public static bool Explosion_ExplosionHit(GameObject hitObject, bool fromClient, Explosion __instance, ref float ___canHit) // Prefix
 		{
-			if (__instance.explosionType != "HammerTime")
-				return true;
+			BunnyHeader.Log("Explosion_ExplosionHit: hitObject = " + hitObject.name + "; fromClient = " + fromClient + "; Explosion = " + __instance.name + "; ___canHit = " + ___canHit + "; Hit Object Tag: " + hitObject.tag + "; ExplosionType = " + __instance.explosionType);
 
-			if (hitObject.CompareTag("AgentSprite"))
+			if (__instance.explosionType == "HammerTime")
 			{
-				try
+				if (hitObject.CompareTag("AgentSprite"))
 				{
-					hitObject = hitObject.GetComponent<AgentColliderBox>().objectSprite.go;
-				}
-				catch
-				{
-					hitObject = hitObject.transform.Find("AgentHitboxColliders").transform.GetChild(0).GetComponent<AgentColliderBox>().objectSprite.go;
-				}
-			}
-
-			if (!__instance.objectList.Contains(hitObject) && ___canHit > 0f) // Used ref float to access private var
-			{
-				__instance.objectList.Add(hitObject);
-
-				bool isLocalPlayerHitByServerPlayer = false;
-
-				if (__instance.gc.multiplayerMode)
-				{
-					if (!__instance.gc.serverPlayer && __instance.mustSpawnOnClients)
+					try
 					{
-						bool flag2 = false;
-
-						if (hitObject.CompareTag("AgentSprite") && hitObject.GetComponent<ObjectSprite>().agent.localPlayer)
-							flag2 = true;
-
-						if (!flag2)
-							return false;
+						hitObject = hitObject.GetComponent<AgentColliderBox>().objectSprite.go;
 					}
-					if (__instance.agent != null)
+					catch
 					{
-						if (hitObject.CompareTag("AgentSprite"))
-						{
-							Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
+						hitObject = hitObject.transform.Find("AgentHitboxColliders").transform.GetChild(0).GetComponent<AgentColliderBox>().objectSprite.go;
+					}
+				}
 
-							if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && hitAgent.localPlayer)
-								isLocalPlayerHitByServerPlayer = true;
+				BunnyHeader.Log("ObjectList count: " + __instance.objectList.Count);
+
+				if (!__instance.objectList.Contains(hitObject) && ___canHit > 0f) // Used ref float to access private var
+				{
+					__instance.objectList.Add(hitObject);
+
+					bool isLocalPlayerHitByServerPlayer = false;
+
+					if (__instance.gc.multiplayerMode)
+					{
+						if (!__instance.gc.serverPlayer && __instance.mustSpawnOnClients)
+						{
+							bool flag2 = false;
+
+							if (hitObject.CompareTag("AgentSprite") && hitObject.GetComponent<ObjectSprite>().agent.localPlayer)
+								flag2 = true;
+
+							if (!flag2)
+								return false;
 						}
-						if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && !fromClient && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer && !__instance.mustSpawnOnClients)
+						if (__instance.agent != null)
 						{
-							if (hitObject.CompareTag("Wall"))
+							if (hitObject.CompareTag("AgentSprite"))
 							{
-								if (hitObject.name.Contains("Steel") && !__instance.destroySteel)
-									__instance.initialHitSteel = true;
-								else if (hitObject.name.Contains("Glass"))
-									__instance.initialHitGlass = true;
-								else
-								{
-									bool flag3 = __instance.HasLOSExplosion(hitObject);
+								Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
 
-									if ((!hitObject.name.Contains("Steel") || __instance.destroySteel) && flag3)
-										__instance.initialBreak = true;
+								if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && hitAgent.localPlayer)
+									isLocalPlayerHitByServerPlayer = true;
+							}
+							if (__instance.gc.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0 && !fromClient && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer && !__instance.mustSpawnOnClients)
+							{
+								if (hitObject.CompareTag("Wall"))
+								{
+									if (hitObject.name.Contains("Steel") && !__instance.destroySteel)
+										__instance.initialHitSteel = true;
+									else if (hitObject.name.Contains("Glass"))
+										__instance.initialHitGlass = true;
+									else
+									{
+										bool flag3 = __instance.HasLOSExplosion(hitObject);
+
+										if ((!hitObject.name.Contains("Steel") || __instance.destroySteel) && flag3)
+											__instance.initialBreak = true;
+									}
+								}
+
+								__instance.FakeHit(hitObject);
+
+								return false;
+							}
+						}
+					}
+
+					if (hitObject.CompareTag("ObjectRealSprite"))
+					{
+						ObjectReal objectReal;
+
+						if (hitObject.name.Contains("ExtraSprite"))
+							objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
+						else
+							objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
+
+						if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
+						{
+							__instance.FakeHit(hitObject);
+
+							return false;
+						}
+						if (__instance.HasLOSExplosion(objectReal.go) || __instance.explosionType == "PowerSap" || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
+						{
+							if (__instance.damage > 0)
+							{
+								if (!objectReal.notRealObject)
+								{
+									objectReal.damagerExplosion = __instance;
+									int num = __instance.damage;
+
+									if (__instance.destroySteel)
+										__instance.damage = 200;
+
+									objectReal.Damage(__instance, fromClient);
+									__instance.damage = num;
+									__instance.SpawnNoiseIfNotSpawned();
+
+									if (__instance.agent != null && __instance.gc.serverPlayer && !__instance.noOwnCheck)
+										__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
 								}
 							}
 
+							if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
+							{
+								__instance.agent.objectMult.CallCmdExplosionHitObject(objectReal.objectNetID, __instance.explosionNetID);
+
+								return false;
+							}
+						}
+					}
+					else if (hitObject.CompareTag("ItemImage"))
+					{
+						Item item = hitObject.GetComponent<ObjectSprite>().item;
+
+						if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
+						{
 							__instance.FakeHit(hitObject);
 
 							return false;
 						}
-					}
-				}
 
-				if (hitObject.CompareTag("ObjectRealSprite"))
-				{
-					ObjectReal objectReal;
-
-					if (hitObject.name.Contains("ExtraSprite"))
-						objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
-					else
-						objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
-
-					if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
-					{
-						__instance.FakeHit(hitObject);
-
-						return false;
-					}
-					if (__instance.HasLOSExplosion(objectReal.go) || __instance.explosionType == "PowerSap" || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
-					{
-						if (__instance.damage > 0)
+						if (item != null && __instance.HasLOSExplosion(item.go) && !item.justSpilled)
 						{
-							if (!objectReal.notRealObject)
-							{
-								objectReal.damagerExplosion = __instance;
-								int num = __instance.damage;
-
-								if (__instance.destroySteel)
-									__instance.damage = 200;
-
-								objectReal.Damage(__instance, fromClient);
-								__instance.damage = num;
-								__instance.SpawnNoiseIfNotSpawned();
-
-								if (__instance.agent != null && __instance.gc.serverPlayer && !__instance.noOwnCheck)
-									__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
-							}
-						}
-
-						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
-						{
-							__instance.agent.objectMult.CallCmdExplosionHitObject(objectReal.objectNetID, __instance.explosionNetID);
-
-							return false;
-						}
-					}
-				}
-				else if (hitObject.CompareTag("ItemImage"))
-				{
-					Item item = hitObject.GetComponent<ObjectSprite>().item;
-
-					if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
-					{
-						__instance.FakeHit(hitObject);
-
-						return false;
-					}
-
-					if (item != null && __instance.HasLOSExplosion(item.go) && !item.justSpilled)
-					{
-						if (__instance.damage > 0)
-						{
-							if (item.containerExplosion != __instance)
-								item.Damage(__instance, fromClient);
-
-							if (!fromClient)
-								item.movement.KnockBack(__instance.gameObject, 300f, __instance);
-
-							if (item.justSpilled)
-								item.justSpilled = false;
-
-							if (__instance.agent != null)
-							{
-								if (item.startingOwner != 0 && __instance.gc.serverPlayer && !__instance.noOwnCheck)
-									__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
-
-								item.thrower = __instance.agent;
-							}
-						}
-
-						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
-						{
-							__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(item);
-							Quaternion rotation = item.tr.rotation;
-							Vector3 vector = __instance.tr.position - item.tr.position;
-							vector.Normalize();
-							float z = Mathf.Atan2(vector.y, vector.x) * 57.29578f;
-							item.tr.rotation = Quaternion.Euler(0f, 0f, z);
-							item.itemHelperTr.localRotation = Quaternion.identity;
-							item.itemHelperTr.localPosition = Vector3.zero;
-							item.itemHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
-							Vector3 position = item.itemHelperTr.position;
-							item.itemHelperTr.localPosition = Vector3.zero;
-							item.tr.rotation = rotation;
-
 							if (__instance.damage > 0)
 							{
-								__instance.agent.objectMult.CallCmdExplosionHitObject2(item.objectNetID, __instance.explosionNetID, position, 300, item.tr.position);
+								if (item.containerExplosion != __instance)
+									item.Damage(__instance, fromClient);
 
-								return false;
+								if (!fromClient)
+									item.movement.KnockBack(__instance.gameObject, 300f, __instance);
+
+								if (item.justSpilled)
+									item.justSpilled = false;
+
+								if (__instance.agent != null)
+								{
+									if (item.startingOwner != 0 && __instance.gc.serverPlayer && !__instance.noOwnCheck)
+										__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
+
+									item.thrower = __instance.agent;
+								}
+							}
+
+							if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
+							{
+								__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(item);
+								Quaternion rotation = item.tr.rotation;
+								Vector3 vector = __instance.tr.position - item.tr.position;
+								vector.Normalize();
+								float z = Mathf.Atan2(vector.y, vector.x) * 57.29578f;
+								item.tr.rotation = Quaternion.Euler(0f, 0f, z);
+								item.itemHelperTr.localRotation = Quaternion.identity;
+								item.itemHelperTr.localPosition = Vector3.zero;
+								item.itemHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
+								Vector3 position = item.itemHelperTr.position;
+								item.itemHelperTr.localPosition = Vector3.zero;
+								item.tr.rotation = rotation;
+
+								if (__instance.damage > 0)
+								{
+									__instance.agent.objectMult.CallCmdExplosionHitObject2(item.objectNetID, __instance.explosionNetID, position, 300, item.tr.position);
+
+									return false;
+								}
 							}
 						}
 					}
-				}
-				else if (hitObject.CompareTag("AgentSprite"))
-				{
-					Agent agent2 = hitObject.GetComponent<ObjectSprite>().agent;
-					
-					if (__instance.gc.levelType == "Tutorial" && __instance.realSource != null && __instance.realSource.objectName == "Television")
-						return false;
-					
-					if (__instance.gc.serverPlayer && __instance.agent == null && agent2.isPlayer > 0 && !agent2.localPlayer && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
+					else if (hitObject.CompareTag("AgentSprite"))
 					{
-						__instance.FakeHit(hitObject);
-					
-						return false;
-					}
-					if (__instance.gc.multiplayerMode && __instance.agent != null)
-					{
-						if (!__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
-						{
-							if (__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-					
-								return false;
-							}
+						Agent agent2 = hitObject.GetComponent<ObjectSprite>().agent;
 
-							if (__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-								
-								return false;
-							}
-							
-							if (__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && agent2.isPlayer > 0 && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-							
-								return false;
-							}
+						if (__instance.gc.levelType == "Tutorial" && __instance.realSource != null && __instance.realSource.objectName == "Television")
+							return false;
 
-							if (!__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-							
-								return false;
-							}
-
-							if (!__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-							
-								return false;
-							}
-
-							if (!__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
-							{
-								__instance.FakeHit(hitObject);
-							
-								return false;
-							}
-						}
-						if (!__instance.gc.serverPlayer && __instance.agent.isPlayer != 0 && !__instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
+						if (__instance.gc.serverPlayer && __instance.agent == null && agent2.isPlayer > 0 && !agent2.localPlayer && !__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
 						{
 							__instance.FakeHit(hitObject);
-							
+
 							return false;
 						}
-					}
-					if ((__instance.HasLOSExplosion(agent2.go) || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime") && !agent2.ghost && !__instance.gc.cinematic && (!(__instance.agent == agent2) || !__instance.agent.statusEffects.hasTrait("ExplosionsDontDamageCauser") || (!(__instance.explosionType == "Normal") && !(__instance.explosionType == "Big") && !(__instance.explosionType == "Huge") && !(__instance.explosionType == "Ridiculous"))))
-					{
-						if (__instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
+						if (__instance.gc.multiplayerMode && __instance.agent != null)
+						{
+							if (!__instance.mustHitOnServer && !isLocalPlayerHitByServerPlayer)
+							{
+								if (__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+
+								if (__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer > 0 && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+
+								if (__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && agent2.isPlayer > 0 && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+
+								if (!__instance.gc.serverPlayer && __instance.agent.isPlayer == 0 && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+
+								if (!__instance.gc.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+
+								if (!__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
+								{
+									__instance.FakeHit(hitObject);
+
+									return false;
+								}
+							}
+							if (!__instance.gc.serverPlayer && __instance.agent.isPlayer != 0 && !__instance.agent.localPlayer && agent2.isPlayer != 0 && !agent2.localPlayer)
+							{
+								__instance.FakeHit(hitObject);
+
+								return false;
+							}
+						}
+						if ((__instance.HasLOSExplosion(agent2.go) || __instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime") && !agent2.ghost && !__instance.gc.cinematic && (!(__instance.agent == agent2) || !__instance.agent.statusEffects.hasTrait("ExplosionsDontDamageCauser") || (!(__instance.explosionType == "Normal") && !(__instance.explosionType == "Big") && !(__instance.explosionType == "Huge") && !(__instance.explosionType == "Ridiculous"))))
+						{
+							if (__instance.explosionType == "Stomp" || __instance.explosionType == "HammerTime")
 							{
 								if (__instance.agent != agent2 && !fromClient && __instance.agent.DontHitAlignedCheck(agent2) && !agent2.jumped && !agent2.underWater && !agent2.fellInHole)
 								{
@@ -1795,13 +1800,13 @@ namespace BunnyMod
 									if (agent2.hitByRocket == Vector3.zero)
 										if (!fromClient)
 											agent2.movement.KnockBack(__instance.gameObject, 150f, __instance);
-									else
-									{
-										if (!fromClient)
-											agent2.movement.KnockBackRocket(agent2.hitByRocket, 150f, __instance);
+										else
+										{
+											if (!fromClient)
+												agent2.movement.KnockBackRocket(agent2.hitByRocket, 150f, __instance);
 
-										agent2.hitByRocket = Vector3.zero;
-									}
+											agent2.hitByRocket = Vector3.zero;
+										}
 
 									if (__instance.agent.statusEffects.hasTrait("StompDamagesAgents") || (__instance.agent.agentName == "Bouncer" && __instance.agent.oma.superSpecialAbility))
 									{
@@ -1819,53 +1824,56 @@ namespace BunnyMod
 											else
 												agent2.statusEffects.AddStatusEffect("Dizzy", null, __instance.agent);
 										}
-									else if (!agent2.preventStatusEffects)
-									{
-										if (!__instance.agent.invisible)
-											__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", __instance.agent.objectNetID, true, false, -1);
-										else
-											__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", NetworkInstanceId.Invalid, true, false, -1);
-									}
+										else if (!agent2.preventStatusEffects)
+										{
+											if (!__instance.agent.invisible)
+												__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", __instance.agent.objectNetID, true, false, -1);
+											else
+												__instance.gc.playerAgent.objectMultAgent.CallCmdAddStatusEffectNPC(agent2.objectNetID, "Dizzy", NetworkInstanceId.Invalid, true, false, -1);
+										}
 
 									__instance.damage = 0;
 								}
 							}
 
-						if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer == 0)
-						{
-							__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(agent2);
-
-							if (agent2.hitByRocket == Vector3.zero)
+							if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer && agent2.isPlayer == 0)
 							{
-								Quaternion rotation2 = agent2.tr.rotation;
-								Vector3 vector3 = __instance.tr.position - agent2.tr.position;
-								vector3.Normalize();
-								float z2 = Mathf.Atan2(vector3.y, vector3.x) * 57.29578f;
-								agent2.tr.rotation = Quaternion.Euler(0f, 0f, z2);
-								agent2.agentHelperTr.localRotation = Quaternion.identity;
-								agent2.agentHelperTr.localPosition = Vector3.zero;
-								agent2.agentHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
-								Vector3 position2 = agent2.agentHelperTr.position;
-								agent2.agentHelperTr.localPosition = Vector3.zero;
-								agent2.tr.rotation = rotation2;
-								__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position2, 150, agent2.tr.position);
+								__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(agent2);
+
+								if (agent2.hitByRocket == Vector3.zero)
+								{
+									Quaternion rotation2 = agent2.tr.rotation;
+									Vector3 vector3 = __instance.tr.position - agent2.tr.position;
+									vector3.Normalize();
+									float z2 = Mathf.Atan2(vector3.y, vector3.x) * 57.29578f;
+									agent2.tr.rotation = Quaternion.Euler(0f, 0f, z2);
+									agent2.agentHelperTr.localRotation = Quaternion.identity;
+									agent2.agentHelperTr.localPosition = Vector3.zero;
+									agent2.agentHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
+									Vector3 position2 = agent2.agentHelperTr.position;
+									agent2.agentHelperTr.localPosition = Vector3.zero;
+									agent2.tr.rotation = rotation2;
+									__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position2, 150, agent2.tr.position);
+
+									return false;
+								}
+
+								Quaternion localRotation = __instance.explosionHelperTr.localRotation;
+								__instance.explosionHelperTr.eulerAngles = agent2.hitByRocket;
+								__instance.explosionHelperTr.localPosition = Vector3.zero;
+								__instance.explosionHelperTr.localPosition = new Vector3(0f, 10f, 0f);
+								Vector3 position3 = __instance.explosionHelperTr.position;
+								__instance.explosionHelperTr.localPosition = Vector3.zero;
+								__instance.explosionHelperTr.localRotation = localRotation;
+								__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position3, 150, agent2.tr.position);
 
 								return false;
 							}
-
-							Quaternion localRotation = __instance.explosionHelperTr.localRotation;
-							__instance.explosionHelperTr.eulerAngles = agent2.hitByRocket;
-							__instance.explosionHelperTr.localPosition = Vector3.zero;
-							__instance.explosionHelperTr.localPosition = new Vector3(0f, 10f, 0f);
-							Vector3 position3 = __instance.explosionHelperTr.position;
-							__instance.explosionHelperTr.localPosition = Vector3.zero;
-							__instance.explosionHelperTr.localRotation = localRotation;
-							__instance.agent.objectMult.CallCmdExplosionHitObject2(agent2.objectNetID, __instance.explosionNetID, position3, 150, agent2.tr.position);
-
-							return false;
 						}
 					}
 				}
+
+
 			}
 
 			return false;

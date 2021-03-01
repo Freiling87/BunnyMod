@@ -980,11 +980,11 @@ namespace BunnyMod
             {
                 Agent agent = stove.gc.agentList[i];
 
-                BunnyHeader.Log("Checking Agent " + i + "; OwnerID = " + agent.ownerID);
+                BunnyHeader.Log("Stove_FindOwner: Checking Agent " + i + "; OwnerID = " + agent.ownerID);
 
                 if (agent.startingChunk == stove.startingChunk && agent.ownerID == stove.owner)
 				{
-                    BunnyHeader.Log("Found Stove Owner: " + agent.agentName);
+                    BunnyHeader.Log("Stove_FindOwner: Found Stove Owner: " + agent.agentName);
 
                     return agent;
                 }
@@ -1047,19 +1047,19 @@ namespace BunnyMod
         }
         public static Agent Stove_OwnerWatching(Agent interactingAgent, Stove stove) // Non-Patch
 		{
-            BunnyHeader.Log(stove.name + ": Stove_UnfriendlyOwnerWatching");
+            BunnyHeader.Log("Stove_OwnerWatching: " + stove.name + ": Stove_UnfriendlyOwnerWatching");
 
             Agent agent = Stove_FindOwner(stove);
 
-            if (agent == null || stove.interactingAgent == null)
-                return null;
+            if (agent != null && stove.interactingAgent != null)
+            {
+                relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
 
-            BunnyHeader.Log(stove.name + ": Owner " + agent.relationships.RelList2[interactingAgent.agentID].relTypeCode);
+                BunnyHeader.Log("Stove_OwnerWatching: " + stove.name + ": Owner " + relTypeCode);
 
-            relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
-
-            if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified)
-                return agent;
+                if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified)
+                    return agent;
+            }
 
             return null;
         }

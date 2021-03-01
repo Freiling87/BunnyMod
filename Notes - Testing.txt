@@ -36,12 +36,12 @@ Stove
 			Stack trace:
 			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
+				Done, test
 	Use near Owner
 		Search only STove's chunk fro owner
 		Buttons not appearing
 			[Message: Bunny Mod] Found Stove Owner: Worker
-			[Message: Bunny Mod] Stove (1440): Owner Hostile
+			[Message: Bunny Mod] Stove (1440): Owner Hostile		← Stove_OwnerWatching
 			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 			Stack trace:
 			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <610abf956e1d4a4c914d7287dde20a54>:0)

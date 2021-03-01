@@ -3,8 +3,6 @@
 Traits with Contraindications still show up in upgrade menu.
 
 Chronomancy
-	LandedOnLand bug has reoccurred, people bounce forever.
-		Could not replicate. Hopefully just misinterpreted what I saw earlier, might have been rapidly entering/exiting water.
 	Stomp no longer working
 		Search all methods with Stomp as a string, ensure that all are patched.
 			Ignored the following:
@@ -19,39 +17,59 @@ Chronomancy
 				Explosion.PlaySoundAfterTick
 					Analysis claims unused, but that may be a quirk of DNSpy - I think it is used.
 
+Explosions
+	Endlessly repeated:
+		[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+		Stack trace:
+		Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
+		[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
+		Stack trace:
+		Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+
 FlamingBarrel & Stove
 	Name Hover
-		Occurs after FinishedOperating
 		Attempt 202102261630
+			No luck.
+		There are no error messages here, it's just that a step is being left out.
+			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (2065)
+			[Message: Bunny Mod] FlamingBarrel (2065): ObjectReal_PressedButton
+			[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
+			[Message: Bunny Mod] FlamingBarrel (2065): ObjectReal_FinishedOperating
+			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (2066) ← Different one
 
 Stove
-	Destruction
-		Endlessly repeated:
-			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-			Stack trace:
-			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-			Stack trace:
-			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-				Done, test
 	Use near Owner
-		Search only STove's chunk fro owner
-		Buttons not appearing
-			[Message: Bunny Mod] Found Stove Owner: Worker
-			[Message: Bunny Mod] Stove (1440): Owner Hostile		← Stove_OwnerWatching
+		Found owner and alerted him. He woke up from bed and ran over to where the stove was.
+			[Message: Bunny Mod] Stove_FindOwner: startingChunk = 6; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: DrugDealer
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1922): Owner Neutral
 			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
 			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <610abf956e1d4a4c914d7287dde20a54>:0)
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <33999aa274164f2fb3f0d6925d3483a7>:0)
 			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-	Animation
-		Ready
+	No interaction
+		Note that this only occurs with the Stove, not with other Objects. So it's the Stove patch specifically that's causing this.
+		Also, make sure there's a check for dead owners.
+			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: DrugDealer
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1922): Owner Hostile
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <33999aa274164f2fb3f0d6925d3483a7>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		NB: I was actually able to get the buttons to show up when the owner was still staring at me.
+	Animation / Rotation
+		Solved; remove this when seen.
 
 Telemancy
 

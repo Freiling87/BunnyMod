@@ -1,6 +1,9 @@
 ﻿=== TEST NOTES =================================================================
 
+Traits with Contraindications still show up in upgrade menu.
+
 Chronomancy
+	LandedOnLand bug has reoccurred, people bounce forever.
 	Stomp no longer working
 		Search all methods with Stomp as a string, ensure that all are patched.
 			Ignored the following:

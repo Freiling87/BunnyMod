@@ -4,6 +4,7 @@ Traits with Contraindications still show up in upgrade menu.
 
 Chronomancy
 	LandedOnLand bug has reoccurred, people bounce forever.
+		Could not replicate. Hopefully just misinterpreted what I saw earlier, might have been rapidly entering/exiting water.
 	Stomp no longer working
 		Search all methods with Stomp as a string, ensure that all are patched.
 			Ignored the following:

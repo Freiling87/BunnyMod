@@ -1666,63 +1666,6 @@ namespace BunnyMod
 							}
 						}
 					}
-					else if (hitObject.CompareTag("ItemImage"))
-					{
-						Item item = hitObject.GetComponent<ObjectSprite>().item;
-
-						if (__instance.agent != null && !__instance.gc.serverPlayer && !__instance.agent.localPlayer && !__instance.mustHitOnServer)
-						{
-							__instance.FakeHit(hitObject);
-
-							return false;
-						}
-
-						if (item != null && __instance.HasLOSExplosion(item.go) && !item.justSpilled)
-						{
-							if (__instance.damage > 0)
-							{
-								if (item.containerExplosion != __instance)
-									item.Damage(__instance, fromClient);
-
-								if (!fromClient)
-									item.movement.KnockBack(__instance.gameObject, 300f, __instance);
-
-								if (item.justSpilled)
-									item.justSpilled = false;
-
-								if (__instance.agent != null)
-								{
-									if (item.startingOwner != 0 && __instance.gc.serverPlayer && !__instance.noOwnCheck)
-										__instance.gc.OwnCheck(__instance.agent, hitObject, "Explosion", 0);
-
-									item.thrower = __instance.agent;
-								}
-							}
-
-							if (__instance.agent != null && !__instance.gc.serverPlayer && __instance.agent.localPlayer)
-							{
-								__instance.agent.objectMultPlayfield.TempDisableNetworkTransform(item);
-								Quaternion rotation = item.tr.rotation;
-								Vector3 vector = __instance.tr.position - item.tr.position;
-								vector.Normalize();
-								float z = Mathf.Atan2(vector.y, vector.x) * 57.29578f;
-								item.tr.rotation = Quaternion.Euler(0f, 0f, z);
-								item.itemHelperTr.localRotation = Quaternion.identity;
-								item.itemHelperTr.localPosition = Vector3.zero;
-								item.itemHelperTr.localPosition = new Vector3(-10f, 0f, 0f);
-								Vector3 position = item.itemHelperTr.position;
-								item.itemHelperTr.localPosition = Vector3.zero;
-								item.tr.rotation = rotation;
-
-								if (__instance.damage > 0)
-								{
-									__instance.agent.objectMult.CallCmdExplosionHitObject2(item.objectNetID, __instance.explosionNetID, position, 300, item.tr.position);
-
-									return false;
-								}
-							}
-						}
-					}
 					else if (hitObject.CompareTag("AgentSprite"))
 					{
 						Agent agent2 = hitObject.GetComponent<ObjectSprite>().agent;
@@ -1872,10 +1815,7 @@ namespace BunnyMod
 						}
 					}
 				}
-
-
 			}
-
 			return false;
 		}
 		public static bool Explosion_SetupExplosion(Explosion __instance) // Prefix

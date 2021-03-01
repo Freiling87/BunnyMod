@@ -261,7 +261,7 @@ namespace BunnyMod
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement
         {
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
+            BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Interact: " + __instance.name);
 
             MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
             interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);

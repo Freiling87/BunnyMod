@@ -25,7 +25,7 @@ FlamingBarrel & Stove
 
 Stove
 	Destruction
-		Endless:
+		Endlessly repeated:
 			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
 			Stack trace:
 			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
@@ -36,20 +36,6 @@ Stove
 			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
-			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-			Stack trace:
-			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-			Stack trace:
-			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-			[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-			Stack trace:
-			Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	Use near Owner
 		Search only STove's chunk fro owner
 		Buttons not appearing

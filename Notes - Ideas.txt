@@ -248,6 +248,8 @@ NPC Interactions
 	Workers - Hire to Tamper
 
 Mutators
+	Zoom Levels
+		https://discord.com/channels/187414758536773632/433748059172896769/815314079408980000
 	All Walls Are Wood
 	All Walls Are Steel
 	Major disaster behavior changes

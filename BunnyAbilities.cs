@@ -54,7 +54,6 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Chronomancy
-
 		public static float baseTimeScale;
 		public static void Chronomancy_Initialize()
 		{
@@ -653,8 +652,7 @@ namespace BunnyMod
 			string[] dialogue = 
 			{
 				"Ion wanna do that right now!" ,
-				"Let me ground myself for a second.",
-				"Watt just happened??"
+				"Let me ground myself for a second."
 			};
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
@@ -1125,137 +1123,7 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Telemancy
-		public static void Telemancy_Initialize()
-		{
-			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
-
-			CustomAbility telemancy = RogueLibs.CreateCustomAbility("Telemancy", spriteTelemancy, true,
-				new CustomNameInfo("Telemancy"),
-				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
-				delegate (InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("NPCsCantPickup");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.isWeapon = false;
-					item.initCount = 100;
-					item.rechargeAmountInverse = 100;
-					item.maxAmmo = 100;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-				});
-
-			telemancy.Available = true;
-			telemancy.AvailableInCharacterCreation = true;
-			telemancy.CostInCharacterCreation = 8;
-
-			int telemancyCharge = 0;
-			int telemancyHeldCounter = 0;
-
-			telemancy.OnPressed = delegate (InvItem item, Agent agent)
-			{
-				if (item.invItemCount <= 0 || TelemancyIsReturning(agent) || TelemancyIsMiscast(agent))
-					TelemancyDialogueCantDo(agent);
-			};
-
-			telemancy.OnHeld = delegate (InvItem item, Agent agent, ref float timeHeld)
-			{
-				BunnyHeader.Log("Telemancy OnHeld;\nTelemancy Charge: " + telemancyCharge);
-
-				if (timeHeld >= telemancyHeldCounter)
-				{
-					telemancyHeldCounter++;
-
-					if (item.invItemCount >= 1 && !TelemancyIsReturning(agent) && !TelemancyIsMiscast(agent) && telemancyCharge < 100)
-					{
-						int curCost = TelemancyRollManaCost(agent);
-
-						if (TelemancyRollMiscast(agent, (100 - telemancyCharge) / 10f))
-							TelemancyStartMiscast(agent);
-						else
-						{
-							item.invItemCount -= Mathf.Min(item.invItemCount, curCost);
-							telemancyCharge += curCost;
-						}
-					}
-
-					if (telemancyCharge >= 100 || item.invItemCount <= 0)
-						telemancy.OnReleased(item, agent);
-				}
-			};
-
-			telemancy.OnReleased = delegate (InvItem item, Agent agent)
-			{
-				TelemancyStartCast(agent, telemancyCharge);
-				TelemancyStartReturn(agent);
-				telemancyHeldCounter = 0;
-			};
-
-			telemancy.Recharge = (item, agent) =>
-			{
-				telemancyHeldCounter = 0;
-
-				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
-				{
-					item.invItemCount = Math.Min(100, item.invItemCount + TelemancyRollCharge(agent));
-
-					if (item.invItemCount == 100)
-						TelemancyStartRecharge(agent);
-				}
-			};
-
-			telemancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.25f) : null;
-		}
-		public static void TelemancyDialogueCantDo(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
-
-			string[] dialogue = 
-			{
-				"I need to give it a rest or my head will explode. I've seen it happen.",
-				"Slow down! Haven't you seen The Fly?"
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void TelemancyDialogueCast(Agent agent)
-		{
-			agent.SpawnParticleEffect("Spawn", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "Spawn");
-
-			string[] dialogue = 
-			{
-				"Vwip!",
-				"Nothing personal, kid."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count())]);
-		}
-		public static void TelemancyDialogueMiscast(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
-
-			string[] dialogue = 
-			{
-				"I smell burning toast.",
-				"Blurgh. (Drool)", 
-				"I pink I bust hab a stwoke.",
-				"My head a splode."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void TelemancyDialogueRecharge(Agent agent)
-		{
-			string[] dialogue = 
-			{
-				"Who needs Scotty? I'll beam my damn self up."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
+		#region Telemancy - Bits
 		public static bool TelemancyIsReturning(Agent agent)
 		{
 			BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
@@ -1272,136 +1140,10 @@ namespace BunnyMod
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		public static bool TelemancyIs_VARIABLE4(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_1000) != 0;
-		public static void TelemancyLogBooleans(Agent agent)
+		public static void TelemancyLogBits(Agent agent)
 		{
 			BunnyHeader.Log("TelemancyIsMiscast: " + TelemancyIsMiscast(agent));
 			BunnyHeader.Log("TelemancyIsReturning: " + TelemancyIsReturning(agent));
-			//BunnyHeader.Log("Pyromancy IsMiscast: " + PyromancyIsMiscast(agent));
-		}
-		public static int TelemancyRollManaCost(Agent agent)
-		{
-			int minimum = 20;
-			int maximum = 40;
-
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
-			{
-				minimum -= 10;
-				maximum -= 10;
-			}
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
-			{
-				minimum -= 5;
-				maximum -= 5;
-			}
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-			{
-				minimum -= UnityEngine.Random.Range(-3, 5);
-				maximum -= UnityEngine.Random.Range(-3, 5);
-			}
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-			{
-				minimum -= UnityEngine.Random.Range(-5, 10);
-				maximum -= UnityEngine.Random.Range(-5, 10);
-			}
-
-			return UnityEngine.Random.Range(minimum, maximum);
-		}
-		public static float[] TelemancyRollAccuracy(Agent agent)
-		{
-			float rangeNear = 2.5f;
-			float rangeFar = 5.5f;
-
-			if (agent.statusEffects.hasTrait("MagicTraining_2"))
-			{
-				rangeNear -= 2.5f;
-				rangeFar -= 2f;
-			}
-			if (agent.statusEffects.hasTrait("MagicTraining"))
-			{
-				rangeNear -= 1.5f;
-				rangeFar -= 1f;
-			}
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				rangeNear -= 1f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				rangeNear -= 2f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
-				rangeFar -= 1f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				rangeFar -= 2f;
-
-			return new float[] { rangeNear, rangeFar };
-		}
-		public static int TelemancyRollCharge(Agent agent)
-		{
-			int charge = 0;
-
-			// Charge rate can be increased
-
-			return charge;
-		}
-		public static Vector2 TelemancyRollDestination(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls)
-		{
-			TileInfo tileInfo = agent.gc.tileInfo;
-			Vector2 currentPosition = agent.curPosition;
-			Vector2 targetPosition = agent.curPosition;
-			float[] range = TelemancyRollAccuracy(agent);
-
-			for (int i = 0; i < 50; i++)
-			{
-				float distance = UnityEngine.Random.Range(range[0], range[1]);
-
-				if (agent.statusEffects.hasTrait("MagicTraining"))
-					targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
-				else
-					targetPosition = currentPosition + distance * UnityEngine.Random.insideUnitCircle.normalized;
-
-				TileData tileData = tileInfo.GetTileData(targetPosition);
-
-				if (tileData.solidObject)
-					continue;
-				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
-					continue;
-				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
-					continue;
-				else if (tileInfo.IsOverlapping(targetPosition, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
-					continue;
-
-				else if (!accountForObstacles)
-					if (tileInfo.GetWallMaterial(targetPosition.x, targetPosition.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
-						continue;
-
-					else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(targetPosition, "Anything", 0.32f))
-						continue;
-
-				if (notInside && (tileInfo.IsIndoors(targetPosition) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
-					continue;
-
-				return targetPosition;
-			}
-			return currentPosition;
-		}
-		public static bool TelemancyRollMiscast(Agent agent, float percentAddedChance)
-		{
-			float risk = 1.0f + percentAddedChance;
-
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
-				risk -= 0.25f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				risk -= 0.50f;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				risk += 0.75f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				risk += 1.50f;
-
-			if (agent.statusEffects.hasTrait("MagicTraining"))
-				risk *= (4 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				risk *= (3 / 5);
-
-			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
 		public static void TelemancySetReturning(Agent agent, bool value)
 		{
@@ -1431,6 +1173,275 @@ namespace BunnyMod
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_1000;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_1000;
 		}
+		#endregion
+		#region Telemancy - Dialogue
+		public static void TelemancyDialogueCantDo(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			string[] dialogue =
+			{
+				"I need to give it a rest or my head will explode. I've seen it happen.",
+				"Slow down! Haven't you seen The Fly?"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void TelemancyDialogueCast(Agent agent)
+		{
+			agent.SpawnParticleEffect("Spawn", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "Spawn");
+
+			string[] dialogue =
+			{
+				"VWIP",
+				"Nothing personal, kid."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count())]);
+		}
+		public static void TelemancyDialogueMiscast(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
+
+			string[] dialogue =
+			{
+				"I smell burning toast.",
+				"Blurgh. (Drool)",
+				"I pink I bust hab a stwoke.",
+				"My head a splode."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void TelemancyDialogueRecharge(Agent agent)
+		{
+			string[] dialogue =
+			{
+				"Who needs Scotty? I'll beam my damn self up."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		#endregion
+		public static void Telemancy_Initialize()
+		{
+			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
+
+			CustomAbility telemancy = RogueLibs.CreateCustomAbility("Telemancy", spriteTelemancy, true,
+				new CustomNameInfo("Telemancy"),
+				new CustomNameInfo("You can teleport sort of at will, but it's unpredictable and makes you feel sick. Maybe you can get better at this?"),
+				delegate (InvItem item)
+				{
+					item.cantDrop = true;
+					item.Categories.Add("NPCsCantPickup");
+					item.dontAutomaticallySelect = true;
+					item.dontSelectNPC = true;
+					item.isWeapon = false;
+					item.initCount = 100;
+					item.rechargeAmountInverse = 100;
+					item.maxAmmo = 100;
+					item.stackable = true;
+					item.thiefCantSteal = true;
+				});
+
+			telemancy.Available = true;
+			telemancy.AvailableInCharacterCreation = true;
+			telemancy.CostInCharacterCreation = 8;
+
+			int telemancyHeldCounter = 0; // Seconds ability held to charge
+			int telemancyNetCharge = 0; // Net total of post-ability charge level
+
+			telemancy.OnPressed = delegate (InvItem item, Agent agent)
+			{
+				if (item.invItemCount <= 0 || TelemancyIsReturning(agent) || TelemancyIsMiscast(agent))
+					TelemancyDialogueCantDo(agent);
+
+				Task.Delay(2000); // Untested, intended to avoid spam response
+			};
+
+			telemancy.OnHeld = delegate (InvItem item, Agent agent, ref float timeHeld)
+			{
+				if (!TelemancyIsReturning(agent) && !TelemancyIsMiscast(agent) && telemancyNetCharge < 100 && item.invItemCount > 0)
+				{
+					if (telemancyNetCharge >= 100 || item.invItemCount <= 0)
+					{
+						telemancy.OnReleased(item, agent);
+					}
+
+					if (timeHeld / 1000 >= telemancyHeldCounter)
+					{
+						telemancyHeldCounter++;
+
+						BunnyHeader.Log("Telemancy OnHeld: HeldCounter: " + telemancyHeldCounter);
+
+						int curCost = TelemancyRollManaCost(agent);
+
+						if (TelemancyRollMiscast(agent, telemancyHeldCounter))
+							TelemancyStartMiscast(agent, 0);
+						else
+						{
+							item.invItemCount -= Mathf.Min(item.invItemCount, curCost);
+							telemancyNetCharge += curCost;
+						}
+					}
+				}
+			};
+
+			telemancy.OnReleased = delegate (InvItem item, Agent agent)
+			{
+				if (!TelemancyIsMiscast(agent) && !TelemancyIsReturning(agent) && telemancyNetCharge > 0)
+				{
+					TelemancyStartCast(agent, telemancyNetCharge);
+					TelemancyStartReturn(agent, 1000); // vary this
+					telemancyHeldCounter = 0;
+					telemancyNetCharge = 0;
+				}
+			};
+
+			telemancy.Recharge = (item, agent) =>
+			{
+				telemancyHeldCounter = 0;
+
+				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
+				{
+					item.invItemCount = Math.Min(100, item.invItemCount + TelemancyRollCharge(agent));
+
+					if (item.invItemCount == 100)
+						TelemancyStartRecharge(agent);
+				}
+			};
+
+			telemancy.RechargeInterval = (item, myAgent) =>
+				item.invItemCount > 0 ? new WaitForSeconds(0.25f) : null;
+		}
+		public static int TelemancyRollManaCost(Agent agent)
+		{
+			//TODO
+
+			float minimum = 3.00f;
+			float maximum = 5.00f;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			{
+				minimum *= 1.00f;
+				maximum *= 1.00f;
+			}
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			{
+				minimum *= 1.00f;
+				maximum *= 1.00f;
+			}
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+			{
+				minimum *= 1.00f;
+				maximum *= 1.00f;
+			}
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				minimum *= 1.00f;
+				maximum *= 1.00f;
+			}
+
+			return (int)UnityEngine.Random.Range(minimum, maximum);
+		}
+		public static float[] TelemancyRollAccuracy(Agent agent)
+		{
+			float rangeNear = 2.50f;
+			float rangeFar = 5.50f;
+
+			if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			{
+				rangeNear -= 2.50f;
+				rangeFar -= 20f;
+			}
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+			{
+				rangeNear -= 1.50f;
+				rangeFar -= 1.00f;
+			}
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				rangeNear -= 1.00f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				rangeNear -= 2.00f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+				rangeFar -= 1.00f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				rangeFar -= 2.00f;
+
+			return new float[] { rangeNear, rangeFar };
+		}
+		public static int TelemancyRollCharge(Agent agent)
+		{
+			int charge = 0;
+
+			// Charge rate can be increased
+
+			return charge;
+		}
+		public static Vector2 TelemancyRollDestination(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls)
+		{
+			TileInfo tileInfo = agent.gc.tileInfo;
+			Vector2 currentPosition = agent.curPosition;
+			Vector2 targetPosition = agent.curPosition;
+			float[] range = TelemancyRollAccuracy(agent);
+
+			for (int i = 0; i < 50; i++)
+			{
+				float distance = UnityEngine.Random.Range(range[0], range[1]);
+
+				targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
+
+				TileData tileData = tileInfo.GetTileData(targetPosition);
+
+				if (tileData.solidObject)
+					continue;
+				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
+					continue;
+				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
+					continue;
+				else if (tileInfo.IsOverlapping(targetPosition, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
+					continue;
+
+				else if (!accountForObstacles)
+					if (tileInfo.GetWallMaterial(targetPosition.x, targetPosition.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
+						continue;
+
+					else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(targetPosition, "Anything", 0.32f))
+						continue;
+
+				if (notInside && (tileInfo.IsIndoors(targetPosition) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
+					continue;
+
+				return targetPosition;
+			}
+			return currentPosition;
+		}
+		public static bool TelemancyRollMiscast(Agent agent, float heldTime)
+		{
+			// Might be better to turn this into an effective void that returns true if it took effect. 
+			// Then up above where you're checking for this, just do "if(!Miscast) then cast"
+
+			float risk = heldTime;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				risk *= 0.75f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				risk *= 0.50f;
+
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				risk *= 1.25f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				risk *= 1.50f;
+
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				risk *= 0.50f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				risk *= 0.25f;
+
+			return (UnityEngine.Random.Range(0f, 100f) <= risk);
+		}
 		public static void TelemancyStartCast(Agent agent, float charge)
 		{
 			Vector2 targetLocation = TelemancyRollDestination(agent, false, false, true, true, true);
@@ -1441,9 +1452,11 @@ namespace BunnyMod
 
 			TelemancyDialogueCast(agent);
 		}
-		public static void TelemancyStartMiscast(Agent agent)
+		public static void TelemancyStartMiscast(Agent agent, int severity)
 		{
 			TelemancyDialogueMiscast(agent);
+
+			// Get a degree of the miscast, and split it here.
 
 			int degree = 20;
 
@@ -1465,13 +1478,11 @@ namespace BunnyMod
 
 			TelemancySetReturning(agent, false);
 		}
-		public static async void TelemancyStartReturn(Agent agent)
+		public static async void TelemancyStartReturn(Agent agent, int mSecs)
 		{
 			TelemancySetReturning(agent, true);
 
-			await Task.Delay(5000);
-
-
+			await Task.Delay(mSecs);
 		}
 		#endregion
 

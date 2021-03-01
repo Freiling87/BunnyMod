@@ -122,19 +122,20 @@ Telemancy
 		EMP on teleport?
 		Stun on teleport?
 	Rework: 
-		Charge to cast, release when you feel like it or when charge at max.
 		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
-		The lower your charge, the higher chance of (ascending):
+		On Hold:
+			Held Time ++
+				Miscast Roll based on this and skills
+			Mana --
+			charge ++
+		MisCast effects, ascending:
 			Light & visual effect, attracting attention
 			Tiny Stroke
 			Large amount of damage
-		MisCast:
+		Combined with:
 			Random place in level
 			Random item from inventory is dropped and then disappears
-		On Hold:
-			Mana --
-			charge ++
-			Should these be coequal?
+
 
 --- BALANCING ----------------------------------------------
 

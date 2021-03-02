@@ -55,6 +55,24 @@ Stove
 			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Owner had gone hostile from one Friendly use. Made him friendly again and then he tolerated it. Then went hostile when I selected Cook.
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1441): Owner Friendly
+			[Message: Bunny Mod] Stove 3
+			[Message: Bunny Mod] Stove 4
+			[Message: Bunny Mod] Stove 5
+			[Message: Bunny Mod] Stove 6
+			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hobo; RelStatus:
+			[Message: Bunny Mod] Stove 7
+			[Message: Bunny Mod] Stove (1441): ObjectReal_PressedButton
+		Owner gone:
+			[Message: Bunny Mod] Stove 6
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <a8d07223c52f4745bfa1a0853286e46d>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	No interaction
 		Note that this only occurs with the Stove, not with other Objects. So it's the Stove patch specifically that's causing this.
 		Also, make sure there's a check for dead owners.

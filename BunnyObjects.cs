@@ -280,23 +280,39 @@ namespace BunnyMod
                 __instance.ShowObjectButtons();
             else if (__instance is Stove)
             {
-                BunnyHeader.Log("Stove Interaction begun");
+                BunnyHeader.Log("Stove 1");
 
                 __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
 
+                BunnyHeader.Log("Stove 2");
+
                 Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
+
+                BunnyHeader.Log("Stove 3");
+
                 Agent interactingAgent = __instance.interactingAgent;
+
+                BunnyHeader.Log("Stove 4");
+
                 string relationship = agent.relationships.GetRel(interactingAgent);
+
+                BunnyHeader.Log("Stove 5");
 
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
 
-                BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: " + relationship);
-                
+                BunnyHeader.Log("Stove 6");
+
                 if (noticingOwner != null)
 				{
+                    BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: \"" + relationship +"\"");
+
+                    BunnyHeader.Log("Stove 7");
+
                     if (relationship == "Annoyed" || relationship == "Neutral" || relationship == "Hostile")
 					{
+                        BunnyHeader.Log("Stove 8a");
+
                         noticingOwner.SayDialogue("Stove_DontTouchAngry");
                         noticingOwner.relationships.AddStrikes(agent, 1);
                         __instance.StopInteraction();
@@ -305,6 +321,8 @@ namespace BunnyMod
                     }
                     else if (relationship == "Friendly" || relationship == "Aligned" || relationship == "Loyal" || relationship == "Submissive")
 					{
+                        BunnyHeader.Log("Stove 8b");
+
                         noticingOwner.SayDialogue("Stove_NotThrilled");
 					}
 				}

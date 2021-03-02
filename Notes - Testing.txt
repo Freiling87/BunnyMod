@@ -4,18 +4,7 @@ Traits with Contraindications still show up in upgrade menu.
 
 Chronomancy
 	Stomp no longer working
-		Search all methods with Stomp as a string, ensure that all are patched.
-			Ignored the following:
-				ObjectMultAgent.convertIntToSpecialAbility
-				ObjectMultAgent.convertSpecialAbilityToInt
-				PlayfieldObject.FindDamage
-				ObjectMult.GetExplosionType
-					This one has a chain under analyses of Cmd/Rpc methods that appear to do more than logging. May need to add HammerTime to the byte list.
-					In the meantime, ObjectMult.SpawnExplosion sets the byte to 14 (stomp) so it should perform identically in some respects.
-				Explosion.HasLOSExplosion
-					Leaving this one alone may allow it to destroy Steel Doors. Test that before concluding you can skip this.
-				Explosion.PlaySoundAfterTick
-					Analysis claims unused, but that may be a quirk of DNSpy - I think it is used.
+		Removed it entirely. Not worth all this.
 
 Explosions
 	Endlessly repeated:
@@ -86,8 +75,6 @@ Stove
 			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		NB: I was actually able to get the buttons to show up when the owner was still staring at me.
-	Animation / Rotation
-		Solved; remove this when seen.
 
 Telemancy
 
@@ -142,9 +129,6 @@ All
 Chronomancy
 	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 		Recharge now triggers constantly.
-	Hammertime's requirement for Chronomancy isn't working in the character builder.
-	Hammertime no longer working again.
-	Need log messages for Timescale and Hammertime. Timescale felt like it was not functioning properly this time.
 
 Pyromancy
 	Uniques

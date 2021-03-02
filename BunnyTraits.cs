@@ -312,7 +312,7 @@ namespace BunnyMod
             Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
             Fatass.CostInCharacterCreation = -1;
             Fatass.IsActive = true;
-            Fatass.Recommendations.AddRange(new string[] { "HammerTime", "Stomp" });
+            Fatass.Recommendations.AddRange(new string[] { "Stomp" });
             Fatass.Upgrade = null;
 
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
@@ -478,33 +478,6 @@ namespace BunnyMod
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;
-
-            CustomTrait HammerTime = RogueLibs.CreateCustomTrait("HammerTime", true,
-                new CustomNameInfo("Hammer Time"),
-                new CustomNameInfo("Whenever you exit bullet time, you'll do a cool stompy thing to really seal the deal."));
-            HammerTime.Available = true;
-            HammerTime.AvailableInCharacterCreation = true;
-            HammerTime.CanRemove = false;
-            HammerTime.CanSwap = true;
-            HammerTime.Conflicting.AddRange(new string[] { "Stomp" });
-            HammerTime.CostInCharacterCreation = 2;
-            HammerTime.IsActive = true;
-            HammerTime.Recommendations.AddRange(new string[] { "Chronomancy", "Fatass" });
-            HammerTime.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-            HammerTime.Upgrade = "HammerTime_2";
-
-			CustomTrait HammerTime_2 = RogueLibs.CreateCustomTrait("HammerTime_2", true,
-				new CustomNameInfo("Hammer Time +"),
-				new CustomNameInfo("It's called Bullet Time, not Buffet Time. You are a big fat boy, and your stomps more damage to enemies and to your self-esteem."));
-			HammerTime_2.Available = false;
-			HammerTime_2.AvailableInCharacterCreation = false;
-			HammerTime_2.CanRemove = false;
-			HammerTime_2.CanSwap = false;
-            HammerTime_2.Conflicting.AddRange(new string[] { "Stomp" });
-            HammerTime_2.CostInCharacterCreation = 4;
-			HammerTime_2.IsActive = true;
-			HammerTime_2.SpecialAbilities.AddRange(new string[] { "Chronomancy" });
-			HammerTime_2.Upgrade = null;
 			#endregion
 			#region Magic - Telemancy
 			CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,

@@ -345,8 +345,6 @@ Special Abilities
 		You can reattempt but they might go hostile.
 	Magic
 		Chronomancy
-			Hammertime doesn't do any damage to others. 
-				Tried using Explosion_ExplosionHit but it was a can of worms.
 		Electromancy
 			Split only triggers when it hits a wall, not an agent.
 		Morphomancy: Assume the appearance of someone else, and gain all of their relations to other NPCs

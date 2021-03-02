@@ -29,19 +29,7 @@ Stove
 			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	No interaction
-		Note that this only occurs with the Stove, not with other Objects. So it's the Stove patch specifically that's causing this.
-		Also, make sure there's a check for dead owners.
-			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: DrugDealer
-			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1922): Owner Hostile
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <33999aa274164f2fb3f0d6925d3483a7>:0)
-			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		NB: I was actually able to get the buttons to show up when the owner was still staring at me.
+				Changed to !isnull check
 
 Telemancy
 

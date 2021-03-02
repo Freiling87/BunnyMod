@@ -231,7 +231,10 @@ namespace BunnyMod
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
 			if (__instance is FlamingBarrel)
+			{
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
+                __instance.StopInteraction(); // Attempt 202102261630 
+            }
             else  if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
@@ -282,32 +285,22 @@ namespace BunnyMod
             {
                 BunnyHeader.Log("Stove 1");
 
-                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 2f, null, null, __instance.interactingAgent);
-
-                BunnyHeader.Log("Stove 2");
+                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance, null, __instance.interactingAgent);
 
                 Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
-
-                BunnyHeader.Log("Stove 3");
-
                 Agent interactingAgent = __instance.interactingAgent;
-
-                BunnyHeader.Log("Stove 4");
-
                 string relationship = agent.relationships.GetRel(interactingAgent);
-
-                BunnyHeader.Log("Stove 5");
 
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
 
                 BunnyHeader.Log("Stove 6");
 
-                if (noticingOwner != null)
+                if (!(noticingOwner is null))
 				{
                     BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: \"" + relationship +"\"");
 
-                    BunnyHeader.Log("Stove 7");
+                    BunnyHeader.Log("Stove 7a");
 
                     if (relationship == "Annoyed" || relationship == "Neutral" || relationship == "Hostile")
 					{
@@ -315,6 +308,9 @@ namespace BunnyMod
 
                         noticingOwner.SayDialogue("Stove_DontTouchAngry");
                         noticingOwner.relationships.AddStrikes(agent, 1);
+
+                        //possibly replace with gc.owncheck
+
                         __instance.StopInteraction();
 
                         return false;
@@ -325,7 +321,12 @@ namespace BunnyMod
 
                         noticingOwner.SayDialogue("Stove_NotThrilled");
 					}
+                    else
+                        BunnyHeader.Log("Stove 8c: Relationship null or not matched.");
 				}
+				else
+                    BunnyHeader.Log("Stove 7b: Owner null");
+
                 __instance.ShowObjectButtons();
             }
 
@@ -426,7 +427,7 @@ namespace BunnyMod
             }
             if (buttonText == "GrillFud")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 1f, true, "Grilling"));
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {

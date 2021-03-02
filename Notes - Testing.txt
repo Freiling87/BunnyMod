@@ -6,32 +6,127 @@ Chronomancy
 
 FlamingBarrel & Stove
 	Name Hover
-		Attempt 202102261630
-			Was only on Stove. Test again.
+		Fixed, accepted.
+	Cancelled message
+		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
+		[Error  : Unity Log] Operating Bar Error 2
+			Still completed, is ignorable but still there
 
 Stove
 	Use near Owner
-		Owner had gone hostile from one Friendly use. Made him friendly again and then he tolerated it. Then went hostile when I selected Cook.
-			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1441): Owner Friendly
-			[Message: Bunny Mod] Stove 3
-			[Message: Bunny Mod] Stove 4
-			[Message: Bunny Mod] Stove 5
-			[Message: Bunny Mod] Stove 6
-			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hobo; RelStatus:
-			[Message: Bunny Mod] Stove 7
-			[Message: Bunny Mod] Stove (1441): ObjectReal_PressedButton
-		Owner gone:
-			[Message: Bunny Mod] Stove 6
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <a8d07223c52f4745bfa1a0853286e46d>:0)
-			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-				Changed to !isnull check
+		Unaware Neutral
+			Went hostile without reacting or looking
+				[Message: Bunny Mod] ObjectReal_Interact: Stove (1161)
+				[Message: Bunny Mod] Stove 1
+				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1161): Stove_UnfriendlyOwnerWatching
+				[Message: Bunny Mod] Stove_FindOwner: startingChunk = 1; OwnerID = 1
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
+				[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hacker
+				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1161): Owner Neutral
+				[Message: Bunny Mod] Stove 6
+				[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hacker; RelStatus: ""
+				[Message: Bunny Mod] Stove 7a
+				[Message: Bunny Mod] Stove 8c: Relationship null or not matched.
+				[Message: Bunny Mod] Stove (1161): ObjectReal_PressedButton
+		Unaware Friendly
+			Went hostile too
+				[Message: Bunny Mod] ObjectReal_Interact: Stove (1152)
+				[Message: Bunny Mod] Stove 1
+				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1152): Stove_UnfriendlyOwnerWatching
+				[Message: Bunny Mod] Stove_FindOwner: startingChunk = 1; OwnerID = 2
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 4
+				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 2
+				[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hacker
+				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1152): Owner Friendly
+				[Message: Bunny Mod] Stove 6
+				[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hacker; RelStatus: ""
+				[Message: Bunny Mod] Stove 7a
+				[Message: Bunny Mod] Stove 8c: Relationship null or not matched.
+				[Message: Bunny Mod] Stove (1152): ObjectReal_PressedButton
+				[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
+				[Info   : Unity Log] SETRELHATE: Hacker (1128) (Agent) - Playerr (Agent)
+				[Message: Bunny Mod] Stove (1152): ObjectReal_FinishedOperating
+				[Message: Bunny Mod] Stove (1152): Stove_GrilledFud
+				[Error  : Unity Log] Operating Bar Error 2
+		Unaware Aligned
 
 Telemancy
+	Make sure you're not logging variables each frame the button is held, it got very verbose.
+	Worked fine one time, then IsReturning never switched off.
+		[Info   : Unity Log] FADE11
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.0335818
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
+		[Warning: RogueLibs] SPECIAL HOLD 0.0503971
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.0669022
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.08361369
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.1001438
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
+		[Warning: RogueLibs] SPECIAL HOLD 0.116981
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.1334851
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.1504033
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.1668725
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.1837194
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2002008
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2169635
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2337197
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2501085
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2670241
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.2834751
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.3003442
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.3168186
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.3337058
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Warning: RogueLibs] SPECIAL HOLD 0.3503332
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
+		[Warning: RogueLibs] SPECIAL RELEASE 0
+		[Message: Bunny Mod] TelemancyIsMiscast: False
+		[Message: Bunny Mod] TelemancyIsReturning: False
+		[Message: Bunny Mod] TelemancySetReturning: True
+		[Info   : Unity Log] SETRELHATE: Guard (1454) (Agent) - Playerr (Agent)
 
 === TASKS ======================================================================
 
@@ -42,6 +137,22 @@ Telemancy
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
 		I believe this refers to IEnumerables. 
+	[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
+	[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
+	[Message: Bunny Mod] Stove (1153): Stove_AboutToExplode
+	[Message: Bunny Mod] Stove_AboutToExplode: lastHitByagent = Custom
+	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+	Stack trace:
+	ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__35.MoveNext () (at <fecc5c55716d4603b8afa99d5c133627>:0)
+	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+	UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+	BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+	Stove:DamagedObject(PlayfieldObject, Single)
+	ObjectReal:Damage(PlayfieldObject, Boolean)
+	BulletHitbox:HitObject(GameObject, Boolean)
+	BulletHitbox:OnTriggerEnter2D(Collider2D)
+
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 
@@ -151,3 +262,59 @@ Mugging
 		Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		[Message: Bunny Mod] ChronomancyRollTimescale: 2.75
 		[Message: Bunny Mod] Timescale: 0.3636364
+
+Slot Machine
+	For $1 and $100, button text not found.
+		[Message: Bunny Mod] ObjectReal_Interact: SlotMachine (1324)
+		[Info   : Unity Log] Window Lose Focus
+		[Info   : Unity Log] Window Gain Focus
+		[Error  : Unity Log] AmbiguousMatchException: Ambiguous match found.
+		Stack trace:
+		System.RuntimeType.GetMethodImpl (System.String name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConv, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+		System.Type.GetMethod (System.String name, System.Reflection.BindingFlags bindingAttr) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+		HarmonyLib.AccessTools.DeclaredMethod (System.Type type, System.String name, System.Type[] parameters, System.Type[] generics) (at <3838bbc8277e4732833e7764fa18b67b>:0)
+		Rethrow as AmbiguousMatchException: Ambiguous match for ObjectReal::PressedButton($)
+		HarmonyLib.AccessTools.DeclaredMethod (System.Type type, System.String name, System.Type[] parameters, System.Type[] generics) (at <3838bbc8277e4732833e7764fa18b67b>:0)
+		BunnyMod.BunnyObjects.SlotMachine_PressedButton (System.String buttonText, System.Int32 buttonPrice, SlotMachine __instance) (at <fecc5c55716d4603b8afa99d5c133627>:0)
+		SlotMachine.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		WorldSpaceGUI.PressedButtonMouse (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		UnityEngine.Events.InvokableCall`1[T1].Invoke (T1 args0) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.Events.CachedInvokableCall`1[T].Invoke (System.Object[] args) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.Events.UnityEvent.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.UI.Button.Press () (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.UI.Button.OnPointerClick (UnityEngine.EventSystems.PointerEventData eventData) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents.Execute (UnityEngine.EventSystems.IPointerClickHandler handler, UnityEngine.EventSystems.BaseEventData eventData) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMousePress(MouseButtonEventData)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMouseEvent(Int32, Int32)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMouseEvents()
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:Process()
+		UnityEngine.EventSystems.EventSystem:Update()
+
+		[Warning: RogueLibs] SPECIAL RELEASE 0
+		[Error  : Unity Log] AmbiguousMatchException: Ambiguous match found.
+		Stack trace:
+		System.RuntimeType.GetMethodImpl (System.String name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConv, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+		System.Type.GetMethod (System.String name, System.Reflection.BindingFlags bindingAttr) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+		HarmonyLib.AccessTools.DeclaredMethod (System.Type type, System.String name, System.Type[] parameters, System.Type[] generics) (at <3838bbc8277e4732833e7764fa18b67b>:0)
+		Rethrow as AmbiguousMatchException: Ambiguous match for ObjectReal::PressedButton($)
+		HarmonyLib.AccessTools.DeclaredMethod (System.Type type, System.String name, System.Type[] parameters, System.Type[] generics) (at <3838bbc8277e4732833e7764fa18b67b>:0)
+		BunnyMod.BunnyObjects.SlotMachine_PressedButton (System.String buttonText, System.Int32 buttonPrice, SlotMachine __instance) (at <fecc5c55716d4603b8afa99d5c133627>:0)
+		SlotMachine.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		WorldSpaceGUI.PressedButtonMouse (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		UnityEngine.Events.InvokableCall`1[T1].Invoke (T1 args0) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.Events.CachedInvokableCall`1[T].Invoke (System.Object[] args) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.Events.UnityEvent.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.UI.Button.Press () (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.UI.Button.OnPointerClick (UnityEngine.EventSystems.PointerEventData eventData) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents.Execute (UnityEngine.EventSystems.IPointerClickHandler handler, UnityEngine.EventSystems.BaseEventData eventData) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents.Execute[T] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1] functor) (at <8f550e8b53374632ad4d1095b05684fb>:0)
+		UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMousePress(MouseButtonEventData)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMouseEvent(Int32, Int32)
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMouseEvents()
+		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:Process()
+		UnityEngine.EventSystems.EventSystem:Update()

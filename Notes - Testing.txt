@@ -37,17 +37,13 @@ Telemancy
 
 --- BUGS ---------------------------------------------------
 
-- Stove:
-	Make noise when operated
-	Count as strike for annoyance. Specifically Neutral or Annoyed statuses.
-
 - Stove name hovers after use. Can't tamper w stove after cooking on it. 
 	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
+		I believe this refers to IEnumerables. 
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
-
 
 Fat Head message triggers on entering level.
 	Also presumably occurs with other equipment traits.

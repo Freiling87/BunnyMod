@@ -30,9 +30,9 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
 
@@ -585,44 +585,60 @@ namespace BunnyMod
 
             // TODO: See also InvDatabase.ChooseWeapon
         }
-        public static void InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Postfix
-        {
-            if (item!= null && __instance.agent.statusEffects.hasTrait("Fatass"))
-			{
-                __instance.UnequipArmor(sfx, true);
+        public static bool InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Prefix
+		{
+            if (item != null && __instance.agent.statusEffects.hasTrait("Fatass"))
+            {
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
-			}
-        }
-        public static void InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Postfix
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+
+                return false;
+            }
+
+            return true;
+		}
+        public static bool InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Prefix
 		{
             if (item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
-                __instance.UnequipArmorHead(sfx, true);
                 __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+
+                return false;
             }
+
+            return true;
         }
-        public static void InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Postfix
+        public static bool InvDatabase_EquipWeapon(InvItem item, bool sfx, InvDatabase __instance) // Prefix
         {
             if (item == null)
-                return;
+                return false;
 
             Agent agent = __instance.agent;
 
             if (agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
             {
                 agent.Say("Mommy says I can't use sharp things!");
-                __instance.UnequipWeapon();
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+
+                return false;
             }
-            if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
+            else if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
                 agent.Say("I can't use that! It's too loooooud.");
-                __instance.UnequipWeapon();
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+
+                return false;
             }
-            if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+            else if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
 			{
                 agent.Say("I need something sharper.");
-                __instance.UnequipWeapon();
+                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+
+                return false;
             }
+
+            return true;
         }
         public static bool InvDatabase_SubtractFromItemCount_a(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{

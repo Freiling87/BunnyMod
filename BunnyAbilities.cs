@@ -1104,13 +1104,13 @@ namespace BunnyMod
 		#region Telemancy - Bits
 		public static bool TelemancyIsReturning(Agent agent)
 		{
-			BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
+			//BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
 		public static bool TelemancyIsMiscast(Agent agent)
 		{
-			BunnyHeader.Log("TelemancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
+			//BunnyHeader.Log("TelemancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
@@ -1245,13 +1245,15 @@ namespace BunnyMod
 					if (telemancyNetCharge >= 100 || item.invItemCount <= 0)
 					{
 						telemancy.OnReleased(item, agent);
+
+						return;
 					}
 
-					if (timeHeld / 1000 >= telemancyHeldCounter)
+					if (timeHeld / 1000 >= telemancyHeldCounter) // reduce further than 1000 with WildCasting- faster charge, higher risk
 					{
 						telemancyHeldCounter++;
 
-						BunnyHeader.Log("Telemancy OnHeld: HeldCounter: " + telemancyHeldCounter);
+						BunnyHeader.Log("Telemancy OnHeld: HeldCounter = " + telemancyHeldCounter + "; timeHeld = " + timeHeld);
 
 						int curCost = TelemancyRollManaCost(agent);
 
@@ -1291,10 +1293,12 @@ namespace BunnyMod
 			};
 
 			telemancy.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(0.25f) : null;
+				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
 		public static int TelemancyRollManaCost(Agent agent)
 		{
+			BunnyHeader.Log("TelemancyRollManaCost");
+
 			//TODO
 
 			float minimum = 3.00f;
@@ -1352,7 +1356,7 @@ namespace BunnyMod
 		}
 		public static int TelemancyRollCharge(Agent agent)
 		{
-			int charge = 0;
+			int charge = 10;
 
 			// Charge rate can be increased
 
@@ -1375,7 +1379,7 @@ namespace BunnyMod
 
 				if (tileData.solidObject)
 					continue;
-				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze) // Consider allowing Ooze, for balance
+				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze)
 					continue;
 				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
 					continue;
@@ -1398,6 +1402,8 @@ namespace BunnyMod
 		}
 		public static bool TelemancyRollMiscast(Agent agent, float heldTime)
 		{
+			BunnyHeader.Log("TelemancyRollMiscast");
+
 			// Might be better to turn this into an effective void that returns true if it took effect. 
 			// Then up above where you're checking for this, just do "if(!Miscast) then cast"
 

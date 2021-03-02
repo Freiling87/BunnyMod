@@ -124,7 +124,18 @@ namespace BunnyMod
             Pusher_2.Upgrade = null;
             #endregion
             #region Equipment
-
+            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+                new CustomNameInfo("Fatass"),
+                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            Fatass.Available = true;
+            Fatass.AvailableInCharacterCreation = true;
+            Fatass.CanRemove = true;
+            Fatass.CanSwap = false;
+            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            Fatass.CostInCharacterCreation = -2;
+            Fatass.IsActive = true;
+            Fatass.Recommendations.AddRange(new string[] { "Stomp" });
+            Fatass.Upgrade = null;
             #endregion
             #region Karma
             CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
@@ -301,19 +312,6 @@ namespace BunnyMod
             DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
-
-            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-                new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            Fatass.Available = true;
-            Fatass.AvailableInCharacterCreation = true;
-            Fatass.CanRemove = true;
-            Fatass.CanSwap = false;
-            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            Fatass.CostInCharacterCreation = -1;
-            Fatass.IsActive = true;
-            Fatass.Recommendations.AddRange(new string[] { "Stomp" });
-            Fatass.Upgrade = null;
 
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
                 new CustomNameInfo("Fat Head"),

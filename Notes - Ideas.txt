@@ -370,6 +370,11 @@ Special Abilities
 				https://www.reddit.com/r/streetsofrogue/comments/lhdwnx/my_third_entree_for_medieval_themed_characters/
 
 Traits
+	Fatass
+		Slower movement
+		Can't wear armor
+		Armor can'twear messages at beginning of level
+		Stomp damage
 	Path traits
 		Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.
 		Chaotic Acts

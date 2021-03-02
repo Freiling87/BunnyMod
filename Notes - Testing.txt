@@ -3,47 +3,14 @@
 Traits with Contraindications still show up in upgrade menu.
 
 Chronomancy
-	Stomp no longer working
-		Removed it entirely. Not worth all this.
-
-Explosions
-	Endlessly repeated:
-		[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-		Stack trace:
-		Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-
-		[Error  : Unity Log] MissingMethodException: void ObjectMult.CallCmdExplosionHitObject2(UnityEngine.Networking.NetworkInstanceId,int,UnityEngine.Vector3,int,UnityEngine.Vector3)
-		Stack trace:
-		Explosion.ExplosionHit (UnityEngine.GameObject hitObject, System.Boolean fromClient) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Explosion.OnTriggerStay2D (UnityEngine.Collider2D other) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 
 FlamingBarrel & Stove
 	Name Hover
 		Attempt 202102261630
-			No luck.
-		There are no error messages here, it's just that a step is being left out.
-			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (2065)
-			[Message: Bunny Mod] FlamingBarrel (2065): ObjectReal_PressedButton
-			[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
-			[Message: Bunny Mod] FlamingBarrel (2065): ObjectReal_FinishedOperating
-			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (2066) ← Different one
+			Was only on Stove. Test again.
 
 Stove
 	Use near Owner
-		Found owner and alerted him. He woke up from bed and ran over to where the stove was.
-			[Message: Bunny Mod] Stove_FindOwner: startingChunk = 6; OwnerID = 1
-			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
-			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
-			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: DrugDealer
-			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1922): Owner Neutral
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <33999aa274164f2fb3f0d6925d3483a7>:0)
-			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 		Owner had gone hostile from one Friendly use. Made him friendly again and then he tolerated it. Then went hostile when I selected Cook.
 			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1441): Owner Friendly
 			[Message: Bunny Mod] Stove 3
@@ -130,6 +97,7 @@ Chronomancy
 	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 		Recharge now triggers constantly.
 
+
 Pyromancy
 	Uniques
 		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
@@ -181,7 +149,6 @@ BEFORE RELEASE:
 === NEXT RELEASE ===============================================================
 
 Mugging
-	Disable until next release! This is Scope Creep.
 	On attempt interact after beg:
 		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo34; GangMugging: 2
 		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1104)

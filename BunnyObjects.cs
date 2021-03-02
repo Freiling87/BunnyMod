@@ -66,9 +66,9 @@ namespace BunnyMod
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
 
-            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
 

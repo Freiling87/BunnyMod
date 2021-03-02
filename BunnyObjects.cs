@@ -9,6 +9,7 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 using UnityEngine.Networking;
+using System.Threading.Tasks;
 
 namespace BunnyMod
 {
@@ -65,6 +66,10 @@ namespace BunnyMod
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
             //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
 
+            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+
             BunnyHeader.MainInstance.PatchPostfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
 
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
@@ -110,6 +115,9 @@ namespace BunnyMod
             CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "ButtonText", new CustomNameInfo("Dispense Ice"));
 
             CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText", new CustomNameInfo("Open container"));
+
+            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", "ButtonText", new CustomNameInfo("Bet $1"));
+            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "ButtonText", new CustomNameInfo("Bet $100"));
 
             CustomName stove_DontTouchAngry = RogueLibs.CreateCustomName("Stove_DontTouchAngry", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
             CustomName stove_NotThrilled = RogueLibs.CreateCustomName("Stove_NotThrilled", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
@@ -886,6 +894,134 @@ namespace BunnyMod
 		{
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
+        }
+		#endregion
+		#region SlotMachine
+        public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
+		{
+            MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
+            determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                if (__instance.advantage == 0)
+                    __instance.buttons.Add("IncreaseSlotMachineOdds");
+                
+                if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+                    __instance.buttons.Add("HackExplode");
+            }
+            else
+            {
+                __instance.buttons.Add("Play1");
+                __instance.buttonPrices.Add(1);
+
+                __instance.buttons.Add("Play5");
+                __instance.buttonPrices.Add(5);
+
+                __instance.buttons.Add("Play20");
+                __instance.buttonPrices.Add(20);
+
+                __instance.buttons.Add("Play50");
+                __instance.buttonPrices.Add(50);
+
+                __instance.buttons.Add("Play100");
+                __instance.buttonPrices.Add(100);
+            }
+            return false;
+        }
+        public static void SlotMachine_DropMoney(int amount, SlotMachine __instance) // Non-Patch
+		{
+            // Original
+            __instance.interactingAgent.inventory.AddItem("Money", amount);
+            __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, amount);
+            //
+
+            //InvItem money = new InvItem()
+            //{
+
+            //};
+
+            //__instance.objectInvDatabase.DropItem(money, false, __instance.tr.position); // Need to slightly randomize this
+
+        }
+        public static bool SlotMachine_Gamble(int gambleAmt, SlotMachine __instance) // Replacement
+		{
+            if (!__instance.moneySuccess(gambleAmt))
+            {
+                __instance.StopInteraction();
+
+                return false;
+            }
+
+            __instance.IncreaseNumPlays();
+            __instance.objectInvDatabase.money.invItemCount += gambleAmt;
+
+            int advantage = 45;
+            advantage += __instance.advantage;
+
+            advantage = __instance.interactingAgent.DetermineLuck(advantage, "SlotMachine", true);
+
+            if (__instance.gc.percentChance(1))
+			{
+                SlotMachine_Jackpot(gambleAmt * 10, __instance);
+            }
+            else if (__instance.gc.percentChance(advantage - 1 ))
+            {
+                __instance.interactingAgent.inventory.AddItem("Money", gambleAmt * 2);
+                __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, gambleAmt * 2);
+                __instance.interactingAgent.SayDialogue("SlotMachineWon");
+                __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
+                __instance.gc.audioHandler.Play(__instance, "Win");
+            }
+            else
+			{
+                __instance.interactingAgent.SayDialogue("SlotMachineLost");
+                __instance.gc.audioHandler.Play(__instance, "Fail");
+            }
+
+            __instance.StopInteraction();
+
+            return false;
+        }
+        public static async void SlotMachine_Jackpot(int payout, SlotMachine __instance) // Non-Patch
+		{
+            __instance.interactingAgent.SayDialogue("SlotMachineJackpot");
+
+            for (int i = 10; i < payout; i += 10)
+			{
+                SlotMachine_DropMoney(payout / 10, __instance);
+
+                __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
+                __instance.gc.audioHandler.Play(__instance, "Win");
+
+                await Task.Delay(200);
+            }
+        }
+        public static bool SlotMachine_PressedButton(string buttonText, int buttonPrice, SlotMachine __instance) // Replacement
+		{
+            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton");
+            pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+            if (buttonText == "Play1")
+                __instance.Gamble(1);
+            else if (buttonText == "Play5")
+                __instance.Gamble(5);
+            else if (buttonText == "Play20")
+                __instance.Gamble(20);
+            else if (buttonText == "Play50")
+                __instance.Gamble(50);
+            else if (buttonText == "Play100")
+                __instance.Gamble(100);
+            else if (buttonText != "IncreaseSlotMachineOdds")
+            {
+                __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
+                __instance.IncreaseSlotMachineOdds(__instance.interactingAgent);
+                __instance.StopInteraction();
+            }
+            else
+                __instance.StopInteraction();
+
+            return false;
         }
 		#endregion
 		#region Stove

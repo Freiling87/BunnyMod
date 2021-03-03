@@ -1032,8 +1032,6 @@ namespace BunnyMod
 		#region Stove
 		public static IEnumerator Stove_AboutToExplode(Stove __instance) // Non-Patch
 		{
-            // TODO: This one is why it's blinking but not breaking.
-
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": Stove_AboutToExplode");
 
             __instance.interactable = false;
@@ -1051,7 +1049,7 @@ namespace BunnyMod
 
             BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
 
-            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent); // 202103031538
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -1181,23 +1179,39 @@ namespace BunnyMod
         }
         public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {
-            BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
+            int logDepth = 1;
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
 
             Stove_Variables[__instance].mustSpawnExplosionOnClients = false;
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
 
             // Trying to deactivate this to determine if if will fix rotation.
             //Stove_Variables[__instance].animateSpriteID = 0;
             //Stove_Variables[__instance].animateSpriteID2 = 0;
-            //__instance.GetComponent<Animator>().enabled = false;
+            __instance.GetComponent<Animator>().enabled = false; // 202103031538
             //
 
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
+
             Stove_Variables[__instance].savedDamagerObject = null;
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
+
             Stove_Variables[__instance].noOwnCheckCountdown = false;
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
+
             Stove_Variables[__instance].countdownCauser = null;
-            // Untested:
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
+
             __instance.objectSprite.transform.Find("RealSprite").transform.localPosition = Vector3.zero;
             __instance.objectSprite.transform.Find("RealSprite").transform.localScale = Vector3.one;
-            //
+
+            BunnyHeader.ConsoleMessage.LogMessage("Stove_RevertAllVars " + logDepth++);
+
             __instance.CancelInvoke();
         }
         public static void Stove_SetVars(Stove __instance) // Postfix

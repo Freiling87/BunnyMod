@@ -9,6 +9,10 @@ FlamingBarrel & Stove
 		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
 		[Error  : Unity Log] Operating Bar Error 2
 			Still completed, is ignorable but still there
+			This was found in PlayfieldObject.Operating @5328.
+			Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
+			My best guess is that we need to make stoppedOperating false somehow.
+			
 
 Stove
 	Dialogue

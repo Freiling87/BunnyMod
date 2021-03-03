@@ -318,7 +318,7 @@ namespace BunnyMod
                         BunnyHeader.Log("Stove 8a");
 
                         string dialogue = BunnyHeader.gc.nameDB.GetName("Stove_" + relationship, "Dialogue");
-                        noticingOwner.Say(dialogue);
+                        noticingOwner.SayDialogue(dialogue);
                         noticingOwner.relationships.AddStrikes(agent, 1);
 
                         //possibly replace with gc.owncheck
@@ -332,7 +332,7 @@ namespace BunnyMod
                         BunnyHeader.Log("Stove 8b");
 
                         string dialogue = BunnyHeader.gc.nameDB.GetName("Stove_" + relationship, "Dialogue");
-                        noticingOwner.Say(dialogue);
+                        noticingOwner.SayDialogue(dialogue);
 					}
                     else
                         BunnyHeader.Log("Stove 8c: Relationship null or not matched.");

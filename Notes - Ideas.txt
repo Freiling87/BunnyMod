@@ -26,7 +26,7 @@ Big Quests
 	Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
 	Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
 
-Gameplay
+Gameplay Overhauls
 	Election Rebalance
 		Influencing the Election
 		Reputation Carryover
@@ -267,56 +267,6 @@ Mutators
 Objects
 	Cash Register - A tough locked object containing money, that may be unlocked through the chunk's Computer, Hacked, Lockpicked, or pried open with a Crowbar. Easier than a Safe, yes, but almost always within the view of their owner.
 	Chemistry Set - Sacrifice a syringe to identify that type.
-		Computer
-			Apartments
-			Arcade - Unlock cash compartments in all Arcade Games in the chunk. Each has $1-$10 inside.
-			Arena - Audience Participation Night: Release Rage Poison in vents.
-			Armory - Self-Destruct (Big bomb)
-			Bank - Cause Supercops to swarm the level. 
-			Bar - Drink Specials: Buying a round is cheaper
-			Bathhouse - Poison the Water!
-			Bathroom - 
-			Broadcasting Station - [Satellite actions cover this]
-			Cabin - Play Music (https://www.youtube.com/watch?v=puVYtkh-LO4)
-			Casino - Designate someone for security to become Hostile to
-			Cave - 
-			Church - 
-			City Park - 
-			Confiscation Center - 
-			Dance Club - Now Punch to the Left: Mind control everyone dancing
-			Deportation Center - 
-			Drug Den
-			Farm
-			Fire Station
-			Gated Community
-			Generic
-			Graveyard
-			Greenhouse
-			Hedge Maze
-			Hideout
-			Hospital
-			Hotel
-			House
-			Ice Rink
-			Lab
-			Mall
-			Mansion
-			Mayor's House
-			Mayor's Office
-			Military Outpost
-			Movie Theater
-			Music Hall
-			Office Building
-			Pit
-			Podium Park
-			Police Outpost/Police Station - All Clear: Set all Hostile Police to Annoyed; APB: Set all Police hostile to a target person
-			Prison
-			Private Club
-			Shack
-			Shop
-			Slave Shop
-			Uptown House
-			Zoo
 	Dumpster - A big metal dumpster that you can hide in, for settings where Bushes or Bathtubs aren't appropriate.
 	Oil Barrel - A Rust-colored barrel which creates an oil pool when destroyed.
 	Kitchen Fryer - When destroyed, leaves a pool of oil.
@@ -331,14 +281,15 @@ Objects
 Object interactions
 	Tampering
 		Air Conditioning Unit - Tamper to Release Gas without access to main computer (not sure about this one). 
-		Generator & Overclocked Generator - Able to Rig to Detonate via Hacking. Maybe only through computer, who knows. This one will be very OP for anyone with a Laptop, but Laptops are already OP.
-		Speaker - Tamper or Hack to make it very loud, blowing wind like the Air Gun.
 		Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallways clear. Or maybe some other behavior, not sure yet.
-		ATM - Get money, risk setting off alarm (larger ATM overhaul)
-		Ammo Dispenser - Get one free refill, risk exploding (shoot bullets everywhere - should also be intentional with hack)
-		AugmentationBooth - Free XP Juice
 		Bed - Fucking explode if someone tries to sleep in it
-		CloneMachine - Spit out a Shapeshifter
+	Alarms on Chests/Safes, Doors & Windows
+		- Common in high-security chunks.
+		- If one is present, interacting will give you a chance to attempt to disarm the alarm. This might use a tool (wire cutters?) as a bonus to success. 
+		- You can hack them, of course, or disable them from a computer.
+		- Or, you can just open or destroy the object and set the alarm off. 
+
+		This would add a small, simple layer to intrusion that currently is sort of a glaring omission in terms of portraying real-world stuff.
 		
 Special Abilities
 	Beggar | 2 Points | Beg random people for something. Either get a food item or cigarettes. 50/50 Chance. Success will make Agent friendly, failure will annoy them.
@@ -480,6 +431,133 @@ Traits
 	Needy (-6 Points)
 		You have needs like the musician, but they are not beneficial to you or anybody else. (You need to go to the toilet, etc)
 		You need to use the nice toilet. Which always happens to be in some inconvenient place like the closet of a gang hideout. That timer is rapidly ticking down, and if you don't go to that specific toilet, you'll have an accident, and no NPC or shop owner, etc will want to talk to you.
+
+**Hacking Overhaul**
+
+- Greatly increase the possibilities, risks, rewards, and trait investment for hacking
+- Ground Rules
+	- Attempt: Every action while hacking has a % chance of success displayed next to its button. 
+	- System: The collection of Objects under one Owner ID in a particular chunk that has a Computer. If there's no Computer, the object is a System unto itself.
+	- Heat: This is a baseline increased difficulty to all Attempts in a System. It is increased whenever you pass an Attempt, more when you fail one. Remote access leads to higher heat than using a machine in person. Some Objects when not part of a System will have their own Heat, like ATMs. Refrigerators, not so much.
+	- Password: Occasionally found in a Computer's owner's pocket. Might also be found hidden somewhere in a Computer. Submissive NPCs will give you their passwords. Pretty much a Safe Combo except for Computers.
+	- PayData: Questgivers will occasionally request this, which you need to retrieve from an intact Computer. Hackers will buy PayData, sometimes a better offer than completing your Quest. PayData has a small chance of appearing without a Quest attached.
+- A failed Attempt in a System may have different results, depending on how much your Attempt failed by, compared to Heat:
+	1. Can reattempt, Heat+.
+	2. Action Locked, Heat++.
+	3. Action Locked, Heat++, any Hacker owners search.
+	4. Action Locked, Heat+++, triggers Alarm, owners search.
+	5. System Locked, Heat++++, triggers Alarm, owners search, and a squad of Cop Bots is deployed to search for you.
+	6. Computer is destroyed, triggers Alarm, owners search, and a squad of Cop Bots is deployed to search for you.
+- Traits:
+	- Tech Expert is replaced by several traits. What's not in here is covered by Explosives Expert and Mechanical Expert (separate overhauls)
+	- Cyber-Intruder - Improve your Attempt rolls.
+	- Data Broker - Increase sell price of PayData, and its chance of appearing in a System.
+	- IOT God - Enables non-Computer Object hack actions. Many of the vanilla hack actions (Like "Refrigerator Run") would be hidden behind this trait.
+	- IP Ghost - Reduces initial Heat & slows its increase.
+- Generic Computer Actions:
+	- Access PayData: Relatively difficult but valuable, so you'll probably need to make sure you're prepared.
+	- Access System: The initial entry to a System is technically an Attempt. This also applies if you're trying to acces a system that has been Locked.
+	- Lights: Turns on or off all Lights in the Chunk. (See Stealth Overhaul)
+	- Cut Power: Shuts down the power for the Chunk. Can be brought back up with a Generator or Power Box.
+	- Deactivate Alarm: Just what it sounds like.
+	- Enter Password: Deactivates System's Heat permanently, but you can still roll an Attempt failure!
+	- Guess Password: A very small chance. Feeling lucky?
+	- Increase Permissions: Improves success rate of all further Attempts in the system, but slightly increases your Heat.
+	- Invert Credentials: Immediately flip the ownership of all cameras and turrets at once.
+	- Maintenance Mode: Disable Heat on a target Object in the System.
+	- Recover Password: Very high-risk.
+	- Route IP: Select another computer in the vicinity to route your access through. If Cop Bots are deployed, they'll go there instead.
+	- Trigger Alarm: Just what it sounds like.
+	- Unlock Action: Unlocks most actions previously locked (Except Wipe Audits). Increases Heat substantially.
+	- Wipe Audit Trail: Reset's Systems Heat to 0. Can only be done once per System.
+- Chunk-specific Computer Actions:
+	- Apartments - Sprinkler Test: All Stoves in the chunk leak oil for a few seconds, then burst into flames.
+	- Arcade - Cash Out: Unlock cash compartments in all Arcade Games, Jukeboxes, Pool Tables in the chunk. Each has $3-$5 inside. All become busted, though. Show Off: Any Hackers in the chunk become Loyal to you.
+	- Arena - Audience Participation Night: Release Rage Poison in vents.
+	- Armory - Red Alert: Cameras and turrets target everyone, gas is released, alarms go off continuously, huge explosion after countdown.
+	- Bank - High chance of PayData. Heist Alert: Cause Supercops to swarm the level, searching the Bank first.
+	- Bar - Drink Specials: Buying a round is cut to half-price.
+	- Bathhouse - Deep Cleanse: Poison the water.
+	- Bathroom - Brown Alert: All toilets self-destruct with a Poison explosion.
+	- Broadcasting Station - ___?
+	- Cabin - Play Music (https://www.youtube.com/watch?v=puVYtkh-LO4)
+	- Casino - Card Counter: All owners become Annoyed at the targeted NPC. Card Cheat: All owners become Hostile to the targeted NPC.
+	- Cave - ___?
+	- Church - ___?
+	- City Park - Block Party: All NPCs who were wandering the level are now wandering this chunk. 
+	- Confiscation Center - ___?
+	- Dance Club - Now Punch to the Left: Mind control everyone dancing like the Alien's improved SA.
+	- Deportation Center - ___?
+	- Drug Den - He's Wearing a Wire: Owners become hostile to all non-Owners in the chunk. Codeword Flamingo: A small squad of Cops invades the chunk.
+	- Farm - Overclock Produce: All Trees, Bushes, Plants & Giant Plants in the chunk burst into flames after a countdown.
+	- Fire Station - Union Strike: Firefighters no longer put out fires in this level. Training Exercise: Release an Arsonist into the level.
+	- Gated Community - Eek! Poor People!: One or two Supercops start wandering this chunk, wandering on patrol. 
+	- Graveyard - Where's the Good Stuff Buried: Increase your chance of finding Money when destroying a Gravestone.
+	- Greenhouse - Sup-R-Gro Treatment: Release Gigantizer gas in vents.
+	- Hedge Maze - Code Theseus: Werewolf Squad starts patrolling this chunk, hostile to anyone.
+	- Hideout - ___?
+	- Hospital - Emergency Pandemic Response: Release Cyanide gas in vents.
+	- Hotel - Premium Continental Breakfast Extravaganza: Get a banana.
+	- House - Silent Alarm: Summons a couple of cops to investigate the Chunk. They may or may not kill the homeowner depending on, you know... "factors."
+	- Ice Rink - Overclock A/C: Releases Freezy Gas from the Vents. 
+	- Lab - Delta Experiment: Releases a random Gas from the Vents. 
+	- Mall - Raise the Rent: All Vendors have a slight discount.
+	- Mansion - Amazon Order: If the Owner is alive, a Slave is generated for them. The People's Mansion: A swarm of Slum Dwellers invades the chunk.
+	- Mayor's House - ___?
+	- Mayor's Office - ___?
+	- Military Outpost - Strangelove Protocol: Owners are Hostile to everyone else.
+	- Movie Theater - ___?
+	- Music Hall - Mandatory Moshpit: Berserk everyone in the chunk, as long as Speakers, turntable, and Musician are still intact. Go to 11: Blows wind like the Air Gun from Speakers, deafens like the flute.
+	- Office Building - Extremely Casual Friday: Owners all become naked and Friendly.
+	- Pit - ___?
+	- Podium Park - Intro Music: Everyone assembles here before the podium is used. Might be a good distraction.
+	- Police Outpost/Police Station - All Clear: Set all Hostile Police to Annoyed. APB: All Police hostile to a target person. Lockdown Protocol: Deactivate or Activate Lockdown walls.
+	- Prison - Prisoner Discipline Initiative: Owners break into cells one by one and kill the inhabitants.
+	- Private Club - VIP Card: Gain Bouncer access. Owners are Loyal, others are Friendly.
+	- Shack - Blahd Bash / Crepe Crush: All gang members of a chosen type converge on this shack. If they don't see hostiles, they leave and resume their previous activities.
+	- Shop - Raise the Rent: All Vendors have a slight discount.
+	- Slave Shop - Free Slaves; Detonate Slaves
+	- Uptown House - Silent Alarm: Summons a couple of cops to investigate the Chunk. They may or may not kill the homeowner depending on, you know... "factors."
+	- Zoo - Animal Liberation Front: A squad of Gorillas invades the chunk and kills the owners.
+- Object hacking Actions (Why IOT is a bad idea)
+	- Air Conditioner - Release Gas can now be done directly from A/C.
+	- Alarm Button - ___?
+	- Ammo Dispenser - On the House: One free Refill. Red Alert: Shoot bullets everywhere and explode
+	- Arcade Game - Cash Out: Release $3-5
+	- ATM - No longer Tossable nor destructible with melee, fire or bullets. Good chance of PayData. High heat, and alarm sensitive to hacking & tampering. Cash Transfer: Release ~$100. 
+	- Augmentation Booth - Dispense a free can of XP Juice.
+	- CloneMachine - Spit out a shapeshifter
+	- Crusher - Increase crush speed; Deactivate
+	- Door - If it has an Alarm or trap (See Alarm overhaul), reset/set off/deactivate it.
+	- Elevator - ___ ?
+	- FireSpewer - Deactivate; Leak Oil; Start; Overheat (nonstop fire and explosion)
+	- FlameGrate - Deactivate; Leak Oil; Start; Constant flame mode
+	- Generator - Activate/Deactivate (Similar to PowerBox, local to Chunk)
+	- Generator2 - Activate/Deactivate/Overload (Similar to PowerBox, local to Chunk)
+	- Goodie Dispenser - Maybe just replace this with a Shop machine - works like Shopkeeper. Goodie Dispenser sucks.
+	- Jukebox - Cash Out: Release $3-5
+	- Lamp - Separate Ground Wire: Electrocutes anyone who touches it. 
+	- LaserEmitter - Activate/Deactivate; Change Mode
+	- LoadoutMachine - ___?
+	- LockdownWall - Activate/Deactivate/Disable
+	- MetalDetector - ___?
+	- Mine - Deactivate for pickup; Detonate; Incendiary Mode
+	- PawnShopMachine - ___?
+	- PoliceBox - ___?
+	- PoolTable - Cash Out: Release $3-5
+	- PowerBox - Reactivate if shut down
+	- Refrigerator - Dispense Ice: Shoots Freeze Rays in random directions, then explodes.
+	- Safe - ___?
+	- SatelliteDish - ___?
+	- SecurityCam - ___?
+	- SlotMachine - Cash Out: Release ~$100. (Needs balance: ideas?)
+	- Speaker - Go to 11: Blows wind like the Air Gun, deafens like the flute.
+	- Stove - Overload Gas Line: Leak oil for 5s, then burst into flames.
+	- Television - Ludovico Protocol: Mind Control a person within visual range of the TV.
+	- Turntables - Mandatory Moshpit: Berserk everyone in the chunk, as long as Speakers, turntable, and Musician are still intact.
+	- Turret - ___?
+	- WaterPump - ___?
+	- Window: If it has an Alarm or trap (See Alarm overhaul), reset/set off/deactivate it.
 
 === SHELVED ====================================================================
 

@@ -32,7 +32,7 @@ namespace BunnyMod
 		public void Initialize_Names()
 		{
 			#region ButtonText
-			string nameType = "ButtonText";
+			string nameType = "Interface";
 			CustomName hobo_GiveMoney1 = RogueLibs.CreateCustomName("Hobo_GiveMoney1", nameType, new CustomNameInfo("Give Money"));
 			CustomName hobo_GiveMoney2 = RogueLibs.CreateCustomName("Hobo_GiveMoney2", nameType, new CustomNameInfo("Give Money"));
 			CustomName hobo_GiveMoney3 = RogueLibs.CreateCustomName("Hobo_GiveMoney3", nameType, new CustomNameInfo("Give Money"));
@@ -133,7 +133,7 @@ namespace BunnyMod
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
 
-				agent.SayDialogue("hobo_Donate_" + relStatus); //
+				agent.SayDialogue("Hobo_Donate_" + relStatus); //
 				InvItem invItem = new InvItem();
 				invItem.invItemName = "Money";
 				invItem.invItemCount = agent.determineMoneyCost("Hobo_GiveMoney1"); // ←

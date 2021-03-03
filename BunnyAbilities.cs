@@ -1172,7 +1172,7 @@ namespace BunnyMod
 
 			string[] dialogue =
 			{
-				"VWIP",
+				"Vwip!",
 				"Nothing personal, kid."
 			};
 
@@ -1249,7 +1249,7 @@ namespace BunnyMod
 						return;
 					}
 
-					if (timeHeld / 1000 >= telemancyHeldCounter) // reduce further than 1000 with WildCasting- faster charge, higher risk
+					if (timeHeld >= telemancyHeldCounter) // reduce further than 100% with WildCasting- faster charge, higher risk
 					{
 						telemancyHeldCounter++;
 
@@ -1281,7 +1281,7 @@ namespace BunnyMod
 
 			telemancy.Recharge = (item, agent) =>
 			{
-				telemancyHeldCounter = 0;
+				// telemancyHeldCounter = 0; // Wrong place.
 
 				if (item.invItemCount < 100 && agent.statusEffects.CanRecharge())
 				{
@@ -1326,7 +1326,7 @@ namespace BunnyMod
 				maximum *= 1.00f;
 			}
 
-			return (int)UnityEngine.Random.Range(minimum, maximum);
+			return 25;
 		}
 		public static float[] TelemancyRollAccuracy(Agent agent)
 		{

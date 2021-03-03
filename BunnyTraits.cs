@@ -601,7 +601,7 @@ namespace BunnyMod
 		{
             if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
-                __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
+                __instance.agent.Say("Ow, I can feel it squeezing my big, stupid, dumb, ugly head!");
                 __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;

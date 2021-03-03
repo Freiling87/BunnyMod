@@ -1,8 +1,19 @@
-﻿=== TEST NOTES =================================================================
+﻿=== TO-DO LIST =================================================================
 
 Traits with Contraindications still show up in upgrade menu.
 
 Chronomancy
+	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
+		Recharge now triggers constantly.
+
+Equipment traits
+	Extend to Use-Items, not just Equip-Items 
+	Fat Head message triggers on entering level.
+		This is only with Apppearance-only headwear.
+			Fix? Change the dialogue. Accepted.
+
+Finalization
+	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
 
 FlamingBarrel & Stove
 	Cancelled message
@@ -13,143 +24,66 @@ FlamingBarrel & Stove
 			Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
 			My best guess is that we need to make stoppedOperating false somehow.
 			There are a lot of checks in there that could toggle it. 
-				Attempt 202103031453
-Stove
-	Dialogue
-		Attempt
-	Use near Owner
-		Neutral
-		Friendly
-			Tried to say dialogue (not found)
-			Went hostile when Use selected
-				This is not occurring with Aligned, so there's some logic specific to it that allows that. 
-					// 202103021957
+				// 202103031453
 
-			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1199): Owner Friendly
-			[Message: Bunny Mod] Stove 6
-			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner OfficeDrone; RelStatus: "Friendly"
-			[Message: Bunny Mod] Stove 7a
-			[Message: Bunny Mod] Stove 8b
-			[Error  : Unity Log] NullReferenceException: Object referaence not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <56e885d269d141ea89e97ceedcaeb3cf>:0)
-			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		Aligned
-			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: OfficeDrone
-			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1199): Owner Aligned
-			[Message: Bunny Mod] Stove 6
-			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner OfficeDrone; RelStatus: "Aligned"
-			[Message: Bunny Mod] Stove 7a
-			[Message: Bunny Mod] Stove 8b
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <56e885d269d141ea89e97ceedcaeb3cf>:0)
-			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	No owner
-
-Telemancy
-
-=== TASKS ======================================================================
-
---- BUGS ---------------------------------------------------
-
-- Stove blinks when damaged but never actually blows up
-	This calls Stove.MoveNext, which is not one of mine.
-		I believe this refers to IEnumerables. 
-	[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
-	[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
-	[Message: Bunny Mod] Stove (1153): Stove_AboutToExplode
-	[Message: Bunny Mod] Stove_AboutToExplode: lastHitByagent = Custom
-	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-	Stack trace:
-	ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-	BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__35.MoveNext () (at <fecc5c55716d4603b8afa99d5c133627>:0)
-	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-	UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-	BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-	Stove:DamagedObject(PlayfieldObject, Single)
-	ObjectReal:Damage(PlayfieldObject, Boolean)
-	BulletHitbox:HitObject(GameObject, Boolean)
-	BulletHitbox:OnTriggerEnter2D(Collider2D)
-
-- Extend weapon ban traits to Use-Items, not just Equip-Items 
-
-Fat Head message triggers on entering level.
-	Also presumably occurs with other equipment traits.
-
-On Exit to Base, then freeze on loading screen:
-	[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
-	[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
-
+Magic General
+	Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive.
+	Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
+				
 Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
 	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Something caused BurnedOut to stay true even when recharged.
 		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
+	Still don't have a delay between cast and recharge
 
+Stove
+	Dialogue
+		Attempt
+	Use near Owner
+		Issues appear to boil down to Dialogue names not being found.
+	No owner
+	Stove blinks when damaged but never actually blows up
+		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
+		[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
+		[Message: Bunny Mod] Stove (1153): Stove_AboutToExplode
+		[Message: Bunny Mod] Stove_AboutToExplode: lastHitByagent = Custom
+		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+		Stack trace:
+		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__35.MoveNext () (at <fecc5c55716d4603b8afa99d5c133627>:0)
+		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
+		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
+		Stove:DamagedObject(PlayfieldObject, Single)
+		ObjectReal:Damage(PlayfieldObject, Boolean)
+		BulletHitbox:HitObject(GameObject, Boolean)
+		BulletHitbox:OnTriggerEnter2D(Collider2D)
+			// 202103031538 If this doesn't work, just comment both these lines out.
+	On Exit to Base, then freeze on loading screen:
+		[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
+		[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
+			Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect.
+				Added a bunch of logs to the method.
 Telemancy
-	[Warning: RogueLibs] SPECIAL HOLD 0.0333638
-	[Message: Bunny Mod] Telemancy OnHeld;
-	Telemancy Charge: 0
-	[Warning: RogueLibs] SPECIAL HOLD 0.0501201
-	[Message: Bunny Mod] Telemancy OnHeld;
-	Telemancy Charge: 25
-	[Warning: RogueLibs] SPECIAL HOLD 0.0665654
-	[Message: Bunny Mod] Telemancy OnHeld;
-	Telemancy Charge: 25
-		... Many many times. it's triggering on Held, not on release. Always 25 charge.
-			Abbysssal: the method is supposed to update the abilitys state, so just use the ref float time parameter
-	Also not recharging anymore.
+	Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
+	On Hold:
+		Held Time ++
+			Miscast Roll based on this and skills
+		Mana --
+		charge ++
+	MisCast effects, ascending:
+		Light & visual effect, attracting attention
+		Tiny Stroke
+		Large amount of damage
+	Combined with:
+		Random place in level
+		Random item from inventory is dropped and then disappears
+	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
+	Focused casting can benefit accuracy.
 	
 --- IMPLEMENTATIONS ----------------------------------------
 
-All
-	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
-
-Chronomancy
-	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
-		Recharge now triggers constantly.
-
-
-Pyromancy
-	Uniques
-		Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
-			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
-		Ring of Fire - Shorter range, 
-	Still don't have a delay between cast and recharge
-
-Telemancy
-	Uniques:
-		EMP on teleport?
-		Stun on teleport?
-	Rework: 
-		Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
-		On Hold:
-			Held Time ++
-				Miscast Roll based on this and skills
-			Mana --
-			charge ++
-		MisCast effects, ascending:
-			Light & visual effect, attracting attention
-			Tiny Stroke
-			Large amount of damage
-		Combined with:
-			Random place in level
-			Random item from inventory is dropped and then disappears
-
-
---- BALANCING ----------------------------------------------
-
-Telemancy
-	Currently, it miscasts at >35
-	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
-	Focused casting can benefit accuracy.
 
 === RELEASE NOTES ==============================================================
 

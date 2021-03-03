@@ -303,6 +303,10 @@ Special Abilities
 			Miscasting turns you into a gorilla temporarily
 		Pyromancy
 			Custom Firebomb explosion without glass sound
+				This was a can of worms when I tried it with HammerTime. All we need is to stop the glass sound, so maybe that'l be simpler.
+			Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
+			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
+			Ring of Fire - Shorter range, but 360 degrees
 		Fireball
 			Would need a new Projectile type
 		Hematomancy 
@@ -312,19 +316,22 @@ Special Abilities
 		Megaleiomancy 
 			Charm Person
 		Necromancy
-			1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
-			2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
-			3 Zombies will join your party / Turn ghosts into large number of crystals
-			Miscast turns all of them hostile, or summons hostile ghosts
-			When close to a ghost, you can turn them into mana crystals
+			Normal Use
+				1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
+				2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
+				3 Zombies will join your party / Turn ghosts into large number of crystals
+				When close to a ghost, you can turn them into mana crystals
+			Miscast 
+				turns all of them hostile, or summons hostile ghosts
 			Also:
 				https://www.reddit.com/r/streetsofrogue/comments/lhdwnx/my_third_entree_for_medieval_themed_characters/
-
+		Telemancy
+			EMP on teleport?
+			Stun on teleport?
 Traits
 	Fatass
 		Slower movement
 		Can't wear armor
-		Armor can'twear messages at beginning of level
 		Stomp damage
 	Path traits
 		Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.

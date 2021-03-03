@@ -5,135 +5,56 @@ Traits with Contraindications still show up in upgrade menu.
 Chronomancy
 
 FlamingBarrel & Stove
-	Name Hover
-		Fixed, accepted.
 	Cancelled message
 		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
 		[Error  : Unity Log] Operating Bar Error 2
 			Still completed, is ignorable but still there
 
 Stove
+	Dialogue
+		Attempt
 	Use near Owner
-		Unaware Neutral
-			Went hostile without reacting or looking
-				[Message: Bunny Mod] ObjectReal_Interact: Stove (1161)
-				[Message: Bunny Mod] Stove 1
-				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1161): Stove_UnfriendlyOwnerWatching
-				[Message: Bunny Mod] Stove_FindOwner: startingChunk = 1; OwnerID = 1
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
-				[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hacker
-				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1161): Owner Neutral
-				[Message: Bunny Mod] Stove 6
-				[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hacker; RelStatus: ""
-				[Message: Bunny Mod] Stove 7a
-				[Message: Bunny Mod] Stove 8c: Relationship null or not matched.
-				[Message: Bunny Mod] Stove (1161): ObjectReal_PressedButton
-		Unaware Friendly
-			Went hostile too
-				[Message: Bunny Mod] ObjectReal_Interact: Stove (1152)
-				[Message: Bunny Mod] Stove 1
-				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1152): Stove_UnfriendlyOwnerWatching
-				[Message: Bunny Mod] Stove_FindOwner: startingChunk = 1; OwnerID = 2
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 1
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 4
-				[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 2
-				[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hacker
-				[Message: Bunny Mod] Stove_OwnerWatching: Stove (1152): Owner Friendly
-				[Message: Bunny Mod] Stove 6
-				[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Hacker; RelStatus: ""
-				[Message: Bunny Mod] Stove 7a
-				[Message: Bunny Mod] Stove 8c: Relationship null or not matched.
-				[Message: Bunny Mod] Stove (1152): ObjectReal_PressedButton
-				[Info   : Unity Log] HideInventory Sound Debug: False - False - False - False - False - False
-				[Info   : Unity Log] SETRELHATE: Hacker (1128) (Agent) - Playerr (Agent)
-				[Message: Bunny Mod] Stove (1152): ObjectReal_FinishedOperating
-				[Message: Bunny Mod] Stove (1152): Stove_GrilledFud
-				[Error  : Unity Log] Operating Bar Error 2
-		Unaware Aligned
+		Neutral
+		Friendly
+			Tried to say dialogue (not found)
+			Went hostile when Use selected
+				This is not occurring with Aligned, so there's some logic specific to it that allows that. 
+					// 202103021957
+
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1199): Owner Friendly
+			[Message: Bunny Mod] Stove 6
+			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner OfficeDrone; RelStatus: "Friendly"
+			[Message: Bunny Mod] Stove 7a
+			[Message: Bunny Mod] Stove 8b
+			[Error  : Unity Log] NullReferenceException: Object referaence not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <56e885d269d141ea89e97ceedcaeb3cf>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		Aligned
+			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: OfficeDrone
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1199): Owner Aligned
+			[Message: Bunny Mod] Stove 6
+			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner OfficeDrone; RelStatus: "Aligned"
+			[Message: Bunny Mod] Stove 7a
+			[Message: Bunny Mod] Stove 8b
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.ObjectReal_Interact (Agent agent, ObjectReal __instance) (at <56e885d269d141ea89e97ceedcaeb3cf>:0)
+			ObjectReal.Interact (Agent agent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			InteractionHelper.UpdateInteractionHelper () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.UpdateInterface () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			Updater.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	No owner
 
 Telemancy
-	Make sure you're not logging variables each frame the button is held, it got very verbose.
-	Worked fine one time, then IsReturning never switched off.
-		[Info   : Unity Log] FADE11
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.0335818
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
-		[Warning: RogueLibs] SPECIAL HOLD 0.0503971
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.0669022
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.08361369
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.1001438
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
-		[Warning: RogueLibs] SPECIAL HOLD 0.116981
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.1334851
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.1504033
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.1668725
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.1837194
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2002008
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2169635
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2337197
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2501085
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2670241
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.2834751
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.3003442
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.3168186
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.3337058
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Warning: RogueLibs] SPECIAL HOLD 0.3503332
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Message: Bunny Mod] Telemancy OnHeld: HeldCounter: 1
-		[Warning: RogueLibs] SPECIAL RELEASE 0
-		[Message: Bunny Mod] TelemancyIsMiscast: False
-		[Message: Bunny Mod] TelemancyIsReturning: False
-		[Message: Bunny Mod] TelemancySetReturning: True
-		[Info   : Unity Log] SETRELHATE: Guard (1454) (Agent) - Playerr (Agent)
 
 === TASKS ======================================================================
 
 --- BUGS ---------------------------------------------------
 
-- Stove name hovers after use. Can't tamper w stove after cooking on it. 
-	Verified that ObjectReal_Interact is not triggering after that. I believe this only occurs if you have a Wrench.
 - Stove blinks when damaged but never actually blows up
 	This calls Stove.MoveNext, which is not one of mine.
 		I believe this refers to IEnumerables. 
@@ -152,7 +73,6 @@ Telemancy
 	ObjectReal:Damage(PlayfieldObject, Boolean)
 	BulletHitbox:HitObject(GameObject, Boolean)
 	BulletHitbox:OnTriggerEnter2D(Collider2D)
-
 
 - Extend weapon ban traits to Use-Items, not just Equip-Items 
 

@@ -112,15 +112,20 @@ namespace BunnyMod
         }
         public static void Initialize_Names()
 		{
-            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "ButtonText", new CustomNameInfo("Dispense Ice"));
+            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "Interface", new CustomNameInfo("Dispense Ice"));
 
-            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "ButtonText", new CustomNameInfo("Open container"));
+            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "Interface", new CustomNameInfo("Open container"));
 
-            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", "ButtonText", new CustomNameInfo("Bet $1"));
-            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "ButtonText", new CustomNameInfo("Bet $100"));
+            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", "Interface", new CustomNameInfo("Bet $1"));
+            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "Interface", new CustomNameInfo("Bet $100"));
 
-            CustomName stove_DontTouchAngry = RogueLibs.CreateCustomName("Stove_DontTouchAngry", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
-            CustomName stove_NotThrilled = RogueLibs.CreateCustomName("Stove_NotThrilled", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
+            CustomName stove_Hostile = RogueLibs.CreateCustomName("Stove_Hostile", "Dialogue", new CustomNameInfo("Nobody cooks on MY stove except MOMMY!"));
+            CustomName stove_Annoyed = RogueLibs.CreateCustomName("Stove_Annoyed", "Dialogue", new CustomNameInfo("Yeah, just make yourself at home, asshole!"));
+            CustomName stove_Neutral = RogueLibs.CreateCustomName("Stove_Neutral", "Dialogue", new CustomNameInfo("Can you... not do that?"));
+            CustomName stove_Friendly = RogueLibs.CreateCustomName("Stove_Friendly", "Dialogue", new CustomNameInfo("Oh, you're uh... using my stove."));
+            CustomName stove_Loyal = RogueLibs.CreateCustomName("Stove_Loyal", "Dialogue", new CustomNameInfo("The foodmeister! Foodin' up some food, oh yeah!"));
+            CustomName stove_Aligned = RogueLibs.CreateCustomName("Stove_Aligned", "Dialogue", new CustomNameInfo("Ya makin' a snack, buddy?"));
+            CustomName stove_Submissive = RogueLibs.CreateCustomName("Stove_Submissive", "Dialogue", new CustomNameInfo("Okay, go ahead."));
         }
         #endregion
 
@@ -293,28 +298,27 @@ namespace BunnyMod
             {
                 BunnyHeader.Log("Stove 1");
 
-                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance, null, __instance.interactingAgent);
-
-                Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
-                Agent interactingAgent = __instance.interactingAgent;
-                string relationship = agent.relationships.GetRel(interactingAgent);
-
                 if (__instance.timer > 0f || __instance.startedFlashing)
                     __instance.StopInteraction();
 
+                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance, null, __instance.interactingAgent);
+
+                Agent noticingOwner = Stove_OwnerWatching(agent, (Stove)__instance);
+
                 BunnyHeader.Log("Stove 6");
 
-                if (!(noticingOwner is null))
+                if (!(noticingOwner is null) && !noticingOwner.dead)
 				{
-                    BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: \"" + relationship +"\"");
+                    string relationship = noticingOwner.relationships.GetRel(agent);
 
-                    BunnyHeader.Log("Stove 7a");
+                    BunnyHeader.Log("ObjectReal_Interact: noticingOwner " + noticingOwner.agentName + "; RelStatus: \"" + relationship +"\"");
 
                     if (relationship == "Annoyed" || relationship == "Neutral" || relationship == "Hostile")
 					{
                         BunnyHeader.Log("Stove 8a");
 
-                        noticingOwner.SayDialogue("Stove_DontTouchAngry");
+                        string dialogue = BunnyHeader.gc.nameDB.GetName("Stove_" + relationship, "Dialogue");
+                        noticingOwner.Say(dialogue);
                         noticingOwner.relationships.AddStrikes(agent, 1);
 
                         //possibly replace with gc.owncheck
@@ -327,7 +331,8 @@ namespace BunnyMod
 					{
                         BunnyHeader.Log("Stove 8b");
 
-                        noticingOwner.SayDialogue("Stove_NotThrilled");
+                        string dialogue = BunnyHeader.gc.nameDB.GetName("Stove_" + relationship, "Dialogue");
+                        noticingOwner.Say(dialogue);
 					}
                     else
                         BunnyHeader.Log("Stove 8c: Relationship null or not matched.");
@@ -443,7 +448,7 @@ namespace BunnyMod
                     __instance.gc.audioHandler.Play(__instance, "GrillOperate");
                     //__instance.SpawnParticleEffect("Hack", __instance.tr.position);
                     __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Door", 0); // 202103021957
                 }
 
                 return false;
@@ -1046,7 +1051,7 @@ namespace BunnyMod
 
             BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
 
-            __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
+            __instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent);
             __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
@@ -1139,6 +1144,9 @@ namespace BunnyMod
 
                 if (agent.startingChunk == stove.startingChunk && agent.ownerID == stove.owner)
 				{
+                    if (agent.dead)
+                        return null;
+
                     BunnyHeader.Log("Stove_FindOwner: Found Stove Owner: " + agent.agentName);
 
                     return agent;
@@ -1204,17 +1212,24 @@ namespace BunnyMod
 		{
             BunnyHeader.Log("Stove_OwnerWatching: " + stove.name + ": Stove_UnfriendlyOwnerWatching");
 
-            Agent agent = Stove_FindOwner(stove);
+            Agent owner = Stove_FindOwner(stove);
 
-            if (agent != null && stove.interactingAgent != null)
+            BunnyHeader.Log("Stove_OwnerWatching 1");
+
+            if (owner != null && stove.interactingAgent != null)
             {
-                relStatus relTypeCode = agent.relationships.RelList2[interactingAgent.agentID].relTypeCode;
+                BunnyHeader.Log("Stove_OwnerWatching 2a");
 
-                BunnyHeader.Log("Stove_OwnerWatching: " + stove.name + ": Owner " + relTypeCode);
+                string relationship = owner.relationships.GetRel(interactingAgent);
 
-                if (agent.movement.HasLOSAgent360(stove.interactingAgent) && !agent.dead && !agent.zombified)
-                    return agent;
+                BunnyHeader.Log("Stove_OwnerWatching: " + stove.name + ": Owner " + relationship);
+
+                if (owner.movement.HasLOSAgent360(stove.interactingAgent) && !owner.dead && !owner.zombified)
+                    return owner;
+
+                BunnyHeader.Log("Stove_OwnerWatching 3a");
             }
+            BunnyHeader.Log("Stove_OwnerWatching 2b");
 
             return null;
         }

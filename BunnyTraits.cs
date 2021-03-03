@@ -587,7 +587,7 @@ namespace BunnyMod
         }
         public static bool InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Prefix
 		{
-            if (item != null && __instance.agent.statusEffects.hasTrait("Fatass"))
+            if (item.isArmor && __instance.agent.statusEffects.hasTrait("Fatass"))
             {
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
                 __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
@@ -599,7 +599,7 @@ namespace BunnyMod
 		}
         public static bool InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Prefix
 		{
-            if (item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
+            if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
                 __instance.agent.Say("My big, stupid, dumb, ugly head is too fat to wear this!");
                 __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");

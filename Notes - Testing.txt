@@ -12,8 +12,8 @@ FlamingBarrel & Stove
 			This was found in PlayfieldObject.Operating @5328.
 			Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
 			My best guess is that we need to make stoppedOperating false somehow.
-			
-
+			There are a lot of checks in there that could toggle it. 
+				Attempt 202103031453
 Stove
 	Dialogue
 		Attempt

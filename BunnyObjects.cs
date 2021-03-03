@@ -440,7 +440,7 @@ namespace BunnyMod
             }
             if (buttonText == "GrillFud")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 1f, true, "Grilling"));
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling")); // Attempt 202103031453
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {

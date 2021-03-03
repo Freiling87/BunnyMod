@@ -1176,7 +1176,7 @@ namespace BunnyMod
 				"Nothing personal, kid."
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count())]);
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void TelemancyDialogueMiscast(Agent agent)
 		{

@@ -72,6 +72,9 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Libraries\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>Libraries\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
       <HintPath>Libraries\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>

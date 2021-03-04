@@ -6,10 +6,6 @@ Chronomancy
 	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 		Recharge now triggers constantly.
 
-Equipment traits
-	Extend to Use-Items, not just Equip-Items 
-		Attempted
-
 Finalization
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
 
@@ -23,6 +19,7 @@ FlamingBarrel & Stove
 			My best guess is that we need to make stoppedOperating false somehow.
 			There are a lot of checks in there that could toggle it. 
 				// 202103031453
+					Didn't work
 
 Magic General
 	Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive.
@@ -40,6 +37,7 @@ Stove
 		Attempt
 	Use near Owner
 		Issues appear to boil down to Dialogue names not being found.
+		In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on.
 	No owner
 	Stove blinks when damaged but never actually blows up
 		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject

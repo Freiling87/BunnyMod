@@ -54,22 +54,31 @@ namespace BunnyMod
 		}
 		#endregion
 		#region PoolsScene
-		public static void PoolsScene_SpawnWall(bool isFront, wallMaterialType myWallMaterial, Vector3 myPos, TileData myTileData, int streamingSize, int streamingOffset, bool buildingStreamingChunk) // Prefix
+		public static bool PoolsScene_SpawnWall(bool isFront, wallMaterialType myWallMaterial, Vector3 myPos, TileData myTileData, int streamingSize, int streamingOffset, bool buildingStreamingChunk) // Prefix
 		{
-			if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
+			BunnyHeader.Log("PoolsScene_SpawnWall: ");
+			try
 			{
-				if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Steel)
-					myWallMaterial = wallMaterialType.Wood;
-				else if (myWallMaterial == wallMaterialType.Bars)
-					myWallMaterial = wallMaterialType.BarbedWire;
+				if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
+				{
+					if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Steel)
+						myWallMaterial = wallMaterialType.Wood;
+					else if (myWallMaterial == wallMaterialType.Bars)
+						myWallMaterial = wallMaterialType.BarbedWire;
+				}
+				else if (BunnyHeader.gc.challenges.Contains("CityOfSteel"))
+				{
+					if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Wood)
+						myWallMaterial = wallMaterialType.Steel;
+					else if (myWallMaterial == wallMaterialType.BarbedWire)
+						myWallMaterial = wallMaterialType.Bars;
+				}
 			}
-			else if (BunnyHeader.gc.challenges.Contains("CityOfSteel"))
+			catch
 			{
-				if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Wood)
-					myWallMaterial = wallMaterialType.Steel;
-				else if (myWallMaterial == wallMaterialType.BarbedWire)
-					myWallMaterial = wallMaterialType.Bars;
 			}
+
+			return true;
 		}
 		#endregion
 		#region SpawnerMain

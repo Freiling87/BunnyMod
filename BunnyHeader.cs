@@ -34,6 +34,7 @@ namespace BunnyMod
 			new BunnyAbilities().Awake();
 			//new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
+			new BunnyMutators().Awake();
 			new BunnyObjects().Awake();
 			//new BunnySprites().Awake();
 			new BunnyTraits().Awake();

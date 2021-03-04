@@ -117,6 +117,13 @@ Mugging
 		[Message: Bunny Mod] ChronomancyRollTimescale: 2.75
 		[Message: Bunny Mod] Timescale: 0.3636364
 
+Scary Guns
+	Can equip, but they won't shoot
+		Player trying to shoot:
+			[Error  : Unity Log] Error in GunUpdate: Playerr (Agent)
+		AI:
+			[Error  : Unity Log] AI Update Error: Guard (1212) (Agent)
+
 Slot Machine
 	For $1 and $100, button text not found.
 		[Message: Bunny Mod] ObjectReal_Interact: SlotMachine (1324)

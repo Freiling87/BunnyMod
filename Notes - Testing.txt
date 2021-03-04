@@ -179,3 +179,13 @@ Slot Machine
 		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:ProcessMouseEvents()
 		Rewired.Integration.UnityUI.RewiredStandaloneInputModule:Process()
 		UnityEngine.EventSystems.EventSystem:Update()
+
+Wall Mutator
+	[Message: Bunny Mod] PoolsScene_SpawnWall:
+	[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+	Stack trace:
+	BunnyMod.BunnyMutators.PoolsScene_SpawnWall (System.Boolean isFront, wallMaterialType myWallMaterial, UnityEngine.Vector3 myPos, TileData myTileData, System.Int32 streamingSize, System.Int32 streamingOffset, System.Boolean buildingStreamingChunk) (at <472e30f1a0d34a678fcff623fc89ad8a>:0)
+	PoolsScene.SpawnWall (System.Boolean isFront, wallMaterialType myWallMaterial, UnityEngine.Vector3 myPos, TileData myTileData, System.Int32 streamingSize, System.Int32 streamingOffset, System.Boolean buildingStreamingChunk) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	TileInfo.BuildWallObject (TileData myTileData, StreamingTileArray myStreamingTileArray, System.Boolean buildingStreamingChunk) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	LoadLevel+<loadStuff2>d__137.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)

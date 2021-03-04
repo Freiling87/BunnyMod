@@ -57,7 +57,8 @@ namespace BunnyMod
 		public static bool PoolsScene_SpawnWall(bool isFront, wallMaterialType myWallMaterial, Vector3 myPos, TileData myTileData, int streamingSize, int streamingOffset, bool buildingStreamingChunk) // Prefix
 		{
 			BunnyHeader.Log("PoolsScene_SpawnWall: ");
-			try
+
+			if (BunnyHeader.gc.levelType != "HomeBase")
 			{
 				if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
 				{
@@ -73,9 +74,6 @@ namespace BunnyMod
 					else if (myWallMaterial == wallMaterialType.BarbedWire)
 						myWallMaterial = wallMaterialType.Bars;
 				}
-			}
-			catch
-			{
 			}
 
 			return true;

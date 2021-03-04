@@ -85,8 +85,8 @@ namespace BunnyMod
             // TODO: Allow consumption at full health
 
             CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
-    new CustomNameInfo("Hungry Boy"),
-    new CustomNameInfo("Less healing from food and alcohol."));
+                new CustomNameInfo("Hungry Boy"),
+                new CustomNameInfo("Less healing from food and alcohol."));
             HungryBoy.AvailableInCharacterCreation = false; //
             HungryBoy.CostInCharacterCreation = -3;
             HungryBoy.IsActive = false; //
@@ -222,6 +222,40 @@ namespace BunnyMod
             TrapperKeeper.IsActive = false; //
             TrapperKeeper.Available = false; //
             TrapperKeeper.Upgrade = null;
+            #endregion
+            #region Miscellaneous
+            CustomTrait EagleEyed = RogueLibs.CreateCustomTrait("EagleEyed", true,
+                new CustomNameInfo("Eagle Eyed"),
+                new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
+            EagleEyed.Available = true;
+            EagleEyed.AvailableInCharacterCreation = true;
+            EagleEyed.CanRemove = false;
+            EagleEyed.CanSwap = true;
+            EagleEyed.CostInCharacterCreation = 3;
+            EagleEyed.IsActive = true;
+            EagleEyed.Upgrade = "EagleEyed_2";
+
+            CustomTrait EagleEyed_2 = RogueLibs.CreateCustomTrait("EagleEyed_2", true,
+                new CustomNameInfo("Eagle Eyed +"),
+                new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
+            EagleEyed_2.Available = true;
+            EagleEyed_2.AvailableInCharacterCreation = false;
+            EagleEyed_2.CanRemove = false;
+            EagleEyed_2.CanSwap = false;
+            EagleEyed_2.CostInCharacterCreation = 6;
+            EagleEyed_2.IsActive = true;
+            EagleEyed_2.Upgrade = null;
+
+            CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
+                new CustomNameInfo("Myopic"),
+                new CustomNameInfo("You can't see too far."));
+            Myopic.Available = true;
+            Myopic.AvailableInCharacterCreation = true;
+            Myopic.CanRemove = true;
+            Myopic.CanSwap = true;
+            Myopic.CostInCharacterCreation = -3;
+            Myopic.IsActive = true;
+            Myopic.Upgrade = null;
             #endregion
         }
         public static void Initialize_Traits_Active()
@@ -501,8 +535,8 @@ namespace BunnyMod
             StrongGagReflex_2.IsActive = true;
             StrongGagReflex_2.Upgrade = null;
             #endregion
-            #region Stealth
-            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+			#region Stealth
+			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;

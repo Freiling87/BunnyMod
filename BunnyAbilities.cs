@@ -1288,7 +1288,7 @@ namespace BunnyMod
 					item.invItemCount = Math.Min(100, item.invItemCount + TelemancyRollCharge(agent));
 
 					if (item.invItemCount == 100)
-						TelemancyStartRecharge(agent);
+						TelemancyStartRecharge(agent, true);
 				}
 			};
 
@@ -1440,7 +1440,7 @@ namespace BunnyMod
 		{
 			TelemancyDialogueMiscast(agent);
 
-			// Get a degree of the miscast, and split it here.
+			// TODO: Get a degree of the miscast, and split it here.
 
 			int degree = 20;
 
@@ -1454,13 +1454,14 @@ namespace BunnyMod
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 		}
-		public static void TelemancyStartRecharge(Agent agent)
+		public static void TelemancyStartRecharge(Agent agent, bool routine)
 		{
-			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-			agent.gc.audioHandler.Play(agent, "Recharge");
+			if (!routine)
+			{
+				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+				agent.gc.audioHandler.Play(agent, "Recharge");
+			}
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-
-			TelemancySetReturning(agent, false);
 		}
 		public static async void TelemancyStartReturn(Agent agent, int mSecs)
 		{

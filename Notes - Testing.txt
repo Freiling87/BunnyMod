@@ -8,9 +8,7 @@ Chronomancy
 
 Equipment traits
 	Extend to Use-Items, not just Equip-Items 
-	Fat Head message triggers on entering level.
-		This is only with Apppearance-only headwear.
-			Fix? Change the dialogue. Accepted.
+		Attempted
 
 Finalization
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.

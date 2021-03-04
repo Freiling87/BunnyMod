@@ -77,12 +77,22 @@ Gameplay Overhauls
 			Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
 	The Gun Fetishism Mod:
 		Mechanics:
-		- Bullets are smaller, faster & deal more damage
+		- Bullets are smaller, faster & deal more damage √
 		- Ranged increases accuracy & ROF, reduces Windup, NO effect on gun damage
 		- Accuracy reduced while moving, & for followup shots due to recoil
 		- Chance to inflict Slow for 1-2 seconds based on weapon damage
 		- Gun sprites are blacker and scarier :scream:
 		- Armor plays a larger role in not dying
+		- Cover:
+			- Most furniture that used to ignore bullets can now serve as cover. This includes broken windowframes.
+			- This must be tracked from the shooter, not the hider. Distance from obstacle / Shooting Skill = Chance to accidentally hit obstacle instead of shoot past it.
+			- Softer objects are unlikely to stop bullets, but may weaken or divert their path.
+			- Mockup stats
+				Destructability: 
+				Obstruction: Chance to be hit by a bullet if at Cover range. 
+					Slow: Slow the projectile and reduce its damage
+					Divert: Divert the path of the projectile by a few degrees. https://en.wikipedia.org/wiki/Ricochet for variable list, pretty good info.
+					Block:
 		Mods:
 		- Silencer has varying effect, depending on the loudness of weapon
 		- ROF & Accuracy mods removed completely (replaced below)

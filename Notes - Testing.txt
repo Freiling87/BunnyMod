@@ -27,7 +27,6 @@ Magic General
 				
 Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-	item.Categories.Add("Weapons"); // Might this set off sensors?
 	Something caused BurnedOut to stay true even when recharged.
 		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
 	Still don't have a delay between cast and recharge

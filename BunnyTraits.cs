@@ -405,8 +405,22 @@ namespace BunnyMod
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = false;
             Cursed_2.Upgrade = null;
-			#endregion
-			#region Magic - General
+            #endregion
+            #region Magic - General
+            CustomTrait Archmage = RogueLibs.CreateCustomTrait("Archmage", true,
+                new CustomNameInfo("Archmage"),
+                new CustomNameInfo("You are an unrivalled master of the magical arts. Basically cheat mode for magical abilities, added by request."));
+            Archmage.Available = true;
+            Archmage.AvailableInCharacterCreation = true;
+            Archmage.CanRemove = false;
+            Archmage.CanSwap = false;
+            Archmage.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2", "MagicTraining", "MagicTraining_2", "WildCasting", "WildCasting_2" });
+            Archmage.CostInCharacterCreation = 100;
+            Archmage.IsActive = true;
+            Archmage.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            Archmage.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            Archmage.Upgrade = null;
+
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
                 new CustomNameInfo("Focused Casting"),
                 new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));

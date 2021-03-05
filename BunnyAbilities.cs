@@ -36,6 +36,8 @@ namespace BunnyMod
 				return 150;
 			else if (agent.statusEffects.hasTrait("ManaBattery_2"))
 				return 200;
+			else if (agent.statusEffects.hasTrait("Archmage"))
+				return 10000;
 			else
 				return 100;
 		}
@@ -202,30 +204,32 @@ namespace BunnyMod
 		}
 		public static int ChronomancyRollManaCost(Agent agent)
 		{
-			int increment = 10;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				increment += UnityEngine.Random.Range(-2, 2);
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				increment = UnityEngine.Random.Range(-5, 5);
+			int manaCost = 15;
 
 			if (agent.statusEffects.hasTrait("FocusedCasting"))
-				increment -= 2;
+				manaCost -= 2;
 			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				increment -= 4;
+				manaCost -= 4;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				manaCost += UnityEngine.Random.Range(-2, 2);
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				manaCost = UnityEngine.Random.Range(-5, 5);
+			else if (agent.statusEffects.hasTrait("Archmage"))
+				manaCost = 0;
 
-			return increment;
+			return manaCost;
 		}
 		public static bool ChronomancyRollMiscast(Agent agent, float modifier)
 		{
 			float risk = 1.0f + modifier;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return false;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
 				risk -= 0.25f;
 			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
 				risk -= 0.50f;
-
-			if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait("WildCasting"))
 				risk += 0.75f;
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				risk += 1.50f;
@@ -240,6 +244,9 @@ namespace BunnyMod
 		public static float ChronomancyRollTimescale(Agent agent, bool MisCast)
 		{
 			float timescale = 0.00f;
+
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 4.00f;
 
 			if (!MisCast)
 			{
@@ -377,7 +384,9 @@ namespace BunnyMod
 
 			float duration = 4000f;
 
-			if (agent.statusEffects.hasTrait("WildCasting"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				duration = 1000f;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
 				duration -= 1000f;
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				duration -= 2000f;
@@ -608,7 +617,12 @@ namespace BunnyMod
 		#region Electromancy - Dialogue
 		public static void ElectromancyDialogueCast(Agent agent)
 		{
+			string[] dialogue =
+			{
+				"UNLIMITED... POWER!!!"
+			};
 
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void ElectromancyDialogueCantDo(Agent agent)
 		{
@@ -1006,10 +1020,14 @@ namespace BunnyMod
 		{
 			int chance = 100;
 
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return false;
+
 			if (agent.statusEffects.hasTrait("MagicTraining"))
 				chance -= 10;
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				chance -= 20;
+			
 			if (agent.statusEffects.hasTrait("WildCasting"))
 				chance -= 15;
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
@@ -1021,7 +1039,9 @@ namespace BunnyMod
 		{
 			float risk = 1.000f + modifier;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return false;
+			else if (agent.statusEffects.hasTrait("FocusedCasting"))
 				risk -= 0.500f;
 			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
 				risk -= 0.750f;
@@ -1080,15 +1100,17 @@ namespace BunnyMod
 
 			float duration = 2000f;
 
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				duration -= 625f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				duration -= 1250f;
-
 			if (agent.statusEffects.hasTrait("MagicTraining"))
 				duration -= 375f;
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				duration -= 750f;
+
+			if (agent.statusEffects.hasTrait("Archmage"))
+				duration = 0f;
+			if (agent.statusEffects.hasTrait("WildCasting"))
+				duration -= 625f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				duration -= 1250f;
 
 			duration = Mathf.Max(0f, duration);
 
@@ -1295,7 +1317,7 @@ namespace BunnyMod
 
 			telemancy.OnReleased = delegate (InvItem item, Agent agent)
 			{
-				if (TelemancyRollMiscast(agent, telemancyHeldCounter) != 0)
+				if (TelemancyRollMiscast(agent, telemancyHeldCounter) != 0) // TODO
 				{
 					if (!TelemancyTryMiscast(agent, TelemancyRollMiscast(agent, telemancyHeldCounter)) && !TelemancyIsReturning(agent) && telemancyNetCharge > 0)
 					{
@@ -1328,7 +1350,9 @@ namespace BunnyMod
 			float min = 25.000f;
 			float max = 33.000f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 0;
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				min *= 0.875f;
 				max *= 0.875f;
@@ -1366,7 +1390,9 @@ namespace BunnyMod
 		{
 			float rate = 1.000f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 10;
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				rate *= 1.250f;
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				rate *= 1.500f;
@@ -1387,6 +1413,8 @@ namespace BunnyMod
 			float min = 5.00f;
 			float max = 10.00f;
 
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 1000;
 			if (agent.statusEffects.hasTrait("MagicTraining"))
 			{
 				min *= 1.500f;
@@ -1463,7 +1491,9 @@ namespace BunnyMod
 		{
 			BunnyHeader.Log("TelemancyRollMiscast");
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 0;
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				secondsHeld *= 0.750f;
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				secondsHeld *= 0.500f;
@@ -1485,7 +1515,9 @@ namespace BunnyMod
 		{
 			float duration = 4000f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return 0;
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
 				duration *= 0.750f;
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				duration *= 0.500f;

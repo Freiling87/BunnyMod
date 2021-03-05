@@ -56,24 +56,24 @@ namespace BunnyMod
 		#region PoolsScene
 		public static bool PoolsScene_SpawnWall(bool isFront, wallMaterialType myWallMaterial, Vector3 myPos, TileData myTileData, int streamingSize, int streamingOffset, bool buildingStreamingChunk) // Prefix
 		{
-			BunnyHeader.Log("PoolsScene_SpawnWall: ");
+			BunnyHeader.Log("PoolsScene_SpawnWall: mywallMaterial = " + myWallMaterial);
 
-			if (BunnyHeader.gc.levelType != "HomeBase")
+			if (BunnyHeader.gc.levelType == "HomeBase")
+				return true;
+
+			if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
 			{
-				if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
-				{
-					if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Steel)
-						myWallMaterial = wallMaterialType.Wood;
-					else if (myWallMaterial == wallMaterialType.Bars)
-						myWallMaterial = wallMaterialType.BarbedWire;
-				}
-				else if (BunnyHeader.gc.challenges.Contains("CityOfSteel"))
-				{
-					if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Wood)
-						myWallMaterial = wallMaterialType.Steel;
-					else if (myWallMaterial == wallMaterialType.BarbedWire)
-						myWallMaterial = wallMaterialType.Bars;
-				}
+				if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Steel)
+					myWallMaterial = wallMaterialType.Wood;
+				else if (myWallMaterial == wallMaterialType.Bars)
+					myWallMaterial = wallMaterialType.BarbedWire;
+			}
+			else if (BunnyHeader.gc.challenges.Contains("CityOfSteel"))
+			{
+				if (myWallMaterial == wallMaterialType.Normal || myWallMaterial == wallMaterialType.Wood)
+					myWallMaterial = wallMaterialType.Steel;
+				else if (myWallMaterial == wallMaterialType.BarbedWire)
+					myWallMaterial = wallMaterialType.Bars;
 			}
 
 			return true;
@@ -82,8 +82,10 @@ namespace BunnyMod
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{
+			BunnyHeader.Log("SpawnerMain_SpawnBullet: bulletType = " + bulletType);
+
 			if (!BunnyHeader.gc.challenges.Contains("ScaryGuns") 
-				|| !(bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver))
+				|| bulletType != bulletStatus.Normal || bulletType != bulletStatus.Shotgun || bulletType != bulletStatus.Revolver)
 				return true;
 
 			Agent agent = null;

@@ -154,9 +154,9 @@ namespace BunnyMod
 					item.dontSelectNPC = true;
 					item.otherDamage = 0; // Bitwise variable field, see Extension method class below
 					item.isWeapon = false;
-					item.initCount = CalcMaxMana(item.agent);
-					item.rechargeAmountInverse = CalcMaxMana(item.agent);
-					item.maxAmmo = CalcMaxMana(item.agent);
+					item.initCount = 100;
+					item.rechargeAmountInverse = 100;
+					item.maxAmmo = 100;
 					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
@@ -442,11 +442,11 @@ namespace BunnyMod
 					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = false;
-					item.initCount = CalcMaxMana(item.agent);
+					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
 					//item.LoadItemSprite("Fireball");
 					item.rapidFire = false;
-					item.rechargeAmountInverse = CalcMaxMana(item.agent);
+					item.rechargeAmountInverse = 100;
 					item.shadowOffset = 2;
 					item.specialMeleeTexture = true;
 					item.stackable = true;
@@ -679,10 +679,10 @@ namespace BunnyMod
 					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = false;
-					item.initCount = CalcMaxMana(item.agent);
+					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
 					item.rapidFire = false;
-					item.rechargeAmountInverse = CalcMaxMana(item.agent);
+					item.rechargeAmountInverse = 100;
 					item.shadowOffset = 2;
 					item.specialMeleeTexture = true;
 					item.stackable = true;
@@ -962,11 +962,11 @@ namespace BunnyMod
 					item.gunKnockback = 0;
 					item.isWeapon = true;
 					item.rapidFire = true;
-					item.initCount = CalcMaxMana(item.agent);
+					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
 					item.LoadItemSprite("Fireball");
 					item.rapidFire = true;
-					item.rechargeAmountInverse = CalcMaxMana(item.agent);
+					item.rechargeAmountInverse = 100;
 					item.shadowOffset = 2;
 					item.stackable = true;
 					item.thiefCantSteal = true;
@@ -1274,9 +1274,9 @@ namespace BunnyMod
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.isWeapon = false;
-					item.initCount = CalcMaxMana(item.agent);
-					item.rechargeAmountInverse = CalcMaxMana(item.agent);
-					item.maxAmmo = CalcMaxMana(item.agent);
+					item.initCount = 100;
+					item.rechargeAmountInverse = 100;
+					item.maxAmmo = 100;
 					item.stackable = true;
 					item.thiefCantSteal = true;
 				});

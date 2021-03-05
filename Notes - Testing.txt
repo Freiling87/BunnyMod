@@ -62,21 +62,7 @@ Stove
 			Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect.
 				Added a bunch of logs to the method.
 Telemancy
-	Pinpoint accuracy may be nearly possible from the start, but would be time-consuming or possibly cause a miscast.
-	On Hold:
-		Held Time ++
-			Miscast Roll based on this and skills
-		Mana --
-		charge ++
-	MisCast effects, ascending:
-		Light & visual effect, attracting attention
-		Tiny Stroke
-		Large amount of damage
-	Combined with:
-		Random place in level
-		Random item from inventory is dropped and then disappears
-	Change Wild Casting to increase the rate of recharge or lower the cost of casting.
-	Focused casting can benefit accuracy.
+	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
 	
 --- IMPLEMENTATIONS ----------------------------------------
 

@@ -459,6 +459,32 @@ namespace BunnyMod
             MagicTraining_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             MagicTraining_2.Upgrade = null;
 
+            CustomTrait ManaBattery = RogueLibs.CreateCustomTrait("ManaBattery", true,
+                new CustomNameInfo("Mana Battery"),
+                new CustomNameInfo("You can store more mana. Nifty."));
+            ManaBattery.Available = true;
+            ManaBattery.AvailableInCharacterCreation = true;
+            ManaBattery.CostInCharacterCreation = 2;
+            ManaBattery.CanRemove = false;
+            ManaBattery.CanSwap = false;
+            ManaBattery.Conflicting.AddRange(new string[] { });
+            ManaBattery.IsActive = true;
+            ManaBattery.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery.Upgrade = "ManaBattery_2";
+
+            CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait("ManaBattery_2", true,
+                new CustomNameInfo("Mana Battery +"),
+                new CustomNameInfo("You can store even more mana. Even niftier."));
+            ManaBattery_2.Available = true;
+            ManaBattery_2.AvailableInCharacterCreation = false;
+            ManaBattery_2.CostInCharacterCreation = 4;
+            ManaBattery_2.CanRemove = false;
+            ManaBattery_2.CanSwap = false;
+            ManaBattery_2.Conflicting.AddRange(new string[] { });
+            ManaBattery_2.IsActive = true;
+            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery_2.Upgrade = null;
+
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
                 new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
@@ -512,28 +538,6 @@ namespace BunnyMod
             RATS_2.Upgrade = null;
 			#endregion
 			#region Magic - Telemancy
-			CustomTrait StrongGagReflex = RogueLibs.CreateCustomTrait("StrongGagReflex", true,
-                new CustomNameInfo("Strong Gag Reflex"),
-                new CustomNameInfo("You can tolerate the physical side-effects of magic better than before. You're also very popular downtown."));
-            StrongGagReflex.Available = true;
-            StrongGagReflex.AvailableInCharacterCreation = true;
-            StrongGagReflex.CanRemove = false;
-            StrongGagReflex.CanSwap = false;
-            StrongGagReflex.CostInCharacterCreation = 2;
-            StrongGagReflex.IsActive = true;
-            StrongGagReflex.Recommendations.AddRange(new string[] { "Telemancy" });
-            StrongGagReflex.SpecialAbilities.AddRange(new string[] { "Telemancy" });
-            StrongGagReflex.Upgrade = "StrongGagReflex_2";
-
-            CustomTrait StrongGagReflex_2 = RogueLibs.CreateCustomTrait("StrongGagReflex_2", true,
-                new CustomNameInfo("Strong Gag Reflex +"),
-                new CustomNameInfo("You can eat a hotdog in one bite. This also helps with your little magic hobby. Now get out there and throat some Glizzies!"));
-            StrongGagReflex_2.Available = false;
-            StrongGagReflex_2.AvailableInCharacterCreation = false;
-            StrongGagReflex_2.CanRemove = false;
-            StrongGagReflex_2.CanSwap = false;
-            StrongGagReflex_2.IsActive = true;
-            StrongGagReflex_2.Upgrade = null;
             #endregion
 			#region Stealth
 			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,

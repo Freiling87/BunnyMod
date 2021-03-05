@@ -43,6 +43,94 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Chronomancy
+		#region Chronomancy - Bits
+		public static bool ChronomancyIsCast(Agent agent)
+		{
+			try
+			{
+				return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+		public static bool ChronomancyIsMiscast(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
+		public static bool ChronomancyIsWindingUp(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
+		public static void ChronomancyLogVariables(Agent agent)
+		{
+			BunnyHeader.Log("ChronomancyIsCast: " + ChronomancyIsCast(agent));
+			BunnyHeader.Log("ChronomancyIsMiscast: " + ChronomancyIsMiscast(agent));
+			BunnyHeader.Log("ChronomancyIsWindindUp: " + ChronomancyIsWindingUp(agent));
+		}
+		public static void ChronomancySetCast(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("SetCast " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
+		}
+		public static void ChronomancySetMiscast(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("SetMiscast " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
+		}
+		public static void ChronomancySetWindingUp(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("SetWindingUp" + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
+		}
+		#endregion
+		#region Chronomancy - Dialogue
+		public static void ChronomancyDialogueCantDo(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			string[] dialogue =
+			{
+				"I need to take a \"time out!\" Get it? But seriously, my heart will stop.",
+				"I'm gonna take the blue pill for a sec."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void ChronomancyDialogueCast(Agent agent) // TODO
+		{
+			string[] dialogue =
+			{
+				""
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void ChronomancyDialogueMiscast(Agent agent)
+		{
+			string[] dialogue =
+			{
+				"Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...",
+				"Bullet Time? More like Bullshit Time!",
+				"(Slow Motion Noises)",
+				"Okay, maybe there is a spoon, I guess. Whatever."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void ChronomancyDialogueRecharge(Agent agent)
+		{
+			string[] dialogue =
+			{
+				"It's Slowing-down-time... Time!"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		#endregion
 		public static float baseTimeScale;
 		public static void Chronomancy_Initialize()
 		{
@@ -104,72 +192,9 @@ namespace BunnyMod
 			chronomancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
-		public static void ChronomancyDialogueCantDo(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
-
-			string[] dialogue = 
-			{
-				"I need to take a \"time out!\" Get it? But seriously, my heart will stop.",
-				"I'm gonna take the blue pill for a sec."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void ChronomancyDialogueCast(Agent agent) // TODO
-		{
-			string[] dialogue = 
-			{
-				""
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void ChronomancyDialogueMiscast(Agent agent)
-		{
-			string[] dialogue = 
-			{
-				"Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...",
-				"Bullet Time? More like Bullshit Time!",
-				"(Slow Motion Noises)",
-				"Okay, maybe there is a spoon, I guess. Whatever."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void ChronomancyDialogueRecharge(Agent agent)
-		{
-			string[] dialogue =
-			{
-				"It's Slowing-down-time... Time!"
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
 		public static void ChronomancyDisplayTimescale(Agent agent)
 		{
 
-		}
-		public static bool ChronomancyIsCast(Agent agent)
-		{
-			try
-			{
-				return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-		public static bool ChronomancyIsMiscast(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
-		public static bool ChronomancyIsWindingUp(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		public static void ChronomancyLogVariables(Agent agent)
-		{
-			BunnyHeader.Log("ChronomancyIsCast: " + ChronomancyIsCast(agent));
-			BunnyHeader.Log("ChronomancyIsMiscast: " + ChronomancyIsMiscast(agent));
-			BunnyHeader.Log("ChronomancyIsWindindUp: " + ChronomancyIsWindingUp(agent));
 		}
 		public static int ChronomancyRollManaCost(Agent agent)
 		{
@@ -252,27 +277,6 @@ namespace BunnyMod
 			BunnyHeader.Log("ChronomancyRollTimescale: " + timescale);
 
 			return timescale;
-		}
-		public static void ChronomancySetCast(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("SetCast " + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
-		}
-		public static void ChronomancySetMiscast(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("SetMiscast " + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
-		}
-		public static void ChronomancySetWindingUp(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("SetWindingUp" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
 		public static void ChronomancyStartCast(Agent agent, float speedupfactor)
 		{
@@ -385,6 +389,26 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Cryomancy
+		#region Cryomancy - Bits
+		#endregion
+		#region Cryomancy - Dialogue
+		public static void CryomancyDialogueCast(Agent agent)
+		{
+
+		}
+		public static void CryomancyDialogueCantDo(Agent agent)
+		{
+
+		}
+		public static void CryomancyDialogueMiscast(Agent agent)
+		{
+
+		}
+		public static void CryomancyDialogueRecharge(Agent agent)
+		{
+
+		}
+		#endregion
 		public static void Cryomancy_Initialize()
 		{
 			Sprite spriteCryomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Cryomancy);
@@ -459,22 +483,6 @@ namespace BunnyMod
 
 			cryomancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
-		}
-		public static void CryomancyDialogueCast(Agent agent)
-		{
-
-		}
-		public static void CryomancyDialogueCantDo(Agent agent)
-		{
-
-		}
-		public static void CryomancyDialogueMiscast(Agent agent)
-		{
-
-		}
-		public static void CryomancyDialogueRecharge(Agent agent)
-		{
-
 		}
 		public static void CryomancyStartCast(Agent agent)
 		{
@@ -552,6 +560,87 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Electromancy
+		#region Electromancy - Bits
+		public static bool ElectromancyIs_VARIABLE1(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+		public static bool ElectromancyIs_VARIABLE2(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
+		public static bool ElectromancyIs_VARIABLE3(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
+		public static bool ElectromancyIs_VARIABLE4(Agent agent) =>
+			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_1000) != 0;
+		public static void ElectromancySet_VARIABLE1(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("Set___" + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
+		}
+		public static void ElectromancySet_VARIABLE2(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("Set___" + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
+		}
+		public static void ElectromancySet_VARIABLE3(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("Set___" + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
+		}
+		public static void ElectromancySet_VARIABLE4(Agent agent, bool value)
+		{
+			//BunnyHeader.Log("Set___" + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_1000;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_1000;
+		}
+		#endregion
+		#region Electromancy - Dialogue
+		public static void ElectromancyDialogueCast(Agent agent)
+		{
+
+		}
+		public static void ElectromancyDialogueCantDo(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			string[] dialogue =
+			{
+				"Ion wanna do that right now!" ,
+				"Let me ground myself for a second."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void ElectromancyDialogueMiscast(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			string[] dialogue =
+			{
+				"I'm not ex-static about this." ,
+				"This kinda hertz!",
+				"Watt just happened??"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void ElectromancyDialogueRecharge(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "Recharge");
+
+			string[] dialogue =
+			{
+				"Resistance is futile!" ,
+				"Don't forget to... *keep current*. Hah."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		#endregion
 		public static void Electromancy_Initialize()
 		{
 			Sprite spriteElectromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Electromancy);
@@ -619,55 +708,6 @@ namespace BunnyMod
 			electromancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.2f) : null;
 		}
-		public static void ElectromancyDialogueCast(Agent agent)
-		{
-
-		}
-		public static void ElectromancyDialogueCantDo(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
-
-			string[] dialogue = 
-			{
-				"Ion wanna do that right now!" ,
-				"Let me ground myself for a second."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void ElectromancyDialogueMiscast(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
-
-			string[] dialogue = 
-			{
-				"I'm not ex-static about this." ,
-				"This kinda hertz!",
-				"Watt just happened??"
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void ElectromancyDialogueRecharge(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "Recharge");
-
-			string[] dialogue =
-			{
-				"Resistance is futile!" ,
-				"Don't forget to... *keep current*. Hah."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static bool ElectromancyIs_VARIABLE1(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
-		public static bool ElectromancyIs_VARIABLE2(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
-		public static bool ElectromancyIs_VARIABLE3(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		public static bool ElectromancyIs_VARIABLE4(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_1000) != 0;
 		public static void ElectromancyOnImpact(GameObject hitObject, Bullet bullet)
 		{
 			int numberOfChains = 1;
@@ -752,34 +792,6 @@ namespace BunnyMod
 
 			return (chance > UnityEngine.Random.Range(1, 100));
 		}
-		public static void ElectromancySet_VARIABLE1(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
-		}
-		public static void ElectromancySet_VARIABLE2(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
-		}
-		public static void ElectromancySet_VARIABLE3(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
-		}
-		public static void ElectromancySet_VARIABLE4(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_1000;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_1000;
-		}
 		public static void ElectromancyStartCast(Agent agent)
 		{
 			agent.gun.HideGun();
@@ -813,6 +825,105 @@ namespace BunnyMod
 		}
 		#endregion
 		#region Pyromancy
+		#region Pyromancy - Bits
+		public static bool PyromancyIsBurnedOut(Agent agent)
+		{
+			BunnyHeader.Log("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
+
+			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
+		}
+		public static bool PyromancyIsCoolingDown(Agent agent)
+		{
+			BunnyHeader.Log("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
+
+			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
+		}
+		public static bool PyromancyIsMiscast(Agent agent)
+		{
+			BunnyHeader.Log("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
+
+			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
+		}
+		public static void PyromancyLogBooleans(Agent agent)
+		{
+			BunnyHeader.Log("PyromancyIsBurnedOut: " + PyromancyIsBurnedOut(agent));
+			BunnyHeader.Log("PyromancyIsCoolingDown: " + PyromancyIsCoolingDown(agent));
+			BunnyHeader.Log("PyromancyIsMiscast: " + PyromancyIsMiscast(agent));
+		}
+		public static void PyromancySetBurnedOut(Agent agent, bool value)
+		{
+			BunnyHeader.Log("PyromancySetBurnedOut " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
+		}
+		public static void PyromancySetCoolingDown(Agent agent, bool value)
+		{
+			BunnyHeader.Log("PyromancySetCoolingDown " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
+		}
+		public static void PyromancySetMiscast(Agent agent, bool value)
+		{
+			BunnyHeader.Log("PyromancySetMiscast " + value);
+
+			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
+			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
+		}
+		#endregion
+		#region Pyromancy - Dialogue
+		public static void PyromancyDialogueCantDo(Agent agent)
+		{
+			agent.gc.audioHandler.Play(agent, "CantDo");
+
+			string[] dialogue =
+			{
+				"I'm burned out.",
+				"Hang on. I don't feel like exploding right now."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void PyromancyDialogueCast(Agent agent) // Not used yet
+		{
+			agent.gc.audioHandler.Play(agent, "AgentLaugh");
+
+			string[] dialogue =
+			{
+				"Die! Burn! Die! Die!",
+				"Burn, baby, burn!",
+				"BURN-ie 2024!",
+				"Yer fired! Get it?"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void PyromancyDialogueMiscast(Agent agent)
+		{
+			string[] dialogue =
+			{
+				"Not very stoked right now.",
+				"Haha my skin is melting lol XDDD",
+				"Flame off! Flame off!",
+				"I shidded an farded an bursteded into flames."
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		public static void PyromancyDialogueRecharge(Agent agent)
+		{
+			string[] dialogue =
+			{
+				"Ready to burn!",
+				"I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do both.",
+				"(Laughs maniacally)",
+				"Why are the innocent so fun to burn?"
+			};
+
+			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+		}
+		#endregion
 		public static void Pyromancy_Initialize()
 		{
 			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
@@ -877,86 +988,12 @@ namespace BunnyMod
 					item.invItemCount++;
 
 					if (item.invItemCount == 100)
-						PyromancyStartRecharge(myAgent);
+						PyromancyStartRecharge(myAgent, true);
 				}
 			};
 
 			pyromancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.1f) : null;
-		}
-		public static void PyromancyDialogueCantDo(Agent agent)
-		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
-
-			string[] dialogue = 
-			{
-				"I'm burned out.",
-				"Hang on. I don't feel like exploding right now."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void PyromancyDialogueCast(Agent agent) // Not used yet
-		{
-			agent.gc.audioHandler.Play(agent, "AgentLaugh");
-
-			string[] dialogue = 
-			{
-				"Die! Burn! Die! Die!",
-				"Burn, baby, burn!",
-				"BURN-ie 2024!",
-				"Yer fired! Get it?"
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void PyromancyDialogueMiscast(Agent agent)
-		{
-			string[] dialogue = 
-			{
-				"Not very stoked right now.",
-				"Haha my skin is melting lol XDDD",
-				"Flame off! Flame off!",
-				"I shidded an farded an bursteded into flames."
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static void PyromancyDialogueRecharge(Agent agent)
-		{
-			string[] dialogue = 
-			{
-				"Ready to burn!",
-				"I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do both.",
-				"(Laughs maniacally)",
-				"Why are the innocent so fun to burn?"
-			};
-
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
-		}
-		public static bool PyromancyIsBurnedOut(Agent agent)
-		{
-			BunnyHeader.Log("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
-
-			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
-		}
-		public static bool PyromancyIsCoolingDown(Agent agent)
-		{
-			BunnyHeader.Log("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
-			
-			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
-		}
-		public static bool PyromancyIsMiscast(Agent agent)
-		{
-			BunnyHeader.Log("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
-
-			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		}
-		public static void PyromancyLogBooleans(Agent agent)
-		{
-			BunnyHeader.Log("PyromancyIsBurnedOut: " + PyromancyIsBurnedOut(agent));
-			BunnyHeader.Log("PyromancyIsCoolingDown: " + PyromancyIsCoolingDown(agent));
-			BunnyHeader.Log("PyromancyIsMiscast: " + PyromancyIsMiscast(agent));
 		}
 		public static bool PyromancyRollManaCost(Agent agent)
 		{
@@ -992,27 +1029,6 @@ namespace BunnyMod
 				risk *= 0.50f;
 
 			return risk >= UnityEngine.Random.Range(0f, 100f);
-		}
-		public static void PyromancySetBurnedOut(Agent agent, bool value)
-		{
-			BunnyHeader.Log("PyromancySetBurnedOut " + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
-		}
-		public static void PyromancySetCoolingDown(Agent agent, bool value)
-		{
-			BunnyHeader.Log("PyromancySetCoolingDown " + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
-		}
-		public static void PyromancySetMiscast(Agent agent, bool value)
-		{
-			BunnyHeader.Log("PyromancySetMiscast " + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
 		public static void PyromancyStartBurnout(Agent agent)
 		{
@@ -1084,12 +1100,15 @@ namespace BunnyMod
 
 			PyromancyStartBurnout(agent);
 		}
-		public static void PyromancyStartRecharge(Agent agent) //TODO
+		public static void PyromancyStartRecharge(Agent agent, bool routine) //TODO
 		{
 			BunnyHeader.Log("PyromancyStartRecharge");
 
-			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-			agent.gc.audioHandler.Play(agent, "Recharge");
+			if (!routine)
+			{
+				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+				agent.gc.audioHandler.Play(agent, "Recharge");
+			}
 
 			if (PyromancyIsBurnedOut(agent))
 				PyromancySetBurnedOut(agent, false);

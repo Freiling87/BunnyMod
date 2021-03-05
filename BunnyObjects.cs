@@ -440,7 +440,7 @@ namespace BunnyMod
             }
             if (buttonText == "GrillFud")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling")); // Attempt 202103031453
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {
@@ -448,7 +448,7 @@ namespace BunnyMod
                     __instance.gc.audioHandler.Play(__instance, "GrillOperate");
                     //__instance.SpawnParticleEffect("Hack", __instance.tr.position);
                     __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Door", 0); // 202103021957
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "ObjectReal", 0); // 202103021957
                 }
 
                 return false;

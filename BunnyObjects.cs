@@ -33,6 +33,7 @@ namespace BunnyMod
             BunnyHeader.MainInstance.PatchPostfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start");
 
             //this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) }); 
+            BunnyHeader.MainInstance.PatchPrefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating", new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
 
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
@@ -516,6 +517,12 @@ namespace BunnyMod
         }
         #endregion
         #region PlayfieldObject
+        public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType, PlayfieldObject __instance) // Prefix
+		{
+            BunnyHeader.Log("PlayfieldObject_Operating " + __instance.name + ": Agent = " + myAgent.name + "; item = " + item.invItemName + "; timeToUnlock = " + timeToUnlock + "; makeNoise = " + makeNoise + "; barType = " + barType);
+
+            return true;
+		}
         public static bool PlayfieldObject_PlayerHasUsableItem(InvItem myItem, PlayfieldObject __instance) // Prefix
         {
             if (__instance is Stove)

@@ -31,22 +31,23 @@ Gameplay Overhauls
 		Influencing the Election
 		Reputation Carryover
 			Depending on your ending electability for a District, NPCs will have a starting attitude on later floors.
-			-10 or lower: Hostile
-			-9 to -5: Annoyed
-			-4 to +4: Neutral
-			+5 to +10: Friendly
-			+10 to +15: Loyal
-			+15 or higher: Aligned
-			Slums: Gang Members
-			Industrial: Workers
-			Park: Gorillas, Cannibals if you have CWC
-			Downtown: Bouncer
-			Uptown: Upper Cruster
+				-10 or lower: Hostile
+				-9 to -5: Annoyed
+				-4 to +4: Neutral
+				+5 to +10: Friendly
+				+10 to +15: Loyal
+				+15 or higher: Aligned
+			Affected NPCs by district:
+				Slums: Gang Members
+				Industrial: Workers
+				Park: Gorillas, Cannibals if you have CWC
+				Downtown: Bouncer
+				Uptown: Upper Cruster
 		Faction Reputations
 			Same as Reputation Carryover, but influenced by behaviors
 				Blahds
 				Crepes
-				Mafia, Bouncers
+				Mafia
 				Police
 				Workers, Slum Dwellers, Office Drones, Clerks
 				Upper Crusters, Doctors, Investment Bankers, Scientists

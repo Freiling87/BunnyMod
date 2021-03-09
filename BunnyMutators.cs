@@ -1,5 +1,6 @@
 ﻿using RogueLibsCore;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BunnyMod
@@ -36,11 +37,45 @@ namespace BunnyMod
 			cityOfSteel.IsActive = true;
 			#endregion
 
-			CustomMutator scaryGuns = RogueLibs.CreateCustomMutator("Scary Guns", true,
-				new CustomNameInfo("Scary Guns"),
-				new CustomNameInfo("Bullets act a little more realistically. Get good, or get dead."));
+			#region Overhauls
+			CustomMutator cyberWarfare = RogueLibs.CreateCustomMutator("CyberWarfare", true,
+				new CustomNameInfo("Overhaul - Cyber Warfare"),
+				new CustomNameInfo("Hacking is more complex, and carries greater risks & rewards. Hack the planet!"));
+			cyberWarfare.Available = true;
+			cyberWarfare.IsActive = true;
+			
+			CustomMutator scaryGuns = RogueLibs.CreateCustomMutator("ScaryGuns", true,
+				new CustomNameInfo("Overhaul - Scary Guns"),
+				new CustomNameInfo("Guns are deadlier, but adds Cover mechanics. Get good, or get dead."));
 			scaryGuns.Available = true;
 			scaryGuns.IsActive = true;
+
+			CustomMutator wagTheDog = RogueLibs.CreateCustomMutator("WagTheDog", true,
+				new CustomNameInfo("Overhaul - Wag The Dog"),
+				new CustomNameInfo("Electability now relies on a few new factors, and isn't so limited to particular playstyles."));
+			wagTheDog.Available = true;
+			wagTheDog.IsActive = true;
+			#endregion
+
+			#region CityLife
+			CustomMutator alwaysSpawnArsonists = RogueLibs.CreateCustomMutator("AlwaysSpawnArsonists", true,
+				new CustomNameInfo("Always Spawn Arsonists"),
+				new CustomNameInfo(""));
+			alwaysSpawnArsonists.Available = true;
+			alwaysSpawnArsonists.IsActive = true;
+
+			CustomMutator gangLand = RogueLibs.CreateCustomMutator("GangLand", true,
+				new CustomNameInfo("Gang Land"),
+				new CustomNameInfo(""));
+			gangLand.Available = true;
+			gangLand.IsActive = true;
+
+			CustomMutator heyYou = RogueLibs.CreateCustomMutator("HeyYou", true,
+				new CustomNameInfo("Hey, You!"),
+				new CustomNameInfo("NPCs will occasionally approach you: Slum Dwellers begging, Gangbangers mugging, Cops asking to frisk you, Scientists offering paid medical experiments, Jocks doing pranks. Maybe more!"));
+			heyYou.Available = true;
+			heyYou.IsActive = true;
+			#endregion
 		}
 
 		#region Bullet
@@ -77,6 +112,63 @@ namespace BunnyMod
 			}
 
 			return true;
+		}
+		#endregion
+		#region Quests
+		public static void Quests_CheckIfBigQuestObject(PlayfieldObject myObject, Quests __instance) // Postfix
+		{
+			if (BunnyHeader.gc.levelFeeling == "Riot" || BunnyHeader.gc.percentChance(2) || BunnyHeader.gc.challenges.Contains("AlwaysSpawnArsonists"))
+			{
+				for (int i = 0; i < BunnyHeader.gc.playerAgentList.Count; i++)
+				{
+					Agent agent_i = BunnyHeader.gc.playerAgentList[i];
+
+					if ((agent_i.localPlayer || BunnyHeader.gc.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
+					{
+						if (BunnyHeader.gc.serverPlayer && !BunnyHeader.gc.loadLevel.setArsonist && !BunnyHeader.gc.loadLevel.LevelContainsMayor())
+						{
+							for (int j = 0; j < BunnyHeader.gc.agentList.Count; j++)
+							{
+								Agent agent_j = BunnyHeader.gc.agentList[j];
+
+								if (agent_j.isPlayer == 0 && !agent_j.dead && !agent_j.objectAgent && !agent_j.oma.rioter && !agent_j.ghost && !agent_j.inhuman && !agent_j.beast && !agent_j.zombified && !agent_j.oma.hidden && !agent_j.arsonist && !agent_j.oma.secretWerewolf && agent_j.ownerID == 0 && agent_j.startingChunk == 0 && !agent_j.enforcer && !agent_j.upperCrusty && agent_j.agentName != "Assassin" && agent_j.agentName != "Custom")
+									if (!agent_j.QuestInvolvementFull())
+										continue;
+									else if (agent_j.arsonist)
+									{
+										if (!__instance.bigQuestObjectList.Contains(agent_j))
+											__instance.bigQuestObjectList.Add(agent_j);
+										if (!agent_i.localPlayer)
+											agent_j.noBigQuestMarker = true;
+
+										agent_j.isBigQuestObject = true;
+										agent_j.bigQuestType = agent_i.bigQuest;
+										agent_j.noBigQuestMarker = true;
+									}
+							}
+
+							if (!BunnyHeader.gc.loadLevel.LevelContainsMayor())
+							{
+								UnityEngine.Random.InitState(BunnyHeader.gc.loadLevel.randomSeedNum + BunnyHeader.gc.sessionDataBig.curLevelEndless + agent_i.isPlayer);
+								agent_i.needArsonist = 1;
+								agent_i.arsonistAppearance = (float)UnityEngine.Random.Range(20, 75);
+							}
+
+							BunnyHeader.gc.loadLevel.setArsonist = true;
+						}
+
+						if (myObject.isAgent && ((Agent)myObject).arsonist)
+							return; // true;
+
+						if (agent_i.oma.bigQuestTarget1 == "")
+						{
+							agent_i.oma.NetworkbigQuestTarget1 = "x";
+							return; // false
+						}
+					}
+				}
+				return;
+			}
 		}
 		#endregion
 		#region SpawnerMain

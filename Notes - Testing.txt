@@ -2,14 +2,50 @@
 
 Traits with Contraindications still show up in upgrade menu.
 
+Find out the average number of frames OnHeld triggers for per second. This might be frame-dependent, so you might need incrementors everywhere.
+
+[Message: Bunny Mod] Detected ButtonExtra:
+	This log message appears to be missing information.
+
 Chronomancy
 	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
-		Recharge now triggers constantly.
 
 Finalization
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
 
 FlamingBarrel & Stove
+	Now can't click Grill Fud or Done buttons
+		Start & Grill:
+			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (1086)
+			[Message: Bunny Mod] FlamingBarrel (1086): ObjectReal_PressedButton
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.PlayfieldObject_Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType, PlayfieldObject __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
+			PlayfieldObject.Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			BunnyMod.BunnyObjects.ObjectReal_PressedButton (System.String buttonText, System.Int32 buttonPrice, ObjectReal __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
+			ObjectReal.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ObjectReal.PressedButton (System.String buttonText) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.PushButton () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.DoUpdate (System.Boolean onlySetImages) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+		"Done" button:
+			[Message: Bunny Mod] FlamingBarrel (1086): ObjectReal_PressedButton
+		Same thing with Stove:
+			[Message: Bunny Mod] Stove 7b: Owner null
+			[Message: Bunny Mod] Stove (1734): ObjectReal_PressedButton
+			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
+			Stack trace:
+			BunnyMod.BunnyObjects.PlayfieldObject_Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType, PlayfieldObject __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
+			PlayfieldObject.Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			BunnyMod.BunnyObjects.ObjectReal_PressedButton (System.String buttonText, System.Int32 buttonPrice, ObjectReal __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
+			ObjectReal.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ObjectReal.PressedButton (System.String buttonText) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.PushButton () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.DoUpdate (System.Boolean onlySetImages) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			ButtonHelper.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
+			[Message: Bunny Mod] Stove (1734): ObjectReal_PressedButton
 	Cancelled message
 		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
 		[Error  : Unity Log] Operating Bar Error 2
@@ -33,13 +69,36 @@ Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
 	Something caused BurnedOut to stay true even when recharged.
 		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
-	Still don't have a delay between cast and recharge
+	Equipped Weapon appears in duplicate/larger form (like fist) when using Pyro
+	Wild Casting's fire particle seems a lot slower
 
 Stove
 	Dialogue
 		Attempt
 	Use near Owner
-		Issues appear to boil down to Dialogue names not being found.
+		Neutral owner said "E_Can you not do that?" So it is retrieving the value, but still...?
+			Message: Bunny Mod] ObjectReal_Interact: Stove (1734)
+			[Message: Bunny Mod] Stove 1
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Stove_UnfriendlyOwnerWatching
+			[Message: Bunny Mod] Stove_FindOwner: startingChunk = 4; OwnerID = 2
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 4; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 5; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 6; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 7; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 8; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 9; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 10; OwnerID = 2
+			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Scientist
+			[Message: Bunny Mod] Stove_OwnerWatching 1
+			[Message: Bunny Mod] Stove_OwnerWatching 2a
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Owner Neutral
+			[Message: Bunny Mod] Stove 6
+			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Scientist; RelStatus: "Neutral"
+			[Message: Bunny Mod] Stove 8a
 		In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on.
 	No owner
 	Stove blinks when damaged but never actually blows up
@@ -66,6 +125,7 @@ Stove
 				Added a bunch of logs to the method.
 Telemancy
 	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
+	Actually works again! Tried with Magic Training & Wild Casting. It charges a little bit slowly, and it does not trigger when fully charged. You might need a lemma on that bool.
 	
 --- IMPLEMENTATIONS ----------------------------------------
 

@@ -142,7 +142,7 @@ namespace BunnyMod
 
             foreach (string buttonLabel in objectReal.buttonsExtra)
 			{
-                BunnyHeader.Log("Detected ButtonExtra: " + buttonLabel);
+                BunnyHeader.Log("Detected ButtonExtra: " + buttonLabel + " (Only non-blank when additional costs are applied to button)");
 
                 if (buttonLabel.EndsWith("-30"))
 				{
@@ -519,7 +519,19 @@ namespace BunnyMod
         #region PlayfieldObject
         public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType, PlayfieldObject __instance) // Prefix
 		{
-            BunnyHeader.Log("PlayfieldObject_Operating " + __instance.name + ": Agent = " + myAgent.name + "; item = " + item.invItemName + "; timeToUnlock = " + timeToUnlock + "; makeNoise = " + makeNoise + "; barType = " + barType);
+			try
+			{
+                BunnyHeader.Log("PlayfieldObject_Operating " + __instance.name + ": ");
+                BunnyHeader.Log("Agent = " + myAgent.name);
+                BunnyHeader.Log("item = " + item.invItemName);
+                BunnyHeader.Log("timeToUnlock = " + timeToUnlock);
+                BunnyHeader.Log("makeNoise = " + makeNoise);
+                BunnyHeader.Log("barType = " + barType);
+            }
+			catch
+			{
+                BunnyHeader.Log("Logging error");
+			}
 
             return true;
 		}

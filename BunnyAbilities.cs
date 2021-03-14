@@ -977,10 +977,17 @@ namespace BunnyMod
 			pyromancy.AvailableInCharacterCreation = true;
 			pyromancy.CostInCharacterCreation = 8;
 
-			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float unused)
+			int pyromancyTimeHeld = 0;
+			int pyromancyFireRateDivisor = 2;
+
+			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float time)
 			{
-				if (!PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
+				pyromancyTimeHeld++;
+
+				if (pyromancyTimeHeld >= pyromancyFireRateDivisor && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
 				{
+					pyromancyTimeHeld = 0;
+
 					if (PyromancyRollMiscast(agent, 0))
 						PyromancyStartMiscast(agent, 20);
 					else
@@ -998,18 +1005,18 @@ namespace BunnyMod
 
 			pyromancy.OnReleased = delegate (InvItem item, Agent agent)
 			{
-				if (!PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
+				if (pyromancyTimeHeld > 0 && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
 					PyromancyStartCoolingDown(agent);
 			};
 
 			pyromancy.Recharge = (item, agent) =>
 			{
+				if (item.invItemCount == CalcMaxMana(agent))
+					PyromancyCompleteRecharge(agent, true);
+
 				if (item.invItemCount < item.rechargeAmountInverse && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount++;
-
-					if (item.invItemCount == CalcMaxMana(agent))
-						PyromancyStartRecharge(agent, true);
 				}
 			};
 
@@ -1061,12 +1068,14 @@ namespace BunnyMod
 		{
 			agent.gc.audioHandler.Play(agent, "MindControlEnd");
 
-			PyromancySetBurnedOut(agent, true);
+			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
+				PyromancySetBurnedOut(agent, true);
 		}
 		public static void PyromancyStartCast(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyStartCast");
-			PyromancyLogBooleans(agent);
+
+			agent.gun.HideGun();
 
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
@@ -1094,34 +1103,35 @@ namespace BunnyMod
 		public static async Task PyromancyStartCoolingDown(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyStartCoolingDown");
-			PyromancyLogBooleans(agent);
 
-			PyromancySetCoolingDown(agent, true);
+			if (PyromancyIsCoolingDown(agent) == false)
+			{
+				PyromancySetCoolingDown(agent, true);
 
-			float duration = 2000f;
+				float duration = 2000f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
-				duration -= 375f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				duration -= 750f;
+				if (agent.statusEffects.hasTrait("MagicTraining"))
+					duration -= 375f;
+				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+					duration -= 750f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
-				duration = 0f;
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				duration -= 625f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				duration -= 1250f;
+				if (agent.statusEffects.hasTrait("Archmage"))
+					duration = 0f;
+				if (agent.statusEffects.hasTrait("WildCasting"))
+					duration -= 625f;
+				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+					duration -= 1250f;
 
-			duration = Mathf.Max(0f, duration);
+				duration = Mathf.Max(0f, duration);
 
-			await Task.Delay((int)duration);
+				await Task.Delay((int)duration);
 
-			PyromancySetCoolingDown(agent, false);
+				PyromancySetCoolingDown(agent, false);
+			}
 		}
 		public static void PyromancyStartMiscast(Agent agent, int degree)
 		{
 			BunnyHeader.Log("PyromancyStartMiscast");
-			PyromancyLogBooleans(agent);
 
 			PyromancyDialogueMiscast(agent);
 
@@ -1129,7 +1139,7 @@ namespace BunnyMod
 
 			PyromancyStartBurnout(agent);
 		}
-		public static void PyromancyStartRecharge(Agent agent, bool routine) //TODO
+		public static void PyromancyCompleteRecharge(Agent agent, bool routine) //TODO
 		{
 			BunnyHeader.Log("PyromancyStartRecharge");
 
@@ -1232,9 +1242,11 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void TelemancyDialogueFullyCharged(Agent agent)
+		public static void TelemancyDialogueFullyCharged(Agent agent) // TODO
 		{
-
+			agent.SpawnParticleEffect("Electrocution", agent.curPosition);
+			// You might need to clear this once cast.
+			// There's also very little chance that it'll follow the agent around.
 		}
 		public static void TelemancyDialogueMiscast(Agent agent)
 		{
@@ -1317,7 +1329,9 @@ namespace BunnyMod
 
 			telemancy.OnReleased = delegate (InvItem item, Agent agent)
 			{
-				if (TelemancyRollMiscast(agent, telemancyHeldCounter) != 0) // TODO
+				// LMB will trigger this function, even if RMB is not held. Some of the conditions below are to verify that RMB is held.
+
+				if (telemancyNetCharge > 0 && TelemancyRollMiscast(agent, telemancyHeldCounter) != 0)
 				{
 					if (!TelemancyTryMiscast(agent, TelemancyRollMiscast(agent, telemancyHeldCounter)) && !TelemancyIsReturning(agent) && telemancyNetCharge > 0)
 					{
@@ -1331,7 +1345,7 @@ namespace BunnyMod
 
 			telemancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
+				if (telemancyNetCharge == 0 && item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount = Math.Min(CalcMaxMana(agent), item.invItemCount + TelemancyRollRechargeRate(agent));
 
@@ -1677,15 +1691,27 @@ namespace BunnyMod
 
 			if (__instance.agent.inventory.equippedSpecialAbility != null)
 			{
-				if (abilityName == "Chronomancy" || abilityName == "Electromancy" || abilityName == "Pyromancy" || abilityName == "Telemancy")
-					__instance.agent.inventory.equippedSpecialAbility.otherDamage = 0;
+				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;
+				Agent agent = __instance.agent;
 
-				if (abilityName == "Chronomancy")
+				string[] magicAbilities = 
+				{ 
+					"Chronomancy", 
+					"Cryomancy",
+					"Electromancy", 
+					"Pyromancy", 
+					"Telemancy" 
+				};
+
+				if (magicAbilities.Contains(abilityName))
 				{
+					ability.otherDamage = 0; // Bitwise variables
+
+					ability.initCount = CalcMaxMana(agent);
+					ability.maxAmmo = CalcMaxMana(agent);
+					ability.rechargeAmountInverse = CalcMaxMana(agent);
 				}
 			}
-
-			// TODO: If you need a Remora, put it here.
 		}
 		#endregion
 	}

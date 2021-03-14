@@ -167,6 +167,7 @@ Gameplay Overhauls
 	Make Keys, Money & Safe Combos not take up a slot
 	
 Items
+	Rate Of Fire Mod / Ammo Stock - Add to taser to reduce charge time.
 	Beer Can (1) - Generated when a Beer is consumed, or found on its own in trash cans. Thrown weapon, does minimal damage for funsies. Like a more useless Rock.
 	Door Locker (2) - Use on a Door to Lock it from both sides - activate the door to unlock it.
 	Doughnut (1) - Moderate healing. Can be given to Cops to make them Friendly, or to avoid paying a Fine.

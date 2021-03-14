@@ -2,50 +2,10 @@
 
 Traits with Contraindications still show up in upgrade menu.
 
-Find out the average number of frames OnHeld triggers for per second. This might be frame-dependent, so you might need incrementors everywhere.
-
-[Message: Bunny Mod] Detected ButtonExtra:
-	This log message appears to be missing information.
-
-Chronomancy
-	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
-
 Finalization
 	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
 
 FlamingBarrel & Stove
-	Now can't click Grill Fud or Done buttons
-		Start & Grill:
-			[Message: Bunny Mod] ObjectReal_Interact: FlamingBarrel (1086)
-			[Message: Bunny Mod] FlamingBarrel (1086): ObjectReal_PressedButton
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.PlayfieldObject_Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType, PlayfieldObject __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
-			PlayfieldObject.Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			BunnyMod.BunnyObjects.ObjectReal_PressedButton (System.String buttonText, System.Int32 buttonPrice, ObjectReal __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
-			ObjectReal.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ObjectReal.PressedButton (System.String buttonText) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.PushButton () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.DoUpdate (System.Boolean onlySetImages) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		"Done" button:
-			[Message: Bunny Mod] FlamingBarrel (1086): ObjectReal_PressedButton
-		Same thing with Stove:
-			[Message: Bunny Mod] Stove 7b: Owner null
-			[Message: Bunny Mod] Stove (1734): ObjectReal_PressedButton
-			[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-			Stack trace:
-			BunnyMod.BunnyObjects.PlayfieldObject_Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType, PlayfieldObject __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
-			PlayfieldObject.Operating (Agent myAgent, InvItem item, System.Single timeToUnlock, System.Boolean makeNoise, System.String barType) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			BunnyMod.BunnyObjects.ObjectReal_PressedButton (System.String buttonText, System.Int32 buttonPrice, ObjectReal __instance) (at <49ea33146e9b4a279c686648a8544c79>:0)
-			ObjectReal.PressedButton (System.String buttonText, System.Int32 buttonPrice) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ObjectReal.PressedButton (System.String buttonText) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			WorldSpaceGUI.PressedButton (System.Int32 buttonNum) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.PushButton () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.DoUpdate (System.Boolean onlySetImages) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			ButtonHelper.Update () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-			[Message: Bunny Mod] Stove (1734): ObjectReal_PressedButton
 	Cancelled message
 		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
 		[Error  : Unity Log] Operating Bar Error 2
@@ -60,21 +20,23 @@ FlamingBarrel & Stove
 				interactingagent.muststopoperating = true;
 				interactingagent != myAgent
 				this.ServerSaysStopOperating
+		[Message: Bunny Mod] PlayfieldObject_Operating Stove (1465):
+		[Message: Bunny Mod] Agent = Playerr
+		[Message: Bunny Mod] Logging error
+	Can no longer grill on Stove.
 
 Magic General
 	Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive.
 	Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
+	Mana Battery doesn't work
 				
 Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-	Something caused BurnedOut to stay true even when recharged.
-		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
 	Equipped Weapon appears in duplicate/larger form (like fist) when using Pyro
-	Wild Casting's fire particle seems a lot slower
+		Attempted with agent.gun.HideGun();
+			No luck there
 
 Stove
-	Dialogue
-		Attempt
 	Use near Owner
 		Neutral owner said "E_Can you not do that?" So it is retrieving the value, but still...?
 			Message: Bunny Mod] ObjectReal_Interact: Stove (1734)
@@ -100,6 +62,38 @@ Stove
 			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Scientist; RelStatus: "Neutral"
 			[Message: Bunny Mod] Stove 8a
 		In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on.
+	Use FAR AWAY from owner, 2x2 house chunk
+		[Message: Bunny Mod] ObjectReal_Interact: Stove (1677)
+		[Message: Bunny Mod] Stove 1
+		[Message: Bunny Mod] Stove_OwnerWatching: Stove (1677): Stove_UnfriendlyOwnerWatching
+		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 12; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 4; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 5; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 6; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 7; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 8; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 9; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 10; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 11; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 12; OwnerID = 2
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 13; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 14; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 15; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 16; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 17; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hobo
+		[Message: Bunny Mod] Stove_OwnerWatching 1
+		[Message: Bunny Mod] Stove_OwnerWatching 2a
+		[Message: Bunny Mod] Stove_OwnerWatching: Stove (1677): Owner Neutral
+		[Message: Bunny Mod] Stove_OwnerWatching 3a
+		[Message: Bunny Mod] Stove_OwnerWatching 2b
+		[Message: Bunny Mod] Stove 6
+		[Message: Bunny Mod] Stove 7b: Owner null
+			This interrupted use, so you'll need to set a threshold of distance.
 	No owner
 	Stove blinks when damaged but never actually blows up
 		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
@@ -125,7 +119,14 @@ Stove
 				Added a bunch of logs to the method.
 Telemancy
 	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
-	Actually works again! Tried with Magic Training & Wild Casting. It charges a little bit slowly, and it does not trigger when fully charged. You might need a lemma on that bool.
+	Need AV indicator & stop charging at full charge 
+	Testing:
+		Initiate
+		Wild Caster
+		Focused Caster
+		Magic Training
+		WC + MT
+		FC + MT
 	
 --- IMPLEMENTATIONS ----------------------------------------
 
@@ -238,3 +239,6 @@ Wall Mutator
 	TileInfo.BuildWallObject (TileData myTileData, StreamingTileArray myStreamingTileArray, System.Boolean buildingStreamingChunk) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	LoadLevel+<loadStuff2>d__137.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+
+Banana Lover ++: You can't eat anything but bananas, but when you do, you do a fun lil' dance // Cost: $1200
+	Need more stupid joke traits

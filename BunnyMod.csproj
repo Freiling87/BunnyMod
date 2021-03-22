@@ -110,11 +110,14 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Notes - Testing.txt" />
-    <Content Include="Notes - Ideas.txt" />
+    <None Include="Notes - Testing.md" />
+    <None Include="Notes - Ideas.md" />
+    <None Include="ReadMe.md" />
+    <None Include="Staging.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Notes - Test Log.md" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
     <None Include="Properties\Resources\Cryomancy.bin" />

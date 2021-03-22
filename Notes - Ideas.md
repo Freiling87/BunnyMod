@@ -1,33 +1,31 @@
-﻿=== PLANNING ===================================================================
+﻿Formatting in here is gonna be wonky, I've only recently switched from txt to md.
+
+# Planning
 
 Roamers
 	Random.InitState - is this behavior? Havent' looked yet
-
-
-=== IDEAS ======================================================================
-
-Classes
-	Drug Dealer
-		Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
-		Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
-	Priest
-		Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.
-		Sermon - Activate an Altar to randomly improve relations with NPCs within earshot. Chance of them giving you Tithes.
-	Repairman
-		One Happy Tamper - Tamper without angering Owner
-		Suffers Tools Gladly - Reduce Item durability reduction from tampering (with an Improved version that removes it completely)
-	Trapper
-		Cheeky Trappy - All hidden traps (so far just landmines) are visible to you. NPCs will no longer path around traps that you place.
+# Ideas
+## Classes
+### Drug Dealer
+- Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
+- Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
+### Priest
+- Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.
+- Sermon - Activate an Altar to randomly improve relations with NPCs within earshot. Chance of them giving you Tithes.
+### Repairman
+- One Happy Tamper - Tamper without angering Owner
+- Suffers Tools Gladly - Reduce Item durability reduction from tampering (with an Improved version that removes it completely)
+### Trapper
+- Cheeky Trappy - All hidden traps (so far just landmines) are visible to you. NPCs will no longer path around traps that you place.
 		____ - Increase damage from traps.
-		Trapper Keeper - You can Interact with traps to add them to your inventory (Bear Traps, Land Mines). 100% chance to deactivate Door Detonators.
+- Trapper Keeper - You can Interact with traps to add them to your inventory (Bear Traps, Land Mines). 100% chance to deactivate Door Detonators.
+## Big Quests
+- Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
+- Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
+- Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
+## Gameplay Overhauls
 
-Big Quests
-	Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
-	Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
-	Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
-
-Gameplay Overhauls
-	Election Rebalance
+### Election Rebalance
 		Influencing the Election
 		Reputation Carryover
 			Depending on your ending electability for a District, NPCs will have a starting attitude on later floors.
@@ -51,7 +49,7 @@ Gameplay Overhauls
 				Police
 				Workers, Slum Dwellers, Office Drones, Clerks
 				Upper Crusters, Doctors, Investment Bankers, Scientists
-	Mugging & Extorting
+### Mugging & Extorting
 		Add a 0.5s delay between failure and attack
 		Can go Submissive from Mugging (no one will die for pocket change)
 	removing traits:
@@ -76,7 +74,7 @@ Gameplay Overhauls
 		Bonus:
 			A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
 			Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
-	The Gun Fetishism Mod:
+### The Gun Fetishism Mod:
 		Mechanics:
 		- Bullets are smaller, faster & deal more damage √
 		- Ranged increases accuracy & ROF, reduces Windup, NO effect on gun damage
@@ -117,7 +115,7 @@ Gameplay Overhauls
 		- Rifle: +++Damage ++Accuracy, Windup before firing.
 		Traits:
 		- Double-Tapper: Ranged weapon equivalent to Backstabber, but only works in close range.
-	Rap Sheet
+### Rap Sheet
 		in downtown and uptown, police houses(?) will have a comms desk. If you kill 5 officers, witnessing cops will head for the comms desk and say that you are wanted, giving you the wanted trait. However, you can hack comms desk to make it say that you were pardoned by the mayor. This gives you above the law for the rest of the group of 3 floors (if done on 4-3, only for one floor, if done on 4-2, for 2 floors, etc). After that, the cops find out you were lying and you are wanted, even if not previously wanted.
 		in downtown and uptown, police houses(?) will have a comms desk. If you kill 5 officers, witnessing cops will head for the comms desk and say that you are wanted, giving you the wanted trait.
 		Like the hack and pardon thing is good but it doesn't sound like it's 100% there
@@ -126,13 +124,13 @@ Gameplay Overhauls
 		Or, if there's a computer in a cop station, that's what they use
 		I guess if a Cop is Hostile and you leave their sight/they stop chasing, they might go do it
 		But if you don't leave their site, they'll try to take you down
-	Rogue Vision
+### Rogue Vision
 			I'd like to make a few modifications to gameplay to make this Mutator more playable. I prefer it for Stealth runs, but the inability to peek around corners is sort of an Achilles Heel. However, modding Field of Vision is probably too ambitious for my level (not to mention RV isn't a game mode that gets a lot of attention), so this will likely remain a pipe dream.
 			Visual indicators of where sounds are coming from. This would include doors opening/closing, security cameras swiveling, etc. 
 			The ability to see Cameras' field of vision if you've hacked them, or an item specific to that.
 			A Special ability that places or picks up a Spy Camera for observing patrols. Or, a moveable Scout Drone.
 			A Mirror you can use to peek around corners.
-	Stealth Overhaul
+### Stealth Overhaul
 		Visual detection
 			Variable name is called "hardToSeeFromDistance", trait is same but capitalized
 			base = 1
@@ -164,41 +162,40 @@ Gameplay Overhauls
 			TileInfo.TurnOffLights
 			TileInfo.noLightColliders
 		Hiding in a box should slightly reduce movement speed (by like 0.5)
-	Make Keys, Money & Safe Combos not take up a slot
+### Make Keys, Money & Safe Combos not take up a slot
 	
-Items
-	Beer Can (1) - Generated when a Beer is consumed, or found on its own in trash cans. Thrown weapon, does minimal damage for funsies. Like a more useless Rock.
-	Door Locker (2) - Use on a Door to Lock it from both sides - activate the door to unlock it.
-	Doughnut (1) - Moderate healing. Can be given to Cops to make them Friendly, or to avoid paying a Fine.
-	Fire Mine (4) - Behaves like a Molotov when it explodes.
-	Fancy Hat (3) - Increased chances for persuasion. Maybe a Fedora, because I want you to cringe.
-	Fear Syringe (1) - (Maybe not possible since there's no fear for player characters)
-	Gas Trap Kit (6) - Combine with a Syringe to make a Gas Trap that you can place like a Land Mine.
-	Holy Symbol (4) - When in your inventory, all Undead NPCs slowly take damage when they're near you. They are more likely to flee during combat.
-	Holy Water Flask (2) - Thrown weapon that gives a Poison condition to Zombies & Werewolves. Can also be combined with a Water Gun, Air Vent, or Water Filter.
-	Lunchbox (1) - Thrown item. Deals rock-level damage, drops a food item on impact.
-	Mini Turret (3) - It's a Turret.
-	Oil Bottle (1) - Thrown weapon that creates a splash of oil upon impact.
-	Rifle (5) - High damage, slow rate of fire with warmup. Hopefully can extend range to beyond normal screen, like when using the Laptop.
-	Riot Armor (3) - Resists bullets and melee damage.
-	Riot Helmet (2) - Just another aesthetic option.
-	Screwdriver (1) - A stabbing weapon slightly weaker than the knife. Would be used for extended tampering options.
-	Spear (1) - Thrusting weapon, longest melee reach. Deals damage equal to Knife.
-	Sugar Processor (6) - Similar to Bomb Processor. 
-	Teleportation Trap (2) - Floor trap.
-	Toxic Slime Capsule (1) - Thrown item. Inflicts poison and leaves a Goop Splash.
-	Water Gun - Extended to combine with Oil Can, so you can shoot Oil.
-	Whiskey Bottle (1) - Generated when Whiskey is consumed, or found on its own in trash cans. Thrown weapon, does minimal damage for funsies. Like a more useless Rock.
-	Wire Cutters - Deactivate cameras instantly with no chance of failure. Destroy Barbed Wire fences. Other stuff?
-	Z-Virus (2) - Solely for putting in Vents or Water Pumps. Doesn't do damage, but infects people with Zombiism.
-	Magic items:
-		- Mana Crystals (decay slowly but unpredictably, increase recharge speed)
-		- Miscast Crystals (Rare, but absorb a miscast and shatter)
-		- Ultrachungus Crystals (Temporarily boost your ability to obscene levels)
-	BackPack - +inventory slots
-	Body Spray: Anti-cologne, basically gives ideological clash to whoever uses it. (This would be cool in assassin quests if you could apply it to your target.)
-
-NPCs
+## Items
+- Beer Can (1) - Generated when a Beer is consumed, or found on its own in trash cans. Thrown weapon, does minimal damage for funsies. Like a more useless Rock.
+- Door Locker (2) - Use on a Door to Lock it from both sides - activate the door to unlock it.
+- Doughnut (1) - Moderate healing. Can be given to Cops to make them Friendly, or to avoid paying a Fine.
+- Fire Mine (4) - Behaves like a Molotov when it explodes.
+- Fancy Hat (3) - Increased chances for persuasion. Maybe a Fedora, because I want you to cringe.
+- Fear Syringe (1) - (Maybe not possible since there's no fear for player characters)
+- Gas Trap Kit (6) - Combine with a Syringe to make a Gas Trap that you can place like a Land Mine.
+- Holy Symbol (4) - When in your inventory, all Undead NPCs slowly take damage when they're near you. They are more likely to flee during combat.
+- Holy Water Flask (2) - Thrown weapon that gives a Poison condition to Zombies & Werewolves. Can also be combined with a Water Gun, Air Vent, or Water Filter.
+- Lunchbox (1) - Thrown item. Deals rock-level damage, drops a food item on impact.
+- Mini Turret (3) - It's a Turret.
+- Oil Bottle (1) - Thrown weapon that creates a splash of oil upon impact.
+- Rifle (5) - High damage, slow rate of fire with warmup. Hopefully can extend range to beyond normal screen, like when using the Laptop.
+- Riot Armor (3) - Resists bullets and melee damage.
+- Riot Helmet (2) - Just another aesthetic option.
+- Screwdriver (1) - A stabbing weapon slightly weaker than the knife. Would be used for extended tampering options.
+- Spear (1) - Thrusting weapon, longest melee reach. Deals damage equal to Knife.
+- Sugar Processor (6) - Similar to Bomb Processor. 
+- Teleportation Trap (2) - Floor trap.
+- Toxic Slime Capsule (1) - Thrown item. Inflicts poison and leaves a Goop Splash.
+- Water Gun - Extended to combine with Oil Can, so you can shoot Oil.
+- Whiskey Bottle (1) - Generated when Whiskey is consumed, or found on its own in trash cans. Thrown weapon, does minimal damage for funsies. Like a more useless Rock.
+- Wire Cutters - Deactivate cameras instantly with no chance of failure. Destroy Barbed Wire fences. Other stuff?
+- Z-Virus (2) - Solely for putting in Vents or Water Pumps. Doesn't do damage, but infects people with Zombiism.
+- Magic items:
+	- Mana Crystals (decay slowly but unpredictably, increase recharge speed)
+	- Miscast Crystals (Rare, but absorb a miscast and shatter)
+	- Ultrachungus Crystals (Temporarily boost your ability to obscene levels)
+- BackPack - +inventory slots
+- Body Spray: Anti-cologne, basically gives ideological clash to whoever uses it. (This would be cool in assassin quests if you could apply it to your target.)
+## NPCs
 	Artist
 	Farmer
 	Detective
@@ -208,247 +205,253 @@ NPCs
 	Tourist
 		Travels in groups, occasional goon
 		Behaves like Upper Cruster
+## NPC Goals
+### Accosting
+- Cannibal - If you have CWC, they will ask to take a bite of you. You can agree or not. That's it.
+- Cop - Might solicit a little bribe. If you have Cop Debt, it goes towards that total.
+- Gang Member - Will attempt to mug you like Mobsters, but for a smaller amount ($15 * gang size).
+- Office Drone - Will blab about sports. You can choose to blab back and get a new relation, from Annoyed to Loyal.
+- Slum Dweller
+	- Will occasionally beg you for money. Percent chance of outcome based on donation:
 
+| Donation | Hostile | Annoyed | Neutral | Friendly | Loyal | Aligned | Item Equivalent |
+|----------|---------|---------|---------|----------|-------|---------|-----------------|
+|$0|10|55|35|0|0|0|--|
+|$5|0|5|25|65|5|0|Fud|
+|$10|0|0|5|65|25|5|Cigarettes or Beer|
+|$20|0|0|0|45|45|10|Whiskey|
+|$50|0|0|0|0|0|100|Sugar|
+|"Fuck off"|100|0|0|0|0|0|Banana Peel|
 
-NPC Goals
-	Accosting
-		Cannibal - If you have CWC, they will ask to take a bite of you. You can agree or not. That's it.
-		Cop - Might solicit a little bribe. If you have Cop Debt, it goes towards that total.
-		Gang Member - Will attempt to mug you like Mobsters, but for a smaller amount ($15 * gang size).
-		Office Drone - Will blab about sports. You can choose to blab back and get a new relation, from Annoyed to Loyal.
-		Slum Dweller - 
-			Will occasionally beg you for money. Percent chance of outcome based on donation:
-						Hostile		Annoyed		Neutral		Friendly	Loyal		Aligned		Item Equivalent
-				$ 0			10			55			35			 0			 0			 0			--
-				$ 5			 0			 5			25			65			 5			 0			Fud
-				$10			 0			 0			 5			65			25			 5			Cigarettes/Beer
-				$20			 0			 0			 0			45 			45			10			Whiskey
-				$50			 0			 0			 0			 0			 0		   100			Sugar
-				$FU		   100			 0			 0			 0			 0			 0			Banana Peel
-			When done, randomly generate dialogue:
-				"i can feel the shadows consuming me, quck i need your cash!"
-				"Gimme money so i can have my last fix before rapture 2.0 destroys us all!"
-				"c'mon you gotta protect me, the Illuminati spy-cams are coming!"
-				"they injected me with liquid Antichrist"
-				"fud 0 is real! Help fund my research to figure out where big fud is hiding it!"
-				"i control the elements! Gimme your money or perish!"
-				Alignment line: (only on a level that is a multiple of 2: EG: 1-2, 2-2, 3-2...) "Can't you feel it? a disaster is coming!"
-				Alignment line: "the gates of [silly call of Cthulhu sounding name] are going to open any second now, i can feel it!"
-				Alignment line "i can see them... the bars above peoples heads, theyre up to something, i know it!"
-				Alignment line:"beds are too soft to be real, its a ploy to get us in our most vulnerable state!"
-				Alignment line: "I'm getting closer to finding the big brother that watches over us all, i just need to figure out what 'someone' is code for..."
-				imma refer to lines where they aggro on you cus you gave them food or didnt pay them as aggro lines
-				Aggro line: "Illuminati scum!"
-				Aggro line: "i knew it! You captured michal jackson, didnt you? WHERE ARE YOU HIDING HIM?!?"
-		Scientist - Asks you to take a random pill or syringe. Gives you $20.
-		Wrestler - Challenges you to a duel, just like the player character. If you refuse, he gets annoyed.
-	Random Actions
-		Jock - Might decide to punch you in the face. You know, as a prank.
-	Cops
-		If there's a Computer in a Police Station, and an Annoyed or Hostile Cop stops chasing you, they'll go there and enter your information into the database. If they're successful, all cops on the level will match their attitude towards you if theirs isn't currently worse.
-			You can Hack the computer to undo this change.
+	- When done, randomly generate dialogue:
+		- "i can feel the shadows consuming me, quck i need your cash!"
+		- "Gimme money so i can have my last fix before rapture 2.0 destroys us all!"
+		- "c'mon you gotta protect me, the Illuminati spy-cams are coming!"
+		- "they injected me with liquid Antichrist"
+		- "fud 0 is real! Help fund my research to figure out where big fud is hiding it!"
+		- "i control the elements! Gimme your money or perish!"
+		- Alignment line: (only on a level that is a multiple of 2: EG: 1-2, 2-2, 3-2...) "Can't you feel it? a disaster is coming!"
+		- Alignment line: "the gates of [silly call of Cthulhu sounding name] are going to open any second now, i can feel it!"
+		- Alignment line "i can see them... the bars above peoples heads, theyre up to something, i know it!"
+		- Alignment line:"beds are too soft to be real, its a ploy to get us in our most vulnerable state!"
+		- Alignment line: "I'm getting closer to finding the big brother that watches over us all, i just need to figure out what 'someone' is code for..."
+		- imma refer to lines where they aggro on you cus you gave them food or didnt pay them as aggro lines
+		- Aggro line: "Illuminati scum!"
+		- Aggro line: "i knew it! You captured michal jackson, didnt you? WHERE ARE YOU HIDING HIM?!?"
+- Scientist - Asks you to take a random pill or syringe. Gives you $20.
+- Wrestler - Challenges you to a duel, just like the player character. If you refuse, he gets annoyed.
+### Random Actions
+- Jock - Might decide to punch you in the face. You know, as a prank.
+### Cops
+- If there's a Computer in a Police Station, and an Annoyed or Hostile Cop stops chasing you, they'll go there and enter your information into the database. If they're successful, all cops on the level will match their attitude towards you if theirs isn't currently worse.
+	- You can Hack the computer to undo this change.
 
-NPC Interactions
-	Bouncers - You can come in if for free if they see you smoke cigarettes. Because obviously it means you're cool.
-	Cops  
-		Will attempt to fine you for petty crimes like destroying trash cans, instead of going hostile.
-		Bribe is a % chance to succeed, annoy, or turn them hostile.
-	Cop Bot - Tamper to deactivate them (Requires One Happy Tamper or Tech Expert). Maybe this will be a % chance for them to trust you, like robbing/extorting.
-	Scientists - Hire to put poison in a Vent
-	Thieves - Hire to unlock Safes
-	Workers - Hire to Tamper
+## NPC Interactions
+- Bouncers - You can come in if for free if they see you smoke cigarettes. Because obviously it means you're cool.
+- Cops  
+	- Will attempt to fine you for petty crimes like destroying trash cans, instead of going hostile.
+	- Bribe is a % chance to succeed, annoy, or turn them hostile.
+- Cop Bot - Tamper to deactivate them (Requires One Happy Tamper or Tech Expert). Maybe this will be a % chance for them to trust you, like robbing/extorting.
+- Scientists - Hire to put poison in a Vent
+- Thieves - Hire to unlock Safes
+- Workers - Hire to Tamper
 
-Mutators
-	Zoom Levels
-		https://discord.com/channels/187414758536773632/433748059172896769/815314079408980000
-	All Walls Are Wood
-	All Walls Are Steel
-	Major disaster behavior changes
-		Cops don't enforce property damage laws
-		Some NPCs will join your party for safety
-	Riot
-		Add Arsonists to spawns
-		Rioters shouldn't ignore cops
-			You can change this in LevelFeelings.Riot2, cops aren't mentioned there
-	Mafia spawn on all levels
-		Would be extremely easy, just set LevelData.levelFeatures.Contains("Mafia") to true
-	District-related spawns
-		LevelEditor.CreateLevelFeatureList
+## Mutators
+- Zoom Levels
+	- https://discord.com/channels/187414758536773632/433748059172896769/815314079408980000
+- All Walls Are Wood
+- All Walls Are Steel
+- Major disaster behavior changes
+	- Cops don't enforce property damage laws
+	- Some NPCs will join your party for safety
+- Riot
+	- Add Arsonists to spawns
+	- Rioters shouldn't ignore cops
+     	- You can change this in LevelFeelings.Riot2, cops aren't mentioned there
+- Mafia spawn on all levels
+	- Would be extremely easy, just set LevelData.levelFeatures.Contains("Mafia") to true
+- District-related spawns
+	- LevelEditor.CreateLevelFeatureList
 	
-Objects
-	Cash Register - A tough locked object containing money, that may be unlocked through the chunk's Computer, Hacked, Lockpicked, or pried open with a Crowbar. Easier than a Safe, yes, but almost always within the view of their owner.
-	Chemistry Set - Sacrifice a syringe to identify that type.
-	Dumpster - A big metal dumpster that you can hide in, for settings where Bushes or Bathtubs aren't appropriate.
-	Oil Barrel - A Rust-colored barrel which creates an oil pool when destroyed.
-	Kitchen Fryer - When destroyed, leaves a pool of oil.
-	Pay Phone - Call the Resistance to send a Specialist over. Choose between Hacker, Thief, and Goon. 
-	Refrigerator - Tamper to make it Run after a 10s countdown
-	Safe - Open with Detonator.
-	Security Door - Steel door, not openable with lockpick or crowbar. Can only be opened via a connected computer.
-	Television - Tamper to make it increase in volume immediately, and explode after a 10s countdown
-	Trampoline - Does annoying jumping behavior. I hate it already.
-	Other Objects - Simply for visual variety when making custom chunks. Statues, park benches, filing cabinets, glass tables, office chairs, paintings, gym equipment, beer taps, curtains, etc. 
+## Objects
+- Cash Register - A tough locked object containing money, that may be unlocked through the chunk's Computer, Hacked, Lockpicked, or pried open with a Crowbar. Easier than a Safe, yes, but almost always within the view of their owner.
+- Chemistry Set - Sacrifice a syringe to identify that type.
+- Dumpster - A big metal dumpster that you can hide in, for settings where Bushes or Bathtubs aren't appropriate.
+- Oil Barrel - A Rust-colored barrel which creates an oil pool when destroyed.
+- Kitchen Fryer - When destroyed, leaves a pool of oil.
+- Pay Phone - Call the Resistance to send a Specialist over. Choose between Hacker, Thief, and Goon. 
+- Refrigerator - Tamper to make it Run after a 10s countdown
+- Safe - Open with Detonator.
+- Security Door - Steel door, not openable with lockpick or crowbar. Can only be opened via a connected computer.
+- Television - Tamper to make it increase in volume immediately, and explode after a 10s countdown
+- Trampoline - Does annoying jumping behavior. I hate it already.
+- Other Objects - Simply for visual variety when making custom chunks. Statues, park benches, filing cabinets, glass tables, office chairs, paintings, gym equipment, beer taps, curtains, etc. 
 
-Object interactions
-	Tampering
-		Air Conditioning Unit - Tamper to Release Gas without access to main computer (not sure about this one). 
-		Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallways clear. Or maybe some other behavior, not sure yet.
-		Bed - Fucking explode if someone tries to sleep in it
-	Alarms on Chests/Safes, Doors & Windows
-		- Common in high-security chunks.
-		- If one is present, interacting will give you a chance to attempt to disarm the alarm. This might use a tool (wire cutters?) as a bonus to success. 
-		- You can hack them, of course, or disable them from a computer.
-		- Or, you can just open or destroy the object and set the alarm off. 
-
-		This would add a small, simple layer to intrusion that currently is sort of a glaring omission in terms of portraying real-world stuff.
+## Object interactions
+- Tampering
+	- Air Conditioning Unit - Tamper to Release Gas without access to main computer (not sure about this one). 
+	- Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallways clear. Or maybe some other behavior, not sure yet.
+	- Bed - Fucking explode if someone tries to sleep in it
+- Alarms on Chests/Safes, Doors & Windows
+	- Common in high-security chunks.
+	- If one is present, interacting will give you a chance to attempt to disarm the alarm. This might use a tool (wire cutters?) as a bonus to success. 
+	- You can hack them, of course, or disable them from a computer.
+	- Or, you can just open or destroy the object and set the alarm off. 
+	- This would add a small, simple layer to intrusion that currently is sort of a glaring omission in terms of portraying real-world stuff.
 		
-Special Abilities
-	Beggar | 2 Points | Beg random people for something. Either get a food item or cigarettes. 50/50 Chance. Success will make Agent friendly, failure will annoy them.
+## Special Abilities
+- Beggar | 2 Points | Beg random people for something. Either get a food item or cigarettes. 50/50 Chance. Success will make Agent friendly, failure will annoy them.
 		You can reattempt but they might go hostile.
-	Magic
-		Chronomancy
-		Electromancy
-			Split only triggers when it hits a wall, not an agent.
-		Morphomancy: Assume the appearance of someone else, and gain all of their relations to other NPCs
-			Having someone else's appearance costs 5 mana per second
-			Miscasting turns you into a gorilla temporarily
-		Pyromancy
-			Custom Firebomb explosion without glass sound
-				This was a can of worms when I tried it with HammerTime. All we need is to stop the glass sound, so maybe that'l be simpler.
-			Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
-			These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
-			Ring of Fire - Shorter range, but 360 degrees
-		Fireball
-			Would need a new Projectile type
-		Hematomancy 
-			Blood Magic
-		Kinetomancy  
-			Telekinesis
-		Megaleiomancy 
-			Charm Person
-		Necromancy
-			Normal Use
-				1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
-				2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
-				3 Zombies will join your party / Turn ghosts into large number of crystals
-				When close to a ghost, you can turn them into mana crystals
-			Miscast 
-				turns all of them hostile, or summons hostile ghosts
-			Also:
-				https://www.reddit.com/r/streetsofrogue/comments/lhdwnx/my_third_entree_for_medieval_themed_characters/
-		Telemancy
-			EMP on teleport?
-			Stun on teleport?
-Traits
-	Fatass
-		Slower movement
-		Can't wear armor
-		Stomp damage
-	Path traits
-		Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.
-		Chaotic Acts
-			Break Tombstone
-			Bribe Police
-			Influence Election
-			Mugging
-			Extortion
-			Install Malware
-			Kill non-Guilty NPC (Have guilty-vision)
-			Burn Walls
-			Set Fire
-		Orderly Acts
-			Arrest Guilty NPC
-			Kill Guilty NPC
-			Knockout Guilty NPC
-			Extinguish Fire
-			Goon Quest
-		Kind Acts
-			Offering Motivation
-			Spreading Happy Waves
-			Giving money to begging Slum Dwellers (planned feature)
-		Just Acts
-		Unjust Acts
-			Kill fleeing enemy
-			Kill Sleeping NPCs
-			Mugging
-			Possession
-			Extortion
-		Fire Acts
-			Kill Fireman
-			Kill anyone with fire
-			Burn object
-			Burn corpse
-			Burn wall
-		Water Acts
-			Put out fire
-		Acts of Commerce
-			Spend Money
-			Get Money
-		Uncategorized Acts
-			Use of Poison Syringe, Cyanide, Rage Poison, Haterator
-			Cannibalism, Blood Drinking
-			Use of Confusion Syringe, Sleep Darts, Chloroform
+### Magic
+- Chronomancy
+	- Uniques
+		- Increase your attack speed
+		- Normal attack speed when time is slowed down - fast punch like Goku
+- Electromancy
+	- Split only triggers when it hits a wall, not an agent.
+- Morphomancy: Assume the appearance of someone else, and gain all of their relations to other NPCs
+	- Having someone else's appearance costs 5 mana per second
+	- Miscasting turns you into a gorilla temporarily
+- Pyromancy
+	- Custom Firebomb explosion without glass sound
+		- This was a can of worms when I tried it with HammerTime. All we need is to stop the glass sound, so maybe that'l be simpler.
+	- Fan of Fire - 3 flames per shot // Fan of Fire + - 5 per shot
+	- These should both be set to an angle proportionate to their speed. If the speed is high, keep them narrow. If it's low, keep them wide and more like a fan. They also decrease 
+	- Ring of Fire - Shorter range, but 360 degrees
+- Fireball
+	- Would need a new Projectile type
+- Hematomancy 
+	- Blood Magic
+- Kinetomancy  
+	- Telekinesis
+- Megaleiomancy 
+	- Charm Person
+- Necromancy
+	- Normal Use
+		- 1 Summon hostile Zombies from corpses / Turn ghosts into small number of crystals
+		- 2 Zombies are Neutral to you / Turn ghosts into medium number of crystals
+		- 3 Zombies will join your party / Turn ghosts into large number of crystals
+		- When close to a ghost, you can turn them into mana crystals
+	- Miscast 
+		- turns all of them hostile, or summons hostile ghosts
+	- Also:
+		- https://www.reddit.com/r/streetsofrogue/comments/lhdwnx/my_third_entree_for_medieval_themed_characters/
+- Telemancy
+	- EMP on teleport?
+	- Stun on teleport?
+## Traits
+- Fatass
+	- Slower movement
+	- Can't wear armor
+	- Stomp damage
+### Path traits
+Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.
+- Chaotic Acts
+	- Break Tombstone
+	- Bribe Police
+	- Influence Election
+	- Mugging
+	- Extortion
+	- Install Malware
+	- Kill non-Guilty NPC (Have guilty-vision)
+	- Burn Walls
+	- Set Fire
+- Orderly Acts
+	- Arrest Guilty NPC
+	- Kill Guilty NPC
+	- Knockout Guilty NPC
+	- Extinguish Fire
+	- Goon Quest
+- Kind Acts
+	- Offering Motivation
+	- Spreading Happy Waves
+	- Giving money to begging Slum Dwellers (planned feature)
+- Just Acts
+- Unjust Acts
+	- Kill fleeing enemy
+	- Kill Sleeping NPCs
+	- Mugging
+	- Possession
+	- Extortion
+- Fire Acts
+	- Kill Fireman
+	- Kill anyone with fire
+	- Burn object
+	- Burn corpse
+	- Burn wall
+- Water Acts
+	- Put out fire
+- Acts of Commerce
+	- Spend Money
+	- Get Money
+- Uncategorized Acts
+	- Use of Poison Syringe, Cyanide, Rage Poison, Haterator
+	- Cannibalism, Blood Drinking
+	- Use of Confusion Syringe, Sleep Darts, Chloroform
 
-		Path of Fire
-			You can only regain health by burning corpses. 
-			Take damage in Water.
-			Firefighters are always hostile and will use their water cannons against you.
-			Perpetual Particle Effect on character - flames or smoke
-			Big Quest - Burn a certain number of corpses
-		Path of Shadow
-			+ No Alarms
-			- Alarms
-			+ Backstabbing
-		Path of Justice - Basically just Cop XP portion split off for smaller trait
-			+ Arrest Guilty
-			+ Kill Guilty (less)
-			- Kill innocent
-			+ Freeing Slaves or Gorillas
-	hit-and-run (4): gain speed for 5s after a kill.
-	adrenaline rush (4): gain strength for 5s after a kill.
-	Alcoholic (-4) - Might be interesting to have an Addict trait but with alcohol.
-	Animal Whisperer - Gorillas and Werewolves are Loyal
-	Bonkist (2) - Backstabbing with a blunt weapon leaves the target Dizzy, if they survive. (Considering making this a small chance with all blunt hits, not just backstabs)
-	Extortion - Property owners will be more reluctant to give into extortion based on how much property they own. Destruction of that property will make them more likely to give in, just like hitting them would.
-	Eye Poker - Chance to blind enemies when you hit them with an Unarmed attack.
-	Far-Sighted - Can only use Ranged weapons.
-	Fast Metabolism (-2) - Less healing from food and alcohol.
-	Good Arm - Increased Throw range.
-	Generally Unpleasant (7) - All NPCs start out Annoyed.
-	Hungry Boy (3) - More healing from food and alcohol.
-	Machine Shaker - Chance of a free transaction when using a Vending Machine.
-	Mugger - Mugging acts more like Extortion. Dealing damage can make the target Submissive. If it's not already, it is treated as a violent crime by police.
-	Mugger+ - When mugging someone, you get their inventory items too. 
-	Rap Sheet (-3) - Cops and Supercops start out annoyed with you.
-	Spectral Fist - You can hit Ghosts with your unarmed attacks. Extra damage to all Undead.
-	Student of the Blade - Increased damage with Sharp weapons.
-	Veiled Threats (-2) - When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile. 
-	Whiffist (3) - Small chance for Melee or Thrown attacks to miss you completely.
-	Seperation Anxiety; cost: -3
-		If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
-	Arrogant; cost: -4
-		People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
-	SACRIFICE
-		You can only regain health by burning corpses
-	Annoying;
-		Everyone's annoyed to begin with
-	Arthritis - Your weapon swing is slower, and fire rate is slower too. -1 point. Cancels: Stubby fingers, sausage fingers, near harmless, pacifist.
-	Chubby - You lose health when eating unhealthy foods, and when you take any drugs. -2 points.
-	Annoying - Everyone except prisoners and      objectives are in an annoyed state. -3 Points. Cancels: The Law, Random Reverance, Friend of the common folk, friend of the family.
-	Infamous - Eveyone except Cops, Goons, Scientists and Non-Humans are initially hostile to you. -5 points. Cancels: Scientist Slayer, Specist, Blahd Crusher, Crepe slayer, Friend of the common folk, Random Reverence, Friend of the family.
-	Unsavable - Cannot heal, even through level ups. -10 points. Cancels: Medical professional, strict cannibal, jugalarious, addict, [insert anything that heals you here.]
-	chemical resistance (2): status effects cannot affect you
-	aquaphobia (-1): take damage in water
-	food intolerance (-3): cannot eat food
-	New Trait - Masochist (-5)
-		Like Addict, But You Don't Need Drugs.You Need Damage.Make Damage Yourself Every 60 Seconds.If 60 Seconds Pass Without Damaging Yourself, You Will Lose 3 Health Per 2 Seconds.
-	silent fingers (4): doing most actions produce significantly less noise, or no noise whatsoever, with the exception of alarms. (eg: arresting, breaking windows , enslaving, and (shooting guns?) make significantly less noise).
-	Crit-prone
-		Enemies have a better chance of crit against you
+- Path of Fire
+	- You can only regain health by burning corpses. 
+	- Take damage in Water.
+	- Firefighters are always hostile and will use their water cannons against you.
+	- Perpetual Particle Effect on character - flames or smoke
+	- Big Quest - Burn a certain number of corpses
+- Path of Shadow
+	- +No Alarms
+	- -Alarms
+	- +Backstabbing
+- Path of Justice - Basically just Cop XP portion split off for smaller trait
+	- +Arrest Guilty
+	- +Kill Guilty (less)
+	- -Kill innocent
+	- +Freeing Slaves or Gorillas
+### Others
+- hit-and-run (4): gain speed for 5s after a kill.
+- adrenaline rush (4): gain strength for 5s after a kill.
+- Alcoholic (-4) - Might be interesting to have an Addict trait but with alcohol.
+- Animal Whisperer - Gorillas and Werewolves are Loyal
+- Bonkist (2) - Backstabbing with a blunt weapon leaves the target Dizzy, if they survive. (Considering making this a small chance with all blunt hits, not just backstabs)
+- Extortion - Property owners will be more reluctant to give into extortion based on how much property they own. Destruction of that property will make them more likely to give in, just like hitting them would.
+- Eye Poker - Chance to blind enemies when you hit them with an Unarmed attack.
+- Far-Sighted - Can only use Ranged weapons.
+- Fast Metabolism (-2) - Less healing from food and alcohol.
+- Good Arm - Increased Throw range.
+- Generally Unpleasant (7) - All NPCs start out Annoyed.
+- Hungry Boy (3) - More healing from food and alcohol.
+- Machine Shaker - Chance of a free transaction when using a Vending Machine.
+- Mugger - Mugging acts more like Extortion. Dealing damage can make the target Submissive. If it's not already, it is treated as a violent crime by police.
+- Mugger+ - When mugging someone, you get their inventory items too. 
+- Rap Sheet (-3) - Cops and Supercops start out annoyed with you.
+- Spectral Fist - You can hit Ghosts with your unarmed attacks. Extra damage to all Undead.
+- Student of the Blade - Increased damage with Sharp weapons.
+- Veiled Threats (-2) - When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile. 
+- Whiffist (3) - Small chance for Melee or Thrown attacks to miss you completely.
+- Seperation Anxiety; cost: -3
+	- If you have no followers, you suffer lowered accuracy, melee, and speed. (decrease of 1 in each stat)
+- Arrogant; cost: -4
+	- People get mad at you a lot more easily (when people would normally become annoyed, they instead bacome hostile
+- SACRIFICE
+	- You can only regain health by burning corpses
+- Annoying;
+	- Everyone's annoyed to begin with
+- Arthritis - Your weapon swing is slower, and fire rate is slower too. -1 point. Cancels: Stubby fingers, sausage fingers, near harmless, pacifist.
+- Chubby - You lose health when eating unhealthy foods, and when you take any drugs. -2 points.
+- Annoying - Everyone except prisoners and      objectives are in an annoyed state. -3 Points. Cancels: The Law, Random Reverance, Friend of the common folk, friend of the family.
+- Infamous - Eveyone except Cops, Goons, Scientists and Non-Humans are initially hostile to you. -5 points. Cancels: Scientist Slayer, Specist, Blahd Crusher, Crepe slayer, Friend of the common folk, Random Reverence, Friend of the family.
+- Unsavable - Cannot heal, even through level ups. -10 points. Cancels: Medical professional, strict cannibal, jugalarious, addict, [insert anything that heals you here.]
+- chemical resistance (2): status effects cannot affect you
+- aquaphobia (-1): take damage in water
+- food intolerance (-3): cannot eat food
+- New Trait - Masochist (-5)
+	- Like Addict, But You Don't Need Drugs.You Need Damage.Make Damage Yourself Every 60 Seconds.If 60 Seconds Pass Without Damaging Yourself, You Will Lose 3 Health Per 2 Seconds.
+- silent fingers (4): doing most actions produce significantly less noise, or no noise whatsoever, with the exception of alarms. (eg: arresting, breaking windows , enslaving, and (shooting guns?) make significantly less noise).
+- Crit-prone
+	- Enemies have a better chance of crit against you
 			Or just add that to Unlucky
-	Needy (-6 Points)
-		You have needs like the musician, but they are not beneficial to you or anybody else. (You need to go to the toilet, etc)
-		You need to use the nice toilet. Which always happens to be in some inconvenient place like the closet of a gang hideout. That timer is rapidly ticking down, and if you don't go to that specific toilet, you'll have an accident, and no NPC or shop owner, etc will want to talk to you.
+- Needy (-6 Points)
+	- You have needs like the musician, but they are not beneficial to you or anybody else. (You need to go to the toilet, etc)
+	- You need to use the nice toilet. Which always happens to be in some inconvenient place like the closet of a gang hideout. That timer is rapidly ticking down, and if you don't go to that specific toilet, you'll have an accident, and no NPC or shop owner, etc will want to talk to you.
+
+## Scraps I need to put in the right place in this file
 
 **Hacking Overhaul**
 
@@ -577,7 +580,7 @@ Traits
 	- WaterPump - ___?
 	- Window: If it has an Alarm or trap (See Alarm overhaul), reset/set off/deactivate it.
 
-=== SHELVED ====================================================================
+## Shelved
 
 - Fridge not showing button text for showchest
 

@@ -1,41 +1,47 @@
-﻿=== TO-DO LIST =================================================================
+﻿Formatting in here is gonna be wonky, I've only recently switched from txt to md.
 
-Traits with Contraindications still show up in upgrade menu.
+# To-Do List
 
-Chronomancy
-	REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
-		Recharge now triggers constantly.
+- Traits with Contraindications still show up in upgrade menu.
 
-Finalization
-	Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
+## Chronomancy
+- REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
+	- Recharge now triggers constantly.
+- Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
 
-FlamingBarrel & Stove
-	Cancelled message
-		[Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
-		[Error  : Unity Log] Operating Bar Error 2
-			Still completed, is ignorable but still there
-			This was found in PlayfieldObject.Operating
-			Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
-			My best initial guess is that we need to make stoppedOperating false somehow.
-			Conditions that enable StoppedOperating to be true:
-				PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar
-					I think Triggerlist might be a list of all PFOs within interaction range.
-				InteractingAgent == null
-				interactingagent.muststopoperating = true;
-				interactingagent != myAgent
-				this.ServerSaysStopOperating
+## Finalization
+- Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
+- Last chance to rename these special powers.
 
-Magic General
+## FlamingBarrel & Stove
+- Cancelled message
+```
+    [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
+    [Error  : Unity Log] Operating Bar Error 2
+```
+	Still completed, is ignorable but still there
+	This was found in PlayfieldObject.Operating
+	Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
+	My best initial guess is that we need to make stoppedOperating false somehow.
+	Conditions that enable StoppedOperating to be true:
+		PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar
+			I think Triggerlist might be a list of all PFOs within interaction range.
+		InteractingAgent == null
+		interactingagent.muststopoperating = true;
+		interactingagent != myAgent
+		this.ServerSaysStopOperating
+
+## Magic General
 	Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive.
 	Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
-				
-Pyromancy
+
+## Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
 	Something caused BurnedOut to stay true even when recharged.
 		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
 	Still don't have a delay between cast and recharge
 
-Stove
+## Stove
 	Dialogue
 		Attempt
 	Use near Owner
@@ -64,30 +70,30 @@ Stove
 		[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
 			Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect.
 				Added a bunch of logs to the method.
-Telemancy
+## Telemancy
 	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
 	
---- IMPLEMENTATIONS ----------------------------------------
+# Implementations
 
+# Release Notes 
 
-=== RELEASE NOTES ==============================================================
-
-BEFORE RELEASE:
+## BEFORE RELEASE:
 	Complete and win a run with each new feature, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
 	Make a promo character for each special ability or trait group, to promote the mod and community at large.
 	Increment the Version number!
 	Update Sprites
 
-1.2.2
+## 1.2.2
 - Added Chronomancy & Pyromancy
 - Reworked Telemancy completely, and renamed existing general magic traits
 - Stoves now explode like Molotovs when destroyed
 - Fixed various bugs
 
-=== NEXT RELEASE ===============================================================
+# Slated for Next Release
 
 Mugging
 	On attempt interact after beg:
+
 		[Message: Bunny Mod] AgentInteractions_DetermineButtons: agent = Hobo34; GangMugging: 2
 		[Message: Bunny Mod] PlayfieldObject_determineMoneyCost: transactionType = Hobo_GiveMoney1; PFO = Hobo (1104)
 		[Message: Bunny Mod] PlayfieldObject_DetermineMoneyCost: num = 0; LevelMult = 1; gangsizeMult = 0

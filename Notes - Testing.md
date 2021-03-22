@@ -37,16 +37,70 @@
 
 ## Pyromancy
 	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-	Something caused BurnedOut to stay true even when recharged.
-		My first guess is that that need to be an Async method, rather than relying solely on Recharge.
-	Still don't have a delay between cast and recharge
+	Equipped Weapon appears in duplicate/larger form (like fist) when using Pyro
+		Attempted with agent.gun.HideGun();
+			No luck there
 
 ## Stove
 	Dialogue
 		Attempt
 	Use near Owner
-		Issues appear to boil down to Dialogue names not being found.
+		Neutral owner said "E_Can you not do that?" So it is retrieving the value, but still...?
+			Message: Bunny Mod] ObjectReal_Interact: Stove (1734)
+			[Message: Bunny Mod] Stove 1
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Stove_UnfriendlyOwnerWatching
+			[Message: Bunny Mod] Stove_FindOwner: startingChunk = 4; OwnerID = 2
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 4; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 5; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 6; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 7; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 8; OwnerID = 1
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 9; OwnerID = 0
+			[Message: Bunny Mod] Stove_FindOwner: Checking Agent 10; OwnerID = 2
+			[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Scientist
+			[Message: Bunny Mod] Stove_OwnerWatching 1
+			[Message: Bunny Mod] Stove_OwnerWatching 2a
+			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Owner Neutral
+			[Message: Bunny Mod] Stove 6
+			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Scientist; RelStatus: "Neutral"
+			[Message: Bunny Mod] Stove 8a
 		In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on.
+	Use FAR AWAY from owner, 2x2 house chunk
+		[Message: Bunny Mod] ObjectReal_Interact: Stove (1677)
+		[Message: Bunny Mod] Stove 1
+		[Message: Bunny Mod] Stove_OwnerWatching: Stove (1677): Stove_UnfriendlyOwnerWatching
+		[Message: Bunny Mod] Stove_FindOwner: startingChunk = 12; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 0; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 1; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 2; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 3; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 4; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 5; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 6; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 7; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 8; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 9; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 10; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 11; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 12; OwnerID = 2
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 13; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 14; OwnerID = 0
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 15; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 16; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Checking Agent 17; OwnerID = 1
+		[Message: Bunny Mod] Stove_FindOwner: Found Stove Owner: Hobo
+		[Message: Bunny Mod] Stove_OwnerWatching 1
+		[Message: Bunny Mod] Stove_OwnerWatching 2a
+		[Message: Bunny Mod] Stove_OwnerWatching: Stove (1677): Owner Neutral
+		[Message: Bunny Mod] Stove_OwnerWatching 3a
+		[Message: Bunny Mod] Stove_OwnerWatching 2b
+		[Message: Bunny Mod] Stove 6
+		[Message: Bunny Mod] Stove 7b: Owner null
+			This interrupted use, so you'll need to set a threshold of distance.
 	No owner
 	Stove blinks when damaged but never actually blows up
 		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
@@ -72,6 +126,14 @@
 				Added a bunch of logs to the method.
 ## Telemancy
 	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
+	Need AV indicator & stop charging at full charge 
+	Testing:
+		Initiate
+		Wild Caster
+		Focused Caster
+		Magic Training
+		WC + MT
+		FC + MT
 	
 # Implementations
 
@@ -184,3 +246,6 @@ Wall Mutator
 	TileInfo.BuildWallObject (TileData myTileData, StreamingTileArray myStreamingTileArray, System.Boolean buildingStreamingChunk) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	LoadLevel+<loadStuff2>d__137.MoveNext () (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
 	UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
+
+Banana Lover ++: You can't eat anything but bananas, but when you do, you do a fun lil' dance // Cost: $1200
+	Need more stupid joke traits

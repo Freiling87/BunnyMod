@@ -338,7 +338,7 @@ namespace BunnyMod
 			agent.gc.mainTimeScale /= slowdownFactor;
 			agent.speedMax = agent.FindSpeed() * (int)slowdownFactor;
 
-			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + agent.speedMax);
+			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + (agent.speedMax / (int)slowdownFactor));
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 

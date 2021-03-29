@@ -9,7 +9,8 @@ All done for this release!
 ## Chronomancy
 - REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 - Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
-  - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
+    - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
+	- Was able to replicate this, it occurs during miscast.
 - Convert timescale to be a single scale, rather than opposite operations for miscast.
 
 ## Finalization
@@ -36,8 +37,17 @@ All done for this release!
 ## Pyromancy
 - Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
 
+- BurnedOut stays True, can't cast anymore
+
 - Equipped Weapon appears in duplicate/larger form (like fist) when using
 	- Attempted with agent.gun.HideGun(); No luck there
+
+## Telemancy
+
+- Feels pretty much bug-free.
+- Balancing
+  - Felt super-accurate and miscast never happened. Make sure those are still occurring after the remake.
+
 
 ## Stove
 

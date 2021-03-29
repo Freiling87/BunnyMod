@@ -219,9 +219,9 @@ namespace BunnyMod
 
 			return manaCost;
 		}
-		public static bool ChronomancyRollMiscast(Agent agent, float modifier)
+		public static bool ChronomancyRollMiscast(Agent agent, float percentMod)
 		{
-			float risk = 1.0f + modifier;
+			float risk = 1.0f + percentMod;
 
 			if (agent.statusEffects.hasTrait("Archmage"))
 				return false;
@@ -268,21 +268,21 @@ namespace BunnyMod
 			}
 			else if (MisCast)
 			{
-				timescale = 4.00f;
+				timescale = 0.250f;
 
 				if (agent.statusEffects.hasTrait("FocusedCasting"))
-					timescale -= 0.75f;
+					timescale += 0.375f;
 				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-					timescale -= 1.50f;
+					timescale += 0.500f;
 				else if (agent.statusEffects.hasTrait("WildCasting"))
-					timescale += 0.50f;
+					timescale -= 0.063f;
 				else if (agent.statusEffects.hasTrait("WildCasting_2"))
-					timescale += 1.00f;
+					timescale -= 0.188f;
 
 				if (agent.statusEffects.hasTrait("MagicTraining"))
-					timescale -= 0.25f;
+					timescale += 0.125f;
 				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-					timescale -= 0.50f;
+					timescale += 0.250f;
 			}
 
 			BunnyHeader.Log("ChronomancyRollTimescale: " + timescale);
@@ -334,9 +334,9 @@ namespace BunnyMod
 
 			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
-			agent.gc.selectedTimeScale *= slowdownFactor;
-			agent.gc.mainTimeScale *= slowdownFactor;
-			agent.speedMax = agent.FindSpeed() / (int)slowdownFactor;
+			agent.gc.selectedTimeScale /= slowdownFactor;
+			agent.gc.mainTimeScale /= slowdownFactor;
+			agent.speedMax = agent.FindSpeed() * (int)slowdownFactor;
 
 			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + agent.speedMax);
 
@@ -1093,12 +1093,12 @@ namespace BunnyMod
 					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 			}
 
+			bullet.speed = 6;
+
 			if (agent.statusEffects.hasTrait("WildCasting"))
-				bullet.speed = 9;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				bullet.speed = 12;
-			else
-				bullet.speed = 6;
+				bullet.speed += 3;
+			else if (agent.statusEffects.hasTrait("WildCasting_2") || agent.statusEffects.hasTrait("Archmage"))
+				bullet.speed += 6;
 		}
 		public static async Task PyromancyStartCoolingDown(Agent agent)
 		{

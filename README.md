@@ -8,4 +8,10 @@ For more detailed information, continue below.
 
 # Features
 
-Placeholder. Working on full documentation for this page that will surpass the detail of the BananaMods page.
+#### [Magic System](/md/2.0.%Magic.md)
+
+#### [Special Abilities](/md/2.1.%Abilities.md)
+
+#### [Object Interactions](/md/2.5.%Objects.md)
+
+#### [Character Traits](/md/2.6.%Traits.md)

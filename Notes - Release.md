@@ -1,13 +1,16 @@
-﻿Formatting in here is gonna be wonky, I've only recently switched from txt to md.
+﻿# New Feature Implementations
 
-# To-Do List
+All done for this release!
+
+# Fixes
 
 - Traits with Contraindications still show up in upgrade menu.
 
 ## Chronomancy
 - REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
-	- Recharge now triggers constantly.
 - Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
+  - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
+- Convert timescale to be a single scale, rather than opposite operations for miscast.
 
 ## Finalization
 - Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
@@ -19,33 +22,33 @@
     [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
     [Error  : Unity Log] Operating Bar Error 2
 ```
-	Still completed, is ignorable but still there
-	This was found in PlayfieldObject.Operating
-	Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma.
-	My best initial guess is that we need to make stoppedOperating false somehow.
-	Conditions that enable StoppedOperating to be true:
-		PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar
-			I think Triggerlist might be a list of all PFOs within interaction range.
-		InteractingAgent == null
-		interactingagent.muststopoperating = true;
-		interactingagent != myAgent
-		this.ServerSaysStopOperating
+
+  - This message originates  in PlayfieldObject.Operating. Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma. My best initial guess is that we need to make stoppedOperating false somehow. Conditions that enable StoppedOperating to be true:
+		- PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar. I think Triggerlist might be a list of all PFOs within interaction range.
+		- InteractingAgent == null
+		- interactingagent.muststopoperating = true;
+		- interactingagent != myAgent
+		- this.ServerSaysStopOperating
 
 ## Magic General
-	Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive.
-	Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
+- Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive. Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
 
 ## Pyromancy
-	Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-	Equipped Weapon appears in duplicate/larger form (like fist) when using Pyro
-		Attempted with agent.gun.HideGun();
-			No luck there
+- Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
+
+- Equipped Weapon appears in duplicate/larger form (like fist) when using
+	- Attempted with agent.gun.HideGun(); No luck there
 
 ## Stove
-	Dialogue
-		Attempt
-	Use near Owner
-		Neutral owner said "E_Can you not do that?" So it is retrieving the value, but still...?
+
+##### Dialogue
+
+May need to just delete most of this - make grilling make noise, but don't go any deeper than that. If the owner hears it, they hear it.
+
+Use near Owner
+
+Neutral owner said "E_Can you not do that?" So it is retrieving the value, but still...?
+```
 			Message: Bunny Mod] ObjectReal_Interact: Stove (1734)
 			[Message: Bunny Mod] Stove 1
 			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Stove_UnfriendlyOwnerWatching
@@ -67,9 +70,13 @@
 			[Message: Bunny Mod] Stove_OwnerWatching: Stove (1734): Owner Neutral
 			[Message: Bunny Mod] Stove 6
 			[Message: Bunny Mod] ObjectReal_Interact: noticingOwner Scientist; RelStatus: "Neutral"
-			[Message: Bunny Mod] Stove 8a
-		In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on.
-	Use FAR AWAY from owner, 2x2 house chunk
+			[Message: Bunny Mod] Stove 8a```
+
+In multi-apartment units, sometimes the wrong owner will be called. They don't object to being in the room, so not sure what's going on. 
+
+Use FAR AWAY from owner, 2x2 house chunk
+
+```
 		[Message: Bunny Mod] ObjectReal_Interact: Stove (1677)
 		[Message: Bunny Mod] Stove 1
 		[Message: Bunny Mod] Stove_OwnerWatching: Stove (1677): Stove_UnfriendlyOwnerWatching
@@ -100,9 +107,12 @@
 		[Message: Bunny Mod] Stove_OwnerWatching 2b
 		[Message: Bunny Mod] Stove 6
 		[Message: Bunny Mod] Stove 7b: Owner null
-			This interrupted use, so you'll need to set a threshold of distance.
-	No owner
-	Stove blinks when damaged but never actually blows up
+
+This interrupted use, so you'll need to set a threshold of distance.
+Test w/ No owner
+
+##### Stove blinks when damaged but never actually blows up
+```
 		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
 		[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
 		[Message: Bunny Mod] Stove (1153): Stove_AboutToExplode
@@ -118,25 +128,31 @@
 		ObjectReal:Damage(PlayfieldObject, Boolean)
 		BulletHitbox:HitObject(GameObject, Boolean)
 		BulletHitbox:OnTriggerEnter2D(Collider2D)
-			// 202103031538 If this doesn't work, just comment both these lines out.
-	On Exit to Base, then freeze on loading screen:
+```
+// 202103031538 If this doesn't work, just comment both these lines out.
+
+##### On Exit to Base, then freeze on loading screen:
+```
 		[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
 		[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
-			Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect.
-				Added a bunch of logs to the method.
-## Telemancy
-	Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
-	Need AV indicator & stop charging at full charge 
-	Testing:
-		Initiate
-		Wild Caster
-		Focused Caster
-		Magic Training
-		WC + MT
-		FC + MT
-	
-# Implementations
+```
+Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect. Added a bunch of logs to the method.
 
+
+# Balance
+
+## Telemancy
+- Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
+- Need AV indicator & stop charging at full charge 
+- Testing:
+	- Initiate
+	- Wild Caster
+    - Focused Caster
+    - Magic Training
+    - WC + MT
+    - FC + MT
+
+	
 # Release Notes 
 
 ## BEFORE RELEASE:
@@ -145,13 +161,14 @@
 	Increment the Version number!
 	Update Sprites
 
-## 1.2.2
-- Added Chronomancy & Pyromancy
+## Change notes
+
+- Added Chronomancy & Pyromancy special abilities
 - Reworked Telemancy completely, and renamed existing general magic traits
-- Stoves now explode like Molotovs when destroyed
+- Stoves now explode like Molotovs when destroyed. Trying to cook on it near the owner may have them interrupt you.
 - Fixed various bugs
 
-# Slated for Next Release
+# Slated for Future Release
 
 Mugging
 	On attempt interact after beg:

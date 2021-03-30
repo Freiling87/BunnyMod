@@ -344,6 +344,8 @@ Roamers
 	- Slower movement
 	- Can't wear armor
 	- Stomp damage
+- Banana Lover ++: You can't eat anything but bananas, but when you do, you do a fun lil' dance // Cost: $1200
+	Need more stupid joke traits
 ### Path traits
 Not sure whether it's better to categorize these as acts or Paths. Paths would be a set of bonus/malus XP events for particular acts in a category.
 - Chaotic Acts

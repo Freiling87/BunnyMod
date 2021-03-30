@@ -1398,7 +1398,7 @@ namespace BunnyMod
 				max *= 1.500f;
 			}
 
-			return (int)UnityEngine.Random.RandomRange(min, max);
+			return (int)UnityEngine.Random.Range(min, max);
 		}
 		public static int TelemancyRollChargeRate(Agent agent)
 		{
@@ -1461,7 +1461,7 @@ namespace BunnyMod
 				max *= 4.000f;
 			}
 
-			return (int)UnityEngine.Random.RandomRange(min, max);
+			return (int)UnityEngine.Random.Range(min, max);
 		}
 		public static Vector2 TelemancyRollDestination(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls, float maxError)
 		{
@@ -1521,7 +1521,7 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				secondsHeld *= 6.000f;
 
-			float margin = secondsHeld - UnityEngine.Random.RandomRange(0, 100);
+			float margin = secondsHeld - UnityEngine.Random.Range(0, 100);
 
 			return (int)margin;
 		}

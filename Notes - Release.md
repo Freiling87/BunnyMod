@@ -9,7 +9,6 @@ All done for this release!
   - This is apparently an issue with RogueLibs.
 
 ## Chronomancy
-- REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 - Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
     - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
 	- Was able to replicate this, it occurs during miscast.
@@ -17,11 +16,8 @@ All done for this release!
 - Convert timescale to be a single scale, rather than opposite operations for miscast.
   - Done. Test.
 
-## Finalization
-- Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.
-- Last chance to rename these special powers.
 
-## FlamingBarrel & Stove
+## FinishedOperating "Cancelled" Message
 - Cancelled message
 ```
     [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
@@ -31,7 +27,7 @@ All done for this release!
   - This message originates  in PlayfieldObject.Operating. Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma. My best initial guess is that we need to make stoppedOperating false somehow. Conditions that enable StoppedOperating to be true:
 		- PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar. I think Triggerlist might be a list of all PFOs within interaction range.
 		- InteractingAgent == null
-		- interactingagent.muststopoperating = true;
+		- interactingagent.mustStopOperating = true;
 		- interactingagent != myAgent
 		- this.ServerSaysStopOperating
 
@@ -46,20 +42,12 @@ All done for this release!
 - Equipped Weapon appears in duplicate/larger form (like fist) when using
 	- Attempted with agent.gun.HideGun(); No luck there
 
-## Telemancy
-
-- Feels pretty much bug-free.
-- Balancing
-  - Felt super-accurate and miscast never happened. Make sure those are still occurring after the remake.
-
-
-## Stove
-
-##### Dialogue
+## Stove Dialogue
 
 Removed the dialogue and relationship checks. Grilling will make noise, that's it.
+	Test
 
-##### Stove blinks when damaged but never actually blows up
+## Stove blinks when damaged but never actually blows up
 ```
 		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
 		[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
@@ -80,12 +68,12 @@ Removed the dialogue and relationship checks. Grilling will make noise, that's i
 - // 202103031538 If this doesn't work, just comment both these lines out.
 	- Done. Test.
 
-##### On Exit to Base, then freeze on loading screen:
+## Stove - On Exit to Base, then freeze on loading screen:
+- Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect. 
 ```
 		[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
 		[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
 ```
-Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect. Added a bunch of logs to the method.
 
 ---
 
@@ -94,6 +82,7 @@ Never was able to replicate this particular error, but Revert routinely shows an
 ## Telemancy
 - Focused casting should give a base boost to accuracy. Maybe a floor to certain rolls?
 - Need AV indicator & stop charging at full charge 
+- Felt too accurate with just Magic Training 1. Miscast didn't trigger once. Ensure that sub-1 float values for miscast chance aren't rounding to zero for an int operation.
 - Testing:
 	- Initiate
 	- Wild Caster
@@ -103,16 +92,15 @@ Never was able to replicate this particular error, but Revert routinely shows an
     - FC + MT
 
 ---
-	
-# Release Notes 
 
-## BEFORE RELEASE:
-	Complete and win a run with each new feature, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
-	Make a promo character for each special ability or trait group, to promote the mod and community at large.
-	Increment the Version number!
-	Update Sprites
+# Finalization
+- Rename *only when the code is complete*.
+- Complete and win a run with each new feature, and successfully load a return to home base. This would be a full cycle of the code you can expect to run into.
+- Make a promo character for each special ability or trait group, to promote the mod and community at large.
+- Update Sprites
+- Increment the Version Number!
 
-## Change notes
+## Release Notes 
 
 - Added Chronomancy & Pyromancy special abilities
 - Reworked Telemancy completely, and renamed existing general magic traits

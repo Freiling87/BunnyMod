@@ -5,15 +5,17 @@ All done for this release!
 ---
 
 # Fixes
-
 - Traits with Contraindications still show up in upgrade menu.
+  - This is apparently an issue with RogueLibs.
 
 ## Chronomancy
 - REALLY need a review, possibly with a flowchart of the boolean flags. Need strict definitions and to be fully aware of when they're set and read. Otherwise this is a ticking timebomb for bugs.
 - Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
     - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
 	- Was able to replicate this, it occurs during miscast.
+      - Attempt done. Test.
 - Convert timescale to be a single scale, rather than opposite operations for miscast.
+  - Done. Test.
 
 ## Finalization
 - Verify that all methods created are actually used, because you made them en masse as a framework before explicit need.

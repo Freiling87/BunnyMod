@@ -8,8 +8,8 @@ For more detailed information, continue below.
 
 # Features
 
-#### [Magic System](/md/2.0.%Magic.md)
+#### [Magic System](/MD/2.0.%Magic.md)
 
-#### [Object Interactions](/md/2.5.%Objects.md)
+#### [Object Interactions](/MD/2.5.%Objects.md)
 
-#### [Character Traits](/md/2.6.%Traits.md)
+#### [Character Traits](/MD/2.6.%Traits.md)

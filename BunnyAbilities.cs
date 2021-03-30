@@ -243,28 +243,28 @@ namespace BunnyMod
 		}
 		public static float ChronomancyRollTimescale(Agent agent, bool MisCast)
 		{
-			float timescale = 0.00f;
+			float timescale = 0.000f;
 
 			if (agent.statusEffects.hasTrait("Archmage"))
-				return 4.00f;
+				return 4.000f;
 
 			if (!MisCast)
 			{
-				timescale = 2.00f;
+				timescale = 2.000f;
 
 				if (agent.statusEffects.hasTrait("FocusedCasting"))
-					timescale += 0.25f;
+					timescale += 0.250f;
 				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-					timescale += 0.50f;
+					timescale += 0.500f;
 				else if (agent.statusEffects.hasTrait("WildCasting"))
-					timescale += 0.75f;
+					timescale += 0.750f;
 				else if (agent.statusEffects.hasTrait("WildCasting_2"))
-					timescale += 1.50f;
+					timescale += 1.500f;
 
 				if (agent.statusEffects.hasTrait("MagicTraining"))
-					timescale += 0.5f;
+					timescale += 0.500f;
 				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-					timescale += 1.0f;
+					timescale += 1.000f;
 			}
 			else if (MisCast)
 			{
@@ -296,8 +296,8 @@ namespace BunnyMod
 
 			ChronomancySetCast(agent, true);
 
-			agent.gc.selectedTimeScale /= speedupfactor;
-			agent.gc.mainTimeScale /= speedupfactor;
+			agent.gc.selectedTimeScale = baseTimeScale / speedupfactor;
+			agent.gc.mainTimeScale = baseTimeScale / speedupfactor;
 			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
 
 			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
@@ -334,8 +334,8 @@ namespace BunnyMod
 
 			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
-			agent.gc.selectedTimeScale /= slowdownFactor;
-			agent.gc.mainTimeScale /= slowdownFactor;
+			agent.gc.selectedTimeScale = baseTimeScale / slowdownFactor;
+			agent.gc.mainTimeScale = baseTimeScale / slowdownFactor;
 			agent.speedMax = agent.FindSpeed() * (int)slowdownFactor;
 
 			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + (agent.speedMax / (int)slowdownFactor));

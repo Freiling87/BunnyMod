@@ -9,13 +9,20 @@ All done for this release!
   - This is apparently an issue with RogueLibs.
 
 ## Chronomancy
-- Per Cherry's testing, game kept speeding up more and more. He sent a test log of this, which appeared to double the timescale every time the ability was activated, without reverting it.
-    - It's possible that LMB Click/Hold is setting some boolean during cooldown or miscast, which is then flipped incorrectly when the cooldown/miscast wears off.
-	- Was able to replicate this, it occurs during miscast.
-      - Attempt done. Test.
-- Convert timescale to be a single scale, rather than opposite operations for miscast.
-  - Done. Test.
-
+- Miscast does not reset timescale back to normal after reversion.
+  - // 202103301945
+```
+[Message: Bunny Mod] ChronomancyRollTimescale: 0.25
+[Message: Bunny Mod] ChronomancyStartMiscast: 0.25
+[Error  : Unity Log] DivideByZeroException: Attempted to divide by zero.
+Stack trace:
+BunnyMod.BunnyAbilities+<ChronomancyStartMiscast>d__23.MoveNext () (at <79149b024a354f66ad2245260c0036ff>:0)
+--- End of stack trace from previous location where exception was thrown ---
+System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () (at <c79628fadf574d3a8feae0871fad28ef>:0)
+System.Runtime.CompilerServices.AsyncMethodBuilderCore+<>c.<ThrowAsync>b__6_0 (System.Object state) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+UnityEngine.UnitySynchronizationContext+WorkRequest.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
+UnityEngine.UnitySynchronizationContext:ExecuteTasks()
+```
 
 ## FinishedOperating "Cancelled" Message
 - Cancelled message
@@ -38,44 +45,16 @@ All done for this release!
 - Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
 
 - BurnedOut stays True, can't cast anymore
+  - This occurs during Miscast. Does not *appear* to happen if RMB is pressed after miscast - only the miscast triggers, from the look of it.
+    - // 202103301952
+      - Fixed
+- Trying to cast at zero mana plays that horrible sound
 
 - Equipped Weapon appears in duplicate/larger form (like fist) when using
-	- Attempted with agent.gun.HideGun(); No luck there
+	- Tried removing HideGun from StartCast. 
 
-## Stove Dialogue
-
-Removed the dialogue and relationship checks. Grilling will make noise, that's it.
-	Test
-
-## Stove blinks when damaged but never actually blows up
-```
-		[Message: Bunny Mod] Stove (1153): Stove_DamagedObject
-		[Message: Bunny Mod] Stove_DamagedObject: Lemma 1
-		[Message: Bunny Mod] Stove (1153): Stove_AboutToExplode
-		[Message: Bunny Mod] Stove_AboutToExplode: lastHitByagent = Custom
-		[Error  : Unity Log] NullReferenceException: Object reference not set to an instance of an object
-		Stack trace:
-		ObjectReal.PlayAnim (System.String animType, Agent causerAgent) (at <eab0dd80d8294b91bfcaaa0356cbf5dd>:0)
-		BunnyMod.BunnyObjects+<Stove_AboutToExplode>d__35.MoveNext () (at <fecc5c55716d4603b8afa99d5c133627>:0)
-		UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <73b499366e5241bda47e5da76897738b>:0)
-		UnityEngine.MonoBehaviour:StartCoroutine(IEnumerator)
-		BunnyMod.BunnyObjects:Stove_DamagedObject(PlayfieldObject, Single, Stove)
-		Stove:DamagedObject(PlayfieldObject, Single)
-		ObjectReal:Damage(PlayfieldObject, Boolean)
-		BulletHitbox:HitObject(GameObject, Boolean)
-		BulletHitbox:OnTriggerEnter2D(Collider2D)
-```
-- // 202103031538 If this doesn't work, just comment both these lines out.
-	- Done. Test.
-
-## Stove - On Exit to Base, then freeze on loading screen:
-- Never was able to replicate this particular error, but Revert routinely shows an error that seems to have no effect. 
-```
-		[Message: Bunny Mod] Stove (1104): Stove_RevertAllVars
-		[Error  : Unity Log] Error in ResetObjectReal: Stove (1104) (Stove) - Stove
-```
-
----
+## Stove 
+- Can't grill again. FML. Operating Bar Error 2.
 
 # Balance
 

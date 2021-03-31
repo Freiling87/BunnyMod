@@ -157,7 +157,6 @@ namespace BunnyMod
 					item.initCount = 100;
 					item.rechargeAmountInverse = 100;
 					item.maxAmmo = 100;
-					item.rechargeAmountInverse = item.initCount;
 					item.stackable = true;
 					item.thiefCantSteal = true;
 				});
@@ -347,6 +346,7 @@ namespace BunnyMod
 			await Task.Delay(5000);
 
 			ChronomancySetMiscast(agent, false);
+			ChronomancyStartDecast(agent); // 202103301945
 		}
 		public static void ChronomancyStartRecharge(Agent agent, bool routine)
 		{
@@ -481,7 +481,7 @@ namespace BunnyMod
 
 			cryomancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount < item.rechargeAmountInverse && agent.statusEffects.CanRecharge())
+				if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount++;
 
@@ -502,8 +502,6 @@ namespace BunnyMod
 		}
 		public static void CryomancyStartCast(Agent agent)
 		{
-			agent.gun.HideGun();
-
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.FreezeRay, agent);
 
 			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
@@ -710,7 +708,7 @@ namespace BunnyMod
 			};
 			electromancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount < item.rechargeAmountInverse && agent.statusEffects.CanRecharge())
+				if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount++;
 
@@ -815,8 +813,6 @@ namespace BunnyMod
 		}
 		public static void ElectromancyStartCast(Agent agent)
 		{
-			agent.gun.HideGun();
-
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
 			bullet.speed *= 3 / 2; //
 			bullet.cameFromWeapon = "ChainLightning";
@@ -1011,12 +1007,12 @@ namespace BunnyMod
 
 			pyromancy.Recharge = (item, agent) =>
 			{
-				if (item.invItemCount == CalcMaxMana(agent))
-					PyromancyCompleteRecharge(agent, true);
-
-				if (item.invItemCount < item.rechargeAmountInverse && agent.statusEffects.CanRecharge())
+				if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount++;
+
+					if (item.invItemCount == CalcMaxMana(agent))
+						PyromancyCompleteRecharge(agent, true);
 				}
 			};
 
@@ -1070,12 +1066,14 @@ namespace BunnyMod
 
 			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
 				PyromancySetBurnedOut(agent, true);
+
+			Task.Delay(5000);
+
+			PyromancySetBurnedOut(agent, false); // 202103301952
 		}
 		public static void PyromancyStartCast(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyStartCast");
-
-			agent.gun.HideGun();
 
 			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 

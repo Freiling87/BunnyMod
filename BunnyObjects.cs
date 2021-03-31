@@ -391,17 +391,7 @@ namespace BunnyMod
             if (buttonText == "GrillFud")
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
-
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
-                {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    __instance.gc.audioHandler.Play(__instance, "GrillOperate");
-                    //__instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "ObjectReal", 0); // 202103021957
-                }
-
-                return false;
+                return false; // 202130310812
             }
             if (buttonText == "UseWrenchToDetonate")
             {
@@ -1103,7 +1093,6 @@ namespace BunnyMod
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
             
             int numCooked = rawFud.invItemCount;
-            //rawFud.invItemCount -= numCooked;
             __instance.interactingAgent.inventory.ChangeItemCount(rawFud, -numCooked);
 
             InvItem cookedFud = new InvItem()
@@ -1116,8 +1105,8 @@ namespace BunnyMod
             __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
             cookedFud.ShowPickingUpText(__instance.interactingAgent);
 
-            __instance.gc.audioHandler.Play(__instance, "Grill");
             __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
+            __instance.gc.audioHandler.Play(__instance, "Grill");
         }
         public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {

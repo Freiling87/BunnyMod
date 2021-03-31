@@ -11,25 +11,26 @@ All done for this release!
 ## Chronomancy
 - Miscast does not reset timescale back to normal after reversion.
   - // 202103301945
-```
-[Message: Bunny Mod] ChronomancyRollTimescale: 0.25
-[Message: Bunny Mod] ChronomancyStartMiscast: 0.25
-[Error  : Unity Log] DivideByZeroException: Attempted to divide by zero.
-Stack trace:
-BunnyMod.BunnyAbilities+<ChronomancyStartMiscast>d__23.MoveNext () (at <79149b024a354f66ad2245260c0036ff>:0)
---- End of stack trace from previous location where exception was thrown ---
-System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () (at <c79628fadf574d3a8feae0871fad28ef>:0)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore+<>c.<ThrowAsync>b__6_0 (System.Object state) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-UnityEngine.UnitySynchronizationContext+WorkRequest.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
-UnityEngine.UnitySynchronizationContext:ExecuteTasks()
-```
+  - Divide by Zero error:
+    ```
+    [Message: Bunny Mod] ChronomancyRollTimescale: 0.25
+    [Message: Bunny Mod] ChronomancyStartMiscast: 0.25
+    [Error  : Unity Log] DivideByZeroException: Attempted to divide by zero.
+    Stack trace:
+    BunnyMod.BunnyAbilities+<ChronomancyStartMiscast>d__23.MoveNext () (at <79149b024a354f66ad2245260c0036ff>:0)
+    --- End of stack trace from previous location where exception was thrown ---
+    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () (at <c79628fadf574d3a8feae0871fad28ef>:0)
+    System.Runtime.CompilerServices.AsyncMethodBuilderCore+<>c.<ThrowAsync>b__6_0 (System.Object state) (at <c79628fadf574d3a8feae0871fad28ef>:0)
+    UnityEngine.UnitySynchronizationContext+WorkRequest.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
+    UnityEngine.UnitySynchronizationContext:ExecuteTasks()
+    ```
 
 ## FinishedOperating "Cancelled" Message
 - Cancelled message
-```
-    [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
-    [Error  : Unity Log] Operating Bar Error 2
-```
+    ```
+        [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
+        [Error  : Unity Log] Operating Bar Error 2
+    ```
 
   - This message originates  in PlayfieldObject.Operating. Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma. My best initial guess is that we need to make stoppedOperating false somehow. Conditions that enable StoppedOperating to be true:
 		- PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar. I think Triggerlist might be a list of all PFOs within interaction range.
@@ -37,9 +38,6 @@ UnityEngine.UnitySynchronizationContext:ExecuteTasks()
 		- interactingagent.mustStopOperating = true;
 		- interactingagent != myAgent
 		- this.ServerSaysStopOperating
-
-## Magic General
-- Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive. Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
 
 ## Pyromancy
 - Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
@@ -52,9 +50,11 @@ UnityEngine.UnitySynchronizationContext:ExecuteTasks()
 
 - Equipped Weapon appears in duplicate/larger form (like fist) when using
 	- Tried removing HideGun from StartCast. 
+    - // 202130310950
 
 ## Stove 
 - Can't grill again. FML. Operating Bar Error 2.
+  - // 202130310812
 
 # Balance
 

@@ -242,7 +242,7 @@ namespace BunnyMod
 		}
 		public static float ChronomancyRollTimescale(Agent agent, bool MisCast)
 		{
-			float timescale = 0.000f;
+			float timescale = 1.000f;
 
 			if (agent.statusEffects.hasTrait("Archmage"))
 				return 4.000f;
@@ -951,22 +951,22 @@ namespace BunnyMod
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
-					item.Categories.Add("Weapons"); // Might this set off sensors?
+					//item.Categories.Add("Weapons"); // 202130310950
 					item.Categories.Add("NPCsCantPickUp");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.gunKnockback = 0;
-					item.isWeapon = true;
+					//item.isWeapon = true; // 202130310950
 					item.rapidFire = true;
 					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
-					item.LoadItemSprite("Fireball");
+					//item.LoadItemSprite("Fireball"); // 202130310950
 					item.rapidFire = true;
 					item.rechargeAmountInverse = 100;
 					item.shadowOffset = 2;
 					item.stackable = true;
 					item.thiefCantSteal = true;
-					item.weaponCode = weaponType.WeaponProjectile;
+					//item.weaponCode = weaponType.WeaponProjectile; // 202130310950
 				});
 
 			pyromancy.Available = true;
@@ -974,13 +974,12 @@ namespace BunnyMod
 			pyromancy.CostInCharacterCreation = 8;
 
 			int pyromancyTimeHeld = 0;
-			int pyromancyFireRateDivisor = 2;
 
 			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float time)
 			{
 				pyromancyTimeHeld++;
 
-				if (pyromancyTimeHeld >= pyromancyFireRateDivisor && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
+				if (pyromancyTimeHeld >= PyromancyRollFireRate(agent) && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
 				{
 					pyromancyTimeHeld = 0;
 
@@ -1018,6 +1017,28 @@ namespace BunnyMod
 
 			pyromancy.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.1f) : null;
+		}
+		public static float PyromancyRollFireRate(Agent agent)
+		{
+			float divisor = 10.000f; // Extreme value to test that it's actually working. Reduce to 3 or so after tested.
+
+			StatusEffects se = agent.statusEffects;
+
+			if (se.hasTrait("FocusedCasting"))
+				divisor -= 0.250f;
+			else if (se.hasTrait("FocusedCasting_2"))
+				divisor -= 0.500f;
+			else if (se.hasTrait("WildCasting"))
+				divisor -= 0.750f;
+			else if (se.hasTrait("WildCasting_2"))
+				divisor -= 1.500f;
+
+			if (se.hasTrait("MagicTraining"))
+				divisor -= 0.250f;
+			else if (se.hasTrait("MagicTraining_2"))
+				divisor -= 0.500f;
+
+			return divisor;
 		}
 		public static bool PyromancyRollManaCost(Agent agent)
 		{
@@ -1093,6 +1114,11 @@ namespace BunnyMod
 
 			bullet.speed = 6;
 
+			if (agent.statusEffects.hasTrait("MagicTraining"))
+				bullet.speed += 1;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				bullet.speed += 2;
+
 			if (agent.statusEffects.hasTrait("WildCasting"))
 				bullet.speed += 3;
 			else if (agent.statusEffects.hasTrait("WildCasting_2") || agent.statusEffects.hasTrait("Archmage"))
@@ -1137,7 +1163,7 @@ namespace BunnyMod
 
 			PyromancyStartBurnout(agent);
 		}
-		public static void PyromancyCompleteRecharge(Agent agent, bool routine) //TODO
+		public static void PyromancyCompleteRecharge(Agent agent, bool routine)
 		{
 			BunnyHeader.Log("PyromancyStartRecharge");
 
@@ -1373,7 +1399,7 @@ namespace BunnyMod
 
 			return (int)rate;
 		}
-		public static Vector2 TelemancyRollDestination(Agent agent, bool accountForObstacles, bool notInside, bool dontCareAboutDanger, bool teleporting, bool accountForWalls, float maxError)
+		public static Vector2 TelemancyRollDestination(Agent agent, float maxError)
 		{
 			TileInfo tileInfo = agent.gc.tileInfo;
 			Vector2 currentPosition = agent.curPosition;
@@ -1388,23 +1414,9 @@ namespace BunnyMod
 
 				TileData tileData = tileInfo.GetTileData(targetPosition);
 
-				if (tileData.solidObject)
-					continue;
-				else if (tileData.dangerousToWalk && !dontCareAboutDanger && !tileData.spillOoze)
-					continue;
-				else if (tileInfo.WallExist(tileData) && (accountForObstacles || accountForWalls))
-					continue;
-				else if (tileInfo.IsOverlapping(targetPosition, "Anything") && accountForObstacles) // Currently always false, but enable this if you're getting stuck on objects. Although that might be fun.
-					continue;
-
-				else if (!accountForObstacles)
-					if (tileInfo.GetWallMaterial(targetPosition.x, targetPosition.y) == wallMaterialType.Border) // Removed Conveyor, Water, Hole
-						continue;
-
-					else if (teleporting && accountForObstacles && tileInfo.IsOverlapping(targetPosition, "Anything", 0.32f))
-						continue;
-
-				if (notInside && (tileInfo.IsIndoors(targetPosition) || tileData.owner == 55 || (tileData.floorMaterial == floorMaterialType.ClearFloor && tileData.owner != 0)))
+				if ((tileData.solidObject) ||
+					(tileInfo.WallExist(tileData)) ||
+					(tileInfo.GetWallMaterial(targetPosition.x, targetPosition.y) == wallMaterialType.Border)) // Removed Conveyor, Water, Hole
 					continue;
 
 				return targetPosition;
@@ -1543,12 +1555,20 @@ namespace BunnyMod
 		}
 		public static void TelemancyStartCast(Agent agent, float charge)
 		{
-			float maxError = (100f - charge) / 20f;
+			float maxError = 100.000f;
 
-			Vector2 targetLocation = TelemancyRollDestination(agent, false, false, true, true, true, maxError);
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				maxError -= 12.500f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				maxError -= 25.000f;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				maxError += 12.500f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				maxError += 25.000f;
 
-			agent.Teleport(targetLocation, false, true);
+			maxError = (maxError - charge) / 20f;
 
+			agent.Teleport(TelemancyRollDestination(agent, maxError), false, true);
 			agent.rb.velocity = Vector2.zero;
 
 			TelemancyDialogueCast(agent);

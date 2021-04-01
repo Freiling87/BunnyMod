@@ -118,14 +118,14 @@
     <None Include="MD\2.4. Mutators.md" />
     <None Include="MD\2.5. Objects.md" />
     <None Include="MD\2.6. Traits.md" />
-    <None Include="Notes - Release.md" />
-    <None Include="Notes - Ideas.md" />
+    <None Include="MD\Notes - Release.md" />
+    <None Include="MD\9.0. Ideas.md" />
     <None Include="ReadMe.md" />
     <None Include="Staging.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Notes - Game Log.md" />
+    <None Include="MD\Notes - Game Log.md" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
     <None Include="Properties\Resources\Cryomancy.bin" />

@@ -27,3 +27,9 @@ Want to learn how to mod? Want to contribute? Talk SOR?
 #### [Installation Instructions](/MD/1.0.%20Installation.md)
 
 #### [Report a Bug](https://github.com/Freiling87/BunnyMod/issues/new)
+
+# Ideas
+
+If you have suggestions or requests, get in contact with me. Most of the content I've added has been from community requests.
+
+#### [Current list of ideas](/MD/9.0.%20Ideas.md)

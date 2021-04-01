@@ -335,9 +335,7 @@ namespace BunnyMod
 
 			agent.gc.selectedTimeScale = baseTimeScale / slowdownFactor;
 			agent.gc.mainTimeScale = baseTimeScale / slowdownFactor;
-			agent.speedMax = agent.FindSpeed() * (int)slowdownFactor;
-
-			BunnyHeader.Log("Agent.SpeedMax = " + agent.FindSpeed() + " / " + (int)slowdownFactor + " = " + (agent.speedMax / (int)slowdownFactor));
+			agent.speedMax = (int)((float)agent.FindSpeed() * slowdownFactor);
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 
@@ -346,7 +344,7 @@ namespace BunnyMod
 			await Task.Delay(5000);
 
 			ChronomancySetMiscast(agent, false);
-			ChronomancyStartDecast(agent); // 202103301945
+			ChronomancyStartDecast(agent);
 		}
 		public static void ChronomancyStartRecharge(Agent agent, bool routine)
 		{
@@ -951,22 +949,18 @@ namespace BunnyMod
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
-					//item.Categories.Add("Weapons"); // 202130310950
 					item.Categories.Add("NPCsCantPickUp");
 					item.dontAutomaticallySelect = true;
 					item.dontSelectNPC = true;
 					item.gunKnockback = 0;
-					//item.isWeapon = true; // 202130310950
 					item.rapidFire = true;
 					item.initCount = 100;
 					item.itemType = "WeaponProjectile";
-					//item.LoadItemSprite("Fireball"); // 202130310950
 					item.rapidFire = true;
 					item.rechargeAmountInverse = 100;
 					item.shadowOffset = 2;
 					item.stackable = true;
 					item.thiefCantSteal = true;
-					//item.weaponCode = weaponType.WeaponProjectile; // 202130310950
 				});
 
 			pyromancy.Available = true;
@@ -1020,7 +1014,7 @@ namespace BunnyMod
 		}
 		public static float PyromancyRollFireRate(Agent agent)
 		{
-			float divisor = 10.000f; // Extreme value to test that it's actually working. Reduce to 3 or so after tested.
+			float divisor = 5.000f;
 
 			StatusEffects se = agent.statusEffects;
 
@@ -1083,10 +1077,11 @@ namespace BunnyMod
 		}
 		public static void PyromancyStartBurnout(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "MindControlEnd");
-
 			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				agent.gc.audioHandler.Play(agent, "MindControlEnd");
 				PyromancySetBurnedOut(agent, true);
+			}
 
 			Task.Delay(5000);
 

@@ -110,6 +110,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MD\1.0. Installation.md" />
     <None Include="MD\2.0. Magic.md" />
     <None Include="MD\2.1. Abilities.md" />
     <None Include="MD\2.2. Behaviors.md" />
@@ -143,6 +144,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Hosted\UnityEngine.Networking.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

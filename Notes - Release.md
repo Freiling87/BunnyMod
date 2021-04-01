@@ -1,6 +1,12 @@
-﻿# New Feature Implementations
+﻿# Current test run scratchpad
+- Need to update Cost on button to reflect this change.
+- Consider an upgrade to SBD.
+  - First level: half damage
+---
 
-All done for this release!
+# New Feature Implementations
+
+Add Conflict: Near-Harmless/ All Equipment traits
 
 ---
 
@@ -8,53 +14,27 @@ All done for this release!
 - Traits with Contraindications still show up in upgrade menu.
   - This is apparently an issue with RogueLibs.
 
-## Chronomancy
-- Miscast does not reset timescale back to normal after reversion.
-  - // 202103301945
-```
-[Message: Bunny Mod] ChronomancyRollTimescale: 0.25
-[Message: Bunny Mod] ChronomancyStartMiscast: 0.25
-[Error  : Unity Log] DivideByZeroException: Attempted to divide by zero.
-Stack trace:
-BunnyMod.BunnyAbilities+<ChronomancyStartMiscast>d__23.MoveNext () (at <79149b024a354f66ad2245260c0036ff>:0)
---- End of stack trace from previous location where exception was thrown ---
-System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () (at <c79628fadf574d3a8feae0871fad28ef>:0)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore+<>c.<ThrowAsync>b__6_0 (System.Object state) (at <c79628fadf574d3a8feae0871fad28ef>:0)
-UnityEngine.UnitySynchronizationContext+WorkRequest.Invoke () (at <73b499366e5241bda47e5da76897738b>:0)
-UnityEngine.UnitySynchronizationContext:ExecuteTasks()
-```
-
-## FinishedOperating "Cancelled" Message
-- Cancelled message
-```
-    [Message: Bunny Mod] FlamingBarrel (1156): ObjectReal_FinishedOperating
-    [Error  : Unity Log] Operating Bar Error 2
-```
-
-  - This message originates  in PlayfieldObject.Operating. Since we're getting the "Canceled" message, it's at least getting past that part. We don't want it going down that lemma. My best initial guess is that we need to make stoppedOperating false somehow. Conditions that enable StoppedOperating to be true:
-		- PFO's objectsprite is not on agent's interactionhelper's triggerlist && not operatingFar. I think Triggerlist might be a list of all PFOs within interaction range.
-		- InteractingAgent == null
-		- interactingagent.mustStopOperating = true;
-		- interactingagent != myAgent
-		- this.ServerSaysStopOperating
-
-## Magic General
-- Cooldowns should not have any AV indicators, unless they're subtle. They're very routine so it should be unobtrusive. Recharge should only have AV if you're burned out and just recovered, not for routine recharge.
-
-## Pyromancy
-- Cooldown triggers on miscast or runout, not just on release. Need to ensure that player can hold down and it'll keep recharging.
-
-- BurnedOut stays True, can't cast anymore
-  - This occurs during Miscast. Does not *appear* to happen if RMB is pressed after miscast - only the miscast triggers, from the look of it.
-    - // 202103301952
-      - Fixed
-- Trying to cast at zero mana plays that horrible sound
-
-- Equipped Weapon appears in duplicate/larger form (like fist) when using
-	- Tried removing HideGun from StartCast. 
-
 ## Stove 
-- Can't grill again. FML. Operating Bar Error 2.
+- Can't grill again. Operating Bar Error 2.
+  - FlamingBarrel works fine, but also shows message.
+  - Therefore, Operating Bar Error is not the terminus of the stove code. It's failing sometime after that.
+
+```
+Stove:
+
+[Message: Bunny Mod] ObjectReal_Interact: Stove (1510)
+[Message: Bunny Mod] Stove (1510): ObjectReal_PressedButton
+[Message: Bunny Mod] PlayfieldObject_Operating Stove (1510):
+[Message: Bunny Mod] Agent = Playerr
+[Message: Bunny Mod] Logging error
+[Message: Bunny Mod] Stove (1510): ObjectReal_FinishedOperating
+[Error  : Unity Log] Operating Bar Error 2
+
+FB:
+
+[Message: Bunny Mod] FlamingBarrel (1621): ObjectReal_FinishedOperating
+[Error  : Unity Log] Operating Bar Error 2
+```
 
 # Balance
 

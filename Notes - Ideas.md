@@ -14,7 +14,14 @@
 - Trait: Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
 - BQ: Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
 
-## Priest
+Roamers
+	Random.InitState - is this behavior? Havent' looked yet
+# Ideas
+## Classes
+### Drug Dealer
+- Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
+- Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
+### Priest
 - Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.
 - Sermon - Activate an Altar to randomly improve relations with NPCs within earshot. Chance of them giving you Tithes.
 - BQ: Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.

@@ -417,8 +417,8 @@ namespace BunnyMod
             Archmage.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2", "MagicTraining", "MagicTraining_2", "WildCasting", "WildCasting_2" });
             Archmage.CostInCharacterCreation = 100;
             Archmage.IsActive = true;
-            Archmage.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            Archmage.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            Archmage.Recommendations.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            Archmage.SpecialAbilities.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             Archmage.Upgrade = null;
 
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
@@ -483,7 +483,7 @@ namespace BunnyMod
             ManaBattery.CanSwap = false;
             ManaBattery.Conflicting.AddRange(new string[] { });
             ManaBattery.IsActive = true;
-            ManaBattery.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery.SpecialAbilities.AddRange(new string[] { "Archmage", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             ManaBattery.Upgrade = "ManaBattery_2";
 
             CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait("ManaBattery_2", true,
@@ -496,7 +496,7 @@ namespace BunnyMod
             ManaBattery_2.CanSwap = false;
             ManaBattery_2.Conflicting.AddRange(new string[] { });
             ManaBattery_2.IsActive = true;
-            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Archmage", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
             ManaBattery_2.Upgrade = null;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
@@ -556,7 +556,7 @@ namespace BunnyMod
 			#region Stealth
 			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
-                new CustomNameInfo("Allows you to hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
+                new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
             StealthBastardDeluxe.AvailableInCharacterCreation = true;
             StealthBastardDeluxe.CanRemove = false;

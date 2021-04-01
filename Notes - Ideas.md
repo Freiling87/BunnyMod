@@ -5,6 +5,11 @@
 Roamers
 	Random.InitState - is this behavior? Havent' looked yet
 # Ideas
+
+## Unsorted
+- Diminutive: Option to hide in Trash Can
+
+
 ## Classes
 ### Drug Dealer
 - Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.

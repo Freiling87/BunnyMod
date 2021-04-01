@@ -1,8 +1,12 @@
 ﻿# Current test run scratchpad
-
+- Need to update Cost on button to reflect this change.
+- Consider an upgrade to SBD.
+  - First level: half damage
 ---
 
 # New Feature Implementations
+
+Add Conflict: Near-Harmless/ All Equipment traits
 
 ---
 

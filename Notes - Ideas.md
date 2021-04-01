@@ -1,8 +1,8 @@
 ﻿# Additions
 
 ## Classes
-<details>
-<summary>Drug Dealer</summary>
+
+### Drug Dealer
 
 - Trait: Pusher
   - You can interact with most NPCs to attempt to sell them Sugar.
@@ -18,13 +18,12 @@
 - BQ: Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
 - Item: Sugar Processor (6) - Similar to Bomb Processor. 
 
-<summary>Priest</summary>
+### Priest
 - Trait: Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.
 - Trait: Sermon - Activate an Altar to randomly improve relations with NPCs within earshot. Chance of them giving you Tithes.
 - BQ: Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
 - Item: Holy Symbol (4) - When in your inventory, all Undead NPCs slowly take damage when they're near you. They are more likely to flee during combat.
 - Item: Holy Water Flask (2) - Thrown weapon that gives a Poison condition to Zombies & Werewolves. Can also be combined with a Water Gun, Air Vent, or Water Filter.
-</details>
 
 ### Worker
 - Trait: One Happy Tamper - Tamper without angering Owner (Or just extend this into Clumsiness Forgiven)

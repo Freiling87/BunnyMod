@@ -24,6 +24,6 @@ Want to learn how to mod? Want to contribute? Talk SOR?
 
 # Support 
 
-#### [Installation Instructions](/MD/1.0%20Installation.md)
+#### [Installation Instructions](/MD/1.0.%20Installation.md)
 
-#### [Report a Bug](https://github.com/Freiling87/BunnyMod/issues)
+#### [Report a Bug](https://github.com/Freiling87/BunnyMod/issues/new)

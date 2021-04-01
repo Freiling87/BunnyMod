@@ -1,8 +1,9 @@
 ﻿# Additions
 
 ## Classes
+<details>
+<summary>Drug Dealer</summary>
 
-### Drug Dealer
 - Trait: Pusher
   - You can interact with most NPCs to attempt to sell them Sugar.
   - Cops who witness a dealing attempt will go Hostile. 
@@ -16,6 +17,7 @@
 - Trait: Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
 - BQ: Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
 - Item: Sugar Processor (6) - Similar to Bomb Processor. 
+</details>
 
 ### Priest
 - Trait: Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.

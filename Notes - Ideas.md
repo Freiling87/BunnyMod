@@ -1,120 +1,182 @@
-﻿Formatting in here is gonna be wonky, I've only recently switched from txt to md.
+﻿# Classes
 
-# Planning
+## Drug Dealer
+- Trait: Pusher
+  - You can interact with most NPCs to attempt to sell them Sugar.
+  - Cops who witness a dealing attempt will go Hostile. 
+  - Anyone who refuses your sale will become Annoyed. 
+  - Upper Crusters will call the cops immediately.
+  - On a successful sale, The buyer has a chance to become Hooked. 
+    - Jonesing 
+      - After a certain interval of withdrawal, Hooked NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for Sugar. 
+      - If you go too long without selling to them, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. 
+      - Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
+- Trait: Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
+- BQ: Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
 
-Roamers
-	Random.InitState - is this behavior? Havent' looked yet
-# Ideas
-## Classes
-### Drug Dealer
-- Death to Snitches - Cops will ignore your Pusher attempts. You may attempt to sell to them, but failure will turn them hostile.
-- Pusher - You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down.
-### Priest
+## Priest
 - Undead Bane - All Vampires, Zombies & Ghosts are hostile on sight.
 - Sermon - Activate an Altar to randomly improve relations with NPCs within earshot. Chance of them giving you Tithes.
-### Repairman
-- One Happy Tamper - Tamper without angering Owner
-- Suffers Tools Gladly - Reduce Item durability reduction from tampering (with an Improved version that removes it completely)
-### Trapper
-- Cheeky Trappy - All hidden traps (so far just landmines) are visible to you. NPCs will no longer path around traps that you place.
-		____ - Increase damage from traps.
-- Trapper Keeper - You can Interact with traps to add them to your inventory (Bear Traps, Land Mines). 100% chance to deactivate Door Detonators.
-## Big Quests
-- Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
-- Slingin' Dope - NPCs with enough money to buy one of your drugs will have an arrow above their head when the Big Quest is open. You need to sell to a certain number of NPCs.
-- Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
-## Gameplay Overhauls
+- BQ: Get Thee Behind Me! - Kill all Zombies and Vampires on the map. Vampires are armed and travel in teams.
 
-### Election Rebalance
-		Influencing the Election
-		Reputation Carryover
-			Depending on your ending electability for a District, NPCs will have a starting attitude on later floors.
-				-10 or lower: Hostile
-				-9 to -5: Annoyed
-				-4 to +4: Neutral
-				+5 to +10: Friendly
-				+10 to +15: Loyal
-				+15 or higher: Aligned
-			Affected NPCs by district:
-				Slums: Gang Members
-				Industrial: Workers
-				Park: Gorillas, Cannibals if you have CWC
-				Downtown: Bouncer
-				Uptown: Upper Cruster
-		Faction Reputations
-			Same as Reputation Carryover, but influenced by behaviors
-				Blahds
-				Crepes
-				Mafia
-				Police
-				Workers, Slum Dwellers, Office Drones, Clerks
-				Upper Crusters, Doctors, Investment Bankers, Scientists
-### Mugging & Extorting
-		Add a 0.5s delay between failure and attack
-		Can go Submissive from Mugging (no one will die for pocket change)
-	removing traits:
-		the same way you can gain + traits in the level up, there should be a chance for removing traits too (maybe called - traits?)
-		eg: youre cannibal, level up and leave slums 1. You have a choice between im outtie, low cost jobs, and - malodorous.
-	Make all traits accessible through Character Creator
-	Alright my idea is that npcs can become "fearful" of the player if you just torture them in some ways
-		Such as killing all of their teammates
-		Also stuff like eating corpses could give them fear
-		Or just continuosly destroying alredy dead npcs could give fear
-		When a npc is fearfull they will hide and try to evade you at all times
-		If they are from a faction they could search for another npc of that faction and treath it as a safeplace
-		There could be npcs that are unable to feel fear such as robots and zombies
-	Overall rework of NPC view distance.
-		Probably increase the vanilla distance for balance.
-		+ Giant, Loud, Lights, etc.
-		- Diminutive, Darkness, etc.
-	Putting the "Drunk" status effect back into the game!
-		how?: well it could only happear if you have certain traits here are some ideas:
-		Low tolerance to alcohol - When you drink to much beer you will get the drunk status and you accuracy and melee will go down temporarily but you can recover easily and if you just overdrink you can end up bafing removing all of you status effects wich is both good and bad (for example if you have poison this can save you)
-		Bar Brawler - If you drink to much you will get drunk which gives you a + on melee
-		Bonus:
-			A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
-			Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
-### The Gun Fetishism Mod:
-		Mechanics:
-		- Bullets are smaller, faster & deal more damage √
-		- Ranged increases accuracy & ROF, reduces Windup, NO effect on gun damage
-		- Accuracy reduced while moving, & for followup shots due to recoil
-		- Chance to inflict Slow for 1-2 seconds based on weapon damage
-		- Gun sprites are blacker and scarier :scream:
-		- Armor plays a larger role in not dying
-		- Cover:
-			- Most furniture that used to ignore bullets can now serve as cover. This includes broken windowframes.
-			- This must be tracked from the shooter, not the hider. Distance from obstacle / Shooting Skill = Chance to accidentally hit obstacle instead of shoot past it.
-			- Softer objects are unlikely to stop bullets, but may weaken or divert their path.
-			- Mockup stats
-				Destructability: 
-				Obstruction: Chance to be hit by a bullet if at Cover range. 
-					Slow: Slow the projectile and reduce its damage
-					Divert: Divert the path of the projectile by a few degrees. https://en.wikipedia.org/wiki/Ricochet for variable list, pretty good info.
-					Block:
-		Mods:
-		- Silencer has varying effect, depending on the loudness of weapon
-		- ROF & Accuracy mods removed completely (replaced below)
-		- Autofire Mod: Full auto fire. Illegal to cops and bots. AR, Pistol, Shotgun
-		- Bipod: Increases stationary accuracy. AR, LMG, Rifle
-		- Binary Trigger: Fires two shots in fast succession. Not illegal. AR, Pistol
-		- Flash Hider: View distance/stealth is reworked, enemies can't see you as well in the dark. Muzzle flash reduced. Any
-		- FMJ Ammo: Lower damage, but ignores armor. All but Shotgun
-		- Foregrip: Reduces recoil for AR, Machinegun, Shotgun & SMG. Increases fire speed for Shotgun. 
-		- Hacksaw: Expands weapon spread, and damage at close range. Shotgun
-		- JHP Ammo: Increases damage, but much weaker against armor. All but Shotgun
-		- Muzzle Brake: Reduces recoil. Any
-		- +P Ammo: Increases damage & projectile speed, increases recoil. Any
-		- Red Dot: Reduces accuracy penalties of movement and follow-up shots. AR, Pistol, Shotgun, SMG
-		- Scope: Allows you to move reticle further away from your character (similar to using Laptop, etc.). Increases stationary accuracy. AR, Rifle, Shotgun
-		Guns:
-		- AR: +Damage +Accuracy, single-fire, highly moddable.
-		- LMG: ++Damage +ROF +++Recoil, ---Accuracy benefits greatly from stationary fire.
-		- Pea-Shooter: -Damage +ROF +Accuracy ---Recoil
-		- PDW: +++ROF -Recoil -Damage -Accuracy.
-		- Rifle: +++Damage ++Accuracy, Windup before firing.
-		Traits:
-		- Double-Tapper: Ranged weapon equivalent to Backstabber, but only works in close range.
+## Worker
+- One Happy Tamper - Tamper without angering Owner (Or just extend this into Clumsiness Forgiven)
+
+## Trapper
+- Cheeky Trappy - All hidden traps are visible to you. NPCs will no longer path around traps that you place.
+- ____ - Increase trap damage.
+- Trapper Keeper - You can Interact with traps to add them to your inventory (Bear Traps, Land Mines). 100% chance to deactivate Door Detonators.
+
+---
+
+
+---
+
+# Gameplay Overhauls
+
+## Zombie Town
+- Z-Team - Zombie disaster occurs every level. Kill all Zombies and all living people carrying the Z-Virus. You get a free Friend Phone per level.
+- Z-Virus - Infects anyone it touches with Z-Virus. For use in vents, pools, and water guns.
+  - Extra option when Buying a Round with a bartender to give it to everyone in the bar
+
+## Election Rebalance
+
+The goal in this overhaul is to make winning the election a viable goal for any playstyle. In the vanilla game, getting elected requires a very narrow set of behaviors.
+
+### Option A: Reputation Carryover
+
+- Depending on your ending electability for a District, NPCs will have a starting attitude on later floors:
+
+	| Reputation | Effect  |
+	|:----------:|:-------:|
+	| -10        | Hostile |
+	| - 9 to - 5 | Annoyed |
+	| - 4 to + 4 | Neutral |
+	| + 5 to +10 | Friendly|
+	| +10 to +15 | Loyal   |
+	| +15        | Aligned |
+
+- Affected NPCs by district:
+
+	| District   | NPCs					|
+	|:-----------|:---------------------|
+	| Slums      | Gang Members			|
+	| Industrial | Workers				|
+	| Park		 | Gorillas, Cannibals	|
+	| Downtown	 | Bouncer				|
+	| Uptown	 | Upper Cruster		|
+
+### Option B: Faction Reputations
+
+- Same as Reputation Carryover, but influenced by behaviors
+
+| Faction		| Members										| Enemies							|
+|:--------------|:----------------------------------------------|:----------------------------------|
+| Blahds		| Blahds										| Crepes, Mafia, Police				|
+| Crepes		| Crepes										| Blahds, Mafia, Police				|
+| Mafia			| Mafia											| Crepes, Blahds, Police			|
+| Police		| Police, Cop Bots, Supercops					| Crepes, Blahds, Mafia				|
+| Proles		| Workers, Slum Dwellers, Clerks, Couriers		| Bourgeoisie						|
+| Bourgeoisie	| Upper Crusters, Investment Bankers, Scientists| Proles							|
+
+- Actions that affect reputation:
+ - Killing members of faction and its enemies
+ - Net reputation among faction at end of level
+
+### Option C: Merge A&B, have them both active
+
+- This would make reputation a complex thing, but still ignorable/playable by all playstyles.
+
+## Mugging & Extorting
+
+- Request: Add a 0.5s delay between mugging failure and attack
+- Can make mugging victims Submissive (no one will die for pocket change)
+	
+## Various Requests from SOR community
+	
+- removing traits: the same way you can gain + traits in the level up, there should be a chance for removing traits too (maybe called - traits?)
+  - eg: youre cannibal, level up and leave slums 1. You have a choice between im outtie, low cost jobs, and - malodorous.
+
+- Make all traits accessible through Character Creator
+
+- Alright my idea is that npcs can become "fearful" of the player if you just torture them in some ways
+  - Such as killing all of their teammates
+  - Also stuff like eating corpses could give them fear
+  - Or just continuosly destroying alredy dead npcs could give fear
+  - When a npc is fearfull they will hide and try to evade you at all times
+  - If they are from a faction they could search for another npc of that faction and treath it as a safeplace
+  - There could be npcs that are unable to feel fear such as robots and zombies
+	
+- Overall rework of NPC view distance.
+  - Probably increase the vanilla distance for balance.
+    - + Giant, Loud, Lights, etc.
+    - - Diminutive, Darkness, etc.
+  - Add this to Stealth Overhaul, lower
+
+- Putting the "Drunk" status effect back into the game!
+  - how?: well it could only happear if you have certain traits here are some ideas:
+  - Low tolerance to alcohol - When you drink to much beer you will get the drunk status and you accuracy and melee will go down temporarily but you can recover easily and if you just overdrink you can end up bafing removing all of you status effects wich is both good and bad (for example if you have poison this can save you)
+  - Bar Brawler - If you drink to much you will get drunk which gives you a + on melee
+  - A golden trait for the robot Alcohol Energy Source makes "alcohol into energy"
+    - Drinking while already at full hp gives you some seconds in the energy level but it cannot make you go up by a level so it just gives you seconds.
+
+## The Gun Fetishism Mod:
+- Mechanics:
+  - Bullets are smaller, faster & deal more damage √
+  - Ranged increases accuracy & ROF, reduces Windup, NO effect on gun damage
+  - Accuracy reduced while moving, & for followup shots due to recoil
+  - Chance to inflict Slow for 1-2 seconds based on weapon damage
+  - Gun sprites are blacker and scarier :scream:
+  - Armor plays a larger role in not dying
+  - Cover:
+    - Most furniture that used to ignore bullets can now serve as cover. This includes broken windowframes.
+    - This must be tracked from the shooter, not the hider. Distance from obstacle / Shooting Skill = Chance to accidentally hit obstacle instead of shoot past it.
+    - Softer objects are unlikely to stop bullets, but may weaken or divert their path.
+    - Mockup stats
+      - Destructability: 
+      - Obstruction: Chance to be hit by a bullet if at Cover range. 
+      - Slow: Slow the projectile and reduce its damage
+      - Divert: Divert the path of the projectile by a few degrees. https://en.wikipedia.org/wiki/Ricochet for variable list, pretty good info.
+      - Block: Block the projectile entirely.
+- Mods:
+  - Silencer has varying effect, depending on the loudness of weapon
+  - ROF & Accuracy mods removed completely (replaced below)
+  - Autofire Mod: . AR, Pistol, Shotgun
+  - Bipod: Increases stationary accuracy. AR, LMG, Rifle
+  - Hacksaw: Expands weapon spread, and damage at close range. Shotgun
+  - Muzzle Brake: Reduces recoil. Any
+  - Red Dot: Reduces accuracy penalties of movement and follow-up shots. AR, Pistol, Shotgun, SMG
+  - Scope: Allows you to move reticle further away from your character (similar to using Laptop, etc.). Increases stationary accuracy. AR, Rifle, Shotgun
+
+| Mod				| Pistol|Shotgun| SMG| AR| LMG| .22| PDW| Rifle| Effect											 		|
+|:------------------|:-----:|:-----:|:--:|:-:|:--:|:--:|:--:|:----:|:-------------------------------------------------------|
+| Autofire Mod		|✓		|✓		|	 |✓ |	  |✓  |    |      |Full auto fire. Illegal.								|
+| Bipod				|		|		|	 |✓ |✓  |	   |    |✓    |														|
+| Binary Trigger	|✓		|		|	 |✓ |	  |✓  |	|	   |Fires two shots in fast succession. Not illegal.		|
+| Flash Hider		|✓		|✓		|✓	 |✓ |✓  |✓  |✓	|✓	   |Muzzle flash reduced									|
+| FMJ Ammo			|✓		|		|✓	 |✓ |✓  |✓  |✓	|✓	   |Lower damage, but ignores armor							|
+| JHP Ammo			|✓		|		|✓	 |✓ |✓  |✓  |✓	|✓	   |Increases damage, but much weaker against armor			|
+| +P Ammo			|✓		|✓		|✓	 |✓ |✓  |✓  |✓	|✓	   |Increases damage & projectile speed, increases recoil	|
+| Foregrip			| 		|✓  	|✓	 |✓ |    |    |✓	| 	   |Shotgun: Increase fire speed. Other: Reduce recoil.		|
+| Hacksaw			|
+| Muzzle Brake		|
+| Red Dot			|
+| Scope				|
+| Rate of Fire Mod	| 		|		|	 |	 |	  |  |    |      |Removed													|
+| Accuracy Mod		| 		|		|	 |	 |	  |  |    |      |Removed													|
+
+- Guns:
+
+| Gun				| Damage	| Accuracy  | ROF		| Recoil	| Notes													|
+|:------------------|:---------:|:---------:|:---------:|:---------:|:------------------------------------------------------|
+| Assault Rifle		| +			| +			| ~			| -			| 														|
+| LMG				| ++		| ++		| +			| +++		| Accuracy greatly reduced if stationary				|
+| .22 Pistol		| -			| +			| +			| ---		|														|
+| PDW				| -			| -			| +++		| ~			|														|
+| Rifle				| +++		| ++		| -			| +			| Windup before firing									|
+
+- Traits:
+  - Double-Tapper: Ranged weapon equivalent to Backstabber, but only works in close range.
 ### Rap Sheet
 		in downtown and uptown, police houses(?) will have a comms desk. If you kill 5 officers, witnessing cops will head for the comms desk and say that you are wanted, giving you the wanted trait. However, you can hack comms desk to make it say that you were pardoned by the mayor. This gives you above the law for the rest of the group of 3 floors (if done on 4-3, only for one floor, if done on 4-2, for 2 floors, etc). After that, the cops find out you were lying and you are wanted, even if not previously wanted.
 		in downtown and uptown, police houses(?) will have a comms desk. If you kill 5 officers, witnessing cops will head for the comms desk and say that you are wanted, giving you the wanted trait.
@@ -287,17 +349,26 @@ Roamers
 - Trampoline - Does annoying jumping behavior. I hate it already.
 - Other Objects - Simply for visual variety when making custom chunks. Statues, park benches, filing cabinets, glass tables, office chairs, paintings, gym equipment, beer taps, curtains, etc. 
 
-## Object interactions
-- Tampering
-	- Air Conditioning Unit - Tamper to Release Gas without access to main computer (not sure about this one). 
-	- Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallways clear. Or maybe some other behavior, not sure yet.
-	- Bed - Fucking explode if someone tries to sleep in it
+## Tampering Overhaul
+- Objects
+  - Air Conditioning Unit - Tamper to Release Gas without access to main computer (not sure about this one). 
+  - Toilet - Tamper to...? Maybe spray water like hydrant, useful for keeping hallways clear. Or maybe some other behavior, not sure yet.
+  - Bed - Fucking explode if someone tries to sleep in it
 - Alarms on Chests/Safes, Doors & Windows
-	- Common in high-security chunks.
-	- If one is present, interacting will give you a chance to attempt to disarm the alarm. This might use a tool (wire cutters?) as a bonus to success. 
-	- You can hack them, of course, or disable them from a computer.
-	- Or, you can just open or destroy the object and set the alarm off. 
-	- This would add a small, simple layer to intrusion that currently is sort of a glaring omission in terms of portraying real-world stuff.
+  - Generation
+    - Placed on Exterior doors & windows only
+    - Chunk Level is a factor in chance
+    - Number of Cameras in chunk might be a good estimate of chunk security.
+  - Disabling
+    - Raw attempt to disarm, 50%. 
+    - Use Wire Cutters for a 100% chance.
+    - Hack
+    - Disable from Computer
+    - Destroy the object and set the alarm off. 
+    - Hire a Worker to tamper for you.
+- Wire Cutters
+  - 100% chance to disable Cameras
+  - Add 100% disabling of Turrets
 		
 ## Special Abilities
 - Beggar | 2 Points | Beg random people for something. Either get a food item or cigarettes. 50/50 Chance. Success will make Agent friendly, failure will annoy them.

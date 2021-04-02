@@ -983,8 +983,7 @@ namespace BunnyMod
 					{
 						PyromancyStartCast(agent);
 
-						if (PyromancyRollManaCost(agent))
-							item.invItemCount--;
+						item.invItemCount -= PyromancyRollManaCost(agent);
 
 						if (item.invItemCount <= 0)
 							PyromancyStartBurnout(agent);
@@ -1034,24 +1033,41 @@ namespace BunnyMod
 
 			return divisor;
 		}
-		public static bool PyromancyRollManaCost(Agent agent)
+		public static int PyromancyRollManaCost(Agent agent)
 		{
-			int chance = 100;
-
 			if (agent.statusEffects.hasTrait("Archmage"))
-				return false;
+				return 0;
+
+			float min = 3.000f;
+			float max = 5.000f;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				max -= 0.500f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				max -= 1.000f;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+			{
+				min -= 1.500f;
+				max += 1.500f;
+			}
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			{
+				min -= 3.000f;
+				max += 3.000f;
+			}
 
 			if (agent.statusEffects.hasTrait("MagicTraining"))
-				chance -= 10;
+			{
+				min -= 0.250f;
+				max -= 0.250f;
+			}
 			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				chance -= 20;
-			
-			if (agent.statusEffects.hasTrait("WildCasting"))
-				chance -= 15;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				chance -= 30;
+			{
+				min -= 0.500f;
+				max -= 0.500f;
+			}
 
-			return agent.gc.percentChance(chance);
+			return (int)UnityEngine.Random.Range(min, max);
 		}
 		public static bool PyromancyRollMiscast(Agent agent, float modifier)
 		{
@@ -1130,16 +1146,17 @@ namespace BunnyMod
 				float duration = 2000f;
 
 				if (agent.statusEffects.hasTrait("MagicTraining"))
-					duration -= 375f;
+					duration -= 500f;
 				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-					duration -= 750f;
+					duration -= 1000f;
+
+				if (agent.statusEffects.hasTrait("WildCasting"))
+					duration -= 1250f;
+				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+					duration -= 2000f;
 
 				if (agent.statusEffects.hasTrait("Archmage"))
 					duration = 0f;
-				if (agent.statusEffects.hasTrait("WildCasting"))
-					duration -= 625f;
-				else if (agent.statusEffects.hasTrait("WildCasting_2"))
-					duration -= 1250f;
 
 				duration = Mathf.Max(0f, duration);
 

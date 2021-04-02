@@ -18,7 +18,9 @@ Add Conflict: Near-Harmless/ All Equipment traits
 - Can't grill again. Operating Bar Error 2.
   - FlamingBarrel works fine, but also shows message.
   - Therefore, Operating Bar Error is not the terminus of the stove code. It's failing sometime after that.
-
+  - Comparison to old working code:
+    - OR_FinishedOperating
+      - Does not end with StopInteraction. But I think that's what led to floating Stove name.
 ```
 Stove:
 

@@ -187,8 +187,6 @@ namespace BunnyMod
         }
         public static void ObjectReal_DetermineButtons(ObjectReal __instance) // Postfix
         {
-            //ConsoleMessage.LogMessage("ObjectReal_DetermineButtons");
-
             if (__instance is FlamingBarrel)
             {
                 if (__instance.ora.hasParticleEffect)
@@ -239,20 +237,20 @@ namespace BunnyMod
             if (__instance is FlamingBarrel)
             {
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
-                __instance.StopInteraction(); // Attempt 202102261630 
+                __instance.StopInteraction();
             }
             else if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
                 {
                     Stove_UseWrenchToDetonate((Stove)__instance);
-                    __instance.StopInteraction(); // Attempt 202102261630
+                    __instance.StopInteraction();
                 }
 
                 if (__instance.operatingItem.invItemName == "Fud")
                 {
                     Stove_GrilledFud((Stove)__instance);
-                    __instance.StopInteraction(); // Attempt 202102261630
+                    __instance.StopInteraction();
                 }
             }
 
@@ -279,7 +277,7 @@ namespace BunnyMod
             {
                 if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
                 {
-                    agent.SetInvisible(false); // Attempt to fix camo bug
+                    agent.SetInvisible(false);
                     agent.statusEffects.BecomeHidden(__instance);
                 }
 
@@ -338,13 +336,9 @@ namespace BunnyMod
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
-            //ConsoleMessage.LogMessage("ObjectReal_ObjectUpdate"); // Verbose when enabled
-
             if (__instance is Stove)
             {
                 Stove_Remora remora = Stove_Variables[(Stove)__instance];
-
-                //Stove_AnimationSequence((Stove)__instance); // Attempt 202102261601
 
                 if (__instance.timer > 0f)
                 {
@@ -533,15 +527,17 @@ namespace BunnyMod
 
             int numCooked = rawFud.invItemCount;
 
-            __instance.interactingAgent.inventory.SubtractFromItemCount(rawFud, numCooked); // Hopefully addresses negaFud bug
+            __instance.interactingAgent.inventory.SubtractFromItemCount(rawFud, numCooked);
 
-            InvItem cookedFud = new InvItem();
-            cookedFud.invItemName = "HotFud";
-            cookedFud.SetupDetails(false);
-            cookedFud.invItemCount = numCooked;
-            __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
-            cookedFud.ShowPickingUpText(__instance.interactingAgent);
+            InvItem hotFud = new InvItem();
 
+            hotFud.invItemName = "HotFud";
+            hotFud.invItemCount = numCooked;
+            hotFud.SetupDetails(false);
+            __instance.interactingAgent.inventory.AddItemOrDrop(hotFud);
+            hotFud.ShowPickingUpText(__instance.interactingAgent);
+
+            __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
             __instance.gc.audioHandler.Play(__instance, "Grill");
             FlamingBarrel_GrilledFudAfter(numCooked, __instance);
         }
@@ -1087,18 +1083,20 @@ namespace BunnyMod
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
-
             int numCooked = rawFud.invItemCount;
 
-            __instance.interactingAgent.inventory.SubtractFromItemCount(rawFud, numCooked); // Hopefully addresses negaFud bug
+            rawFud.invItemCount -= numCooked;
 
-            InvItem cookedFud = new InvItem();
+            if (rawFud.invItemCount <= 0)
+                __instance.interactingAgent.inventory.DestroyItem(rawFud);
 
-            cookedFud.invItemName = "HotFud";
-            cookedFud.SetupDetails(false);
-            cookedFud.invItemCount = numCooked;
-            __instance.interactingAgent.inventory.AddItemOrDrop(cookedFud);
-            cookedFud.ShowPickingUpText(__instance.interactingAgent);
+            InvItem hotFud = new InvItem();
+            hotFud.invItemName = "HotFud";
+            hotFud.SetupDetails(false);
+            hotFud.invItemCount = numCooked;
+
+            __instance.interactingAgent.inventory.AddItemOrDrop(hotFud);
+            hotFud.ShowPickingUpText(__instance.interactingAgent);
 
             __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
             __instance.gc.audioHandler.Play(__instance, "Grill");
@@ -1142,7 +1140,6 @@ namespace BunnyMod
         }
         public static void Stove_SetVars(Stove __instance) // Postfix
         {
-            // __instance.animates = true; // Attempt 202102261601
             __instance.canExplosiveStimulate = true;
             __instance.dontDestroyImmediateOnClient = true;
             __instance.hasUpdate = true;

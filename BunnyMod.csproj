@@ -118,21 +118,21 @@
     <None Include="MD\2.4. Mutators.md" />
     <None Include="MD\2.5. Objects.md" />
     <None Include="MD\2.6. Traits.md" />
-    <None Include="MD\Notes - Release.md" />
+    <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
     <None Include="ReadMe.md" />
     <None Include="Staging.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="MD\Notes - Game Log.md" />
+    <None Include="MD\9.1. GameLogs.md" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
     <None Include="Properties\Resources\Cryomancy.bin" />
     <None Include="Properties\Resources\Electromancy.bin" />
-    <None Include="Properties\Resources\Pyromancy.bin" />
-    <None Include="Properties\Resources\Telemancy.bin" />
-    <None Include="Properties\Resources\Chronomancy.bin" />
+    <None Include="Properties\Resources\PyromanticJet.bin" />
+    <None Include="Properties\Resources\TelemanticBlink.bin" />
+    <None Include="Properties\Resources\ChronomanticDilation.bin" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -141,8 +141,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

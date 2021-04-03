@@ -19,6 +19,12 @@ using RogueLibsCore;
 
 namespace BunnyMod
 {
+    public enum DamageType
+	{
+        burnedFingers,
+        brokenWindow
+	}
+
     public class BunnyTraits
     {
         #region Main
@@ -258,7 +264,7 @@ namespace BunnyMod
             Myopic.Upgrade = null;
             #endregion
         }
-        public static void Initialize_Traits_Active()
+		public static void Initialize_Traits_Active()
         {
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
@@ -330,7 +336,7 @@ namespace BunnyMod
             AfraidOfLoudNoises.AvailableInCharacterCreation = true;
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
-            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "CantUseGuns", "CantUseWeapons2", "DrawNoBlood" });
+            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "AttacksOneDamage", "CantUseGuns", "CantUseWeapons2", "DrawNoBlood" });
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -342,7 +348,7 @@ namespace BunnyMod
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
+            DrawNoBlood.Conflicting.AddRange(new string[] { "AttacksOneDamage", "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
             DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
@@ -417,8 +423,8 @@ namespace BunnyMod
             Archmage.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2", "MagicTraining", "MagicTraining_2", "WildCasting", "WildCasting_2" });
             Archmage.CostInCharacterCreation = 100;
             Archmage.IsActive = true;
-            Archmage.Recommendations.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            Archmage.SpecialAbilities.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            Archmage.Recommendations.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            Archmage.SpecialAbilities.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             Archmage.Upgrade = null;
 
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
@@ -431,8 +437,8 @@ namespace BunnyMod
             FocusedCasting.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
             FocusedCasting.CostInCharacterCreation = 3;
             FocusedCasting.IsActive = true; 
-            FocusedCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            FocusedCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            FocusedCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            FocusedCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             FocusedCasting.Upgrade = "FocusedCasting_2";
 
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
@@ -457,7 +463,7 @@ namespace BunnyMod
             MagicTraining.CanSwap = false;
             MagicTraining.Conflicting.AddRange(new string[] { });
             MagicTraining.IsActive = true;
-            MagicTraining.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             MagicTraining.Upgrade = "MagicTraining_2";
 
             CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait("MagicTraining_2", true,
@@ -470,7 +476,7 @@ namespace BunnyMod
             MagicTraining_2.CanSwap = false;
             MagicTraining_2.Conflicting.AddRange(new string[] { });
             MagicTraining_2.IsActive = true;
-            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             MagicTraining_2.Upgrade = null;
 
             CustomTrait ManaBattery = RogueLibs.CreateCustomTrait("ManaBattery", true,
@@ -483,7 +489,7 @@ namespace BunnyMod
             ManaBattery.CanSwap = false;
             ManaBattery.Conflicting.AddRange(new string[] { });
             ManaBattery.IsActive = true;
-            ManaBattery.SpecialAbilities.AddRange(new string[] { "Archmage", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery.SpecialAbilities.AddRange(new string[] { "Archmage", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             ManaBattery.Upgrade = "ManaBattery_2";
 
             CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait("ManaBattery_2", true,
@@ -496,7 +502,7 @@ namespace BunnyMod
             ManaBattery_2.CanSwap = false;
             ManaBattery_2.Conflicting.AddRange(new string[] { });
             ManaBattery_2.IsActive = true;
-            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Archmage", "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Archmage", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             ManaBattery_2.Upgrade = null;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
@@ -509,8 +515,8 @@ namespace BunnyMod
             WildCasting.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
             WildCasting.CostInCharacterCreation = 3;
             WildCasting.IsActive = true; 
-            WildCasting.Recommendations.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
-            WildCasting.SpecialAbilities.AddRange(new string[] { "Chronomancy", "Cryomancy", "Electromancy", "Pyromancy", "Telemancy" });
+            WildCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            WildCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             WildCasting.Upgrade = "WildCasting_2";
 
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
@@ -525,7 +531,7 @@ namespace BunnyMod
             WildCasting_2.IsActive = true; 
             WildCasting_2.Upgrade = null;
             #endregion
-            #region Magic - Chronomancy
+            #region Magic - Chronomantic Dilation
             CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
                 new CustomNameInfo("R.A.T.S. Mk VI"),
                 new CustomNameInfo("Resistance-Tec Assisted Targeting System. The latest cybernetic enhancement to shooting accuracy, crit chance, & some combat traits with a double effect when time is slowed down."));
@@ -536,7 +542,7 @@ namespace BunnyMod
             RATS.Conflicting.AddRange(new string[] { "RATS_2" });
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
-            RATS.Recommendations.AddRange(new string[] { "Chronomancy", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
+            RATS.Recommendations.AddRange(new string[] { "ChronomanticDilation", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
             RATS.Upgrade = "RATS_2";
 
             CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
@@ -551,7 +557,7 @@ namespace BunnyMod
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;
 			#endregion
-			#region Magic - Telemancy
+			#region Magic - Telemantic Blink
             #endregion
 			#region Stealth
 			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
@@ -601,12 +607,33 @@ namespace BunnyMod
             // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
             // If you do an IL injection, do it at 787
         }
+        internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
+        {
+            BunnyHeader.Log("HealthCost");
+
+            if (type == DamageType.burnedFingers)
+			{
+                if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
+                    return "0";
+            }
+            else if (type == DamageType.brokenWindow)
+			{
+                if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
+                    return "0";
+                else if (agent.statusEffects.hasTrait("Diminutive"))
+                    return (baseDamage / 2).ToString();
+            }
+
+            return baseDamage.ToString();
+        }
         public static string ToolCost(Agent agent, int baseCost)
         {
             if (agent.statusEffects.hasTrait("TamperTantrum"))
                 return (baseCost / 2).ToString();
+
             if (agent.statusEffects.hasTrait("TamperTantrum_2"))
                 return "0";
+
             return baseCost.ToString();
         }
         #endregion
@@ -940,8 +967,8 @@ namespace BunnyMod
                 if (agent.statusEffects.hasTrait("RATS_2"))
                     luckMultiplier += 2;
 
-                if (agent.isPlayer != 0 && agent.specialAbility == "Chronomancy")
-                    if (BunnyAbilities.ChronomancyIsCast(agent))
+                if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
+                    if (BunnyAbilities.MSA_CD_IsCast(agent))
                         luckMultiplier *= 2;
             }
 

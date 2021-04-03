@@ -82,6 +82,7 @@ namespace BunnyMod
 
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
 
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
             #endregion
         }
@@ -131,6 +132,8 @@ namespace BunnyMod
             // Next you'd want to make a dictionary of buttonsExtra indexes and new versions of the labels 
             // You can't do it within the loop because it will break execution
 
+            // TODO: Detect full button string, not buttonsExtra
+
             bool flag = false;
             string newLabel = "";
 
@@ -148,14 +151,33 @@ namespace BunnyMod
                     newLabel = buttonLabel.Replace("-20", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 20));
                     flag = true;
                 }
+                else if (buttonLabel == " - 7HP")
+                {
+                    BunnyHeader.Log("a");
+                    newLabel = buttonLabel.Replace(" - 7HP", " - " + BunnyTraits.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
+                    flag = true;
+                }
+                else if (buttonLabel == " - 15HP")
+                {
+                    BunnyHeader.Log("b");
+                    newLabel = buttonLabel.Replace(" - 15HP", " - " + BunnyTraits.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
+                    flag = true;
+                }
+                else if (buttonLabel.EndsWith("(Burn hands for 10 damage)"))
+				{
+                    newLabel = buttonLabel.Replace("(Burn hands for 10 damage)", "(Burn hands for " + BunnyTraits.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
+                    flag = true;
+				}
 
                 if (flag)
                 {
+                    BunnyHeader.Log("c");
                     objectReal.buttonsExtra[objectReal.buttonsExtra.FindIndex(ind => ind.Equals(buttonLabel))] = newLabel;
                     break;
                 }
             }
         }
+
         #endregion
 
         #region ObjectReal
@@ -187,26 +209,28 @@ namespace BunnyMod
         }
         public static void ObjectReal_DetermineButtons(ObjectReal __instance) // Postfix
         {
+            Agent agent = __instance.interactingAgent;
+
             if (__instance is FlamingBarrel)
             {
                 if (__instance.ora.hasParticleEffect)
                 {
-                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                    if (agent.inventory.HasItem("Fud"))
                     {
                         __instance.buttons.Add("GrillFud");
-                        __instance.buttonsExtra.Add(" (Burn hands for 10 damage)");
+                        __instance.buttonsExtra.Add(" (Burn hands for " + BunnyTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
                     }
                     else
-                        __instance.interactingAgent.SayDialogue("CantGrillFud");
+                        agent.SayDialogue("CantGrillFud");
 
                     return;
                 }
                 else
                 {
-                    if (__instance.interactingAgent.inventory.HasItem("CigaretteLighter"))
+                    if (agent.inventory.HasItem("CigaretteLighter"))
                         __instance.buttons.Add("LightBarbecue");
                     else
-                        __instance.interactingAgent.SayDialogue("CantOperateBarbecue");
+                        agent.SayDialogue("CantOperateBarbecue");
 
                     return;
                 }
@@ -215,13 +239,13 @@ namespace BunnyMod
             {
                 if (!__instance.startedFlashing)
                 {
-                    if (__instance.interactingAgent.inventory.HasItem("Wrench"))
+                    if (agent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + __instance.interactingAgent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(__instance.interactingAgent, 30));
+                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(agent, 30));
                     }
 
-                    if (__instance.interactingAgent.inventory.HasItem("Fud"))
+                    if (agent.inventory.HasItem("Fud"))
                         __instance.buttons.Add("GrillFud");
                 }
                 return;
@@ -250,7 +274,9 @@ namespace BunnyMod
                 if (__instance.operatingItem.invItemName == "Fud")
                 {
                     Stove_GrilledFud((Stove)__instance);
+                    BunnyHeader.Log("Grilled FO 1");
                     __instance.StopInteraction();
+                    BunnyHeader.Log("Grilled FO 2");
                 }
             }
 
@@ -387,7 +413,7 @@ namespace BunnyMod
             }
             if (buttonText == "GrillFud")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "Grilling"));
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
 
                 return false;
             }
@@ -543,9 +569,18 @@ namespace BunnyMod
         }
         public static void FlamingBarrel_GrilledFudAfter(int myCount, FlamingBarrel __instance) // Non-patch
         {
+            Agent agent = __instance.interactingAgent;
+
             __instance.gc.audioHandler.Play(__instance, "FireHit");
-            __instance.interactingAgent.statusEffects.ChangeHealth(-10f, __instance);
-            __instance.interactingAgent.Say("God fucking damn it, I always fucking burn my fucking hands!");
+
+            if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
+                agent.Say("Mmmm, toasty. Just like the burning flesh on my fingers!");
+			else
+			{
+                agent.statusEffects.ChangeHealth(-10f, __instance);
+                agent.Say("God fucking damn it, I always fucking burn my fucking hands!");
+            }
+
             return;
         }
         public static void FlamingBarrel_SetVars(FlamingBarrel __instance) // Postfix
@@ -1082,6 +1117,7 @@ namespace BunnyMod
         }
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
+            BunnyHeader.Log("Grill GrilledFud 1");
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
             int numCooked = rawFud.invItemCount;
 
@@ -1174,8 +1210,13 @@ namespace BunnyMod
         public static void Television_SetVars(Television __instance) // Postfix
         {
         }
-		#endregion
-		#region Window
+        #endregion
+        #region Window
+        public static void Window_DetermineButtons(Window __instance) // Postfix
+        {
+            if (__instance.buttons.Any())
+                CorrectButtonCosts(__instance);
+        }
         public static bool Window_SlipThroughWindow(Agent myAgent, Window __instance) // Replacement
 		{
             if (myAgent.statusEffects.hasTrait("BigCollider"))

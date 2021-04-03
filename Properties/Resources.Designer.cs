@@ -63,9 +63,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Chronomancy {
+        public static byte[] ChronomanticDilation {
             get {
-                object obj = ResourceManager.GetObject("Chronomancy", resourceCulture);
+                object obj = ResourceManager.GetObject("ChronomanticDilation", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Pyromancy {
+        public static byte[] PyromanticJet {
             get {
-                object obj = ResourceManager.GetObject("Pyromancy", resourceCulture);
+                object obj = ResourceManager.GetObject("PyromanticJet", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Telemancy {
+        public static byte[] TelemanticBlink {
             get {
-                object obj = ResourceManager.GetObject("Telemancy", resourceCulture);
+                object obj = ResourceManager.GetObject("TelemanticBlink", resourceCulture);
                 return ((byte[])(obj));
             }
         }

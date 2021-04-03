@@ -22,11 +22,11 @@ namespace BunnyMod
 		}
 		public static void InitializeAbilities()
 		{
-			Chronomancy_Initialize();
+			MSA_CD_Initialize();
 			//Cryomancy_Initialize();
 			//Electromancy_Initialize();
-			Pyromancy_Initialize();
-			Telemancy_Initialize();
+			MSA_PJ_Initialize();
+			MSA_TB_Initialize();
 		}
 
 		#region Magic General
@@ -48,9 +48,9 @@ namespace BunnyMod
 			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
 		}
 		#endregion
-		#region Chronomancy
-		#region Chronomancy - Bits
-		public static bool ChronomancyIsCast(Agent agent)
+		#region Chronomantic Dilation
+		#region Chronomantic Dilation - Bits
+		public static bool MSA_CD_IsCast(Agent agent)
 		{
 			try
 			{
@@ -61,31 +61,31 @@ namespace BunnyMod
 				return false;
 			}
 		}
-		public static bool ChronomancyIsMiscast(Agent agent) =>
+		public static bool MSA_CD_IsMiscast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
-		public static bool ChronomancyIsWindingUp(Agent agent) =>
+		public static bool MSA_CD_IsWindingUp(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		public static void ChronomancyLogVariables(Agent agent)
+		public static void MSA_CD_LogVariables(Agent agent)
 		{
-			BunnyHeader.Log("ChronomancyIsCast: " + ChronomancyIsCast(agent));
-			BunnyHeader.Log("ChronomancyIsMiscast: " + ChronomancyIsMiscast(agent));
-			BunnyHeader.Log("ChronomancyIsWindindUp: " + ChronomancyIsWindingUp(agent));
+			BunnyHeader.Log("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
+			BunnyHeader.Log("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
+			BunnyHeader.Log("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
 		}
-		public static void ChronomancySetCast(Agent agent, bool value)
+		public static void MSA_CD_SetCast(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetCast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
-		public static void ChronomancySetMiscast(Agent agent, bool value)
+		public static void MSA_CD_SetMiscast(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetMiscast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-		public static void ChronomancySetWindingUp(Agent agent, bool value)
+		public static void MSA_CD_SetWindingUp(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetWindingUp" + value);
 
@@ -93,8 +93,8 @@ namespace BunnyMod
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
 		#endregion
-		#region Chronomancy - Dialogue
-		public static void ChronomancyDialogueCantDo(Agent agent)
+		#region Chronomantic Dilation - Dialogue
+		public static void MSA_CD_DialogueCantDo(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
@@ -106,7 +106,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void ChronomancyDialogueCast(Agent agent) // TODO
+		public static void MSA_CD_DialogueCast(Agent agent) // TODO
 		{
 			string[] dialogue =
 			{
@@ -115,7 +115,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void ChronomancyDialogueMiscast(Agent agent)
+		public static void MSA_CD_DialogueMiscast(Agent agent)
 		{
 			string[] dialogue =
 			{
@@ -127,7 +127,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void ChronomancyDialogueRecharge(Agent agent)
+		public static void MSA_CD_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
@@ -138,13 +138,13 @@ namespace BunnyMod
 		}
 		#endregion
 		public static float baseTimeScale;
-		public static void Chronomancy_Initialize()
+		public static void MSA_CD_Initialize()
 		{
-			Sprite spriteChronomancy = RogueUtilities.ConvertToSprite(Properties.Resources.Chronomancy);
+			Sprite spriteChronomanticDilation = RogueUtilities.ConvertToSprite(Properties.Resources.ChronomanticDilation);
 
-			CustomAbility chronomancy = RogueLibs.CreateCustomAbility("Chronomancy", spriteChronomancy, true,
-				new CustomNameInfo("Chronomancy"),
-				new CustomNameInfo("You can slow down time for everyone but yourself. Sometimes you accidentally do the opposite. You can dodge bullets, but have a lot of trouble eating soup."),
+			CustomAbility chronomanticDilation = RogueLibs.CreateCustomAbility("ChronomanticDilation", spriteChronomanticDilation, true,
+				new CustomNameInfo("Chronomantic Dilation"),
+				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself."),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -161,47 +161,43 @@ namespace BunnyMod
 					item.thiefCantSteal = true;
 				});
 
-			chronomancy.Available = true;
-			chronomancy.AvailableInCharacterCreation = true;
-			chronomancy.CostInCharacterCreation = 10;
+			chronomanticDilation.Available = true;
+			chronomanticDilation.AvailableInCharacterCreation = true;
+			chronomanticDilation.CostInCharacterCreation = 10;
 
-			chronomancy.OnPressed = delegate (InvItem item, Agent agent)
+			chronomanticDilation.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (ChronomancyIsWindingUp(agent) || ChronomancyIsMiscast(agent))
-					ChronomancyDialogueCantDo(agent);
-				else if (ChronomancyIsCast(agent))
-					ChronomancyStartDecast(agent);
-				else if (ChronomancyRollMiscast(agent, (float)((CalcMaxMana(agent) - item.invItemCount) / 100f)))
-					ChronomancyStartMiscast(agent, ChronomancyRollTimescale(agent, true));
+				if (MSA_CD_IsWindingUp(agent) || MSA_CD_IsMiscast(agent))
+					MSA_CD_DialogueCantDo(agent);
+				else if (MSA_CD_IsCast(agent))
+					MSA_CD_StartDecast(agent);
+				else if (MSA_CD_RollMiscast(agent, (float)((CalcMaxMana(agent) - item.invItemCount) / 100f)))
+					MSA_CD_StartMiscast(agent, MSA_CD_RollTimescale(agent, true));
 				else
-					ChronomancyStartCast(agent, ChronomancyRollTimescale(agent, false));
+					MSA_CD_StartCast(agent, MSA_CD_RollTimescale(agent, false));
 			};
 
-			chronomancy.Recharge = (item, agent) =>
+			chronomanticDilation.Recharge = (item, agent) =>
 			{
-				if (ChronomancyIsCast(agent))
+				if (MSA_CD_IsCast(agent))
 				{
-					item.invItemCount -= ChronomancyRollManaCost(agent);
+					item.invItemCount -= MSA_CD_RollManaCost(agent);
 
 					if (item.invItemCount < 0)
-						ChronomancyStartMiscast(agent, ChronomancyRollTimescale(agent, true));
+						MSA_CD_StartMiscast(agent, MSA_CD_RollTimescale(agent, true));
 				}
 				else if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount += Math.Min(CalcMaxMana(agent) - item.invItemCount, 5);
 
-					if (item.invItemCount == CalcMaxMana(agent) && !ChronomancyIsMiscast(agent))
-						ChronomancyStartRecharge(agent, true);
+					if (item.invItemCount == CalcMaxMana(agent) && !MSA_CD_IsMiscast(agent))
+						MSA_CD_StartRecharge(agent, true);
 				}
 			};
-			chronomancy.RechargeInterval = (item, myAgent) =>
+			chronomanticDilation.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
-		public static void ChronomancyDisplayTimescale(Agent agent)
-		{
-
-		}
-		public static int ChronomancyRollManaCost(Agent agent)
+		public static int MSA_CD_RollManaCost(Agent agent)
 		{
 			int manaCost = 15;
 
@@ -218,7 +214,7 @@ namespace BunnyMod
 
 			return manaCost;
 		}
-		public static bool ChronomancyRollMiscast(Agent agent, float percentMod)
+		public static bool MSA_CD_RollMiscast(Agent agent, float percentMod)
 		{
 			float risk = 1.0f + percentMod;
 
@@ -240,7 +236,7 @@ namespace BunnyMod
 
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
-		public static float ChronomancyRollTimescale(Agent agent, bool MisCast)
+		public static float MSA_CD_RollTimescale(Agent agent, bool MisCast)
 		{
 			float timescale = 1.000f;
 
@@ -288,12 +284,12 @@ namespace BunnyMod
 
 			return timescale;
 		}
-		public static void ChronomancyStartCast(Agent agent, float speedupfactor)
+		public static void MSA_CD_StartCast(Agent agent, float speedupfactor)
 		{
 			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
-			ChronomancySetCast(agent, true);
+			MSA_CD_SetCast(agent, true);
 
 			agent.gc.selectedTimeScale = baseTimeScale / speedupfactor;
 			agent.gc.mainTimeScale = baseTimeScale / speedupfactor;
@@ -301,37 +297,37 @@ namespace BunnyMod
 
 			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 		}
-		public static async void ChronomancyStartDecast(Agent agent)
+		public static async void MSA_CD_StartDecast(Agent agent)
 		{
 			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
 
 			agent.speedMax = agent.FindSpeed();
 
-			ChronomancySetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
+			MSA_CD_SetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			agent.gc.selectedTimeScale = baseTimeScale;
 			agent.gc.mainTimeScale = baseTimeScale;
 
 			await Task.Delay(1000);
 
-			await ChronomancyStartWindingUp(agent);
+			await MSA_CD_StartWindingUp(agent);
 
 			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 		}
-		public static async void ChronomancyStartMiscast(Agent agent, float slowdownFactor)
+		public static async void MSA_CD_StartMiscast(Agent agent, float slowdownFactor)
 		{
 			BunnyHeader.Log("ChronomancyStartMiscast: " + slowdownFactor);
 
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
-			ChronomancyDialogueMiscast(agent);
+			MSA_CD_DialogueMiscast(agent);
 
-			if (ChronomancyIsCast(agent))
-				ChronomancySetCast(agent, false);
+			if (MSA_CD_IsCast(agent))
+				MSA_CD_SetCast(agent, false);
 
-			ChronomancySetMiscast(agent, true);
+			MSA_CD_SetMiscast(agent, true);
 
-			ChronomancyStartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
+			MSA_CD_StartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
 			agent.gc.selectedTimeScale = baseTimeScale / slowdownFactor;
 			agent.gc.mainTimeScale = baseTimeScale / slowdownFactor;
@@ -343,10 +339,10 @@ namespace BunnyMod
 
 			await Task.Delay(5000);
 
-			ChronomancySetMiscast(agent, false);
-			ChronomancyStartDecast(agent);
+			MSA_CD_SetMiscast(agent, false);
+			MSA_CD_StartDecast(agent);
 		}
-		public static void ChronomancyStartRecharge(Agent agent, bool routine)
+		public static void MSA_CD_StartRecharge(Agent agent, bool routine)
 		{
 			BunnyHeader.Log("ChronomancyStartRecharge");
 
@@ -355,17 +351,17 @@ namespace BunnyMod
 				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
 				agent.gc.audioHandler.Play(agent, "Recharge");
 
-				ChronomancyDialogueRecharge(agent);
+				MSA_CD_DialogueRecharge(agent);
 			}
 
-			if (ChronomancyIsWindingUp(agent))
-				ChronomancySetWindingUp(agent, false);
+			if (MSA_CD_IsWindingUp(agent))
+				MSA_CD_SetWindingUp(agent, false);
 
-			if (ChronomancyIsMiscast(agent))
+			if (MSA_CD_IsMiscast(agent))
 			{
 				//TODO: Eliminate redundancies between Recharge and DeCast
 
-				ChronomancySetMiscast(agent, false);
+				MSA_CD_SetMiscast(agent, false);
 
 				agent.gc.selectedTimeScale = baseTimeScale;
 				agent.gc.mainTimeScale = baseTimeScale;
@@ -376,9 +372,9 @@ namespace BunnyMod
 
 			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
 		}
-		public static async Task ChronomancyStartWindingUp(Agent agent)
+		public static async Task MSA_CD_StartWindingUp(Agent agent)
 		{
-			ChronomancySetWindingUp(agent, true);
+			MSA_CD_SetWindingUp(agent, true);
 
 			float duration = 4000f;
 
@@ -396,10 +392,10 @@ namespace BunnyMod
 
 			await Task.Delay((int)duration);
 
-			while (ChronomancyIsMiscast(agent))
+			while (MSA_CD_IsMiscast(agent))
 				await Task.Delay(1000); 
 			
-			ChronomancyStartRecharge(agent, true);
+			MSA_CD_StartRecharge(agent, true);
 		}
 		#endregion
 		#region Cryomancy
@@ -839,47 +835,47 @@ namespace BunnyMod
 
 		}
 		#endregion
-		#region Pyromancy
-		#region Pyromancy - Bits
-		public static bool PyromancyIsBurnedOut(Agent agent)
+		#region Pyromantic Jet
+		#region Pyromantic Jet - Bits
+		public static bool MSA_PJ_IsBurnedOut(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
-		public static bool PyromancyIsCoolingDown(Agent agent)
+		public static bool MSA_PJ_IsCoolingDown(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
-		public static bool PyromancyIsMiscast(Agent agent)
+		public static bool MSA_PJ_IsMiscast(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		}
-		public static void PyromancyLogBooleans(Agent agent)
+		public static void MSA_PJ_LogBooleans(Agent agent)
 		{
-			BunnyHeader.Log("PyromancyIsBurnedOut: " + PyromancyIsBurnedOut(agent));
-			BunnyHeader.Log("PyromancyIsCoolingDown: " + PyromancyIsCoolingDown(agent));
-			BunnyHeader.Log("PyromancyIsMiscast: " + PyromancyIsMiscast(agent));
+			BunnyHeader.Log("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
+			BunnyHeader.Log("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
+			BunnyHeader.Log("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
 		}
-		public static void PyromancySetBurnedOut(Agent agent, bool value)
+		public static void MSA_PJ_SetBurnedOut(Agent agent, bool value)
 		{
 			BunnyHeader.Log("PyromancySetBurnedOut " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
-		public static void PyromancySetCoolingDown(Agent agent, bool value)
+		public static void MSA_PJ_SetCoolingDown(Agent agent, bool value)
 		{
 			BunnyHeader.Log("PyromancySetCoolingDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-		public static void PyromancySetMiscast(Agent agent, bool value)
+		public static void MSA_PJ_SetMiscast(Agent agent, bool value)
 		{
 			BunnyHeader.Log("PyromancySetMiscast " + value);
 
@@ -887,8 +883,8 @@ namespace BunnyMod
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
 		#endregion
-		#region Pyromancy - Dialogue
-		public static void PyromancyDialogueCantDo(Agent agent)
+		#region Pyromantic Jet - Dialogue
+		public static void MSA_PJ_DialogueCantDo(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
@@ -900,7 +896,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void PyromancyDialogueCast(Agent agent) // Not used yet
+		public static void MSA_PJ_DialogueCast(Agent agent) // Not used yet
 		{
 			agent.gc.audioHandler.Play(agent, "AgentLaugh");
 
@@ -914,7 +910,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void PyromancyDialogueMiscast(Agent agent)
+		public static void MSA_PJ_DialogueMiscast(Agent agent)
 		{
 			string[] dialogue =
 			{
@@ -926,7 +922,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void PyromancyDialogueRecharge(Agent agent)
+		public static void MSA_PJ_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
@@ -939,13 +935,13 @@ namespace BunnyMod
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		#endregion
-		public static void Pyromancy_Initialize()
+		public static void MSA_PJ_Initialize()
 		{
-			Sprite spritePyromancy = RogueUtilities.ConvertToSprite(Properties.Resources.Pyromancy);
+			Sprite spritePyromanticJet = RogueUtilities.ConvertToSprite(Properties.Resources.PyromanticJet);
 
-			CustomAbility pyromancy = RogueLibs.CreateCustomAbility("Pyromancy", spritePyromancy, true,
-				new CustomNameInfo("Pyromancy"),
-				new CustomNameInfo("You can throw fire from your hands. This tends to fix a lot of your problems, and create much worse ones."),
+			CustomAbility pyromanticJet = RogueLibs.CreateCustomAbility("PyromanticJet", spritePyromanticJet, true,
+				new CustomNameInfo("Pyromantic Jet"),
+				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat?? "),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -963,55 +959,55 @@ namespace BunnyMod
 					item.thiefCantSteal = true;
 				});
 
-			pyromancy.Available = true;
-			pyromancy.AvailableInCharacterCreation = true;
-			pyromancy.CostInCharacterCreation = 8;
+			pyromanticJet.Available = true;
+			pyromanticJet.AvailableInCharacterCreation = true;
+			pyromanticJet.CostInCharacterCreation = 8;
 
-			int pyromancyTimeHeld = 0;
+			int pjTimeHeld = 0;
 
-			pyromancy.OnHeld = delegate (InvItem item, Agent agent, ref float time)
+			pyromanticJet.OnHeld = delegate (InvItem item, Agent agent, ref float time)
 			{
-				pyromancyTimeHeld++;
+				pjTimeHeld++;
 
-				if (pyromancyTimeHeld >= PyromancyRollFireRate(agent) && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
+				if (pjTimeHeld >= MSA_PJ_RollFireRate(agent) && !MSA_PJ_IsBurnedOut(agent) && !MSA_PJ_IsCoolingDown(agent) && !MSA_PJ_IsMiscast(agent))
 				{
-					pyromancyTimeHeld = 0;
+					pjTimeHeld = 0;
 
-					if (PyromancyRollMiscast(agent, 0))
-						PyromancyStartMiscast(agent, 20);
+					if (MSA_PJ_RollMiscast(agent, 0))
+						MSA_PJ_StartMiscast(agent, 20);
 					else
 					{
-						PyromancyStartCast(agent);
+						MSA_PJ_StartCast(agent);
 
-						item.invItemCount -= PyromancyRollManaCost(agent);
+						item.invItemCount -= MSA_PJ_RollManaCost(agent);
 
 						if (item.invItemCount <= 0)
-							PyromancyStartBurnout(agent);
+							MSA_PJ_StartBurnout(agent);
 					}
 				}
 			};
 
-			pyromancy.OnReleased = delegate (InvItem item, Agent agent)
+			pyromanticJet.OnReleased = delegate (InvItem item, Agent agent)
 			{
-				if (pyromancyTimeHeld > 0 && !PyromancyIsBurnedOut(agent) && !PyromancyIsCoolingDown(agent) && !PyromancyIsMiscast(agent))
-					PyromancyStartCoolingDown(agent);
+				if (pjTimeHeld > 0 && !MSA_PJ_IsBurnedOut(agent) && !MSA_PJ_IsCoolingDown(agent) && !MSA_PJ_IsMiscast(agent))
+					MSA_PJ_StartCoolingDown(agent);
 			};
 
-			pyromancy.Recharge = (item, agent) =>
+			pyromanticJet.Recharge = (item, agent) =>
 			{
 				if (item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
 				{
 					item.invItemCount++;
 
 					if (item.invItemCount == CalcMaxMana(agent))
-						PyromancyCompleteRecharge(agent, true);
+						MSA_PJ_CompleteRecharge(agent, true);
 				}
 			};
 
-			pyromancy.RechargeInterval = (item, myAgent) =>
+			pyromanticJet.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.1f) : null;
 		}
-		public static float PyromancyRollFireRate(Agent agent)
+		public static float MSA_PJ_RollFireRate(Agent agent)
 		{
 			float divisor = 5.000f;
 
@@ -1033,7 +1029,7 @@ namespace BunnyMod
 
 			return divisor;
 		}
-		public static int PyromancyRollManaCost(Agent agent)
+		public static int MSA_PJ_RollManaCost(Agent agent)
 		{
 			if (agent.statusEffects.hasTrait("Archmage"))
 				return 0;
@@ -1069,7 +1065,7 @@ namespace BunnyMod
 
 			return (int)UnityEngine.Random.Range(min, max);
 		}
-		public static bool PyromancyRollMiscast(Agent agent, float modifier)
+		public static bool MSA_PJ_RollMiscast(Agent agent, float modifier)
 		{
 			float risk = 1.000f + modifier;
 
@@ -1091,19 +1087,19 @@ namespace BunnyMod
 
 			return risk >= UnityEngine.Random.Range(0f, 100f);
 		}
-		public static void PyromancyStartBurnout(Agent agent)
+		public static void MSA_PJ_StartBurnout(Agent agent)
 		{
 			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
 			{
 				agent.gc.audioHandler.Play(agent, "MindControlEnd");
-				PyromancySetBurnedOut(agent, true);
+				MSA_PJ_SetBurnedOut(agent, true);
 			}
 
 			Task.Delay(5000);
 
-			PyromancySetBurnedOut(agent, false); // 202103301952
+			MSA_PJ_SetBurnedOut(agent, false); // 202103301952
 		}
-		public static void PyromancyStartCast(Agent agent)
+		public static void MSA_PJ_StartCast(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyStartCast");
 
@@ -1135,13 +1131,13 @@ namespace BunnyMod
 			else if (agent.statusEffects.hasTrait("WildCasting_2") || agent.statusEffects.hasTrait("Archmage"))
 				bullet.speed += 6;
 		}
-		public static async Task PyromancyStartCoolingDown(Agent agent)
+		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
 		{
 			BunnyHeader.Log("PyromancyStartCoolingDown");
 
-			if (PyromancyIsCoolingDown(agent) == false)
+			if (MSA_PJ_IsCoolingDown(agent) == false)
 			{
-				PyromancySetCoolingDown(agent, true);
+				MSA_PJ_SetCoolingDown(agent, true);
 
 				float duration = 2000f;
 
@@ -1162,20 +1158,20 @@ namespace BunnyMod
 
 				await Task.Delay((int)duration);
 
-				PyromancySetCoolingDown(agent, false);
+				MSA_PJ_SetCoolingDown(agent, false);
 			}
 		}
-		public static void PyromancyStartMiscast(Agent agent, int degree)
+		public static void MSA_PJ_StartMiscast(Agent agent, int degree)
 		{
 			BunnyHeader.Log("PyromancyStartMiscast");
 
-			PyromancyDialogueMiscast(agent);
+			MSA_PJ_DialogueMiscast(agent);
 
 			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
 
-			PyromancyStartBurnout(agent);
+			MSA_PJ_StartBurnout(agent);
 		}
-		public static void PyromancyCompleteRecharge(Agent agent, bool routine)
+		public static void MSA_PJ_CompleteRecharge(Agent agent, bool routine)
 		{
 			BunnyHeader.Log("PyromancyStartRecharge");
 
@@ -1185,69 +1181,51 @@ namespace BunnyMod
 				agent.gc.audioHandler.Play(agent, "Recharge");
 			}
 
-			if (PyromancyIsBurnedOut(agent))
-				PyromancySetBurnedOut(agent, false);
+			if (MSA_PJ_IsBurnedOut(agent))
+				MSA_PJ_SetBurnedOut(agent, false);
 
-			if (PyromancyIsMiscast(agent))
-				PyromancySetMiscast(agent, false);
+			if (MSA_PJ_IsMiscast(agent))
+				MSA_PJ_SetMiscast(agent, false);
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
 		#endregion
-		#region Telemancy
-		#region Telemancy - Bits
-		public static bool TelemancyIsReturning(Agent agent)
+		#region Telemantic Blink
+		#region Telemantic Blink - Bits
+		public static bool MSA_TB_IsReturning(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
-		public static bool TelemancyIsMiscast(Agent agent)
+		public static bool MSA_TB_IsMiscast(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
-		public static bool TelemancyIs_VARIABLE3(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
-		public static bool TelemancyIs_VARIABLE4(Agent agent) =>
-			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_1000) != 0;
-		public static void TelemancyLogBits(Agent agent)
+		public static void MSA_TB_LogBits(Agent agent)
 		{
-			BunnyHeader.Log("TelemancyIsMiscast: " + TelemancyIsMiscast(agent));
-			BunnyHeader.Log("TelemancyIsReturning: " + TelemancyIsReturning(agent));
+			BunnyHeader.Log("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
+			BunnyHeader.Log("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
 		}
-		public static void TelemancySetReturning(Agent agent, bool value)
+		public static void MSA_TB_SetReturning(Agent agent, bool value)
 		{
 			BunnyHeader.Log("TelemancySetReturning: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
-		public static void TelemancySetMiscast(Agent agent, bool value)
+		public static void MSA_TB_SetMiscast(Agent agent, bool value)
 		{
 			BunnyHeader.Log("TelemancySetMiscast: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-		public static void TelemancySet_VARIABLE3(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
-		}
-		public static void TelemancySet_VARIABLE4(Agent agent, bool value)
-		{
-			//BunnyHeader.Log("Set___" + value);
-
-			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_1000;
-			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_1000;
-		}
 		#endregion
-		#region Telemancy - Dialogue
-		public static void TelemancyDialogueCantDo(Agent agent)
+		#region Telemantic Blink - Dialogue
+		public static void MSA_TB_DialogueCantDo(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "CantDo");
 
@@ -1262,7 +1240,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void TelemancyDialogueCast(Agent agent)
+		public static void MSA_TB_DialogueCast(Agent agent)
 		{
 			if (agent.gc.percentChance(75))
 				return;
@@ -1278,12 +1256,12 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void TelemancyDialogueFullyCharged(Agent agent) // TODO
+		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			agent.gc.audioHandler.Play(agent, "Hypnotize");
 		}
-		public static void TelemancyDialogueMiscast(Agent agent)
+		public static void MSA_TB_DialogueMiscast(Agent agent)
 		{
 			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
 
@@ -1297,7 +1275,7 @@ namespace BunnyMod
 
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
-		public static void TelemancyDialogueRecharge(Agent agent)
+		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
@@ -1307,13 +1285,13 @@ namespace BunnyMod
 			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		#endregion
-		public static void Telemancy_Initialize()
+		public static void MSA_TB_Initialize()
 		{
-			Sprite spriteTelemancy = RogueUtilities.ConvertToSprite(Properties.Resources.Telemancy);
+			Sprite spriteTelemanticBlink = RogueUtilities.ConvertToSprite(Properties.Resources.TelemanticBlink);
 
-			CustomAbility telemancy = RogueLibs.CreateCustomAbility("Telemancy", spriteTelemancy, true,
-				new CustomNameInfo("Telemancy"),
-				new CustomNameInfo("Hold to charge, release to teleport to your targeting reticle. May cause stroke."),
+			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility("TelemanticBlink", spriteTelemanticBlink, true,
+				new CustomNameInfo("Telemantic Blink"),
+				new CustomNameInfo("Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke."),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -1328,68 +1306,78 @@ namespace BunnyMod
 					item.thiefCantSteal = true;
 				});
 
-			telemancy.Available = true;
-			telemancy.AvailableInCharacterCreation = true;
-			telemancy.CostInCharacterCreation = 8;
+			telemanticBlink.Conflicting.AddRange(new string[] { "CantTeleport" });
 
-			int telemancyHeldCounter = 0; // Seconds ability held to charge
-			int telemancyNetCharge = 0; // Net total of post-ability charge level
+			telemanticBlink.Available = true;
+			telemanticBlink.AvailableInCharacterCreation = true;
+			telemanticBlink.CostInCharacterCreation = 8;
 
-			telemancy.OnPressed = delegate (InvItem item, Agent agent)
+			int tbHeldCounter = 0; // Seconds ability held to charge
+			int tbNetCharge = 0; // Net total of post-ability charge level
+			bool tbFullChargeIndicated = false; // Whether particle effect showing full charge is active.
+
+			telemanticBlink.OnPressed = delegate (InvItem item, Agent agent)
 			{
-				if (!TelemancyIsMiscast(agent) && !TelemancyIsReturning(agent) && item.invItemCount > 0)
+				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0)
 					agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
 				else
-					TelemancyDialogueCantDo(agent);
+					MSA_TB_DialogueCantDo(agent);
 			};
 
-			telemancy.OnHeld = delegate (InvItem item, Agent agent, ref float timeHeld)
+			telemanticBlink.OnHeld = delegate (InvItem item, Agent agent, ref float timeHeld)
 			{
-				if (!TelemancyIsMiscast(agent) && !TelemancyIsReturning(agent) && item.invItemCount > 0 && telemancyNetCharge < 100)
+				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0 && tbNetCharge < 100)
 				{
-					if (timeHeld * TelemancyRollChargeRate(agent) >= telemancyHeldCounter)
+					if (timeHeld * MSA_TB_RollChargeRate(agent) >= tbHeldCounter)
 					{
-						telemancyHeldCounter++;
+						tbHeldCounter++;
 
-						BunnyHeader.Log("Telemancy OnHeld: HeldCounter = " + telemancyHeldCounter + "; timeHeld = " + timeHeld);
+						BunnyHeader.Log("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + timeHeld);
 
-						int manaCost = Mathf.Min(TelemancyRollManaCost(agent), 100 - telemancyNetCharge);
+						int manaCost = Mathf.Min(MSA_TB_RollManaCost(agent), 100 - tbNetCharge);
 
 						item.invItemCount -= manaCost;
-						telemancyNetCharge += manaCost;
+						tbNetCharge += manaCost;
 
-						if (telemancyNetCharge == 100)
-							TelemancyDialogueFullyCharged(agent);
+						if (tbNetCharge == 100)
+							MSA_TB_DialogueFullyCharged(agent);
 					}
 				}
-			};
-
-			telemancy.OnReleased = delegate (InvItem item, Agent agent)
-			{
-				if (telemancyNetCharge > 0 && !TelemancyIsReturning(agent) && !TelemancyTryMiscast(agent, TelemancyRollMiscast(agent, telemancyHeldCounter)))
+				else if (tbNetCharge == 100 & !tbFullChargeIndicated)
 				{
-					TelemancyStartCast(agent, Math.Max(100, telemancyNetCharge));
-					TelemancyStartReturn(agent, TelemancyRollReturnDuration(agent));
-					telemancyHeldCounter = 0;
-					telemancyNetCharge = 0;
+					agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
+					tbFullChargeIndicated = true;
 				}
 			};
 
-			telemancy.Recharge = (item, agent) =>
+			telemanticBlink.OnReleased = delegate (InvItem item, Agent agent)
 			{
-				if (telemancyNetCharge == 0 && item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
+				if (tbNetCharge > 0 && !MSA_TB_IsReturning(agent) && !MSA_TB_TryMiscast(agent, tbNetCharge))
 				{
-					item.invItemCount = Math.Min(CalcMaxMana(agent), item.invItemCount + TelemancyRollRechargeRate(agent));
+					MSA_TB_StartCast(agent, Math.Max(100, tbNetCharge));
+					MSA_TB_StartReturn(agent, MSA_TB_RollReturnDuration(agent));
+					tbHeldCounter = 0;
+					tbNetCharge = 0;
+				}
+
+				tbFullChargeIndicated = false;
+			};
+
+			telemanticBlink.Recharge = (item, agent) =>
+			{
+				if (tbNetCharge == 0 && item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
+				{
+					item.invItemCount = Math.Min(CalcMaxMana(agent), item.invItemCount + MSA_TB_RollRechargeRate(agent));
 
 					if (item.invItemCount == CalcMaxMana(agent))
-						TelemancyStartRecharge(agent, true);
+						MSA_TB_StartRecharge(agent, true);
 				}
 			};
 
-			telemancy.RechargeInterval = (item, myAgent) =>
+			telemanticBlink.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
-		public static int TelemancyRollChargeRate(Agent agent)
+		public static int MSA_TB_RollChargeRate(Agent agent)
 		{
 			float rate = 1.000f;
 
@@ -1411,18 +1399,17 @@ namespace BunnyMod
 
 			return (int)rate;
 		}
-		public static Vector2 TelemancyRollDestination(Agent agent, float maxError)
+		public static Vector2 MSA_TB_RollDestination(Agent agent, float minError, float maxError)
 		{
 			TileInfo tileInfo = agent.gc.tileInfo;
 			Vector2 currentPosition = agent.curPosition;
-			Vector2 targetPosition = agent.curPosition;
-			float[] range = { 0f, maxError };
+			Vector2 targetPosition;
 
 			for (int i = 0; i < 50; i++)
 			{
-				float distance = UnityEngine.Random.Range(range[0], range[1]);
+				float distance = UnityEngine.Random.Range(minError, maxError);
 
-				targetPosition = MouseIngamePosition() + distance * UnityEngine.Random.insideUnitCircle.normalized;
+				targetPosition = MouseIngamePosition() + (distance * UnityEngine.Random.insideUnitCircle.normalized);
 
 				TileData tileData = tileInfo.GetTileData(targetPosition);
 
@@ -1435,7 +1422,7 @@ namespace BunnyMod
 			}
 			return currentPosition;
 		}
-		public static int TelemancyRollManaCost(Agent agent)
+		public static int MSA_TB_RollManaCost(Agent agent)
 		{
 			BunnyHeader.Log("TelemancyRollManaCost");
 
@@ -1478,31 +1465,7 @@ namespace BunnyMod
 
 			return (int)UnityEngine.Random.Range(min, max);
 		}
-		public static int TelemancyRollMiscast(Agent agent, float secondsHeld)
-		{
-			BunnyHeader.Log("TelemancyRollMiscast");
-
-			if (agent.statusEffects.hasTrait("Archmage"))
-				return 0;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
-				secondsHeld *= 0.750f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
-				secondsHeld *= 0.500f;
-
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
-				secondsHeld *= 0.625f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				secondsHeld *= 0.375f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
-				secondsHeld *= 3.000f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				secondsHeld *= 6.000f;
-
-			float margin = secondsHeld - UnityEngine.Random.Range(0, 100);
-
-			return (int)margin;
-		}
-		public static int TelemancyRollRechargeRate(Agent agent)
+		public static int MSA_TB_RollRechargeRate(Agent agent)
 		{
 			float min = 5.00f;
 			float max = 10.00f;
@@ -1543,73 +1506,112 @@ namespace BunnyMod
 
 			return (int)UnityEngine.Random.Range(min, max);
 		}
-		public static int TelemancyRollReturnDuration(Agent agent)
+		public static int MSA_TB_RollReturnDuration(Agent agent)
 		{
 			float duration = 4000f;
 
 			if (agent.statusEffects.hasTrait("Archmage"))
 				return 0;
 			else if (agent.statusEffects.hasTrait("MagicTraining"))
-				duration *= 0.750f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
 				duration *= 0.500f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				duration *= 0.250f;
 
 			if (agent.statusEffects.hasTrait("FocusedCasting"))
 				duration *= 0.875f;
 			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
 				duration *= 0.750f;
 			else if (agent.statusEffects.hasTrait("WildCasting"))
-				duration *= 0.500f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
 				duration *= 0.250f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				duration *= 0.000f;
 
 			return (int)duration;
 		}
-		public static void TelemancyStartCast(Agent agent, float charge)
+		public static void MSA_TB_StartCast(Agent agent, float charge)
 		{
-			float maxError = 100.000f;
+			float maxError = 200.000f;
 
 			if (agent.statusEffects.hasTrait("FocusedCasting"))
-				maxError -= 12.500f;
+				maxError -=  25.000f;
 			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
-				maxError -= 25.000f;
+				maxError -=  50.000f;
 			else if (agent.statusEffects.hasTrait("WildCasting"))
-				maxError += 12.500f;
+				maxError +=  25.000f;
 			else if (agent.statusEffects.hasTrait("WildCasting_2"))
-				maxError += 25.000f;
+				maxError +=  50.000f;
 
 			maxError = (maxError - charge) / 20f;
 
-			agent.Teleport(TelemancyRollDestination(agent, maxError), false, true);
+			agent.Teleport(MSA_TB_RollDestination(agent, 0, maxError), false, true);
 			agent.rb.velocity = Vector2.zero;
 
-			TelemancyDialogueCast(agent);
+			MSA_TB_DialogueCast(agent);
 		}
-		public static bool TelemancyTryMiscast(Agent agent, int severity)
+		public static void MSA_TB_StartRecharge(Agent agent, bool routine)
 		{
+			if (true) // Not checking for routine/nonroutine yet.
+			{
+				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+				agent.gc.audioHandler.Play(agent, "Recharge");
+			}
+			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
+		}
+		public static async void MSA_TB_StartReturn(Agent agent, int mSecs)
+		{
+			MSA_TB_SetReturning(agent, true);
+
+			await Task.Delay(mSecs);
+
+			MSA_TB_SetReturning(agent, false);
+		}
+		public static bool MSA_TB_TryMiscast(Agent agent, float netCharge) 
+		{
+			if (agent.statusEffects.hasTrait("Archmage"))
+				return false;
+			else if (agent.statusEffects.hasTrait("MagicTraining"))
+				netCharge *= 0.750f;
+			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				netCharge *= 0.500f;
+
+			if (agent.statusEffects.hasTrait("FocusedCasting"))
+				netCharge *= 0.500f;
+			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				netCharge *= 0.250f;
+			else if (agent.statusEffects.hasTrait("WildCasting"))
+				netCharge *= 1.500f;
+			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				netCharge *= 2.000f;
+
+			netCharge -= UnityEngine.Random.Range(0f, 100f);
+			netCharge /= 25;
+
+			int severity = (int)Mathf.Clamp(netCharge, 0, 4);
+
+			if (severity == 0)
+				return false;
+
 			bool failTeleport = false;
 			bool lightAndSound = false;
 			bool randomTeleport = false;
 			bool loseItem = false;
-			bool stroke = false;
+			bool confusion = false;
+			bool dizziness = false;
 
-			if (severity == 0)
-				return false;
-			else if (severity == 1)
+			if (severity == 1)
 			{
 				lightAndSound = true;
-				stroke = true;
+				confusion = true;
 			}
 			else if (severity == 2)
 			{
 				failTeleport = true;
 				randomTeleport = true;
-				stroke = true;
 			}
 			else if (severity == 3)
 			{
 				loseItem = true;
-				stroke = true;
+				dizziness = true;
 			}
 			else if (severity >= 4)
 			{
@@ -1617,35 +1619,39 @@ namespace BunnyMod
 				loseItem = true;
 				lightAndSound = true;
 				randomTeleport = true;
-				stroke = true;
 			}
+
+			BunnyHeader.Log("TelemancyTryMiscast: stroke");
+			agent.statusEffects.ChangeHealth(-severity * 5);
+			MSA_TB_DialogueMiscast(agent);
 
 			if (randomTeleport)
 			{
 				BunnyHeader.Log("TelemancyTryMiscast: randomTeleport");
 
-				// TODO
+				agent.statusEffects.UseQuickEscapeTeleporter(false);
+				failTeleport = true;
 			}
+
 			if (lightAndSound)
 			{
 				BunnyHeader.Log("TelemancyTryMiscast: lightAndSound");
 
-				// TODO
+				agent.gc.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
+				agent.SpawnParticleEffect("ExplosionEMP", agent.tr.position);
 			}
-			if (stroke)
-			{
-				BunnyHeader.Log("TelemancyTryMiscast: stroke");
 
-				int degree = severity * 5;
+			if (confusion)
+				agent.statusEffects.AddStatusEffect("Confused", severity * 5);
 
-				agent.statusEffects.ChangeHealth(-degree);
-				agent.statusEffects.AddStatusEffect("Dizzy", degree / 4);
+			if (dizziness)
+				agent.statusEffects.AddStatusEffect("Dizzy", severity * 3);
 
-				TelemancyDialogueMiscast(agent);
-			}
 			if (loseItem)
 			{
 				BunnyHeader.Log("TelemancyTryMiscast: LoseItem");
+
+				// To pick random item: compare from NPC Thief stealing? That would exclude quest items and your money supply, at least.
 
 				// TODO
 				// A Shortcut might be telling the game that the item has fallen into a hole. It would have the AV effects already set up. But might not be that simple.
@@ -1656,24 +1662,7 @@ namespace BunnyMod
 			if (!failTeleport)
 				return false;
 
-			return true;	
-		}
-		public static void TelemancyStartRecharge(Agent agent, bool routine)
-		{
-			if (!routine)
-			{
-				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				agent.gc.audioHandler.Play(agent, "Recharge");
-			}
-			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
-		}
-		public static async void TelemancyStartReturn(Agent agent, int mSecs)
-		{
-			TelemancySetReturning(agent, true);
-
-			await Task.Delay(mSecs);
-
-			TelemancySetReturning(agent, false);
+			return true;
 		}
 		#endregion
 
@@ -1722,11 +1711,11 @@ namespace BunnyMod
 
 				string[] magicAbilities = 
 				{ 
-					"Chronomancy", 
+					"ChronomanticDilation", 
 					"Cryomancy",
 					"Electromancy", 
-					"Pyromancy", 
-					"Telemancy" 
+					"PyromanticJet", 
+					"TelemanticBlink" 
 				};
 
 				if (magicAbilities.Contains(abilityName))

@@ -1,4 +1,4 @@
-# BunnyMod
+﻿# BunnyMod
 
 ![635810511556717422-house-edit](https://user-images.githubusercontent.com/29388895/95779680-0db93e80-0c90-11eb-977c-22f21eb5d771.jpg)
 
@@ -33,3 +33,17 @@ Want to learn how to mod? Want to contribute? Talk SOR?
 If you have suggestions or requests, get in contact with me. Most of the content I've added has been from community requests.
 
 #### [Current list of ideas](/MD/9.0.%20Ideas.md)
+
+# Acknowledgements
+
+I make broken things, and nice people patiently correct me. I want to thank those people.
+
+**Abbysssal#2020** - Endless help with RogueLibs, BepInEx, and coding in general
+
+**DapperGentleman#5990** - Balancing, Sprites, Bugtesting & sanity checks
+
+**Cherry🐍🐇#0643** - Release 1.4 Promo video, and hopefully more in the future
+
+**The Streets of Rogue Discord Community** - Fun, positive, supportive, and creative people! 🍻
+
+**You, the Very Special Player** - I'm supposed to say cheesy shit like this, right?

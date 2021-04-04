@@ -85,6 +85,7 @@
   <ItemGroup>
     <Compile Include="Content\BunnyAbilities.cs" />
     <Compile Include="Content\BunnyBehaviors.cs" />
+    <Compile Include="Content\BunnyDisasters.cs" />
     <Compile Include="Content\BunnyMutators.cs" />
     <Compile Include="Content\BunnySprites.cs" />
     <Compile Include="Content\BunnyHeader.cs" />

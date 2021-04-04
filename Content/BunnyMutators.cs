@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
 	public class BunnyMutators
 	{
@@ -16,11 +16,51 @@ namespace BunnyMod
 			BunnyHeader.MainInstance.PatchPrefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
 
 			BunnyHeader.MainInstance.PatchPrefix(typeof(PoolsScene), "SpawnWall", GetType(), "PoolsScene_SpawnWall", new Type[7] { typeof(bool), typeof(wallMaterialType), typeof(Vector3), typeof(TileData), typeof(int), typeof(int), typeof(bool)});
-
-
 		}
 		public static void InitializeMutators()
 		{
+			#region City Life
+			CustomMutator alwaysSpawnArsonists = RogueLibs.CreateCustomMutator("AlwaysSpawnArsonists", true,
+				new CustomNameInfo("Always Spawn Arsonists"),
+				new CustomNameInfo("You're not the only one in town, you know."));
+			alwaysSpawnArsonists.Available = true;
+			alwaysSpawnArsonists.IsActive = true;
+
+			CustomMutator badAirQuality = RogueLibs.CreateCustomMutator("BadAirQuality", true,
+				new CustomNameInfo("Bad Air Quality"),
+				new CustomNameInfo("No one's out and about."));
+			badAirQuality.Available = true;
+			badAirQuality.IsActive = true;
+
+			CustomMutator gangLand = RogueLibs.CreateCustomMutator("GangLand", true,
+				new CustomNameInfo("Gang Land"),
+				new CustomNameInfo(""));
+			gangLand.Available = true;
+			gangLand.IsActive = true;
+			// Distinct from the Gang War disaster. These are just roamers who will fight on sight, not like WarZone.
+
+		   //CustomMutator heyYou = RogueLibs.CreateCustomMutator("HeyYou", true,
+		   //	new CustomNameInfo("Hey, You!"),
+		   //	new CustomNameInfo("NPCs will occasionally approach you: Slum Dwellers begging, Gangbangers mugging, Cops asking to frisk you, Scientists offering paid medical experiments, Jocks doing pranks. Maybe more!"));
+		   //heyYou.Available = true;
+		   //heyYou.IsActive = true;
+
+		   CustomMutator letMeSeeThatThrong = RogueLibs.CreateCustomMutator("LetMeSeeThatThrong", true,
+				new CustomNameInfo("Let Me See That Throng"),
+				new CustomNameInfo("Don't get too excited. Throng as in crowd. There are about 4x as many roaming NPCs."));
+			letMeSeeThatThrong.Available = true;
+			letMeSeeThatThrong.IsActive = true;
+
+			CustomMutator returnToShrunke = RogueLibs.CreateCustomMutator("ReturnToShrunke", true,
+				new CustomNameInfo("Return to Shrunke"),
+				new CustomNameInfo("Everyone's shrunken."));
+			returnToShrunke.Available = true;
+			returnToShrunke.IsActive = true;
+			#endregion
+
+			#region Interface
+			#endregion
+
 			#region Map Modification
 			CustomMutator shantyTown = RogueLibs.CreateCustomMutator("Shantytown", true,
 				new CustomNameInfo("Shantytown"),
@@ -31,51 +71,32 @@ namespace BunnyMod
 
 			CustomMutator cityOfSteel = RogueLibs.CreateCustomMutator("CityOfSteel", true,
 				new CustomNameInfo("CityOfSteel"),
-				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, everywhere. This is pungent."));
+				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
 			cityOfSteel.Available = true;
 			cityOfSteel.Conflicting.AddRange(new string[] { "Shantytown" });
 			cityOfSteel.IsActive = true;
 			#endregion
 
 			#region Overhauls
-			CustomMutator cyberWarfare = RogueLibs.CreateCustomMutator("CyberWarfare", true,
-				new CustomNameInfo("Overhaul - Cyber Warfare"),
-				new CustomNameInfo("Hacking is more complex, and carries greater risks & rewards. Hack the planet!"));
-			cyberWarfare.Available = true;
-			cyberWarfare.IsActive = true;
+			//CustomMutator cyberWarfare = RogueLibs.CreateCustomMutator("CyberWarfare", true,
+			//	new CustomNameInfo("Overhaul - Cyber Warfare"),
+			//	new CustomNameInfo("Hacking is more complex, and carries greater risks & rewards. Hack the planet!"));
+			//cyberWarfare.Available = true;
+			//cyberWarfare.IsActive = true;
 			
-			CustomMutator scaryGuns = RogueLibs.CreateCustomMutator("ScaryGuns", true,
-				new CustomNameInfo("Overhaul - Scary Guns"),
-				new CustomNameInfo("Guns are deadlier, but adds Cover mechanics. Get good, or get dead."));
-			scaryGuns.Available = true;
-			scaryGuns.IsActive = true;
+			//CustomMutator scaryGuns = RogueLibs.CreateCustomMutator("ScaryGuns", true,
+			//	new CustomNameInfo("Overhaul - Scary Guns"),
+			//	new CustomNameInfo("Guns are deadlier, but adds Cover mechanics. Get good, or get dead."));
+			//scaryGuns.Available = true;
+			//scaryGuns.IsActive = true;
 
-			CustomMutator wagTheDog = RogueLibs.CreateCustomMutator("WagTheDog", true,
-				new CustomNameInfo("Overhaul - Wag The Dog"),
-				new CustomNameInfo("Electability now relies on a few new factors, and isn't so limited to particular playstyles."));
-			wagTheDog.Available = true;
-			wagTheDog.IsActive = true;
+			//CustomMutator wagTheDog = RogueLibs.CreateCustomMutator("WagTheDog", true,
+			//	new CustomNameInfo("Overhaul - Wag The Dog"),
+			//	new CustomNameInfo("Electability now relies on a few new factors, and isn't so limited to particular playstyles."));
+			//wagTheDog.Available = true;
+			//wagTheDog.IsActive = true;
 			#endregion
 
-			#region CityLife
-			CustomMutator alwaysSpawnArsonists = RogueLibs.CreateCustomMutator("AlwaysSpawnArsonists", true,
-				new CustomNameInfo("Always Spawn Arsonists"),
-				new CustomNameInfo(""));
-			alwaysSpawnArsonists.Available = true;
-			alwaysSpawnArsonists.IsActive = true;
-
-			CustomMutator gangLand = RogueLibs.CreateCustomMutator("GangLand", true,
-				new CustomNameInfo("Gang Land"),
-				new CustomNameInfo(""));
-			gangLand.Available = true;
-			gangLand.IsActive = true;
-
-			CustomMutator heyYou = RogueLibs.CreateCustomMutator("HeyYou", true,
-				new CustomNameInfo("Hey, You!"),
-				new CustomNameInfo("NPCs will occasionally approach you: Slum Dwellers begging, Gangbangers mugging, Cops asking to frisk you, Scientists offering paid medical experiments, Jocks doing pranks. Maybe more!"));
-			heyYou.Available = true;
-			heyYou.IsActive = true;
-			#endregion
 		}
 
 		#region Bullet

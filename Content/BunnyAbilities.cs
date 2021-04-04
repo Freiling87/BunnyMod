@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
 	public class BunnyAbilities
 	{

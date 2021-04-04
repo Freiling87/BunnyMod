@@ -11,7 +11,7 @@ using RogueLibsCore;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
     public class BunnyObjects
     {

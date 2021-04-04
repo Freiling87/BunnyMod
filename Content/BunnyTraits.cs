@@ -17,7 +17,7 @@ using RogueLibsCore;
     For upgrade traits, set Available to false.
  */
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
     public enum DamageType
 	{

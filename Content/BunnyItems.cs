@@ -8,7 +8,7 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
     public class BunnyItems 
     {

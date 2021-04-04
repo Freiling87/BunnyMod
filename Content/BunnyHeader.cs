@@ -9,6 +9,7 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 using System.Threading.Tasks;
+using BunnyMod.Content;
 
 namespace BunnyMod
 {
@@ -34,7 +35,7 @@ namespace BunnyMod
 			new BunnyAbilities().Awake();
 			//new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
-			//new BunnyMutators().Awake();
+			new BunnyMutators().Awake();
 			new BunnyObjects().Awake();
 			//new BunnySprites().Awake();
 			new BunnyTraits().Awake();

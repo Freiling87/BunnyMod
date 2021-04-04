@@ -31,7 +31,7 @@ namespace BunnyMod.Content
         public void Awake()
         {
             Initialize_Names();
-            Initialize_Traits_Active();
+            Initialize_Traits();
 
             BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
 
@@ -56,217 +56,50 @@ namespace BunnyMod.Content
         public static void Initialize_Names()
         {
         }
-        public static void Initialize_Traits_Inactive()
+        public static void Initialize_Traits()
         {
+            #region Codes of Conduct
+            //CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
+            //    new CustomNameInfo("Code of Honor"),
+            //    new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
+            //CodeOfHonor.Available = false; //
+            //CodeOfHonor.AvailableInCharacterCreation = false; //
+            //CodeOfHonor.CostInCharacterCreation = -6;
+            //CodeOfHonor.IsActive = false; // 
+            //CodeOfHonor.Upgrade = null;
+            #endregion
             #region Combat
-            CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
-                new CustomNameInfo("Return to Bonke"),
-                new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
-            ReturnToBonke.AvailableInCharacterCreation = false; //
-            ReturnToBonke.CostInCharacterCreation = 3;
-            ReturnToBonke.IsActive = false; //
-            ReturnToBonke.Available = false; //
-            ReturnToBonke.Upgrade = null;
+            //CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
+            //    new CustomNameInfo("Return to Bonke"),
+            //    new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
+            //ReturnToBonke.AvailableInCharacterCreation = false; //
+            //ReturnToBonke.CostInCharacterCreation = 3;
+            //ReturnToBonke.IsActive = false; //
+            //ReturnToBonke.Available = false; //
+            //ReturnToBonke.Upgrade = null;
 
-            CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
-                new CustomNameInfo("Whiffist"),
-                new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
-            Whiffist.AvailableInCharacterCreation = false; //
-            Whiffist.CostInCharacterCreation = 3;
-            Whiffist.IsActive = false; //
-            Whiffist.Available = false; //
-            Whiffist.Upgrade = "Whiffist_2";
+            //CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
+            //    new CustomNameInfo("Whiffist"),
+            //    new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
+            //Whiffist.AvailableInCharacterCreation = false; //
+            //Whiffist.CostInCharacterCreation = 3;
+            //Whiffist.IsActive = false; //
+            //Whiffist.Available = false; //
+            //Whiffist.Upgrade = "Whiffist_2";
             #endregion
             #region Consumables
-            CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
-                new CustomNameInfo("Alcoholic"),
-                new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
-            Alcoholic.Available = true;
-            Alcoholic.AvailableInCharacterCreation = true;
-            Alcoholic.CanRemove = true;
-            Alcoholic.CanSwap = false;
-            Alcoholic.CostInCharacterCreation = -5;
-            Alcoholic.IsActive = true;
-            Alcoholic.Upgrade = null;
-            // TODO: Allow consumption at full health
+            //CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
+            //    new CustomNameInfo("Alcoholic"),
+            //    new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
+            //Alcoholic.Available = true;
+            //Alcoholic.AvailableInCharacterCreation = true;
+            //Alcoholic.CanRemove = true;
+            //Alcoholic.CanSwap = false;
+            //Alcoholic.CostInCharacterCreation = -5;
+            //Alcoholic.IsActive = true;
+            //Alcoholic.Upgrade = null;
+            //// TODO: Allow consumption at full health
 
-            CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
-                new CustomNameInfo("Hungry Boy"),
-                new CustomNameInfo("Less healing from food and alcohol."));
-            HungryBoy.AvailableInCharacterCreation = false; //
-            HungryBoy.CostInCharacterCreation = -3;
-            HungryBoy.IsActive = false; //
-            HungryBoy.Available = false; //
-            HungryBoy.Upgrade = null;
-            #endregion
-            #region Class - Dealer
-            CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
-                new CustomNameInfo("Death To Snitches"),
-                new CustomNameInfo("Cops will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
-            DeathToSnitches.AvailableInCharacterCreation = false; //
-            DeathToSnitches.IsActive = false; //
-            DeathToSnitches.Available = false; //
-            DeathToSnitches.Upgrade = null;
-            //TODO: Unlock DeathToSnitches when Pusher gained
-
-            CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
-                new CustomNameInfo("Pusher"),
-                new CustomNameInfo("You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down."));//
-            Pusher.AvailableInCharacterCreation = false; //
-            Pusher.CanRemove = false;
-            Pusher.CanSwap = false;
-            Pusher.CostInCharacterCreation = 6;
-            Pusher.IsActive = false; //
-            Pusher.Available = false; //
-            Pusher.Upgrade = "Pusher_2";
-            //TODO: Unlock DeathToSnitches when Pusher gained
-
-            CustomTrait Pusher_2 = RogueLibs.CreateCustomTrait("Pusher_2", true,
-                new CustomNameInfo("Pusher +"),
-                new CustomNameInfo("Increased chances of success when pushing drugs."));//
-            Pusher_2.AvailableInCharacterCreation = false; //
-            Pusher_2.IsActive = false; //
-            Pusher_2.Available = false; //
-            Pusher_2.Upgrade = null;
-            #endregion
-            #region Equipment
-            CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-                new CustomNameInfo("Fatass"),
-                new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            Fatass.Available = true;
-            Fatass.AvailableInCharacterCreation = true;
-            Fatass.CanRemove = true;
-            Fatass.CanSwap = false;
-            Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            Fatass.CostInCharacterCreation = -2;
-            Fatass.IsActive = true;
-            Fatass.Recommendations.AddRange(new string[] { "Stomp" });
-            Fatass.Upgrade = null;
-            #endregion
-            #region Karma
-            CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
-                new CustomNameInfo("Code of Honor"),
-                new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
-            CodeOfHonor.Available = false; //
-            CodeOfHonor.AvailableInCharacterCreation = false; //
-            CodeOfHonor.CostInCharacterCreation = -6;
-            CodeOfHonor.IsActive = false; // 
-            CodeOfHonor.Upgrade = null;
-			#endregion
-            #region Class - Priest
-            CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
-                new CustomNameInfo("Artificial Insermonation"),
-                new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
-            ArtificialInsermonation.AvailableInCharacterCreation = false; //
-            ArtificialInsermonation.CostInCharacterCreation = 2;
-            ArtificialInsermonation.IsActive = false; //
-            ArtificialInsermonation.Available = false; //
-            ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
-
-            CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
-                new CustomNameInfo("Artificial Insermonation +"),
-                new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
-            ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
-            ArtificialInsermonation_2.CostInCharacterCreation = 2;
-            ArtificialInsermonation_2.IsActive = false; //
-            ArtificialInsermonation_2.Available = false; //
-            ArtificialInsermonation_2.Upgrade = null;
-
-            CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
-                new CustomNameInfo("Undead Bane"),
-                new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
-            UndeadBane.AvailableInCharacterCreation = false; //
-            UndeadBane.CostInCharacterCreation = -4;
-            UndeadBane.IsActive = false; //
-            UndeadBane.Available = false; //
-            UndeadBane.Upgrade = null;
-            #endregion
-            #region Social
-            CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
-                new CustomNameInfo("Veiled Threats"),
-                new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
-            VeiledThreats.AvailableInCharacterCreation = false; //
-            VeiledThreats.CostInCharacterCreation = 3;
-            VeiledThreats.IsActive = false; //
-            VeiledThreats.Available = false; //
-            VeiledThreats.Upgrade = null;
-            #endregion
-            #region Tampering
-            CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
-                new CustomNameInfo("One Happy Tamper"),
-                new CustomNameInfo("Owners will allow you to tamper with their belongings."));
-            OneHappyTamper.AvailableInCharacterCreation = false; //
-            OneHappyTamper.CostInCharacterCreation = 2;
-            OneHappyTamper.IsActive = false; //
-            OneHappyTamper.Available = false; //
-            OneHappyTamper.Upgrade = null;
-            #endregion
-            #region Trapping
-            CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
-                new CustomNameInfo("Cheeky Trappy"),
-                new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
-            CheekyTrappy.AvailableInCharacterCreation = false; //
-            CheekyTrappy.CostInCharacterCreation = 1;
-            CheekyTrappy.IsActive = false; //
-            CheekyTrappy.Available = false; //
-            CheekyTrappy.Upgrade = null;
-
-            CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
-                new CustomNameInfo("Pursuit Of Trappiness"),
-                new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
-            PursuitOfTrappiness.AvailableInCharacterCreation = false; //
-            PursuitOfTrappiness.CostInCharacterCreation = 2;
-            PursuitOfTrappiness.IsActive = false; //
-            PursuitOfTrappiness.Available = false; //
-            PursuitOfTrappiness.Upgrade = null;
-
-            CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
-                new CustomNameInfo("Trapper Keeper"),
-                new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
-            TrapperKeeper.AvailableInCharacterCreation = false; //
-            TrapperKeeper.CostInCharacterCreation = 2;
-            TrapperKeeper.IsActive = false; //
-            TrapperKeeper.Available = false; //
-            TrapperKeeper.Upgrade = null;
-            #endregion
-            #region Miscellaneous
-            CustomTrait EagleEyed = RogueLibs.CreateCustomTrait("EagleEyed", true,
-                new CustomNameInfo("Eagle Eyed"),
-                new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
-            EagleEyed.Available = true;
-            EagleEyed.AvailableInCharacterCreation = true;
-            EagleEyed.CanRemove = false;
-            EagleEyed.CanSwap = true;
-            EagleEyed.CostInCharacterCreation = 3;
-            EagleEyed.IsActive = true;
-            EagleEyed.Upgrade = "EagleEyed_2";
-
-            CustomTrait EagleEyed_2 = RogueLibs.CreateCustomTrait("EagleEyed_2", true,
-                new CustomNameInfo("Eagle Eyed +"),
-                new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
-            EagleEyed_2.Available = true;
-            EagleEyed_2.AvailableInCharacterCreation = false;
-            EagleEyed_2.CanRemove = false;
-            EagleEyed_2.CanSwap = false;
-            EagleEyed_2.CostInCharacterCreation = 6;
-            EagleEyed_2.IsActive = true;
-            EagleEyed_2.Upgrade = null;
-
-            CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
-                new CustomNameInfo("Myopic"),
-                new CustomNameInfo("You can't see too far."));
-            Myopic.Available = true;
-            Myopic.AvailableInCharacterCreation = true;
-            Myopic.CanRemove = true;
-            Myopic.CanSwap = true;
-            Myopic.CostInCharacterCreation = -3;
-            Myopic.IsActive = true;
-            Myopic.Upgrade = null;
-            #endregion
-        }
-		public static void Initialize_Traits_Active()
-        {
-            #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
                 new CustomNameInfo("Carnivore"),
                 new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
@@ -303,6 +136,15 @@ namespace BunnyMod.Content
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
 
+            //CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
+            //    new CustomNameInfo("Hungry Boy"),
+            //    new CustomNameInfo("Less healing from food and alcohol."));
+            //HungryBoy.AvailableInCharacterCreation = false; //
+            //HungryBoy.CostInCharacterCreation = -3;
+            //HungryBoy.IsActive = false; //
+            //HungryBoy.Available = false; //
+            //HungryBoy.Upgrade = null;
+
             CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
                 new CustomNameInfo("Teetotaller"),
                 new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
@@ -328,6 +170,36 @@ namespace BunnyMod.Content
             Vegetarian.Available = false;
             Vegetarian.Upgrade = null;
             #endregion
+            #region Economic
+            //CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
+            //    new CustomNameInfo("Death To Snitches"),
+            //    new CustomNameInfo("Cops & Upper-Crusters will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
+            //DeathToSnitches.AvailableInCharacterCreation = false; //
+            //DeathToSnitches.IsActive = false; //
+            //DeathToSnitches.Available = false; //
+            //DeathToSnitches.Upgrade = null;
+            ////TODO: Unlock DeathToSnitches when Pusher gained
+
+            //CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
+            //    new CustomNameInfo("Pusher"),
+            //    new CustomNameInfo("You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down."));//
+            //Pusher.AvailableInCharacterCreation = false; //
+            //Pusher.CanRemove = false;
+            //Pusher.CanSwap = false;
+            //Pusher.CostInCharacterCreation = 6;
+            //Pusher.IsActive = false; //
+            //Pusher.Available = false; //
+            //Pusher.Upgrade = "Pusher_2";
+            ////TODO: Unlock DeathToSnitches when Pusher gained
+
+            //CustomTrait Pusher_2 = RogueLibs.CreateCustomTrait("Pusher_2", true,
+            //    new CustomNameInfo("Pusher +"),
+            //    new CustomNameInfo("Increased chances of success when pushing drugs."));//
+            //Pusher_2.AvailableInCharacterCreation = false; //
+            //Pusher_2.IsActive = false; //
+            //Pusher_2.Available = false; //
+            //Pusher_2.Upgrade = null;
+            #endregion
             #region Equipment
             CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
                 new CustomNameInfo("Afraid of Loud Noises"),
@@ -352,6 +224,19 @@ namespace BunnyMod.Content
             DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = false;
             DrawNoBlood.Upgrade = null;
+
+            //CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
+            //    new CustomNameInfo("Fatass"),
+            //    new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
+            //Fatass.Available = true;
+            //Fatass.AvailableInCharacterCreation = true;
+            //Fatass.CanRemove = true;
+            //Fatass.CanSwap = false;
+            //Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
+            //Fatass.CostInCharacterCreation = -2;
+            //Fatass.IsActive = true;
+            //Fatass.Recommendations.AddRange(new string[] { "Stomp" });
+            //Fatass.Upgrade = null;
 
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
                 new CustomNameInfo("Fat Head"),
@@ -430,13 +315,13 @@ namespace BunnyMod.Content
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
                 new CustomNameInfo("Focused Casting"),
                 new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));
-            FocusedCasting.Available = true; 
+            FocusedCasting.Available = true;
             FocusedCasting.AvailableInCharacterCreation = true;
             FocusedCasting.CanRemove = false;
             FocusedCasting.CanSwap = false;
             FocusedCasting.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
             FocusedCasting.CostInCharacterCreation = 3;
-            FocusedCasting.IsActive = true; 
+            FocusedCasting.IsActive = true;
             FocusedCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             FocusedCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             FocusedCasting.Upgrade = "FocusedCasting_2";
@@ -444,13 +329,13 @@ namespace BunnyMod.Content
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
                 new CustomNameInfo("Focused Casting +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
-            FocusedCasting_2.Available = false; 
+            FocusedCasting_2.Available = false;
             FocusedCasting_2.AvailableInCharacterCreation = false;
             FocusedCasting_2.CanRemove = false;
             FocusedCasting_2.CanSwap = false;
             FocusedCasting_2.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
             FocusedCasting_2.CostInCharacterCreation = 6;
-            FocusedCasting_2.IsActive = true; 
+            FocusedCasting_2.IsActive = true;
             FocusedCasting_2.Upgrade = null;
 
             CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
@@ -508,13 +393,13 @@ namespace BunnyMod.Content
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
                 new CustomNameInfo("Wild Casting"),
                 new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
-            WildCasting.Available = true; 
+            WildCasting.Available = true;
             WildCasting.AvailableInCharacterCreation = true;
             WildCasting.CanRemove = false;
             WildCasting.CanSwap = false;
             WildCasting.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
             WildCasting.CostInCharacterCreation = 3;
-            WildCasting.IsActive = true; 
+            WildCasting.IsActive = true;
             WildCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             WildCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
             WildCasting.Upgrade = "WildCasting_2";
@@ -522,13 +407,13 @@ namespace BunnyMod.Content
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
                 new CustomNameInfo("Wild Casting +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
-            WildCasting_2.Available = false; 
+            WildCasting_2.Available = false;
             WildCasting_2.AvailableInCharacterCreation = false;
             WildCasting_2.CanRemove = false;
             WildCasting_2.CanSwap = false;
             WildCasting_2.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
             WildCasting_2.CostInCharacterCreation = 6;
-            WildCasting_2.IsActive = true; 
+            WildCasting_2.IsActive = true;
             WildCasting_2.Upgrade = null;
             #endregion
             #region Magic - Chronomantic Dilation
@@ -542,7 +427,7 @@ namespace BunnyMod.Content
             RATS.Conflicting.AddRange(new string[] { "RATS_2" });
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
-            RATS.Recommendations.AddRange(new string[] { "ChronomanticDilation", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons"});
+            RATS.Recommendations.AddRange(new string[] { "ChronomanticDilation", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons" });
             RATS.Upgrade = "RATS_2";
 
             CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
@@ -556,11 +441,93 @@ namespace BunnyMod.Content
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;
-			#endregion
-			#region Magic - Telemantic Blink
             #endregion
-			#region Stealth
-			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+            #region Magic - Telemantic Blink
+            #endregion
+            #region Miscellaneous
+            //CustomTrait EagleEyes = RogueLibs.CreateCustomTrait("EagleEyes", true,
+            //    new CustomNameInfo("Eagle Eyes"),
+            //    new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
+            //EagleEyes.Available = true;
+            //EagleEyes.AvailableInCharacterCreation = true;
+            //EagleEyes.CanRemove = false;
+            //EagleEyes.CanSwap = true;
+            //EagleEyes.CostInCharacterCreation = 3;
+            //EagleEyes.IsActive = true;
+            //EagleEyes.Upgrade = "EagleEyes_2";
+
+            //CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait("EagleEyes_2", true,
+            //    new CustomNameInfo("Eagle Eyes +"),
+            //    new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
+            //EagleEyes_2.Available = true;
+            //EagleEyes_2.AvailableInCharacterCreation = false;
+            //EagleEyes_2.CanRemove = false;
+            //EagleEyes_2.CanSwap = false;
+            //EagleEyes_2.CostInCharacterCreation = 6;
+            //EagleEyes_2.IsActive = true;
+            //EagleEyes_2.Upgrade = null;
+
+            //CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
+            //    new CustomNameInfo("Myopic"),
+            //    new CustomNameInfo("You can't see too far."));
+            //Myopic.Available = true;
+            //Myopic.AvailableInCharacterCreation = true;
+            //Myopic.CanRemove = true;
+            //Myopic.CanSwap = true;
+            //Myopic.CostInCharacterCreation = -4;
+            //Myopic.IsActive = true;
+            //Myopic.Upgrade = null;
+
+            //CustomTrait Myopic_2 = RogueLibs.CreateCustomTrait("Ultramyopic", true,
+            //    new CustomNameInfo("Ultramyopic"),
+            //    new CustomNameInfo("You tend to keep people at arm's length, where you can't see them."));
+            //Myopic_2.Available = true;
+            //Myopic_2.AvailableInCharacterCreation = true;
+            //Myopic_2.CanRemove = true;
+            //Myopic_2.CanSwap = true;
+            //Myopic_2.CostInCharacterCreation = -8;
+            //Myopic_2.IsActive = true;
+            //Myopic_2.Upgrade = null;
+            #endregion
+            #region Social
+            //CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
+            //    new CustomNameInfo("Artificial Insermonation"),
+            //    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+            //ArtificialInsermonation.AvailableInCharacterCreation = false; //
+            //ArtificialInsermonation.CostInCharacterCreation = 2;
+            //ArtificialInsermonation.IsActive = false; //
+            //ArtificialInsermonation.Available = false; //
+            //ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
+
+            //CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
+            //    new CustomNameInfo("Artificial Insermonation +"),
+            //    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+            //ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
+            //ArtificialInsermonation_2.CostInCharacterCreation = 2;
+            //ArtificialInsermonation_2.IsActive = false; //
+            //ArtificialInsermonation_2.Available = false; //
+            //ArtificialInsermonation_2.Upgrade = null;
+
+            //CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
+            //    new CustomNameInfo("Undead Bane"),
+            //    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
+            //UndeadBane.AvailableInCharacterCreation = false; //
+            //UndeadBane.CostInCharacterCreation = -4;
+            //UndeadBane.IsActive = false; //
+            //UndeadBane.Available = false; //
+            //UndeadBane.Upgrade = null;
+
+            //CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
+            //    new CustomNameInfo("Veiled Threats"),
+            //    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+            //VeiledThreats.AvailableInCharacterCreation = false; //
+            //VeiledThreats.CostInCharacterCreation = 3;
+            //VeiledThreats.IsActive = false; //
+            //VeiledThreats.Available = false; //
+            //VeiledThreats.Upgrade = null;
+            #endregion
+            #region Stealth
+            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
@@ -573,6 +540,15 @@ namespace BunnyMod.Content
             StealthBastardDeluxe.Upgrade = null;
             #endregion
             #region Tampering
+            //CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
+            //    new CustomNameInfo("One Happy Tamper"),
+            //    new CustomNameInfo("Owners will allow you to tamper with their belongings."));
+            //OneHappyTamper.AvailableInCharacterCreation = false; //
+            //OneHappyTamper.CostInCharacterCreation = 2;
+            //OneHappyTamper.IsActive = false; //
+            //OneHappyTamper.Available = false; //
+            //OneHappyTamper.Upgrade = null;
+
             CustomTrait TamperTantrum = RogueLibs.CreateCustomTrait("TamperTantrum", true,
                 new CustomNameInfo("Tamper Tantrum"),
                 new CustomNameInfo("Your tools take less wear from tampering."));
@@ -594,6 +570,34 @@ namespace BunnyMod.Content
             TamperTantrum_2.CostInCharacterCreation = 5;
             TamperTantrum_2.IsActive = true;
             TamperTantrum_2.Upgrade = null;
+            #endregion
+            #region Trapping
+            //CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
+            //    new CustomNameInfo("Cheeky Trappy"),
+            //    new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
+            //CheekyTrappy.AvailableInCharacterCreation = false; //
+            //CheekyTrappy.CostInCharacterCreation = 1;
+            //CheekyTrappy.IsActive = false; //
+            //CheekyTrappy.Available = false; //
+            //CheekyTrappy.Upgrade = null;
+
+            //CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
+            //    new CustomNameInfo("Pursuit Of Trappiness"),
+            //    new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
+            //PursuitOfTrappiness.AvailableInCharacterCreation = false; //
+            //PursuitOfTrappiness.CostInCharacterCreation = 2;
+            //PursuitOfTrappiness.IsActive = false; //
+            //PursuitOfTrappiness.Available = false; //
+            //PursuitOfTrappiness.Upgrade = null;
+
+            //CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
+            //    new CustomNameInfo("Trapper Keeper"),
+            //    new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
+            //TrapperKeeper.AvailableInCharacterCreation = false; //
+            //TrapperKeeper.CostInCharacterCreation = 2;
+            //TrapperKeeper.IsActive = false; //
+            //TrapperKeeper.Available = false; //
+            //TrapperKeeper.Upgrade = null;
             #endregion
         }
         #endregion

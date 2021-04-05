@@ -1,20 +1,19 @@
-﻿using System;
+﻿using HarmonyLib;
+using RogueLibsCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-using BepInEx;
-using HarmonyLib;
-using UnityEngine;
-using RogueLibsCore;
-using UnityEngine.Networking;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace BunnyMod.Content
 {
-    public class BunnyObjects
+	public class BunnyObjects
     {
+        public static GameController gc => GameController.gameController;
+
         #region Generic
         public void Awake()
         {
@@ -40,48 +39,72 @@ namespace BunnyMod.Content
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden");
             #endregion
             #region Patches - Objects
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
 
+            // Bathtub
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
+            
+            // Crate
             BunnyHeader.MainInstance.PatchPostfix(typeof(Crate), "DetermineButtons", GetType(), "Crate_DetermineButtons", new Type[0] { });
 
+            // Door
             BunnyHeader.MainInstance.PatchPostfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
 
+            // Flaming Barrel
             BunnyHeader.MainInstance.PatchPostfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
 
+            // Generator
             BunnyHeader.MainInstance.PatchPostfix(typeof(Generator), "DetermineButtons", GetType(), "Generator_DetermineButtons", new Type[0] { });
 
+            // Generator (Overclocked)
             BunnyHeader.MainInstance.PatchPostfix(typeof(Generator2), "DetermineButtons", GetType(), "Generator2_DetermineButtons", new Type[0] { });
 
+            // Hole
+            BunnyHeader.MainInstance.PatchPrefix(typeof(Hole), "EnterRange", GetType(), "Hole_EnterRange", new Type[1] { typeof(GameObject) });
+
+            // Laser Emitter
             BunnyHeader.MainInstance.PatchPostfix(typeof(LaserEmitter), "DetermineButtons", GetType(), "LaserEmitter_DetermineButtons", new Type[0] { });
 
+            // Manhole
+            BunnyHeader.MainInstance.PatchPostfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
+
+            // Plant
             BunnyHeader.MainInstance.PatchPostfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
 
+            // Police Box
             BunnyHeader.MainInstance.PatchPostfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PoliceBox_DetermineButtons", new Type[0] { });
 
+            // Pool Table
             BunnyHeader.MainInstance.PatchPostfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars", new Type[0] { });
 
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
-            //BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
+			//// Refrigerator
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
+			//BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
 
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+			//// Slot Machine
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
+			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
+            // Satellite Dish
+			BunnyHeader.MainInstance.PatchPostfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
 
+            // Stove
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Stove), "DestroyMe3", GetType(), "Stove_DestroyMe3", new Type[0] { });
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars", new Type[0] { });
             BunnyHeader.MainInstance.PatchPostfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars", new Type[0] { });
 
+            // Table (Big)
             BunnyHeader.MainInstance.PatchPostfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars", new Type[0] { });
 
+            // Television
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
 
+            // Window
             BunnyHeader.MainInstance.PatchPostfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
             BunnyHeader.MainInstance.PatchPrefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
             #endregion
@@ -177,7 +200,6 @@ namespace BunnyMod.Content
                 }
             }
         }
-
         #endregion
 
         #region ObjectReal
@@ -222,8 +244,6 @@ namespace BunnyMod.Content
                     }
                     else
                         agent.SayDialogue("CantGrillFud");
-
-                    return;
                 }
                 else
                 {
@@ -231,11 +251,22 @@ namespace BunnyMod.Content
                         __instance.buttons.Add("LightBarbecue");
                     else
                         agent.SayDialogue("CantOperateBarbecue");
-
-                    return;
                 }
             }
-            if (__instance is Stove)
+            else if (__instance is Manhole)
+			{
+                Manhole manhole = (Manhole)__instance;
+
+                if (!manhole.opened && agent.inventory.HasItem("Crowbar"))
+				{
+                    __instance.buttons.Add("UseCrowbar");
+                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BunnyTraits.ToolCost(agent, 15));
+                }
+
+                if (manhole.opened && agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                    __instance.buttons.Add("FlushYourself");
+            }
+            else if (__instance is Stove)
             {
                 if (!__instance.startedFlashing)
                 {
@@ -248,7 +279,6 @@ namespace BunnyMod.Content
                     if (agent.inventory.HasItem("Fud"))
                         __instance.buttons.Add("GrillFud");
                 }
-                return;
             }
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
@@ -263,6 +293,14 @@ namespace BunnyMod.Content
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
                 __instance.StopInteraction();
             }
+            else if (__instance is Manhole)
+			{
+                if (__instance.operatingItem.invItemName == "Crowbar")
+				{
+                    Manhole_UseCrowbar((Manhole)__instance);
+                    __instance.StopInteraction();
+				}
+			}
             else if (__instance is Stove)
             {
                 if (__instance.operatingItem.invItemName == "Wrench")
@@ -274,9 +312,7 @@ namespace BunnyMod.Content
                 if (__instance.operatingItem.invItemName == "Fud")
                 {
                     Stove_GrilledFud((Stove)__instance);
-                    BunnyHeader.Log("Grilled FO 1");
                     __instance.StopInteraction();
-                    BunnyHeader.Log("Grilled FO 2");
                 }
             }
 
@@ -310,6 +346,8 @@ namespace BunnyMod.Content
                 __instance.StopInteraction();
             }
             else if (__instance is FlamingBarrel)
+                __instance.ShowObjectButtons();
+            else if (__instance is Manhole)
                 __instance.ShowObjectButtons();
             else if (__instance is Stove)
             {
@@ -352,7 +390,14 @@ namespace BunnyMod.Content
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-            if (__instance is Stove)
+            if (__instance is Manhole)
+			{
+                if (myAction == "FlushYourself")
+                    Manhole_FlushYourself((Manhole)__instance);
+                else if (myAction == "UseCrowbar")
+                    Manhole_UseCrowbar((Manhole)__instance);
+			}
+            else if (__instance is Stove)
             {
                 if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
                     Stove_UseWrenchToDetonate((Stove)__instance);
@@ -397,54 +442,9 @@ namespace BunnyMod.Content
             MethodInfo pressedButton_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
-            if (buttonText == "HackExplode")
-            {
-                __instance.HackExplode(__instance.interactingAgent);
+            Agent agent = __instance.interactingAgent;
 
-                return false;
-            }
-            #region Patch
-            if (buttonText == "LightBarbecue")
-            {
-                __instance.StartFireInObject();
-                __instance.StopInteraction();
-
-                return false;
-            }
-            if (buttonText == "GrillFud")
-            {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
-
-                return false;
-            }
-            if (buttonText == "UseWrenchToDetonate")
-            {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
-                {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    //__instance.gc.audioHandler.Play(__instance, "Hack");
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
-                }
-            }
-            if (buttonText == "DispenseIce")
-            {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
-                {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    //__instance.gc.audioHandler.Play(__instance, "Hack");
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
-                }
-            }
-            #endregion Patch
-            if (buttonText == "CollectPart")
+            if (buttonText == "CollectPart") // Vanilla
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
 
@@ -452,6 +452,44 @@ namespace BunnyMod.Content
                 {
                     __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     __instance.gc.audioHandler.Play(__instance, "Hack");
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
+            }
+            else if (buttonText == "DispenseIce")
+            {
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    //__instance.gc.audioHandler.Play(__instance, "Hack");
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                }
+            }
+            else if (buttonText == "FlushYourself" && __instance is Manhole)
+                Manhole_FlushYourself((Manhole)__instance);
+            else if (buttonText == "GrillFud")
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+            else if (buttonText == "HackExplode") // Vanilla
+                __instance.HackExplode(__instance.interactingAgent);
+            else if (buttonText == "LightBarbecue")
+            {
+                __instance.StartFireInObject();
+                __instance.StopInteraction();
+            }
+            else if (buttonText == "UseCrowbar")
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Crowbar"), 2f, true, "Unlocking"));
+            else if (buttonText == "UseWrenchToDetonate")
+            {
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                {
+                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     __instance.SpawnParticleEffect("Hack", __instance.tr.position);
                     __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
                     __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
@@ -485,11 +523,11 @@ namespace BunnyMod.Content
             try
             {
                 BunnyHeader.Log("PlayfieldObject_Operating " + __instance.name + ": ");
-                BunnyHeader.Log("Agent = " + myAgent.name);
-                BunnyHeader.Log("item = " + item.invItemName);
-                BunnyHeader.Log("timeToUnlock = " + timeToUnlock);
-                BunnyHeader.Log("makeNoise = " + makeNoise);
-                BunnyHeader.Log("barType = " + barType);
+                BunnyHeader.Log("    Agent = " + myAgent.name);
+                BunnyHeader.Log("    item = " + item.invItemName);
+                BunnyHeader.Log("    timeToUnlock = " + timeToUnlock);
+                BunnyHeader.Log("    makeNoise = " + makeNoise);
+                BunnyHeader.Log("    barType = " + barType);
             }
             catch
             {
@@ -602,12 +640,140 @@ namespace BunnyMod.Content
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
-        #endregion
-        #region LaserEmitter
-        public static void LaserEmitter_DetermineButtons(LaserEmitter __instance) // Postfix
+		#endregion
+		#region Hole
+		public static bool Hole_EnterRange(GameObject myObject, Hole __instance) // Prefix
+		{
+            if (gc.loadComplete)
+            {
+                if (myObject.CompareTag("Agent"))
+                {
+                    BunnyHeader.Log("Hole_EnterRange");
+                    BunnyHeader.Log("    myObject = " + myObject.name);
+                    BunnyHeader.Log("    Hole = " + __instance.name);
+                    BunnyHeader.Log("    holeType = " + __instance.GetComponent<ObjectMultHole>().objectHoleType);
+
+                    Agent agent = myObject.GetComponent<Agent>();
+
+                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                    {
+                        Manhole_FlushYourself(agent);
+
+                        return false;
+                    }
+                }
+            }
+            return true;
+		}
+		#endregion
+		#region LaserEmitter
+		public static void LaserEmitter_DetermineButtons(LaserEmitter __instance) // Postfix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
+        }
+        #endregion
+        #region Manhole
+        public static void Manhole_FlushYourself(Agent agent) // Non-Patch
+        {
+            List<ObjectReal> exits = new List<ObjectReal>();
+
+            for (int i = 0; i < gc.objectRealList.Count; i++)
+            {
+                ObjectReal objectReal = gc.objectRealList[i];
+
+                if (objectReal.objectName == "Manhole")
+                {
+                    Manhole manhole = (Manhole)objectReal;
+
+                    if (manhole.opened)
+                        exits.Add(objectReal);
+                }
+            }
+
+            Vector2 exit = exits[UnityEngine.Random.Range(0, exits.Count)].curPosition;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized;
+
+            gc.audioHandler.Play(agent, "ToiletTeleportIn");
+            agent.toiletTeleporting = true;
+            agent.Teleport(exit + offset, true, false);
+
+            //agent.jumpDirection = exit + offset;
+            //agent.jumpSpeed = 1f;
+            //agent.Jump();
+        }
+		public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
+		{
+			Agent agent = __instance.interactingAgent;
+
+			if ((agent.statusEffects.hasTrait("UnderdarkCitizen")) && !agent.statusEffects.hasStatusEffect("Giant"))
+			{
+				List<ObjectReal> list = new List<ObjectReal>();
+				float furthestManholeDistance = 0f;
+
+				for (int i = 0; i < gc.objectRealList.Count; i++)
+				{
+					ObjectReal objectReal = gc.objectRealList[i];
+
+					if (objectReal.objectName == "Manhole" && objectReal != __instance)
+					{
+						Manhole manhole = (Manhole)objectReal;
+
+						if (manhole.opened)
+						{
+							list.Add(objectReal);
+							float distance = Vector2.Distance(__instance.tr.position, objectReal.tr.position);
+
+							if (distance > furthestManholeDistance)
+								furthestManholeDistance = distance;
+						}
+					}
+				}
+
+				ObjectReal destinationManhole = __instance;
+
+				if (list.Count > 0)
+					destinationManhole = list[UnityEngine.Random.Range(0, list.Count)];
+
+				Vector3 outHole = destinationManhole.tr.position;
+				outHole.y -= 0.96f;
+
+				// TODO: Check for walls
+
+				gc.audioHandler.Play(__instance, "ToiletTeleportIn");
+				agent.toiletTeleporting = true;
+				agent.Teleport(outHole);
+			}
+		}
+		public static void Manhole_SetVars(Manhole __instance) // Postfix
+		{
+            __instance.interactable = true;
+		}
+        public static void Manhole_UseCrowbar(Manhole __instance) // Non-Patch
+        {
+            BunnyHeader.Log("Manhole_UseCrowbar");
+
+            if (__instance.gc.serverPlayer)
+            {
+                Vector3 position = __instance.tr.position;
+                position = new Vector3(__instance.tr.position.x, __instance.tr.position.y - 0.24f, __instance.tr.position.z);
+                
+                __instance.hole = __instance.gc.spawnerMain.SpawnHole(__instance, position, new Vector3(1.5f, 1.5f, 1f), Quaternion.identity, false, true);
+                __instance.hole.ObjectHoleAppear("Manhole");
+                __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "HoleAppear");
+                __instance.operatingAgent.inventory.SubtractFromItemCount(__instance.operatingItem, 15); // SubtractFromItemCount is Postfixed! ToolCost is already in there.
+            }
+
+            __instance.objectSprite.meshRenderer.enabled = false;
+            __instance.opened = true;
+            __instance.SetSDangerousToWalk(true);
+            __instance.gc.audioHandler.Play(__instance, "ManholeOpen");
+
+            if (__instance.gc.levelFeeling == "WarZone")
+            {
+                __instance.objectRealRealName = __instance.gc.nameDB.GetName("Hole", "Object");
+                __instance.normalHole = true;
+            }
         }
         #endregion
         #region Plant
@@ -1188,7 +1354,7 @@ namespace BunnyMod.Content
             if (__instance.gc.serverPlayer)
             {
                 __instance.MakeNonFunctional(__instance.interactingAgent);
-                __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30); //TODO
+                __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30);
                 __instance.interactingAgent.skillPoints.AddPoints("TamperGeneratorPoints");
                 __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
                 return;

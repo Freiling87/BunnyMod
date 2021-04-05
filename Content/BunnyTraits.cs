@@ -27,14 +27,18 @@ namespace BunnyMod.Content
 
     public class BunnyTraits
     {
+        public static GameController gc => GameController.gameController;
+
         #region Main
         public void Awake()
         {
             Initialize_Names();
             Initialize_Traits();
 
+            // AgentInteractions
             BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
 
+            // InvDatabase
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
@@ -42,15 +46,23 @@ namespace BunnyMod.Content
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
 
+            // InvItem
             BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
 
+            // ItemFunctions
             BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
+            // LoadLevel
+            BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3", new Type[0] { });
+
+            // PlayfieldObject
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
 
+            // StatusEffects
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal)});
             BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
         }
         public static void Initialize_Names()
@@ -77,6 +89,15 @@ namespace BunnyMod.Content
             //ReturnToBonke.IsActive = false; //
             //ReturnToBonke.Available = false; //
             //ReturnToBonke.Upgrade = null;
+
+            //CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait("SpectralStrikes", true,
+            //    new CustomNameInfo("Spectral Strikes"),
+            //    new CustomNameInfo("Your melee and unarmed attacks can damage Ghosts."));
+            //SpectralStrikes.AvailableInCharacterCreation = true;
+            //SpectralStrikes.CostInCharacterCreation = 2;
+            //SpectralStrikes.IsActive = false;
+            //SpectralStrikes.Available = true;
+            //SpectralStrikes.Upgrade = null;
 
             //CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
             //    new CustomNameInfo("Whiffist"),
@@ -442,8 +463,6 @@ namespace BunnyMod.Content
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;
             #endregion
-            #region Magic - Telemantic Blink
-            #endregion
             #region Miscellaneous
             //CustomTrait EagleEyes = RogueLibs.CreateCustomTrait("EagleEyes", true,
             //    new CustomNameInfo("Eagle Eyes"),
@@ -538,6 +557,18 @@ namespace BunnyMod.Content
             StealthBastardDeluxe.CostInCharacterCreation = 4;
             StealthBastardDeluxe.IsActive = true;
             StealthBastardDeluxe.Upgrade = null;
+
+            CustomTrait UnderdarkCitizen = RogueLibs.CreateCustomTrait("UnderdarkCitizen", true,
+                new CustomNameInfo("Underdark Citizen"),
+                new CustomNameInfo("You can navigate the city's sewers with ease. Their denizens no longer consider you an easy mark."));
+            UnderdarkCitizen.Available = true;
+            UnderdarkCitizen.AvailableInCharacterCreation = true;
+            UnderdarkCitizen.CanRemove = false;
+            UnderdarkCitizen.CanSwap = false;
+            UnderdarkCitizen.Conflicting.AddRange(new string[] { });
+            UnderdarkCitizen.CostInCharacterCreation = 2;
+            UnderdarkCitizen.IsActive = true;
+            UnderdarkCitizen.Upgrade = null;
             #endregion
             #region Tampering
             //CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
@@ -603,25 +634,17 @@ namespace BunnyMod.Content
         #endregion
 
         #region Custom
-        public static void MoralCodeEvents(Agent agent, string action)
-		{
-            //TODO: Look in Quests and ObjectMult for pointsType
-            // Event will call SkillPoints.AddPoints(EventType, 0=Good, 1=Evil)
-            // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
-            // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
-            // If you do an IL injection, do it at 787
-        }
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
             BunnyHeader.Log("HealthCost");
 
             if (type == DamageType.burnedFingers)
-			{
+            {
                 if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
                     return "0";
             }
             else if (type == DamageType.brokenWindow)
-			{
+            {
                 if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
                     return "0";
                 else if (agent.statusEffects.hasTrait("Diminutive"))
@@ -630,29 +653,44 @@ namespace BunnyMod.Content
 
             return baseDamage.ToString();
         }
-        public static string ToolCost(Agent agent, int baseCost)
+        public static bool IsUnderdarkCitizenActive()
+		{
+            foreach (Agent agent in gc.playerAgentList)
+                if (agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                    return true;
+            return false;
+		}
+        public static void MoralCodeEvents(Agent agent, string action)
+		{
+            //TODO: Look in Quests and ObjectMult for pointsType
+            // Event will call SkillPoints.AddPoints(EventType, 0=Good, 1=Evil)
+            // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
+            // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
+            // If you do an IL injection, do it at 787
+        }
+        public static int ToolCost(Agent agent, int baseCost)
         {
             if (agent.statusEffects.hasTrait("TamperTantrum"))
-                return (baseCost / 2).ToString();
+                return (baseCost / 2);
 
             if (agent.statusEffects.hasTrait("TamperTantrum_2"))
-                return "0";
+                return 0;
 
-            return baseCost.ToString();
+            return baseCost;
         }
-        #endregion
+		#endregion
 
-        #region AgentInteractions
-        public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
+		#region AgentInteractions
+		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
             if (extraCost.EndsWith("-30"))
                 extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
             else if (extraCost.EndsWith("-20"))
                 extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
 		}
-        #endregion
-        #region InvDatabase
-        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+		#endregion
+		#region InvDatabase
+		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{
             //TODO: Verify non-equipped items like Time Bomb.
             //TODO: Add Item.Categories for types above for mod compatibility
@@ -891,6 +929,140 @@ namespace BunnyMod.Content
 
             return false;
         }
+        #endregion
+        #region LevelEditor
+        public static void LevelEditor_CreateLevelFeatureListDowntown()
+        {
+        }
+        public static void LevelEditor_CreateLevelFeatureListIndustrial()
+		{
+		}
+        public static void LevelEditor_CreateLevelFeatureListMayorVillage()
+		{
+		}
+        public static void LevelEditor_CreateLevelFeatureListPark()
+		{
+        }
+        public static void LevelEditor_CreateLevelFeatureListSlums()
+        {
+        }
+        public static void LevelEditor_CreateLevelFeatureListUptown()
+		{
+		}
+		#endregion
+		#region LoadLevel
+        public static bool LoadLevel_SetupMore3_3(LoadLevel __instance) // Prefix
+		{
+            BunnyHeader.Log("LoadLevel_SetupMore3_3_Prefix");
+
+            if (!gc.customLevel && IsUnderdarkCitizenActive()) // TODO: Exclude Downtown from this
+            {
+                int bigTries = (int)((float)UnityEngine.Random.Range(8, 12) * __instance.levelSizeModifier);
+                int numTries;
+
+                for (int i = 0; i < bigTries; i = numTries + 1)
+                {
+                    Vector2 vector14 = Vector2.zero;
+                    int num34 = 0;
+
+                    do
+                    {
+                        vector14 = gc.tileInfo.FindRandLocationGeneral(2f);
+
+                        for (int num35 = 0; num35 < gc.objectRealList.Count; num35++)
+                            if (gc.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(gc.objectRealList[num35].tr.position, vector14) < 14f)
+                                vector14 = Vector2.zero;
+
+                        if (vector14 != Vector2.zero)
+                        {
+                            if (gc.tileInfo.WaterNearby(vector14))
+                                vector14 = Vector2.zero;
+                            if (gc.tileInfo.IceNearby(vector14))
+                                vector14 = Vector2.zero;
+                            if (gc.tileInfo.BridgeNearby(vector14))
+                                vector14 = Vector2.zero;
+                        }
+                        num34++;
+                    }
+                    while ((vector14 == Vector2.zero || Vector2.Distance(vector14, gc.playerAgent.tr.position) < 5f) && num34 < 100);
+
+                    if (vector14 != Vector2.zero && Vector2.Distance(vector14, gc.playerAgent.tr.position) >= 5f)
+                        gc.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
+
+                    //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+                    //{
+                    //    yield return null;
+                    //    chunkStartTime = Time.realtimeSinceStartup;
+                    //}
+                    UnityEngine.Random.InitState(__instance.randomSeedNum + i);
+
+                    numTries = i;
+                }
+
+                int numObjects = (int)((float)UnityEngine.Random.Range(2, 4) * __instance.levelSizeModifier);
+                List<Manhole> manholeList = new List<Manhole>();
+
+                for (int num36 = 0; num36 < gc.objectRealList.Count; num36++)
+                    if (gc.objectRealList[num36].objectName == "Manhole")
+                        manholeList.Add((Manhole)gc.objectRealList[num36]);
+
+                if (manholeList.Count > 0)
+                {
+                    for (int i = 0; i < numObjects; i = numTries + 1)
+                    {
+                        int numberOfHiddenAgents = 0;
+                        Manhole manhole;
+                        bool flag13;
+
+                        do
+                        {
+                            UnityEngine.Random.InitState(__instance.randomSeedNum + i);
+                            manhole = manholeList[UnityEngine.Random.Range(0, manholeList.Count)];
+                            flag13 = true;
+
+                            for (int j = 0; j < gc.agentList.Count; j++)
+                                if (gc.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, gc.agentList[j].tr.position) < 10f)
+                                {
+                                    numberOfHiddenAgents++;
+                                    flag13 = false;
+                                }
+
+                            numberOfHiddenAgents++;
+                        }
+                        while (numberOfHiddenAgents < 50 && !flag13);
+
+                        if (flag13)
+                        {
+                            string text3 = gc.Choose<string>("Thief", "Thief", new string[]
+                            {
+                                    "Thief",
+                                    "Cannibal"
+                            });
+
+                            if ((!(text3 == "Thief") || !gc.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !gc.challenges.Contains("CannibalsDontAttack")))
+                            {
+                                Agent agent2 = gc.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
+                                agent2.SetDefaultGoal("Idle");
+                                agent2.statusEffects.BecomeHidden(manhole);
+                                agent2.oma.mustBeGuilty = true;
+                            }
+                        }
+
+                        //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+                        //{
+                        //    yield return null;
+                        //    chunkStartTime = Time.realtimeSinceStartup;
+                        //}
+
+                        UnityEngine.Random.InitState(__instance.randomSeedNum + i);
+                        numTries = i;
+                    }
+                }
+                manholeList = null;
+            }
+
+            return true;
+        }
 		#endregion
 		#region PlayfieldObject
 		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
@@ -988,6 +1160,15 @@ namespace BunnyMod.Content
 			{
                 agent.SetEndurance(agent.enduranceStatMod + 1);
                 agent.SetSpeed(agent.speedStatMod - 1);
+			}
+		}
+        public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Postfix
+		{
+            Agent agent = __instance.agent;
+
+            if (IsUnderdarkCitizenActive() && agent.isPlayer == 0)
+			{
+                agent.statusEffects.BecomeNotHidden();
 			}
 		}
         public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix

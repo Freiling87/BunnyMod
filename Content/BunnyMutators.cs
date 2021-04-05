@@ -16,7 +16,7 @@ namespace BunnyMod.Content
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
 
 			// Quests
-			BunnyHeader.MainInstance.PatchPostfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
+			//BunnyHeader.MainInstance.PatchPostfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
 
 			// RandomWalls
 			BunnyHeader.MainInstance.PatchPrefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
@@ -27,11 +27,11 @@ namespace BunnyMod.Content
 		public static void InitializeMutators()
 		{
 			#region City Life
-			CustomMutator alwaysSpawnArsonists = RogueLibs.CreateCustomMutator("AlwaysSpawnArsonists", true,
-				new CustomNameInfo("Always Spawn Arsonists"),
-				new CustomNameInfo("You're not the only one in town, you know."));
-			alwaysSpawnArsonists.Available = true;
-			alwaysSpawnArsonists.IsActive = false;
+			//CustomMutator alwaysSpawnArsonists = RogueLibs.CreateCustomMutator("AlwaysSpawnArsonists", true,
+			//	new CustomNameInfo("Always Spawn Arsonists"),
+			//	new CustomNameInfo("You're not the only one in town, you know."));
+			//alwaysSpawnArsonists.Available = true;
+			//alwaysSpawnArsonists.IsActive = false;
 
 			//CustomMutator badAirQuality = RogueLibs.CreateCustomMutator("BadAirQuality", true,
 			//	new CustomNameInfo("Bad Air Quality"),
@@ -74,7 +74,7 @@ namespace BunnyMod.Content
 				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
 			shantyTown.Available = true;
 			shantyTown.Conflicting.AddRange(new string[] { "SteelCity" });
-			shantyTown.IsActive = true; // TEST
+			shantyTown.IsActive = false;
 
 			CustomMutator cityOfSteel = RogueLibs.CreateCustomMutator("CityOfSteel", true,
 				new CustomNameInfo("City Of Steel"),
@@ -101,7 +101,8 @@ namespace BunnyMod.Content
 				new CustomNameInfo("Scary Guns"),
 				new CustomNameInfo("Guns are deadlier, but adds Cover mechanics. Get good, or get dead."));
 			scaryGuns.Available = true;
-			scaryGuns.IsActive = true;
+			scaryGuns.Conflicting.AddRange(new string[] { });
+			scaryGuns.IsActive = false;
 
 			//CustomMutator wagTheDog = RogueLibs.CreateCustomMutator("WagTheDog", true,
 			//	new CustomNameInfo("Wag The Dog"),

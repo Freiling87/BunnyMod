@@ -1702,8 +1702,6 @@ namespace BunnyMod.Content
 		#region StatusEffects
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
-			BunnyHeader.Log("StatusEffects_GiveSpecialAbility: " + abilityName);
-
 			if (__instance.agent.inventory.equippedSpecialAbility != null)
 			{
 				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;

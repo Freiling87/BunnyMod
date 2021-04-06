@@ -565,7 +565,9 @@ namespace BunnyMod.Content
         #region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance)
         {
-            __instance.interactable = true;
+            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+                __instance.interactable = true;
+
             //TODO: Closed Bath Curtain sprite?
             // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.
         }
@@ -645,14 +647,8 @@ namespace BunnyMod.Content
 		public static bool Hole_EnterRange(GameObject myObject, Hole __instance) // Prefix
 		{
             if (gc.loadComplete)
-            {
                 if (myObject.CompareTag("Agent"))
                 {
-                    BunnyHeader.Log("Hole_EnterRange");
-                    BunnyHeader.Log("    myObject = " + myObject.name);
-                    BunnyHeader.Log("    Hole = " + __instance.name);
-                    BunnyHeader.Log("    holeType = " + __instance.GetComponent<ObjectMultHole>().objectHoleType);
-
                     Agent agent = myObject.GetComponent<Agent>();
 
                     if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait("UnderdarkCitizen"))
@@ -662,7 +658,7 @@ namespace BunnyMod.Content
                         return false;
                     }
                 }
-            }
+
             return true;
 		}
 		#endregion
@@ -697,10 +693,6 @@ namespace BunnyMod.Content
             gc.audioHandler.Play(agent, "ToiletTeleportIn");
             agent.toiletTeleporting = true;
             agent.Teleport(exit + offset, true, false);
-
-            //agent.jumpDirection = exit + offset;
-            //agent.jumpSpeed = 1f;
-            //agent.Jump();
         }
 		public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
 		{
@@ -735,14 +727,12 @@ namespace BunnyMod.Content
 				if (list.Count > 0)
 					destinationManhole = list[UnityEngine.Random.Range(0, list.Count)];
 
-				Vector3 outHole = destinationManhole.tr.position;
-				outHole.y -= 0.96f;
+				Vector2 outHole = destinationManhole.tr.position;
+                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized;
 
-				// TODO: Check for walls
-
-				gc.audioHandler.Play(__instance, "ToiletTeleportIn");
+                gc.audioHandler.Play(__instance, "ToiletTeleportIn");
 				agent.toiletTeleporting = true;
-				agent.Teleport(outHole);
+				agent.Teleport(outHole + offset, true, false);
 			}
 		}
 		public static void Manhole_SetVars(Manhole __instance) // Postfix
@@ -779,8 +769,9 @@ namespace BunnyMod.Content
         #region Plant
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
-            __instance.interactable = true;
-            __instance.lowInteractionPriority = true;
+            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+                __instance.interactable = true;
+            //__instance.lowInteractionPriority = true;
         }
         #endregion
         #region PoliceBox
@@ -793,8 +784,9 @@ namespace BunnyMod.Content
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
-            __instance.interactable = true;
-            __instance.lowInteractionPriority = true;
+            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+                __instance.interactable = true;
+            //__instance.lowInteractionPriority = true;
         }
         #endregion
         #region Refrigerator
@@ -1368,8 +1360,9 @@ namespace BunnyMod.Content
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
-            __instance.interactable = true;
-            __instance.lowInteractionPriority = true;
+            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+                __instance.interactable = true;
+            //__instance.lowInteractionPriority = true;
         }
         #endregion
         #region Television

@@ -8,6 +8,8 @@ namespace BunnyMod.Content
 {
 	public class BunnyAbilities
 	{
+		public static GameController gc => GameController.gameController;
+
 		public void Awake()
 		{
 			InitializeAbilities();
@@ -96,7 +98,7 @@ namespace BunnyMod.Content
 		#region Chronomantic Dilation - Dialogue
 		public static void MSA_CD_DialogueCantDo(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
 			string[] dialogue =
 			{
@@ -291,11 +293,11 @@ namespace BunnyMod.Content
 
 			MSA_CD_SetCast(agent, true);
 
-			agent.gc.selectedTimeScale = baseTimeScale / speedupfactor;
-			agent.gc.mainTimeScale = baseTimeScale / speedupfactor;
+			gc.selectedTimeScale = baseTimeScale / speedupfactor;
+			gc.mainTimeScale = baseTimeScale / speedupfactor;
 			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
 
-			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
+			BunnyHeader.Log("Timescale: " + gc.mainTimeScale.ToString());
 		}
 		public static async void MSA_CD_StartDecast(Agent agent)
 		{
@@ -305,21 +307,21 @@ namespace BunnyMod.Content
 
 			MSA_CD_SetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
-			agent.gc.selectedTimeScale = baseTimeScale;
-			agent.gc.mainTimeScale = baseTimeScale;
+			gc.selectedTimeScale = baseTimeScale;
+			gc.mainTimeScale = baseTimeScale;
 
 			await Task.Delay(1000);
 
 			await MSA_CD_StartWindingUp(agent);
 
-			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
+			BunnyHeader.Log("Timescale: " + gc.mainTimeScale.ToString());
 		}
 		public static async void MSA_CD_StartMiscast(Agent agent, float slowdownFactor)
 		{
 			BunnyHeader.Log("ChronomancyStartMiscast: " + slowdownFactor);
 
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-			agent.gc.audioHandler.Play(agent, "ToiletTeleportIn");
+			gc.audioHandler.Play(agent, "ToiletTeleportIn");
 			MSA_CD_DialogueMiscast(agent);
 
 			if (MSA_CD_IsCast(agent))
@@ -329,13 +331,13 @@ namespace BunnyMod.Content
 
 			MSA_CD_StartWindingUp(agent); // TODO: Ensure that this duration is equal to miscast duration
 
-			agent.gc.selectedTimeScale = baseTimeScale / slowdownFactor;
-			agent.gc.mainTimeScale = baseTimeScale / slowdownFactor;
+			gc.selectedTimeScale = baseTimeScale / slowdownFactor;
+			gc.mainTimeScale = baseTimeScale / slowdownFactor;
 			agent.speedMax = (int)((float)agent.FindSpeed() * slowdownFactor);
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 
-			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
+			BunnyHeader.Log("Timescale: " + gc.mainTimeScale.ToString());
 
 			await Task.Delay(5000);
 
@@ -349,7 +351,7 @@ namespace BunnyMod.Content
 			if (!routine)
 			{
 				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				agent.gc.audioHandler.Play(agent, "Recharge");
+				gc.audioHandler.Play(agent, "Recharge");
 
 				MSA_CD_DialogueRecharge(agent);
 			}
@@ -363,14 +365,14 @@ namespace BunnyMod.Content
 
 				MSA_CD_SetMiscast(agent, false);
 
-				agent.gc.selectedTimeScale = baseTimeScale;
-				agent.gc.mainTimeScale = baseTimeScale;
+				gc.selectedTimeScale = baseTimeScale;
+				gc.mainTimeScale = baseTimeScale;
 				agent.speedMax = agent.FindSpeed();
 
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
 
-			BunnyHeader.Log("Timescale: " + agent.gc.mainTimeScale.ToString());
+			BunnyHeader.Log("Timescale: " + gc.mainTimeScale.ToString());
 		}
 		public static async Task MSA_CD_StartWindingUp(Agent agent)
 		{
@@ -458,7 +460,7 @@ namespace BunnyMod.Content
 			{
 				if (icedOut)
 				{
-					item.agent.gc.audioHandler.Play(item.agent, "CantDo");
+					gc.audioHandler.Play(item.agent, "CantDo");
 				}
 
 				if (CryomancyRollMiscast(agent, 0))
@@ -485,7 +487,7 @@ namespace BunnyMod.Content
 							icedOut = false;
 
 						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
+						gc.audioHandler.Play(agent, "Recharge");
 						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 					}
 				}
@@ -496,19 +498,19 @@ namespace BunnyMod.Content
 		}
 		public static void CryomancyStartCast(Agent agent)
 		{
-			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.FreezeRay, agent);
+			Bullet bullet = gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.FreezeRay, agent);
 
-			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+			if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
 			else if (agent.target.AttackTowardTarget())
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
 			else
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
 
-			if (agent.gc.sessionDataBig.autoAim != "Off")
+			if (gc.sessionDataBig.autoAim != "Off")
 			{
 				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
-				if (agent.gc.percentChance(myChance))
+				if (gc.percentChance(myChance))
 					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 			}
 		}
@@ -618,7 +620,7 @@ namespace BunnyMod.Content
 		}
 		public static void ElectromancyDialogueCantDo(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
 			string[] dialogue =
 			{
@@ -630,7 +632,7 @@ namespace BunnyMod.Content
 		}
 		public static void ElectromancyDialogueMiscast(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
 			string[] dialogue =
 			{
@@ -643,7 +645,7 @@ namespace BunnyMod.Content
 		}
 		public static void ElectromancyDialogueRecharge(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "Recharge");
+			gc.audioHandler.Play(agent, "Recharge");
 
 			string[] dialogue =
 			{
@@ -712,7 +714,7 @@ namespace BunnyMod.Content
 							zappedOut = false;
 
 						agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-						agent.gc.audioHandler.Play(agent, "Recharge");
+						gc.audioHandler.Play(agent, "Recharge");
 						agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 					}
 				}
@@ -727,7 +729,7 @@ namespace BunnyMod.Content
 
 			for (int i = 0; i <= numberOfChains; i++)
 			{
-				Bullet newBullet = bullet.agent.gc.spawnerMain.SpawnBullet(hitObject.transform.position, bulletStatus.Taser, bullet.agent);
+				Bullet newBullet = gc.spawnerMain.SpawnBullet(hitObject.transform.position, bulletStatus.Taser, bullet.agent);
 				newBullet.speed *= 3 / 2;
 				newBullet.agent = bullet.agent;
 
@@ -735,7 +737,7 @@ namespace BunnyMod.Content
 					newBullet.cameFromWeapon = "ChainLightning"; // Only apply this if the skill successfully rolled for a rebound.
 
 				Vector2 origin = hitObject.transform.position;
-				Agent closestAgent = bullet.agent.gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
+				Agent closestAgent = gc.agentList.OrderBy(a => Vector2.Distance(origin, a.transform.position)).FirstOrDefault();
 
 				Vector3 target;
 
@@ -807,22 +809,22 @@ namespace BunnyMod.Content
 		}
 		public static void ElectromancyStartCast(Agent agent)
 		{
-			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
+			Bullet bullet = gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Taser, agent);
 			bullet.speed *= 3 / 2; //
 			bullet.cameFromWeapon = "ChainLightning";
 			//bullet.agent.SpawnParticleEffect("Electrocution", bullet.transform.position);
 
-			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+			if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
 			else if (agent.target.AttackTowardTarget())
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
 			else
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
 
-			if (agent.gc.sessionDataBig.autoAim != "Off")
+			if (gc.sessionDataBig.autoAim != "Off")
 			{
 				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
-				if (agent.gc.percentChance(myChance))
+				if (gc.percentChance(myChance))
 					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 			}
 		}
@@ -886,7 +888,7 @@ namespace BunnyMod.Content
 		#region Pyromantic Jet - Dialogue
 		public static void MSA_PJ_DialogueCantDo(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
 			string[] dialogue =
 			{
@@ -898,7 +900,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_PJ_DialogueCast(Agent agent) // Not used yet
 		{
-			agent.gc.audioHandler.Play(agent, "AgentLaugh");
+			gc.audioHandler.Play(agent, "AgentLaugh");
 
 			string[] dialogue =
 			{
@@ -1091,7 +1093,7 @@ namespace BunnyMod.Content
 		{
 			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
 			{
-				agent.gc.audioHandler.Play(agent, "MindControlEnd");
+				gc.audioHandler.Play(agent, "MindControlEnd");
 				MSA_PJ_SetBurnedOut(agent, true);
 			}
 
@@ -1103,19 +1105,19 @@ namespace BunnyMod.Content
 		{
 			BunnyHeader.Log("PyromancyStartCast");
 
-			Bullet bullet = agent.gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
+			Bullet bullet = gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
-			if (agent.controllerType == "Keyboard" && !agent.gc.sessionDataBig.trackpadMode)
+			if (agent.controllerType == "Keyboard" && !gc.sessionDataBig.trackpadMode)
 				bullet.movement.RotateToMouseTr(agent.agentCamera.actualCamera);
 			else if (agent.target.AttackTowardTarget())
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.target.transform.eulerAngles.z);
 			else
 				bullet.tr.rotation = Quaternion.Euler(0f, 0f, agent.gun.FindWeaponAngleGamepad() - 90f);
 
-			if (agent.gc.sessionDataBig.autoAim != "Off")
+			if (gc.sessionDataBig.autoAim != "Off")
 			{
 				int myChance = 25; // Placeholder, find the real numbers later. For now, suck it, Auto-aimers B)
-				if (agent.gc.percentChance(myChance))
+				if (gc.percentChance(myChance))
 					bullet.movement.AutoAim(agent, agent.movement.FindAimTarget(true), bullet);
 			}
 
@@ -1167,7 +1169,7 @@ namespace BunnyMod.Content
 
 			MSA_PJ_DialogueMiscast(agent);
 
-			agent.gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
+			gc.spawnerMain.SpawnExplosion(agent, agent.curPosition, "FireBomb");
 
 			MSA_PJ_StartBurnout(agent);
 		}
@@ -1178,7 +1180,7 @@ namespace BunnyMod.Content
 			if (!routine)
 			{
 				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				agent.gc.audioHandler.Play(agent, "Recharge");
+				gc.audioHandler.Play(agent, "Recharge");
 			}
 
 			if (MSA_PJ_IsBurnedOut(agent))
@@ -1227,9 +1229,9 @@ namespace BunnyMod.Content
 		#region Telemantic Blink - Dialogue
 		public static void MSA_TB_DialogueCantDo(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
-			if (agent.gc.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			string[] dialogue =
@@ -1242,7 +1244,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
-			if (agent.gc.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
@@ -1259,11 +1261,11 @@ namespace BunnyMod.Content
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-			agent.gc.audioHandler.Play(agent, "Hypnotize");
+			gc.audioHandler.Play(agent, "Hypnotize");
 		}
 		public static void MSA_TB_DialogueMiscast(Agent agent)
 		{
-			agent.gc.audioHandler.Play(agent, "ZombieSpitFire");
+			gc.audioHandler.Play(agent, "ZombieSpitFire");
 
 			string[] dialogue =
 			{
@@ -1401,7 +1403,7 @@ namespace BunnyMod.Content
 		}
 		public static Vector2 MSA_TB_RollDestination(Agent agent, float minError, float maxError)
 		{
-			TileInfo tileInfo = agent.gc.tileInfo;
+			TileInfo tileInfo = gc.tileInfo;
 			Vector2 currentPosition = agent.curPosition;
 			Vector2 targetPosition;
 
@@ -1553,7 +1555,7 @@ namespace BunnyMod.Content
 			if (true) // Not checking for routine/nonroutine yet.
 			{
 				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				agent.gc.audioHandler.Play(agent, "Recharge");
+				gc.audioHandler.Play(agent, "Recharge");
 			}
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
@@ -1637,7 +1639,7 @@ namespace BunnyMod.Content
 			{
 				BunnyHeader.Log("TelemancyTryMiscast: lightAndSound");
 
-				agent.gc.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
+				gc.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
 				agent.SpawnParticleEffect("ExplosionEMP", agent.tr.position);
 			}
 
@@ -1669,7 +1671,7 @@ namespace BunnyMod.Content
 		#region Agent
 		public static void Agent_FindOperatingTime(PlayfieldObject operatingOnObject, float timeToUnlock, Agent __instance, ref float __result) // Postfix
 		{
-			__result *= __instance.gc.selectedTimeScale;
+			__result *= gc.selectedTimeScale;
 		}
 		#endregion
 		#region Bullet

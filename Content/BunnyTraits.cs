@@ -8,6 +8,8 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 
+using Random = UnityEngine.Random;
+
 /*
     IsActive is the state of the unlock in the Rewards/Traits/Mutators menu
     if IsActive is set to true, you'll be able to find that unlock while playing; if set to false you won't
@@ -55,7 +57,15 @@ namespace BunnyMod.Content
             BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             // LoadLevel
-            BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
+
+            // MeleeHitbox
+            BunnyHeader.MainInstance.PatchPostfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
+            BunnyHeader.MainInstance.PatchPostfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
+
+            // PlayerControl
+            BunnyHeader.MainInstance.PatchPostfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 
             // PlayfieldObject
             BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
@@ -70,34 +80,43 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Traits()
         {
-            #region Codes of Conduct
-            //CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
-            //    new CustomNameInfo("Code of Honor"),
-            //    new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
-            //CodeOfHonor.Available = false; //
-            //CodeOfHonor.AvailableInCharacterCreation = false; //
-            //CodeOfHonor.CostInCharacterCreation = -6;
-            //CodeOfHonor.IsActive = false; // 
-            //CodeOfHonor.Upgrade = null;
-            #endregion
-            #region Combat
-            //CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
-            //    new CustomNameInfo("Return to Bonke"),
-            //    new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
-            //ReturnToBonke.AvailableInCharacterCreation = false; //
-            //ReturnToBonke.CostInCharacterCreation = 3;
-            //ReturnToBonke.IsActive = false; //
-            //ReturnToBonke.Available = false; //
-            //ReturnToBonke.Upgrade = null;
+			#region Codes of Conduct
+			//CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
+			//    new CustomNameInfo("Code of Honor"),
+			//    new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
+			//CodeOfHonor.Available = false; //
+			//CodeOfHonor.AvailableInCharacterCreation = false; //
+			//CodeOfHonor.CostInCharacterCreation = -6;
+			//CodeOfHonor.IsActive = false; // 
+			//CodeOfHonor.Upgrade = null;
+			#endregion
+			#region Combat
+			//CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
+			//    new CustomNameInfo("Return to Bonke"),
+			//    new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
+			//ReturnToBonke.AvailableInCharacterCreation = false; //
+			//ReturnToBonke.CostInCharacterCreation = 3;
+			//ReturnToBonke.IsActive = false; //
+			//ReturnToBonke.Available = false; //
+			//ReturnToBonke.Upgrade = null;
 
-            //CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait("SpectralStrikes", true,
-            //    new CustomNameInfo("Spectral Strikes"),
-            //    new CustomNameInfo("Your melee and unarmed attacks can damage Ghosts."));
-            //SpectralStrikes.AvailableInCharacterCreation = true;
-            //SpectralStrikes.CostInCharacterCreation = 2;
-            //SpectralStrikes.IsActive = false;
-            //SpectralStrikes.Available = true;
-            //SpectralStrikes.Upgrade = null;
+			CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait("SpectralStrikes", true,
+				new CustomNameInfo("Spectral Strikes"),
+				new CustomNameInfo("Your unarmed attacks can damage Ghosts."));
+			SpectralStrikes.AvailableInCharacterCreation = true;
+			SpectralStrikes.CostInCharacterCreation = 1;
+			SpectralStrikes.IsActive = true;
+			SpectralStrikes.Available = true;
+			SpectralStrikes.Upgrade = "SpectralStrikes_2";
+
+            CustomTrait SpectralStrikes_2 = RogueLibs.CreateCustomTrait("SpectralStrikes_2", true,
+                new CustomNameInfo("Spectral Strikes +"),
+                new CustomNameInfo("Your melee attacks can damage Ghosts."));
+            SpectralStrikes_2.AvailableInCharacterCreation = true;
+            SpectralStrikes_2.CostInCharacterCreation = 2;
+            SpectralStrikes_2.IsActive = true;
+            SpectralStrikes_2.Available = true;
+            SpectralStrikes_2.Upgrade = null;
 
             //CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
             //    new CustomNameInfo("Whiffist"),
@@ -462,91 +481,95 @@ namespace BunnyMod.Content
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
             RATS_2.Upgrade = null;
-            #endregion
-            #region Miscellaneous
-            //CustomTrait EagleEyes = RogueLibs.CreateCustomTrait("EagleEyes", true,
-            //    new CustomNameInfo("Eagle Eyes"),
-            //    new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
-            //EagleEyes.Available = true;
-            //EagleEyes.AvailableInCharacterCreation = true;
-            //EagleEyes.CanRemove = false;
-            //EagleEyes.CanSwap = true;
-            //EagleEyes.CostInCharacterCreation = 3;
-            //EagleEyes.IsActive = true;
-            //EagleEyes.Upgrade = "EagleEyes_2";
+			#endregion
+			#region Miscellaneous
+			CustomTrait EagleEyes = RogueLibs.CreateCustomTrait("EagleEyes", true,
+				new CustomNameInfo("Eagle Eyes"),
+				new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
+			EagleEyes.Available = true;
+			EagleEyes.AvailableInCharacterCreation = true;
+			EagleEyes.CanRemove = false;
+			EagleEyes.CanSwap = true;
+            EagleEyes.Conflicting.AddRange(new string[] { "EagleEyes_2", "Myopic", "Myopic_2" });
+			EagleEyes.CostInCharacterCreation = 3;
+			EagleEyes.IsActive = true;
+			EagleEyes.Upgrade = "EagleEyes_2";
 
-            //CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait("EagleEyes_2", true,
-            //    new CustomNameInfo("Eagle Eyes +"),
-            //    new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
-            //EagleEyes_2.Available = true;
-            //EagleEyes_2.AvailableInCharacterCreation = false;
-            //EagleEyes_2.CanRemove = false;
-            //EagleEyes_2.CanSwap = false;
-            //EagleEyes_2.CostInCharacterCreation = 6;
-            //EagleEyes_2.IsActive = true;
-            //EagleEyes_2.Upgrade = null;
+			CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait("EagleEyes_2", true,
+				new CustomNameInfo("Eagle Eyes +"),
+				new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
+			EagleEyes_2.Available = true;
+			EagleEyes_2.AvailableInCharacterCreation = true;
+			EagleEyes_2.CanRemove = false;
+			EagleEyes_2.CanSwap = false;
+            EagleEyes_2.Conflicting.AddRange(new string[] { "EagleEyes", "Myopic", "Myopic_2" });
+			EagleEyes_2.CostInCharacterCreation = 6;
+			EagleEyes_2.IsActive = true;
+			EagleEyes_2.Upgrade = null;
 
-            //CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
-            //    new CustomNameInfo("Myopic"),
-            //    new CustomNameInfo("You can't see too far."));
-            //Myopic.Available = true;
-            //Myopic.AvailableInCharacterCreation = true;
-            //Myopic.CanRemove = true;
-            //Myopic.CanSwap = true;
-            //Myopic.CostInCharacterCreation = -4;
-            //Myopic.IsActive = true;
-            //Myopic.Upgrade = null;
+			CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
+				new CustomNameInfo("Myopic"),
+				new CustomNameInfo("You can't see too far."));
+			Myopic.Available = true;
+			Myopic.AvailableInCharacterCreation = true;
+			Myopic.CanRemove = true;
+			Myopic.CanSwap = true;
+            Myopic.Conflicting.AddRange(new string[] { "EagleEyes", "EagleEyes_2", "Myopic_2" });
+			Myopic.CostInCharacterCreation = -4;
+			Myopic.IsActive = true;
+			Myopic.Upgrade = null;
 
-            //CustomTrait Myopic_2 = RogueLibs.CreateCustomTrait("Ultramyopic", true,
-            //    new CustomNameInfo("Ultramyopic"),
-            //    new CustomNameInfo("You tend to keep people at arm's length, where you can't see them."));
-            //Myopic_2.Available = true;
-            //Myopic_2.AvailableInCharacterCreation = true;
-            //Myopic_2.CanRemove = true;
-            //Myopic_2.CanSwap = true;
-            //Myopic_2.CostInCharacterCreation = -8;
-            //Myopic_2.IsActive = true;
-            //Myopic_2.Upgrade = null;
-            #endregion
-            #region Social
-            //CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
-            //    new CustomNameInfo("Artificial Insermonation"),
-            //    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
-            //ArtificialInsermonation.AvailableInCharacterCreation = false; //
-            //ArtificialInsermonation.CostInCharacterCreation = 2;
-            //ArtificialInsermonation.IsActive = false; //
-            //ArtificialInsermonation.Available = false; //
-            //ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
+			CustomTrait Myopic_2 = RogueLibs.CreateCustomTrait("Myopic_2", true,
+				new CustomNameInfo("Ultramyopic"),
+				new CustomNameInfo("You tend to keep people at arm's length, where you can't see them."));
+			Myopic_2.Available = true;
+			Myopic_2.AvailableInCharacterCreation = true;
+			Myopic_2.CanRemove = true;
+			Myopic_2.CanSwap = true;
+            Myopic_2.Conflicting.AddRange(new string[] { "EagleEyes", "EagleEyes_2", "Myopic" });
+			Myopic_2.CostInCharacterCreation = -8;
+			Myopic_2.IsActive = true;
+			Myopic_2.Upgrade = null;
+			#endregion
+			#region Social
+			//CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
+			//    new CustomNameInfo("Artificial Insermonation"),
+			//    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+			//ArtificialInsermonation.AvailableInCharacterCreation = false; //
+			//ArtificialInsermonation.CostInCharacterCreation = 2;
+			//ArtificialInsermonation.IsActive = false; //
+			//ArtificialInsermonation.Available = false; //
+			//ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
 
-            //CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
-            //    new CustomNameInfo("Artificial Insermonation +"),
-            //    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
-            //ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
-            //ArtificialInsermonation_2.CostInCharacterCreation = 2;
-            //ArtificialInsermonation_2.IsActive = false; //
-            //ArtificialInsermonation_2.Available = false; //
-            //ArtificialInsermonation_2.Upgrade = null;
+			//CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
+			//    new CustomNameInfo("Artificial Insermonation +"),
+			//    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+			//ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
+			//ArtificialInsermonation_2.CostInCharacterCreation = 2;
+			//ArtificialInsermonation_2.IsActive = false; //
+			//ArtificialInsermonation_2.Available = false; //
+			//ArtificialInsermonation_2.Upgrade = null;
 
-            //CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
-            //    new CustomNameInfo("Undead Bane"),
-            //    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
-            //UndeadBane.AvailableInCharacterCreation = false; //
-            //UndeadBane.CostInCharacterCreation = -4;
-            //UndeadBane.IsActive = false; //
-            //UndeadBane.Available = false; //
-            //UndeadBane.Upgrade = null;
+			//CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
+			//    new CustomNameInfo("Undead Bane"),
+			//    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
+			//UndeadBane.AvailableInCharacterCreation = false; //
+			//UndeadBane.CostInCharacterCreation = -4;
+			//UndeadBane.IsActive = false; //
+			//UndeadBane.Available = false; //
+			//UndeadBane.Upgrade = null;
 
-            //CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
-            //    new CustomNameInfo("Veiled Threats"),
-            //    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
-            //VeiledThreats.AvailableInCharacterCreation = false; //
-            //VeiledThreats.CostInCharacterCreation = 3;
-            //VeiledThreats.IsActive = false; //
-            //VeiledThreats.Available = false; //
-            //VeiledThreats.Upgrade = null;
-            #endregion
-            #region Stealth
-            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+			//CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
+			//    new CustomNameInfo("Veiled Threats"),
+			//    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+			//VeiledThreats.AvailableInCharacterCreation = false; //
+			//VeiledThreats.CostInCharacterCreation = 3;
+			//VeiledThreats.IsActive = false; //
+			//VeiledThreats.Available = false; //
+			//VeiledThreats.Upgrade = null;
+			#endregion
+			#region Stealth
+			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
@@ -653,10 +676,10 @@ namespace BunnyMod.Content
 
             return baseDamage.ToString();
         }
-        public static bool IsUnderdarkCitizenActive()
+        public static bool IsTraitActive(string trait)
 		{
             foreach (Agent agent in gc.playerAgentList)
-                if (agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                if (agent.statusEffects.hasTrait(trait))
                     return true;
             return false;
 		}
@@ -667,6 +690,21 @@ namespace BunnyMod.Content
             // Then AddPointsLate will set values depending on EventType, and flip polarity depending on the int passed.)
             // May be easiest to branch away from AddPointsLate though, so you don't have to mess with it.
             // If you do an IL injection, do it at 787
+        }
+        public static void ResetCameras()
+		{
+            float zoomLevel = gc.cameraScript.zoomLevel;
+
+            if (IsTraitActive("EagleEyes"))
+                zoomLevel = 0.60f;
+            else if (IsTraitActive("EagleEyes_2"))
+                zoomLevel = 0.40f;
+            else if (IsTraitActive("Myopic"))
+                zoomLevel = 1.50f;
+            else if (IsTraitActive("Myopic_2"))
+                zoomLevel = 2.00f;
+
+            gc.cameraScript.zoomLevel = zoomLevel;
         }
         public static int ToolCost(Agent agent, int baseCost)
         {
@@ -951,11 +989,11 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region LoadLevel
-        public static bool LoadLevel_SetupMore3_3(LoadLevel __instance) // Prefix
+        public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance) // Prefix
 		{
             BunnyHeader.Log("LoadLevel_SetupMore3_3_Prefix");
 
-            if (!gc.customLevel && IsUnderdarkCitizenActive()) // TODO: Exclude Downtown from this
+            if (!gc.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
             {
                 int bigTries = (int)((float)UnityEngine.Random.Range(8, 12) * __instance.levelSizeModifier);
                 int numTries;
@@ -1001,6 +1039,7 @@ namespace BunnyMod.Content
 
                 int numObjects = (int)((float)UnityEngine.Random.Range(2, 4) * __instance.levelSizeModifier);
                 List<Manhole> manholeList = new List<Manhole>();
+
 
                 for (int num36 = 0; num36 < gc.objectRealList.Count; num36++)
                     if (gc.objectRealList[num36].objectName == "Manhole")
@@ -1063,6 +1102,443 @@ namespace BunnyMod.Content
 
             return true;
         }
+        public static void LoadLevel_SetupMore3_3_Postfix(LoadLevel __instance) // Postfix
+		{
+            for (int agentSearch = 0; agentSearch < gc.agentList.Count; agentSearch++)
+                if (gc.agentList[agentSearch].isPlayer > 0)
+                    LoadLevel_SpawnHitSquad(gc.agentList[agentSearch], 150, "Ghost", __instance);
+        }
+        public static void LoadLevel_SpawnHitSquad(Agent targetAgent, int currentDebt, string agentType, LoadLevel __instance) // Non-Patch
+        {
+            List<Agent> list = new List<Agent>();
+            Agent.gangCount++;
+            targetAgent.gangStalking = Agent.gangCount;
+            Vector2 pos = Vector2.zero;
+            int debt50s = 0;
+
+            while (currentDebt > 0)
+            {
+                currentDebt -= 50;
+                debt50s++;
+            }
+            
+            if (gc.challenges.Contains("AssassinsEveryLevel"))
+                debt50s = 3;
+            
+            for (int i = 0; i < debt50s; i++)
+            {
+                Vector2 vector = Vector2.zero;
+                int attempts = 0;
+
+                if (i == 0)
+                {
+                    do
+                    {
+                        vector = gc.tileInfo.FindRandLocationGeneral(0.32f);
+                        attempts++;
+                    }
+                    while ((vector == Vector2.zero || Vector2.Distance(vector, gc.playerAgent.tr.position) < 20f) && attempts < 300);
+
+                    pos = vector;
+                }
+                else
+                    vector = gc.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
+
+                if (vector != Vector2.zero && attempts < 300)
+                {
+                    Agent agent = gc.spawnerMain.SpawnAgent(vector, null, agentType);
+                    agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
+                    agent.gang = Agent.gangCount;
+                    agent.modLeashes = 0;
+                    agent.alwaysRun = true;
+                    agent.wontFlee = true;
+                    agent.agentActive = true;
+                    //agent.statusEffects.AddStatusEffect("InvisiblePermanent");
+                    agent.oma.mustBeGuilty = true;
+                    list.Add(agent);
+
+                    if (list.Count > 1)
+                        for (int j = 0; j < list.Count; j++)
+                            if (list[j] != agent)
+                            {
+                                agent.relationships.SetRelInitial(list[j], "Aligned");
+                                list[j].relationships.SetRelInitial(agent, "Aligned");
+                            }
+
+                    agent.relationships.SetRel(targetAgent, "Hateful");
+                    agent.relationships.SetRelHate(targetAgent, 5);
+                    targetAgent.relationships.SetRel(agent, "Hateful");
+                    targetAgent.relationships.SetRelHate(agent, 5);
+                }
+            }
+        }
+		#endregion
+		#region MeleeHitbox
+        public static void MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // 
+		{
+            if (!__instance.myMelee.agent.statusEffects.hasTrait("SpectralStrikes"))
+                return;
+
+            InvItem invItem = null;
+
+            try
+            {
+                invItem = __instance.myMelee.agent.inventory.equippedWeapon;
+
+                if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
+                {
+                    invItem = __instance.myMelee.agent.inventory.fist;
+                }
+            }
+            catch
+            {
+            }
+
+            if ((!__instance.ObjectListContains(hitObject) && __instance.myMelee.canDamage && __instance.canHitMore) || fromClient)
+            {
+                if (hitObject.CompareTag("AgentSprite"))
+                {
+                    __instance.objectList.Add(hitObject);
+                    Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
+
+                    if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !gc.cinematic && __instance.HasLOSMelee(agent3))
+                    {
+                        __instance.objectList.Add(agent3.melee.meleeHitbox.gameObject);
+
+                        if (__instance.myMelee.invItem.meleeNoHit && !agent3.dead)
+                        {
+                            Relationship relationship = agent3.relationships.GetRelationship(__instance.myMelee.agent);
+
+                            if (!agent3.movement.HasLOSObjectBehind(__instance.myMelee.agent) || agent3.sleeping || __instance.myMelee.agent.isPlayer == 0 || __instance.myMelee.agent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && __instance.myMelee.agent.oma.superSpecialAbility))
+                                __instance.canHitMore = false;
+                            else
+                                if (gc.serverPlayer)
+                                    gc.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
+                        }
+
+                        bool flag3 = !__instance.myMelee.invItem.meleeNoHit && __instance.myMelee.agent.DontHitAlignedCheck(agent3);
+
+                        if (flag3)
+                        {
+                            agent3.melee.meleeHitbox.objectList.Add(__instance.gameObject);
+                            agent3.melee.meleeHitbox.objectList.Add(__instance.myMelee.agent.sprTr.gameObject);
+
+                            if (__instance.myMelee.agent.zombified && agent3.isPlayer == 0 && !agent3.oma.bodyGuarded)
+                                agent3.zombieWhenDead = true;
+
+                            if (agent3.isPlayer == 0 && __instance.myMelee.agent.isPlayer != 0 && !agent3.dead && agent3.agentName != "Zombie" && !agent3.inhuman && !agent3.mechEmpty && !agent3.mechFilled && __instance.myMelee.agent.localPlayer && !agent3.statusEffects.hasStatusEffect("Invincible"))
+                            {
+                                if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast2"))
+                                    __instance.myMelee.agent.statusEffects.ChangeHealth(6f);
+                                else if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast"))
+                                    __instance.myMelee.agent.statusEffects.ChangeHealth(3f);
+                            }
+
+                            if (gc.serverPlayer || agent3.health > 0f || agent3.dead)
+                                agent3.Damage(__instance.myMelee, fromClient);
+                            
+                            __instance.myMelee.agent.relationships.FollowerAlert(agent3);
+                            
+                            if (agent3.statusEffects.hasTrait("AttacksDamageAttacker2") && __instance.myMelee.agent.ghost)
+                            {
+                                int myChance = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
+                                if (gc.percentChance(myChance))
+                                {
+                                    __instance.myMelee.agent.lastHitByAgent = agent3;
+                                    __instance.myMelee.agent.justHitByAgent2 = agent3;
+                                    __instance.myMelee.agent.lastHitByAgent = agent3;
+                                    __instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
+                                    __instance.myMelee.agent.deathKiller = agent3.agentName;
+                                    __instance.myMelee.agent.statusEffects.ChangeHealth(-10f);
+                                }
+                            }
+                            else if (agent3.statusEffects.hasTrait("AttacksDamageAttacker") && __instance.myMelee.agent.ghost)
+                            {
+                                int myChance2 = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
+
+                                if (gc.percentChance(myChance2))
+                                {
+                                    __instance.myMelee.agent.lastHitByAgent = agent3;
+                                    __instance.myMelee.agent.justHitByAgent2 = agent3;
+                                    __instance.myMelee.agent.lastHitByAgent = agent3;
+                                    __instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
+                                    __instance.myMelee.agent.deathKiller = agent3.agentName;
+                                    __instance.myMelee.agent.statusEffects.ChangeHealth(-5f);
+                                }
+                            }
+
+                            if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !gc.coopMode && !gc.fourPlayerMode && !gc.multiplayerMode && gc.sessionDataBig.slowMotionCinematic && gc.percentChance(25))
+                            {
+                                if (gc.challenges.Contains("LowHealth"))
+                                    if (gc.percentChance(50))
+                                        gc.StartCoroutine(gc.SetSecondaryTimeScale(0.1f, 0.13f));
+                                else
+                                    gc.StartCoroutine(gc.SetSecondaryTimeScale(0.1f, 0.13f));
+                            }
+
+                            float num = 0f;
+
+                            if (__instance.myMelee.successfullySleepKilled || __instance.myMelee.successfullyBackstabbed)
+                                num = 0f;
+                            else if ((!agent3.dead || agent3.justDied) && !agent3.disappeared)
+                                num = (float)Mathf.Clamp(agent3.damagedAmount * 20, 80, 9999);
+                            else if (!agent3.disappeared)
+                                num = 80f;
+
+                            if (__instance.myMelee.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
+                                num *= 2f;
+                            
+                            Vector3 position = agent3.tr.position;
+                            Vector2 velocity = agent3.rb.velocity;
+
+                            if (!agent3.disappeared && !fromClient)
+                                agent3.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, __instance.myMelee.agent);
+
+                            bool flag4 = false;
+
+                            if (agent3.hasEmployer && agent3.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.employer.objectMult.chargingSpecialLunge)
+                                flag4 = true;
+                            
+                            if (agent3.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.objectMult.chargingSpecialLunge)
+                                flag4 = true;
+                            
+                            if (flag4)
+                            {
+                                bool flag5 = true;
+                                
+                                if (gc.multiplayerMode && gc.serverPlayer)
+                                {
+                                    if (agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myMelee.agent.isPlayer == 0)
+                                        flag5 = false;
+                                    if (__instance.myMelee.agent.isPlayer != 0 && !__instance.myMelee.agent.localPlayer && agent3.isPlayer == 0)
+                                        flag5 = false;
+                                }
+                                
+                                if (flag5)
+                                {
+                                    __instance.myMelee.agent.movement.KnockBackBullet(agent3.gameObject, 240f, true, agent3);
+
+                                    if (gc.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
+                                    {
+                                        int myChance3 = agent3.DetermineLuck(15, "ChanceToKnockWeapons", true);
+
+                                        if (gc.percentChance(myChance3))
+                                        {
+                                            InvItem invItem2 = __instance.myMelee.agent.inventory.FindItem(invItem.invItemName);
+                                            __instance.myMelee.agent.inventory.DestroyItem(invItem2);
+                                            gc.spawnerMain.SpillItem(__instance.tr.position, invItem2);
+                                            gc.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
+
+                                            if (!gc.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == gc.playerAgent))
+                                                __instance.myMelee.agent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", __instance.myMelee.agent.objectNetID, "", "");
+
+                                            __instance.myMelee.agent.statusEffects.CreateBuffText("DroppedWeapon", __instance.myMelee.agent.objectNetID);
+                                            __instance.myMelee.agent.dontPickUpWeapons = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (!gc.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == gc.playerAgent))
+                            {
+                                __instance.myMelee.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
+                                Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
+                                __instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
+                                __instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
+                                __instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
+                                Vector3 position2 = __instance.myMelee.meleeHelperTr.position;
+                                __instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
+                                __instance.myMelee.meleeHelperTr.localRotation = localRotation;
+
+                                if (!__instance.myMelee.agent.testingNewClientLerps)
+                                {
+                                    if (__instance.myMelee.agent.isPlayer != 0)
+                                        __instance.myMelee.agent.objectMult.CallCmdMeleeHitAgent(agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
+                                    else
+                                        gc.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
+                                }
+                            }
+                            else if (gc.multiplayerMode && gc.serverPlayer)
+                                __instance.myMelee.agent.objectMult.CallRpcMeleeHitObjectFake(agent3.objectNetID);
+
+                            if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent3.isPlayer > 0 && agent3.localPlayer))
+                            {
+                                if (agent3.justDied)
+                                    gc.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
+                                else
+                                    gc.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
+                            }
+
+                            gc.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
+                            __instance.myMelee.agent.combat.meleeJustHitCooldown = __instance.myMelee.agent.combat.meleeJustHitTimeStart;
+                            __instance.myMelee.agent.combat.meleeJustHitCloseCooldown = __instance.myMelee.agent.combat.meleeJustHitCloseTimeStart;
+
+                            if (gc.serverPlayer)
+                            {
+                                if (__instance.myMelee.successfullyBackstabbed)
+                                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
+                                else if (!__instance.myMelee.successfullySleepKilled)
+                                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
+                            }
+
+                            __instance.MeleeHitEffect(hitObject);
+
+                            gc.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+
+                            if (gc.levelType == "Tutorial")
+                            {
+                                gc.tutorial.MeleeTarget(agent3);
+
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public static void MeleeHitbox_MeleeHitEffect(GameObject hitObject, MeleeHitbox __instance) // Postfix
+		{
+            // Gate to weapon/fist and trait
+
+            if (hitObject.GetComponent<ObjectSprite>().agent.ghost && hitObject.CompareTag("AgentSprite"))
+            {
+                InvItem invItem = null;
+
+                try
+                {
+                    invItem = __instance.myMelee.agent.inventory.equippedWeapon;
+
+                    if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
+                        invItem = __instance.myMelee.agent.inventory.fist;
+                }
+                catch
+                {
+                }
+
+                if (__instance.myMelee.fakeHitAgent)
+                    return;
+
+                Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
+
+                if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
+                    return;
+
+                if (agent.hologram || agent.objectAgent)
+                    return;
+
+                bool flag = false;
+
+                if (invItem.hitSoundType == "Cut")
+                {
+                    if (agent.damagedAmount < 12)
+                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
+                    else
+                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
+                    
+                    flag = true;
+                }
+
+                if (agent.damagedAmount < 10)
+                {
+                    if (!flag)
+                    {
+                        string hitSoundType = invItem.hitSoundType;
+
+                        if (!(hitSoundType == "Normal"))
+                        {
+                            if (!(hitSoundType == "WerewolfSlash"))
+                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+                            else
+                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                        }
+                        else
+                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+                    }
+
+                    if (agent.damagedAmount > 0)
+                    {
+                        if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+                            gc.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        else
+                            gc.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    }
+                    else
+                        gc.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    
+                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+                    {
+                        gc.FreezeFrames(1);
+                    
+                        return;
+                    }
+                }
+                else if (agent.damagedAmount < 15)
+                {
+                    if (!flag)
+                    {
+                        string hitSoundType = invItem.hitSoundType;
+
+                        if (!(hitSoundType == "Normal"))
+                        {
+                            if (!(hitSoundType == "WerewolfSlash"))
+                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                            else
+                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                        }
+                        else
+                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                    }
+
+                    if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+                        gc.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    else
+                        gc.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    
+                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+                    {
+                        gc.FreezeFrames(2);
+
+                        return;
+                    }
+                }
+                else
+                {
+                    if (!flag)
+                    {
+                        string hitSoundType = invItem.hitSoundType;
+
+                        if (!(hitSoundType == "Normal"))
+                        {
+                            if (!(hitSoundType == "WerewolfSlash"))
+                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                            else
+                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                        }
+                        else
+                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                        
+                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                    }
+                    if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+                        gc.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    else
+                        gc.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                    
+                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+                    {
+                        gc.FreezeFrames(3);
+                    
+                        return;
+                    }
+                }
+            }
+        } 
+		#endregion
+		#region PlayerControl
+		public static void PlayerControl_Update() // Postfix
+		{
+            ResetCameras();
+		}
 		#endregion
 		#region PlayfieldObject
 		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
@@ -1166,7 +1642,7 @@ namespace BunnyMod.Content
 		{
             Agent agent = __instance.agent;
 
-            if (IsUnderdarkCitizenActive() && agent.isPlayer == 0)
+            if (IsTraitActive("UnderdarkCitizen") && agent.isPlayer == 0)
 			{
                 agent.statusEffects.BecomeNotHidden();
 			}

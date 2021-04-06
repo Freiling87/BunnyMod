@@ -4,16 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using BunnyMod;
 
+using Random = UnityEngine.Random;
+
 namespace BunnyMod.Content
 {
 	public class BunnyMutators
 	{
+		public static GameController gc => GameController.gameController;
+
 		public void Awake()
 		{
 			InitializeMutators();
 
 			// Bullet
 			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
+
+			// LoadLevel
 
 			// Quests
 			//BunnyHeader.MainInstance.PatchPostfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
@@ -69,12 +75,6 @@ namespace BunnyMod.Content
 			#endregion
 
 			#region Map Modification
-			CustomMutator shantyTown = RogueLibs.CreateCustomMutator("ShantyTown", true,
-				new CustomNameInfo("Shanty Town"),
-				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
-			shantyTown.Available = true;
-			shantyTown.Conflicting.AddRange(new string[] { "SteelCity" });
-			shantyTown.IsActive = false;
 
 			CustomMutator cityOfSteel = RogueLibs.CreateCustomMutator("CityOfSteel", true,
 				new CustomNameInfo("City Of Steel"),
@@ -82,6 +82,27 @@ namespace BunnyMod.Content
 			cityOfSteel.Available = true;
 			cityOfSteel.Conflicting.AddRange(new string[] { "Shantytown" });
 			cityOfSteel.IsActive = false;
+
+			CustomMutator citySprawl = RogueLibs.CreateCustomMutator("CitySprawl", true,
+				new CustomNameInfo("City Sprawl"),
+				new CustomNameInfo("Damn, this town has gotten big. You remember when it was just a small Mega-Arcology. Now it's a Mega-Mega-Arcology."));
+			citySprawl.Available = true;
+			citySprawl.Conflicting.AddRange(new string[] { "CloseQuarters" });
+			citySprawl.IsActive = false;
+
+			CustomMutator closeQuarters = RogueLibs.CreateCustomMutator("CloseQuarters", true,
+				new CustomNameInfo("Close Quarters"),
+				new CustomNameInfo("This city felt so big when you were a little kid. Now it feels cramped. Guess people weren't meant to live in a bunker!"));
+			closeQuarters.Available = true;
+			closeQuarters.Conflicting.AddRange(new string[] { "CitySprawl" });
+			closeQuarters.IsActive = false;
+
+			CustomMutator shantyTown = RogueLibs.CreateCustomMutator("ShantyTown", true,
+				new CustomNameInfo("Shanty Town"),
+				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
+			shantyTown.Available = true;
+			shantyTown.Conflicting.AddRange(new string[] { "SteelCity" });
+			shantyTown.IsActive = false;
 			#endregion
 
 			#region Overhauls
@@ -111,7 +132,34 @@ namespace BunnyMod.Content
 			//wagTheDog.IsActive = true;
 			#endregion
 
+			#region Miscellaneous
+			CustomMutator fourQuests = RogueLibs.CreateCustomMutator("FourQuests", true,
+				new CustomNameInfo("Four Quests"),
+				new CustomNameInfo("Four quests per level. Boom."));
+			fourQuests.Available = true;
+			fourQuests.Conflicting.AddRange(new string[] { });
+			fourQuests.IsActive = false;
+			#endregion
 		}
+
+		#region Custom
+		public static int LevelSizeMod(int vanilla)
+		{
+			if (gc.challenges.Contains("CitySprawl"))
+				return (int)(vanilla * 2.0f);
+			else if (gc.challenges.Contains("CloseQuarters"))
+				return (int)(vanilla * 0.5f);
+			else
+				return vanilla;
+		}
+		public static int ForceQuestCount(int vanilla)
+		{
+			if (gc.challenges.Contains("FourQuests"))
+				return 4;
+			else 
+				return vanilla;
+		}
+		#endregion
 
 		#region Bullet
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix

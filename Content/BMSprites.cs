@@ -12,13 +12,17 @@ namespace BunnyMod.Content
 {
 	class BMSprites
 	{
-		public static GameController gc => GameController.gameController;
+		public static GameController GC => GameController.gameController;
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		public void Awake()
 		{
-			BunnyHeader.MainInstance.PatchPostfix(typeof(CharacterCreation), "Awake", GetType(), "CharacterCreation_Awake", new Type[0] { });
+			//CharacterCreation
+			Postfix(typeof(CharacterCreation), "Awake", GetType(), "CharacterCreation_Awake", new Type[0] { });
 
-			BunnyHeader.MainInstance.PatchPostfix(typeof(GameResources), "SetupDics", GetType(), "GameResources_SetupDics", new Type[0] { });
+			// GameResources
+			Postfix(typeof(GameResources), "SetupDics", GetType(), "GameResources_SetupDics", new Type[0] { });
 		}
 		public void FixedUpdate()
 		{

@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using RogueLibsCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using UnityEngine;
+using System.Collections;
+using HarmonyLib;
+using System.Reflection;
+using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
-	public class BMDisasters
+	public class BMLevelGen
 	{
 		public static GameController GC => GameController.gameController;
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -16,14 +23,11 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			InitializeDisasters();
 
-			// Patches here
 		}
 
-		public static void InitializeDisasters()
-		{
-			
-		}
+		#region LoadLevel
+		// There is a patch in BMAbilities for this Class, but it uses a variable in that class. TODO: Move it over here.
+		#endregion
 	}
 }

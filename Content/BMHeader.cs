@@ -17,14 +17,14 @@ namespace BunnyMod
 	[BepInProcess("StreetsOfRogue.exe")]
 	[BepInDependency(RogueLibs.pluginGuid, "2.0")]
 
-	public class BunnyHeader : BaseUnityPlugin
+	public class BMHeader : BaseUnityPlugin
 	{
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
 		public const string pluginName = "Bunny Mod";
 		public const string pluginVersion = "1.4.0";
 
 		public static ManualLogSource ConsoleMessage;
-		public static GameController gc => GameController.gameController;
+		public static GameController GC => GameController.gameController;
 		public static BaseUnityPlugin MainInstance;
 
 		public void Awake()
@@ -35,6 +35,7 @@ namespace BunnyMod
 			new BMAbilities().Awake();
 			//new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
+			new BMLevelGen().Awake();
 			new BMMutators().Awake();
 			new BMObjects().Awake();
 			//new BunnySprites().Awake();

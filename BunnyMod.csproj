@@ -86,6 +86,7 @@
     <Compile Include="Content\BMAbilities.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMDisasters.cs" />
+    <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMMutators.cs" />
     <Compile Include="Content\BMSprites.cs" />
     <Compile Include="Content\BMHeader.cs" />

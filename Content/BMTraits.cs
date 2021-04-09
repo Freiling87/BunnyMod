@@ -29,7 +29,9 @@ namespace BunnyMod.Content
 
     public class BMTraits
     {
-        public static GameController gc => GameController.gameController;
+        public static GameController GC => GameController.gameController;
+        public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+        public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
         #region Main
         public void Awake()
@@ -38,42 +40,42 @@ namespace BunnyMod.Content
             Initialize_Traits();
 
             // AgentInteractions
-            BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+            Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
 
             // InvDatabase
-            BunnyHeader.MainInstance.PatchPostfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
+            Postfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+            Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
 
             // InvItem
-            BunnyHeader.MainInstance.PatchPostfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
+            Postfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
+            Prefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
 
             // ItemFunctions
-            BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
-            BunnyHeader.MainInstance.PatchPrefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
+            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+            Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             // LoadLevel
-            BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
+            Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
+            Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 
             // MeleeHitbox
-            BunnyHeader.MainInstance.PatchPostfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
+            Postfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
+            Postfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
 
             // PlayerControl
-            BunnyHeader.MainInstance.PatchPostfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
+            Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 
             // PlayfieldObject
-            BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
+            Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
 
             // StatusEffects
-            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal)});
-            BunnyHeader.MainInstance.PatchPostfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
+            Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal)});
+            Postfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
         }
         public static void Initialize_Names()
         {
@@ -659,7 +661,7 @@ namespace BunnyMod.Content
         #region Custom
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
-            BunnyHeader.Log("HealthCost");
+            BMHeader.Log("HealthCost");
 
             if (type == DamageType.burnedFingers)
             {
@@ -678,7 +680,7 @@ namespace BunnyMod.Content
         }
         public static bool IsTraitActive(string trait)
 		{
-            foreach (Agent agent in gc.playerAgentList)
+            foreach (Agent agent in GC.playerAgentList)
                 if (agent.statusEffects.hasTrait(trait))
                     return true;
             return false;
@@ -693,7 +695,7 @@ namespace BunnyMod.Content
         }
         public static void ResetCameras()
 		{
-            float zoomLevel = gc.cameraScript.zoomLevel;
+            float zoomLevel = GC.cameraScript.zoomLevel;
 
             if (IsTraitActive("EagleEyes"))
                 zoomLevel = 0.60f;
@@ -704,7 +706,7 @@ namespace BunnyMod.Content
             else if (IsTraitActive("Myopic_2"))
                 zoomLevel = 2.00f;
 
-            gc.cameraScript.zoomLevel = zoomLevel;
+            GC.cameraScript.zoomLevel = zoomLevel;
         }
         public static int ToolCost(Agent agent, int baseCost)
         {
@@ -749,7 +751,7 @@ namespace BunnyMod.Content
             if (item.isArmor && __instance.agent.statusEffects.hasTrait("Fatass"))
             {
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
-                gc.audioHandler.Play(__instance.agent, "CantDo");
+                GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -761,7 +763,7 @@ namespace BunnyMod.Content
             if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
                 __instance.agent.Say("Ow, I can feel it squeezing my big, stupid, dumb, ugly head!");
-                gc.audioHandler.Play(__instance.agent, "CantDo");
+                GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -778,21 +780,21 @@ namespace BunnyMod.Content
             if (agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
             {
                 agent.Say("Mommy says I can't use sharp things!");
-                gc.audioHandler.Play(__instance.agent, "CantDo");
+                GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
                 agent.Say("I can't use that! It's too loooooud.");
-                gc.audioHandler.Play(__instance.agent, "CantDo");
+                GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
 			{
                 agent.Say("I need something sharper.");
-                gc.audioHandler.Play(__instance.agent, "CantDo");
+                GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -801,7 +803,7 @@ namespace BunnyMod.Content
         }
         public static bool InvDatabase_SubtractFromItemCount_a(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
-            if (BunnyHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
+            if (BMHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
                 if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
                     amount = 0;
@@ -812,7 +814,7 @@ namespace BunnyMod.Content
 		}
         public static bool InvDatabase_SubtractFromItemCount_b(InvItem invItem, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
-            if (BunnyHeader.tools.Contains(invItem.invItemName))
+            if (BMHeader.tools.Contains(invItem.invItemName))
             {
                 if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
                     amount = 0;
@@ -838,20 +840,20 @@ namespace BunnyMod.Content
 			}
             if (__instance.Categories.Contains("Food"))
             {
-                if (BunnyHeader.nonVegetarian.Contains(name))
+                if (BMHeader.nonVegetarian.Contains(name))
                     __instance.Categories.Add("NonVegetarian");
-                else if (BunnyHeader.vegetarian.Contains(name))
+                else if (BMHeader.vegetarian.Contains(name))
                     __instance.Categories.Add("Vegetarian");
             }
             if (__instance.Categories.Contains("Weapons"))
             {
-                if (BunnyHeader.blunt.Contains(name))
+                if (BMHeader.blunt.Contains(name))
                     __instance.Categories.Add("Blunt");
-                if (BunnyHeader.explosive.Contains(name))
+                if (BMHeader.explosive.Contains(name))
                     __instance.Categories.Add("Explosive");
-                if (BunnyHeader.loud.Contains(name) && !__instance.contents.Contains("Silencer"))
+                if (BMHeader.loud.Contains(name) && !__instance.contents.Contains("Silencer"))
                     __instance.Categories.Add("Loud");
-                if (BunnyHeader.piercing.Contains(name))
+                if (BMHeader.piercing.Contains(name))
                     __instance.Categories.Add("Piercing");
             }
             return;
@@ -894,7 +896,7 @@ namespace BunnyMod.Content
             }
             if (cantDoFlag)
 			{
-                gc.audioHandler.Play(agent, "CantDo");
+                GC.audioHandler.Play(agent, "CantDo");
                 return false;
 			}
 
@@ -921,24 +923,24 @@ namespace BunnyMod.Content
 		{
             if (item.itemType == "Consumable")
 			{
-                if (BunnyHeader.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller"))))
+                if (BMHeader.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller"))))
                 {
                     agent.Say("Today, I choose not to drink.");
                     goto terminus;
                 }
 
-                if (BunnyHeader.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+                if (BMHeader.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
                 {
                     agent.Say("Nope, my body is a temple!");
                     goto terminus;
                 }
 
-                if (BunnyHeader.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Vegetarian"))
+                if (BMHeader.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Vegetarian"))
                 {
                     agent.Say("Meat is murder!");
                     goto terminus;
                 }
-                else if (BunnyHeader.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Carnivore"))
+                else if (BMHeader.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Carnivore"))
                 {
                     agent.Say("No! Me want meat!");
                     goto terminus;
@@ -946,13 +948,13 @@ namespace BunnyMod.Content
             }
 			else
             {
-                if (BunnyHeader.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
+                if (BMHeader.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
                 {
                     agent.Say("But that'll hurt my little ears!");
                     goto terminus;
                 }
 
-                if (BunnyHeader.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait("DrawNoBlood"))
+                if (BMHeader.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait("DrawNoBlood"))
                 {
                     agent.Say("I swore to draw no blood. Unless I remove this trait first.");
                     goto terminus;
@@ -963,7 +965,7 @@ namespace BunnyMod.Content
 
             terminus:
 
-            gc.audioHandler.Play(agent, "CantDo");
+            GC.audioHandler.Play(agent, "CantDo");
 
             return false;
         }
@@ -991,9 +993,9 @@ namespace BunnyMod.Content
 		#region LoadLevel
         public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance) // Prefix
 		{
-            BunnyHeader.Log("LoadLevel_SetupMore3_3_Prefix");
+            BMHeader.Log("LoadLevel_SetupMore3_3_Prefix");
 
-            if (!gc.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
+            if (!GC.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
             {
                 int bigTries = (int)((float)UnityEngine.Random.Range(8, 12) * __instance.levelSizeModifier);
                 int numTries;
@@ -1005,27 +1007,27 @@ namespace BunnyMod.Content
 
                     do
                     {
-                        vector14 = gc.tileInfo.FindRandLocationGeneral(2f);
+                        vector14 = GC.tileInfo.FindRandLocationGeneral(2f);
 
-                        for (int num35 = 0; num35 < gc.objectRealList.Count; num35++)
-                            if (gc.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(gc.objectRealList[num35].tr.position, vector14) < 14f)
+                        for (int num35 = 0; num35 < GC.objectRealList.Count; num35++)
+                            if (GC.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(GC.objectRealList[num35].tr.position, vector14) < 14f)
                                 vector14 = Vector2.zero;
 
                         if (vector14 != Vector2.zero)
                         {
-                            if (gc.tileInfo.WaterNearby(vector14))
+                            if (GC.tileInfo.WaterNearby(vector14))
                                 vector14 = Vector2.zero;
-                            if (gc.tileInfo.IceNearby(vector14))
+                            if (GC.tileInfo.IceNearby(vector14))
                                 vector14 = Vector2.zero;
-                            if (gc.tileInfo.BridgeNearby(vector14))
+                            if (GC.tileInfo.BridgeNearby(vector14))
                                 vector14 = Vector2.zero;
                         }
                         num34++;
                     }
-                    while ((vector14 == Vector2.zero || Vector2.Distance(vector14, gc.playerAgent.tr.position) < 5f) && num34 < 100);
+                    while ((vector14 == Vector2.zero || Vector2.Distance(vector14, GC.playerAgent.tr.position) < 5f) && num34 < 100);
 
-                    if (vector14 != Vector2.zero && Vector2.Distance(vector14, gc.playerAgent.tr.position) >= 5f)
-                        gc.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
+                    if (vector14 != Vector2.zero && Vector2.Distance(vector14, GC.playerAgent.tr.position) >= 5f)
+                        GC.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
 
                     //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
                     //{
@@ -1041,9 +1043,9 @@ namespace BunnyMod.Content
                 List<Manhole> manholeList = new List<Manhole>();
 
 
-                for (int num36 = 0; num36 < gc.objectRealList.Count; num36++)
-                    if (gc.objectRealList[num36].objectName == "Manhole")
-                        manholeList.Add((Manhole)gc.objectRealList[num36]);
+                for (int num36 = 0; num36 < GC.objectRealList.Count; num36++)
+                    if (GC.objectRealList[num36].objectName == "Manhole")
+                        manholeList.Add((Manhole)GC.objectRealList[num36]);
 
                 if (manholeList.Count > 0)
                 {
@@ -1059,8 +1061,8 @@ namespace BunnyMod.Content
                             manhole = manholeList[UnityEngine.Random.Range(0, manholeList.Count)];
                             flag13 = true;
 
-                            for (int j = 0; j < gc.agentList.Count; j++)
-                                if (gc.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, gc.agentList[j].tr.position) < 10f)
+                            for (int j = 0; j < GC.agentList.Count; j++)
+                                if (GC.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, GC.agentList[j].tr.position) < 10f)
                                 {
                                     numberOfHiddenAgents++;
                                     flag13 = false;
@@ -1072,15 +1074,15 @@ namespace BunnyMod.Content
 
                         if (flag13)
                         {
-                            string text3 = gc.Choose<string>("Thief", "Thief", new string[]
+                            string text3 = GC.Choose<string>("Thief", "Thief", new string[]
                             {
                                     "Thief",
                                     "Cannibal"
                             });
 
-                            if ((!(text3 == "Thief") || !gc.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !gc.challenges.Contains("CannibalsDontAttack")))
+                            if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
                             {
-                                Agent agent2 = gc.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
+                                Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
                                 agent2.SetDefaultGoal("Idle");
                                 agent2.statusEffects.BecomeHidden(manhole);
                                 agent2.oma.mustBeGuilty = true;
@@ -1104,9 +1106,9 @@ namespace BunnyMod.Content
         }
         public static void LoadLevel_SetupMore3_3_Postfix(LoadLevel __instance) // Postfix
 		{
-            for (int agentSearch = 0; agentSearch < gc.agentList.Count; agentSearch++)
-                if (gc.agentList[agentSearch].isPlayer > 0)
-                    LoadLevel_SpawnHitSquad(gc.agentList[agentSearch], 150, "Ghost", __instance);
+            for (int agentSearch = 0; agentSearch < GC.agentList.Count; agentSearch++)
+                if (GC.agentList[agentSearch].isPlayer > 0)
+                    LoadLevel_SpawnHitSquad(GC.agentList[agentSearch], 150, "Ghost", __instance);
         }
         public static void LoadLevel_SpawnHitSquad(Agent targetAgent, int currentDebt, string agentType, LoadLevel __instance) // Non-Patch
         {
@@ -1122,7 +1124,7 @@ namespace BunnyMod.Content
                 debt50s++;
             }
             
-            if (gc.challenges.Contains("AssassinsEveryLevel"))
+            if (GC.challenges.Contains("AssassinsEveryLevel"))
                 debt50s = 3;
             
             for (int i = 0; i < debt50s; i++)
@@ -1134,19 +1136,19 @@ namespace BunnyMod.Content
                 {
                     do
                     {
-                        vector = gc.tileInfo.FindRandLocationGeneral(0.32f);
+                        vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
                         attempts++;
                     }
-                    while ((vector == Vector2.zero || Vector2.Distance(vector, gc.playerAgent.tr.position) < 20f) && attempts < 300);
+                    while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
 
                     pos = vector;
                 }
                 else
-                    vector = gc.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
+                    vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
 
                 if (vector != Vector2.zero && attempts < 300)
                 {
-                    Agent agent = gc.spawnerMain.SpawnAgent(vector, null, agentType);
+                    Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
                     agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
                     agent.gang = Agent.gangCount;
                     agent.modLeashes = 0;
@@ -1201,7 +1203,7 @@ namespace BunnyMod.Content
                     __instance.objectList.Add(hitObject);
                     Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
 
-                    if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !gc.cinematic && __instance.HasLOSMelee(agent3))
+                    if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !GC.cinematic && __instance.HasLOSMelee(agent3))
                     {
                         __instance.objectList.Add(agent3.melee.meleeHitbox.gameObject);
 
@@ -1212,8 +1214,8 @@ namespace BunnyMod.Content
                             if (!agent3.movement.HasLOSObjectBehind(__instance.myMelee.agent) || agent3.sleeping || __instance.myMelee.agent.isPlayer == 0 || __instance.myMelee.agent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && __instance.myMelee.agent.oma.superSpecialAbility))
                                 __instance.canHitMore = false;
                             else
-                                if (gc.serverPlayer)
-                                    gc.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
+                                if (GC.serverPlayer)
+                                    GC.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
                         }
 
                         bool flag3 = !__instance.myMelee.invItem.meleeNoHit && __instance.myMelee.agent.DontHitAlignedCheck(agent3);
@@ -1234,7 +1236,7 @@ namespace BunnyMod.Content
                                     __instance.myMelee.agent.statusEffects.ChangeHealth(3f);
                             }
 
-                            if (gc.serverPlayer || agent3.health > 0f || agent3.dead)
+                            if (GC.serverPlayer || agent3.health > 0f || agent3.dead)
                                 agent3.Damage(__instance.myMelee, fromClient);
                             
                             __instance.myMelee.agent.relationships.FollowerAlert(agent3);
@@ -1242,7 +1244,7 @@ namespace BunnyMod.Content
                             if (agent3.statusEffects.hasTrait("AttacksDamageAttacker2") && __instance.myMelee.agent.ghost)
                             {
                                 int myChance = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
-                                if (gc.percentChance(myChance))
+                                if (GC.percentChance(myChance))
                                 {
                                     __instance.myMelee.agent.lastHitByAgent = agent3;
                                     __instance.myMelee.agent.justHitByAgent2 = agent3;
@@ -1256,7 +1258,7 @@ namespace BunnyMod.Content
                             {
                                 int myChance2 = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
 
-                                if (gc.percentChance(myChance2))
+                                if (GC.percentChance(myChance2))
                                 {
                                     __instance.myMelee.agent.lastHitByAgent = agent3;
                                     __instance.myMelee.agent.justHitByAgent2 = agent3;
@@ -1267,13 +1269,13 @@ namespace BunnyMod.Content
                                 }
                             }
 
-                            if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !gc.coopMode && !gc.fourPlayerMode && !gc.multiplayerMode && gc.sessionDataBig.slowMotionCinematic && gc.percentChance(25))
+                            if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode && GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
                             {
-                                if (gc.challenges.Contains("LowHealth"))
-                                    if (gc.percentChance(50))
-                                        gc.StartCoroutine(gc.SetSecondaryTimeScale(0.1f, 0.13f));
+                                if (GC.challenges.Contains("LowHealth"))
+                                    if (GC.percentChance(50))
+                                        GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
                                 else
-                                    gc.StartCoroutine(gc.SetSecondaryTimeScale(0.1f, 0.13f));
+                                    GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
                             }
 
                             float num = 0f;
@@ -1306,7 +1308,7 @@ namespace BunnyMod.Content
                             {
                                 bool flag5 = true;
                                 
-                                if (gc.multiplayerMode && gc.serverPlayer)
+                                if (GC.multiplayerMode && GC.serverPlayer)
                                 {
                                     if (agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myMelee.agent.isPlayer == 0)
                                         flag5 = false;
@@ -1318,18 +1320,18 @@ namespace BunnyMod.Content
                                 {
                                     __instance.myMelee.agent.movement.KnockBackBullet(agent3.gameObject, 240f, true, agent3);
 
-                                    if (gc.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
+                                    if (GC.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
                                     {
                                         int myChance3 = agent3.DetermineLuck(15, "ChanceToKnockWeapons", true);
 
-                                        if (gc.percentChance(myChance3))
+                                        if (GC.percentChance(myChance3))
                                         {
                                             InvItem invItem2 = __instance.myMelee.agent.inventory.FindItem(invItem.invItemName);
                                             __instance.myMelee.agent.inventory.DestroyItem(invItem2);
-                                            gc.spawnerMain.SpillItem(__instance.tr.position, invItem2);
-                                            gc.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
+                                            GC.spawnerMain.SpillItem(__instance.tr.position, invItem2);
+                                            GC.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
 
-                                            if (!gc.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == gc.playerAgent))
+                                            if (!GC.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
                                                 __instance.myMelee.agent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", __instance.myMelee.agent.objectNetID, "", "");
 
                                             __instance.myMelee.agent.statusEffects.CreateBuffText("DroppedWeapon", __instance.myMelee.agent.objectNetID);
@@ -1339,7 +1341,7 @@ namespace BunnyMod.Content
                                 }
                             }
 
-                            if (!gc.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == gc.playerAgent))
+                            if (!GC.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
                             {
                                 __instance.myMelee.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
                                 Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
@@ -1355,39 +1357,39 @@ namespace BunnyMod.Content
                                     if (__instance.myMelee.agent.isPlayer != 0)
                                         __instance.myMelee.agent.objectMult.CallCmdMeleeHitAgent(agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
                                     else
-                                        gc.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
+                                        GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
                                 }
                             }
-                            else if (gc.multiplayerMode && gc.serverPlayer)
+                            else if (GC.multiplayerMode && GC.serverPlayer)
                                 __instance.myMelee.agent.objectMult.CallRpcMeleeHitObjectFake(agent3.objectNetID);
 
                             if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent3.isPlayer > 0 && agent3.localPlayer))
                             {
                                 if (agent3.justDied)
-                                    gc.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
+                                    GC.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
                                 else
-                                    gc.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
+                                    GC.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
                             }
 
-                            gc.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
+                            GC.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
                             __instance.myMelee.agent.combat.meleeJustHitCooldown = __instance.myMelee.agent.combat.meleeJustHitTimeStart;
                             __instance.myMelee.agent.combat.meleeJustHitCloseCooldown = __instance.myMelee.agent.combat.meleeJustHitCloseTimeStart;
 
-                            if (gc.serverPlayer)
+                            if (GC.serverPlayer)
                             {
                                 if (__instance.myMelee.successfullyBackstabbed)
-                                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
+                                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
                                 else if (!__instance.myMelee.successfullySleepKilled)
-                                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
+                                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
                             }
 
                             __instance.MeleeHitEffect(hitObject);
 
-                            gc.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+                            GC.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
 
-                            if (gc.levelType == "Tutorial")
+                            if (GC.levelType == "Tutorial")
                             {
-                                gc.tutorial.MeleeTarget(agent3);
+                                GC.tutorial.MeleeTarget(agent3);
 
                                 return;
                             }
@@ -1431,9 +1433,9 @@ namespace BunnyMod.Content
                 if (invItem.hitSoundType == "Cut")
                 {
                     if (agent.damagedAmount < 12)
-                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
+                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
                     else
-                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
+                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
                     
                     flag = true;
                 }
@@ -1447,27 +1449,27 @@ namespace BunnyMod.Content
                         if (!(hitSoundType == "Normal"))
                         {
                             if (!(hitSoundType == "WerewolfSlash"))
-                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
                             else
-                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
                         }
                         else
-                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
                     }
 
                     if (agent.damagedAmount > 0)
                     {
                         if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                            gc.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                            GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                         else
-                            gc.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                            GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     }
                     else
-                        gc.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     
                     if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
                     {
-                        gc.FreezeFrames(1);
+                        GC.FreezeFrames(1);
                     
                         return;
                     }
@@ -1481,22 +1483,22 @@ namespace BunnyMod.Content
                         if (!(hitSoundType == "Normal"))
                         {
                             if (!(hitSoundType == "WerewolfSlash"))
-                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
                             else
-                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
                         }
                         else
-                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
                     }
 
                     if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                        gc.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     else
-                        gc.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     
                     if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
                     {
-                        gc.FreezeFrames(2);
+                        GC.FreezeFrames(2);
 
                         return;
                     }
@@ -1510,23 +1512,23 @@ namespace BunnyMod.Content
                         if (!(hitSoundType == "Normal"))
                         {
                             if (!(hitSoundType == "WerewolfSlash"))
-                                gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
                             else
-                                gc.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
                         }
                         else
-                            gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
                         
-                        gc.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
                     }
                     if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                        gc.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     else
-                        gc.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+                        GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
                     
                     if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
                     {
-                        gc.FreezeFrames(3);
+                        GC.FreezeFrames(3);
                     
                         return;
                     }

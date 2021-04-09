@@ -12,7 +12,9 @@ namespace BunnyMod.Content
 {
     public class BMItems 
     {
-        public static GameController gc => GameController.gameController;
+        public static GameController GC => GameController.gameController;
+        public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+        public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
         #region Generic
         public void Awake()
@@ -20,9 +22,11 @@ namespace BunnyMod.Content
             InitializeItems();
 
             #region Patches - Item Base
-            BunnyHeader.MainInstance.PatchPostfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+            // ItemFunctions
+            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
 
-            BunnyHeader.MainInstance.PatchPostfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
+            // Melee
+            Postfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
             #endregion
             #region Patches - Items
 
@@ -70,7 +74,7 @@ namespace BunnyMod.Content
                 __instance.canMove = false; //
                 __instance.realArm1.enabled = false; //
                 if (!flag2)
-                    gc.audioHandler.Play(__instance.agent, "SwingWeaponLarge");
+                    GC.audioHandler.Play(__instance.agent, "SwingWeaponLarge");
                 __instance.hitParticlesTr.localPosition = new Vector3(0.3f, 0f, 0f);
                 __instance.animClass = "Stab";
             }

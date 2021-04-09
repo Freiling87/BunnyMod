@@ -12,21 +12,26 @@ namespace BunnyMod.Content
 {
 	public class BMBehaviors
 	{
-		public static GameController gc => GameController.gameController;
+		public static GameController GC => GameController.gameController;
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		#region Generic
 		public void Awake()
 		{
 			Initialize_Names();
 
-			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
-			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
-			BunnyHeader.MainInstance.PatchPrefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
-			BunnyHeader.MainInstance.PatchPostfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
+			// AgentInteractions
+			Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
+			Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
+			Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
 
-			BunnyHeader.MainInstance.PatchPrefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
+			// LoadLevel
+			Prefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
 
-			BunnyHeader.MainInstance.PatchPostfix(typeof(PlayfieldObject), "determineMoneyCost", GetType(), "PlayfieldObject_determineMoneyCost", new Type[2] { typeof(int), typeof(string) }); // Uncapitalized in source
+			// PlayfieldObject
+			Postfix(typeof(PlayfieldObject), "determineMoneyCost", GetType(), "PlayfieldObject_determineMoneyCost", new Type[2] { typeof(int), typeof(string) }); // Uncapitalized in source
 		}
 		public void FixedUpdate()
 		{
@@ -62,13 +67,13 @@ namespace BunnyMod.Content
 		#region Custom
 		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, int moneyValue)
 		{
-			BunnyHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving $" + moneyValue);
+			BMHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving $" + moneyValue);
 
 			// TODO: Write Hobo_AcceptDonation(Money)
 		}
 		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, InvItem invItem)
 		{
-			BunnyHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving " + invItem.invItemName);
+			BMHeader.Log("Hobo_AcceptDonation: " + hobo.agentID + " receiving " + invItem.invItemName);
 
 			int moneyValue;
 			string item = invItem.invItemName;
@@ -87,32 +92,32 @@ namespace BunnyMod.Content
 				moneyValue = 50;
 			else
 			{
-				BunnyHeader.Log("Unacceptable item donated to " + hobo.agentName + hobo.agentID);
+				BMHeader.Log("Unacceptable item donated to " + hobo.agentName + hobo.agentID);
 				moneyValue = invItem.itemValue;
 			}
 
 			string newRelationship = Hobo_relStatusAfterDonation(hobo, interactingAgent, moneyValue).ToString("f");
 
-			BunnyHeader.Log("Hobo_AcceptDonation: item = " + item + ";  moneyValue = " + moneyValue + "; newRelationship = " + newRelationship);
+			BMHeader.Log("Hobo_AcceptDonation: item = " + item + ";  moneyValue = " + moneyValue + "; newRelationship = " + newRelationship);
 
 			Hobo_MugItem(hobo, interactingAgent, item, newRelationship);
 		}
 		public static void Hobo_MugItem(Agent agent, Agent interactingAgent, string itemName, string relStatus)
 		{
-			BunnyHeader.Log("Hobo_MugItem");
+			BMHeader.Log("Hobo_MugItem");
 
-			if (gc.serverPlayer)
+			if (GC.serverPlayer)
 			{
 				for (int i = 0; i < agent.gangMembers.Count; i++)
 					agent.gangMembers[i].hasMugged = true;
 
-				for (int j = 0; j < gc.playerAgentList.Count; j++)
-					gc.playerAgentList[j].gangMugging = 0;
+				for (int j = 0; j < GC.playerAgentList.Count; j++)
+					GC.playerAgentList[j].gangMugging = 0;
 
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
 				agent.SayDialogue("Bought"); // ←
-				gc.audioHandler.Play(interactingAgent, "SelectItem");
+				GC.audioHandler.Play(interactingAgent, "SelectItem");
 
 				agent.relationships.SetRel(interactingAgent, relStatus);
 
@@ -122,15 +127,15 @@ namespace BunnyMod.Content
 		}
 		public static void Hobo_MugMoney(Agent agent, Agent interactingAgent, int moneyValue, string relStatus, string transactionType)
 		{
-			BunnyHeader.Log("Hobo_MugMoney");
+			BMHeader.Log("Hobo_MugMoney");
 
-			if (gc.serverPlayer)
+			if (GC.serverPlayer)
 			{
 				for (int i = 0; i < agent.gangMembers.Count; i++)
 					agent.gangMembers[i].hasMugged = true;
 
-				for (int j = 0; j < gc.playerAgentList.Count; j++)
-					gc.playerAgentList[j].gangMugging = 0;
+				for (int j = 0; j < GC.playerAgentList.Count; j++)
+					GC.playerAgentList[j].gangMugging = 0;
 
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
@@ -150,7 +155,7 @@ namespace BunnyMod.Content
 		}
 		public static relStatus Hobo_relStatusAfterDonation(Agent hobo, Agent interactingAgent, int moneyValue)
 		{
-			BunnyHeader.Log("Hobo_relStatusAfterDonation: moneyValue = " + moneyValue);
+			BMHeader.Log("Hobo_relStatusAfterDonation: moneyValue = " + moneyValue);
 
 			int[] reactionPercentages = new int[6] { 0, 0, 0, 0, 0, 0 };
 			List<relStatus> reactionOutcomes = new List<relStatus> { relStatus.Hostile, relStatus.Annoyed, relStatus.Neutral, relStatus.Friendly, relStatus.Loyal, relStatus.Aligned };
@@ -191,19 +196,19 @@ namespace BunnyMod.Content
 		#region AgentInteractions
 		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
 		{
-			BunnyHeader.Log("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
+			BMHeader.Log("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
 		}
 		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
 		{
-			BunnyHeader.Log("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
+			BMHeader.Log("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
 
 			if (agent.agentName == "Hobo")
 			{
-				gc.audioHandler.Play(agent, "AgentTalk");
+				GC.audioHandler.Play(agent, "AgentTalk");
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 				{
-					BunnyHeader.Log("AgentInteractions_DetermineButtons: Adding Buttons");
+					BMHeader.Log("AgentInteractions_DetermineButtons: Adding Buttons");
 
 					__instance.AddButton("Hobo_GiveMoney1", agent.determineMoneyCost("Hobo_GiveMoney1"));
 					__instance.AddButton("Hobo_GiveMoney2", agent.determineMoneyCost("Hobo_GiveMoney2"));
@@ -215,7 +220,7 @@ namespace BunnyMod.Content
 			}
 			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
 			{
-				gc.audioHandler.Play(agent, "AgentTalk");
+				GC.audioHandler.Play(agent, "AgentTalk");
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
@@ -226,7 +231,7 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance) // Prefix
 		{
-			BunnyHeader.Log("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
+			BMHeader.Log("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
 
 			if (agent.agentName == "Hobo")
 			{
@@ -263,7 +268,7 @@ namespace BunnyMod.Content
 		}
 		public static void AgentInteractions_UseItemOnObject(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType, ref bool __result) // Postfix
 		{
-			BunnyHeader.Log("AgentInteractions_UseItemOnObject: " + item.invItemName);
+			BMHeader.Log("AgentInteractions_UseItemOnObject: " + item.invItemName);
 
 			if (useOnType == "Hobo_Donate")
 			{
@@ -274,7 +279,7 @@ namespace BunnyMod.Content
 				else
 				{
 					agent.SayDialogue("Hobo_DontWant");
-					gc.audioHandler.Play(interactingAgent, "CantDo");
+					GC.audioHandler.Play(interactingAgent, "CantDo");
 				}
 
 				__result = true;
@@ -284,24 +289,24 @@ namespace BunnyMod.Content
 		#region LoadLevel
 		public static void LoadLevel_SetupMore4(LoadLevel __instance, ref GameController ___gc) // Prefix
 		{
-			BunnyHeader.Log("LoadLevel.SetupMore4");
+			BMHeader.Log("LoadLevel.SetupMore4");
 
 			List<int> gangsAssigned = new List<int>();
 
 			foreach (Agent agent in ___gc.agentList)
 			{
-				BunnyHeader.Log("Detected " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2) + ", member of gang #" + agent.gang + ", which has " + agent.gangMembers.Count + " members. He is/not a leader: " + agent.gangLeader);
+				BMHeader.Log("Detected " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2) + ", member of gang #" + agent.gang + ", which has " + agent.gangMembers.Count + " members. He is/not a leader: " + agent.gangLeader);
 
 				if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB") && agent.gang != 0 && agent.gangMembers.Count > 1 && !gangsAssigned.Contains(agent.gang))
 				{
 					agent.gangLeader = true;
 					gangsAssigned.Add(agent.gang);
 
-					BunnyHeader.Log("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+					BMHeader.Log("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
 				}
 				else if (agent.agentName == "Hobo")
 				{
-					if (gc.percentChance(33))
+					if (GC.percentChance(33))
 					{
 						Agent.gangCount++;
 						agent.gang = Agent.gangCount;
@@ -309,7 +314,7 @@ namespace BunnyMod.Content
 						agent.gangLeader = true;
 						gangsAssigned.Add(agent.gang);
 
-						BunnyHeader.Log("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+						BMHeader.Log("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
 					}
 				}
 			}
@@ -318,14 +323,14 @@ namespace BunnyMod.Content
 		#region PlayfieldObject
 		public static void PlayfieldObject_determineMoneyCost(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result) // Postfix // Uncapitalized in source
 		{                               // ↑ [sic]
-			BunnyHeader.Log("PlayfieldObject_determineMoneyCost: transactionType = " + transactionType +"; PFO = " + __instance.name);
+			BMHeader.Log("PlayfieldObject_determineMoneyCost: transactionType = " + transactionType +"; PFO = " + __instance.name);
 
 			Agent agent = (Agent)__instance;
 			float num = __result;
-			int levelMultiplier = Mathf.Clamp(gc.sessionDataBig.curLevelEndless, 1, 15);
+			int levelMultiplier = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 15);
 			int gangsizeMultiplier = agent.gangMembers.Count;
 
-			BunnyHeader.Log("PlayfieldObject_DetermineMoneyCost: num = " + num + "; LevelMult = " + levelMultiplier + "; gangsizeMult = " + gangsizeMultiplier);
+			BMHeader.Log("PlayfieldObject_DetermineMoneyCost: num = " + num + "; LevelMult = " + levelMultiplier + "; gangsizeMult = " + gangsizeMultiplier);
 
 			if (transactionType == "Mug_Gangbanger")
 				num = (float)(levelMultiplier * 10 + gangsizeMultiplier * 15);
@@ -336,11 +341,11 @@ namespace BunnyMod.Content
 			else if (transactionType == "Hobo_GiveMoney3")
 				num = 50f;
 			else
-				BunnyHeader.Log("Bad string passed to PlayfieldObject_determineMoneyCost");
+				BMHeader.Log("Bad string passed to PlayfieldObject_determineMoneyCost");
 
 			__result = (int)num;
 
-			BunnyHeader.Log("PlayfieldObject_determineMoneyCost: result = " + __result);
+			BMHeader.Log("PlayfieldObject_determineMoneyCost: result = " + __result);
 		}
 		#endregion
 	}

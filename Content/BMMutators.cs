@@ -10,25 +10,27 @@ namespace BunnyMod.Content
 {
 	public class BMMutators
 	{
-		public static GameController gc => GameController.gameController;
+		public static GameController GC => GameController.gameController;
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		public void Awake()
 		{
 			InitializeMutators();
 
 			// Bullet
-			BunnyHeader.MainInstance.PatchPostfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
+			Postfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
 
 			// LoadLevel
 
 			// Quests
-			//BunnyHeader.MainInstance.PatchPostfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
+			//Postfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
 
 			// RandomWalls
-			BunnyHeader.MainInstance.PatchPrefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
 
 			// SpawnerMain
-			BunnyHeader.MainInstance.PatchPrefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
+			Prefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
 		}
 		public static void InitializeMutators()
 		{
@@ -145,16 +147,16 @@ namespace BunnyMod.Content
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
 		{
-			if (gc.challenges.Contains("CitySprawl"))
+			if (GC.challenges.Contains("CitySprawl"))
 				return (int)(vanilla * 2.0f);
-			else if (gc.challenges.Contains("CloseQuarters"))
+			else if (GC.challenges.Contains("CloseQuarters"))
 				return (int)(vanilla * 0.5f);
 			else
 				return vanilla;
 		}
 		public static int ForceQuestCount(int vanilla)
 		{
-			if (gc.challenges.Contains("FourQuests"))
+			if (GC.challenges.Contains("FourQuests"))
 				return 4;
 			else 
 				return vanilla;
@@ -164,31 +166,31 @@ namespace BunnyMod.Content
 		#region Bullet
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
-			if (gc.challenges.Contains("ScaryGuns"))
+			if (GC.challenges.Contains("ScaryGuns"))
 			{
 				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
 
-				BunnyHeader.Log("               New: damage = " + __instance.damage + "; speed = " + __instance.speed);
+				BMHeader.Log("               New: damage = " + __instance.damage + "; speed = " + __instance.speed);
 			}
 		}
 		#endregion
 		#region Quests
 		public static void Quests_CheckIfBigQuestObject(PlayfieldObject myObject, Quests __instance) // Postfix
 		{
-			if (gc.levelFeeling == "Riot" || gc.percentChance(2) || gc.challenges.Contains("AlwaysSpawnArsonists"))
+			if (GC.levelFeeling == "Riot" || GC.percentChance(2) || GC.challenges.Contains("AlwaysSpawnArsonists"))
 			{
-				for (int i = 0; i < gc.playerAgentList.Count; i++)
+				for (int i = 0; i < GC.playerAgentList.Count; i++)
 				{
-					Agent agent_i = gc.playerAgentList[i];
+					Agent agent_i = GC.playerAgentList[i];
 
-					if ((agent_i.localPlayer || gc.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
+					if ((agent_i.localPlayer || GC.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
 					{
-						if (gc.serverPlayer && !gc.loadLevel.setArsonist && !gc.loadLevel.LevelContainsMayor())
+						if (GC.serverPlayer && !GC.loadLevel.setArsonist && !GC.loadLevel.LevelContainsMayor())
 						{
-							for (int j = 0; j < gc.agentList.Count; j++)
+							for (int j = 0; j < GC.agentList.Count; j++)
 							{
-								Agent agent_j = gc.agentList[j];
+								Agent agent_j = GC.agentList[j];
 
 								if (agent_j.isPlayer == 0 && !agent_j.dead && !agent_j.objectAgent && !agent_j.oma.rioter && !agent_j.ghost && !agent_j.inhuman && !agent_j.beast && !agent_j.zombified && !agent_j.oma.hidden && !agent_j.arsonist && !agent_j.oma.secretWerewolf && agent_j.ownerID == 0 && agent_j.startingChunk == 0 && !agent_j.enforcer && !agent_j.upperCrusty && agent_j.agentName != "Assassin" && agent_j.agentName != "Custom")
 									if (!agent_j.QuestInvolvementFull())
@@ -206,14 +208,14 @@ namespace BunnyMod.Content
 									}
 							}
 
-							if (!gc.loadLevel.LevelContainsMayor())
+							if (!GC.loadLevel.LevelContainsMayor())
 							{
-								UnityEngine.Random.InitState(gc.loadLevel.randomSeedNum + gc.sessionDataBig.curLevelEndless + agent_i.isPlayer);
+								UnityEngine.Random.InitState(GC.loadLevel.randomSeedNum + GC.sessionDataBig.curLevelEndless + agent_i.isPlayer);
 								agent_i.needArsonist = 1;
 								agent_i.arsonistAppearance = (float)UnityEngine.Random.Range(20, 75);
 							}
 
-							gc.loadLevel.setArsonist = true;
+							GC.loadLevel.setArsonist = true;
 						}
 
 						if (myObject.isAgent && ((Agent)myObject).arsonist)
@@ -235,9 +237,9 @@ namespace BunnyMod.Content
 		{
 			string wallType;
 
-			if (gc.challenges.Contains("ShantyTown"))
+			if (GC.challenges.Contains("ShantyTown"))
 				wallType = "Wood";
-			else if (gc.challenges.Contains("CityOfSteel"))
+			else if (GC.challenges.Contains("CityOfSteel"))
 				wallType = "Steel";
 			else
 				return true;
@@ -264,11 +266,11 @@ namespace BunnyMod.Content
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{
-			if (!gc.challenges.Contains("ScaryGuns")
+			if (!GC.challenges.Contains("ScaryGuns")
 				|| bulletType != bulletStatus.Normal || bulletType != bulletStatus.Shotgun || bulletType != bulletStatus.Revolver)
 				return true;
 
-			BunnyHeader.Log("SpawnerMain_SpawnBullet: bulletType = " + bulletType);
+			BMHeader.Log("SpawnerMain_SpawnBullet: bulletType = " + bulletType);
 
 			Agent agent = null;
 			Item item = null;
@@ -401,7 +403,7 @@ namespace BunnyMod.Content
 
 			MeshRenderer component9 = __result.spr.GetComponent<MeshRenderer>();
 
-			if (gc.challenges.Contains("RogueVision"))
+			if (GC.challenges.Contains("RogueVision"))
 			{
 				if (__result.agent != null)
 				{

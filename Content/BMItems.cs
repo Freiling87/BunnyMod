@@ -21,16 +21,11 @@ namespace BunnyMod.Content
 		{
             InitializeItems();
 
-            #region Patches - Item Base
             // ItemFunctions
             Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             // Melee
             Postfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
-            #endregion
-            #region Patches - Items
-
-            #endregion
         }
         public static void InitializeItems_Inactive()
 		{

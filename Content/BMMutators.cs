@@ -5,6 +5,7 @@ using UnityEngine;
 using BunnyMod;
 
 using Random = UnityEngine.Random;
+using Object = UnityEngine.Object;
 
 namespace BunnyMod.Content
 {
@@ -170,8 +171,37 @@ namespace BunnyMod.Content
 			{
 				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
+			}
+		}
+		#endregion
+		#region LevelFeelings
+		public static void Riot2(LevelFeelings __instance) // Replacement
+		{
+			for (int i = 0; i < GC.agentList.Count; i++)
+			{
+				Agent agentSubject = GC.agentList[i];
 
-				BMHeader.Log("               New: damage = " + __instance.damage + "; speed = " + __instance.speed);
+				if (agentSubject.ownerID == 0 && agentSubject.isPlayer == 0 && !GC.tileInfo.IsIndoors(agentSubject.tr.position) && !agentSubject.enforcer)
+				{
+					for (int j = 0; j < GC.agentList.Count; j++)
+					{
+						Agent agentObject = GC.agentList[j];
+						string rel = agentSubject.relationships.GetRel(agentObject);
+
+						if (agentObject != agentSubject && (rel == "Neutral" || rel == "Annoyed" || rel == "Friendly") && agentSubject.agentName != "Slave" && (!agentObject.statusEffects.hasTrait("GenericAgentsAligned") || !(agentSubject.agentName == "Hobo")) && (!agentObject.statusEffects.hasTrait("MafiaAligned") || !(agentSubject.agentName == "Mafia")) && (!agentObject.statusEffects.hasTrait("CannibalsNeutral") || !(agentSubject.agentName == "Cannibal")))
+						{
+							agentSubject.relationships.SetRel(agentObject, "Hateful");
+							agentSubject.relationships.SetRelHate(agentObject, 5);
+							agentSubject.relationships.SetRelInitial(agentObject, "Hateful");
+						}
+					}
+
+					agentSubject.oma.rioter = true;
+					Object.Destroy(agentSubject.nonQuestObjectMarker);
+				}
+			
+				if (!GC.tileInfo.IsIndoors(agentSubject.tr.position))
+					agentSubject.alwaysRun = true;
 			}
 		}
 		#endregion
@@ -199,6 +229,7 @@ namespace BunnyMod.Content
 									{
 										if (!__instance.bigQuestObjectList.Contains(agent_j))
 											__instance.bigQuestObjectList.Add(agent_j);
+
 										if (!agent_i.localPlayer)
 											agent_j.noBigQuestMarker = true;
 

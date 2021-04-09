@@ -21,7 +21,6 @@ namespace BunnyMod.Content
         {
             Initialize_Names();
 
-            #region Patches - Object Base
             // ObjectReal
             Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
@@ -42,8 +41,8 @@ namespace BunnyMod.Content
             // StatusEffects
             Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
             Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
-            #endregion
-            #region Patches - Objects
+
+
 
             // Bathtub
             Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
@@ -112,7 +111,6 @@ namespace BunnyMod.Content
             // Window
             Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
             Prefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
-            #endregion
         }
         public void FixedUpdate()
         {

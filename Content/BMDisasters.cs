@@ -8,8 +8,10 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-	public class BunnyDisasters
+	public class BMDisasters
 	{
+		public static GameController gc => GameController.gameController;
+
 		public void Awake()
 		{
 			InitializeDisasters();

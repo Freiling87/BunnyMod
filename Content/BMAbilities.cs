@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BunnyMod.Content
 {
-	public class BunnyAbilities
+	public class BMAbilities
 	{
 		public static GameController gc => GameController.gameController;
 

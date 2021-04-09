@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
-	public class BunnyMutators
+	public class BMMutators
 	{
 		public static GameController gc => GameController.gameController;
 
@@ -164,7 +164,7 @@ namespace BunnyMod.Content
 		#region Bullet
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
-			if (BunnyHeader.gc.challenges.Contains("ScaryGuns"))
+			if (gc.challenges.Contains("ScaryGuns"))
 			{
 				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
@@ -176,19 +176,19 @@ namespace BunnyMod.Content
 		#region Quests
 		public static void Quests_CheckIfBigQuestObject(PlayfieldObject myObject, Quests __instance) // Postfix
 		{
-			if (BunnyHeader.gc.levelFeeling == "Riot" || BunnyHeader.gc.percentChance(2) || BunnyHeader.gc.challenges.Contains("AlwaysSpawnArsonists"))
+			if (gc.levelFeeling == "Riot" || gc.percentChance(2) || gc.challenges.Contains("AlwaysSpawnArsonists"))
 			{
-				for (int i = 0; i < BunnyHeader.gc.playerAgentList.Count; i++)
+				for (int i = 0; i < gc.playerAgentList.Count; i++)
 				{
-					Agent agent_i = BunnyHeader.gc.playerAgentList[i];
+					Agent agent_i = gc.playerAgentList[i];
 
-					if ((agent_i.localPlayer || BunnyHeader.gc.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
+					if ((agent_i.localPlayer || gc.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
 					{
-						if (BunnyHeader.gc.serverPlayer && !BunnyHeader.gc.loadLevel.setArsonist && !BunnyHeader.gc.loadLevel.LevelContainsMayor())
+						if (gc.serverPlayer && !gc.loadLevel.setArsonist && !gc.loadLevel.LevelContainsMayor())
 						{
-							for (int j = 0; j < BunnyHeader.gc.agentList.Count; j++)
+							for (int j = 0; j < gc.agentList.Count; j++)
 							{
-								Agent agent_j = BunnyHeader.gc.agentList[j];
+								Agent agent_j = gc.agentList[j];
 
 								if (agent_j.isPlayer == 0 && !agent_j.dead && !agent_j.objectAgent && !agent_j.oma.rioter && !agent_j.ghost && !agent_j.inhuman && !agent_j.beast && !agent_j.zombified && !agent_j.oma.hidden && !agent_j.arsonist && !agent_j.oma.secretWerewolf && agent_j.ownerID == 0 && agent_j.startingChunk == 0 && !agent_j.enforcer && !agent_j.upperCrusty && agent_j.agentName != "Assassin" && agent_j.agentName != "Custom")
 									if (!agent_j.QuestInvolvementFull())
@@ -206,14 +206,14 @@ namespace BunnyMod.Content
 									}
 							}
 
-							if (!BunnyHeader.gc.loadLevel.LevelContainsMayor())
+							if (!gc.loadLevel.LevelContainsMayor())
 							{
-								UnityEngine.Random.InitState(BunnyHeader.gc.loadLevel.randomSeedNum + BunnyHeader.gc.sessionDataBig.curLevelEndless + agent_i.isPlayer);
+								UnityEngine.Random.InitState(gc.loadLevel.randomSeedNum + gc.sessionDataBig.curLevelEndless + agent_i.isPlayer);
 								agent_i.needArsonist = 1;
 								agent_i.arsonistAppearance = (float)UnityEngine.Random.Range(20, 75);
 							}
 
-							BunnyHeader.gc.loadLevel.setArsonist = true;
+							gc.loadLevel.setArsonist = true;
 						}
 
 						if (myObject.isAgent && ((Agent)myObject).arsonist)
@@ -235,9 +235,9 @@ namespace BunnyMod.Content
 		{
 			string wallType;
 
-			if (BunnyHeader.gc.challenges.Contains("ShantyTown"))
+			if (gc.challenges.Contains("ShantyTown"))
 				wallType = "Wood";
-			else if (BunnyHeader.gc.challenges.Contains("CityOfSteel"))
+			else if (gc.challenges.Contains("CityOfSteel"))
 				wallType = "Steel";
 			else
 				return true;
@@ -264,7 +264,7 @@ namespace BunnyMod.Content
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{
-			if (!BunnyHeader.gc.challenges.Contains("ScaryGuns")
+			if (!gc.challenges.Contains("ScaryGuns")
 				|| bulletType != bulletStatus.Normal || bulletType != bulletStatus.Shotgun || bulletType != bulletStatus.Revolver)
 				return true;
 
@@ -401,7 +401,7 @@ namespace BunnyMod.Content
 
 			MeshRenderer component9 = __result.spr.GetComponent<MeshRenderer>();
 
-			if (__instance.gc.challenges.Contains("RogueVision"))
+			if (gc.challenges.Contains("RogueVision"))
 			{
 				if (__result.agent != null)
 				{

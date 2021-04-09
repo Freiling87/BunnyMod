@@ -10,8 +10,10 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-	class BunnySprites
+	class BMSprites
 	{
+		public static GameController gc => GameController.gameController;
+
 		public void Awake()
 		{
 			BunnyHeader.MainInstance.PatchPostfix(typeof(CharacterCreation), "Awake", GetType(), "CharacterCreation_Awake", new Type[0] { });

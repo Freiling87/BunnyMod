@@ -27,7 +27,7 @@ namespace BunnyMod.Content
         brokenWindow
 	}
 
-    public class BunnyTraits
+    public class BMTraits
     {
         public static GameController gc => GameController.gameController;
 
@@ -749,7 +749,7 @@ namespace BunnyMod.Content
             if (item.isArmor && __instance.agent.statusEffects.hasTrait("Fatass"))
             {
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+                gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -761,7 +761,7 @@ namespace BunnyMod.Content
             if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
             {
                 __instance.agent.Say("Ow, I can feel it squeezing my big, stupid, dumb, ugly head!");
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+                gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -778,21 +778,21 @@ namespace BunnyMod.Content
             if (agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
             {
                 agent.Say("Mommy says I can't use sharp things!");
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+                gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
                 agent.Say("I can't use that! It's too loooooud.");
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+                gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
 			{
                 agent.Say("I need something sharper.");
-                __instance.agent.gc.audioHandler.Play(__instance.agent, "CantDo");
+                gc.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
@@ -894,7 +894,7 @@ namespace BunnyMod.Content
             }
             if (cantDoFlag)
 			{
-                __instance.gc.audioHandler.Play(agent, "CantDo");
+                gc.audioHandler.Play(agent, "CantDo");
                 return false;
 			}
 
@@ -963,7 +963,7 @@ namespace BunnyMod.Content
 
             terminus:
 
-            item.gc.audioHandler.Play(agent, "CantDo");
+            gc.audioHandler.Play(agent, "CantDo");
 
             return false;
         }
@@ -1620,7 +1620,7 @@ namespace BunnyMod.Content
                     luckMultiplier += 2;
 
                 if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
-                    if (BunnyAbilities.MSA_CD_IsCast(agent))
+                    if (BMAbilities.MSA_CD_IsCast(agent))
                         luckMultiplier *= 2;
             }
 

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace BunnyMod.Content
 {
-	public class BunnyObjects
+	public class BMObjects
     {
         public static GameController gc => GameController.gameController;
 
@@ -166,29 +166,29 @@ namespace BunnyMod.Content
 
                 if (buttonLabel.EndsWith("-30"))
                 {
-                    newLabel = buttonLabel.Replace("-30", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 30));
+                    newLabel = buttonLabel.Replace("-30", "-" + BMTraits.ToolCost(objectReal.interactingAgent, 30));
                     flag = true;
                 }
                 else if (buttonLabel.EndsWith("-20"))
                 {
-                    newLabel = buttonLabel.Replace("-20", "-" + BunnyTraits.ToolCost(objectReal.interactingAgent, 20));
+                    newLabel = buttonLabel.Replace("-20", "-" + BMTraits.ToolCost(objectReal.interactingAgent, 20));
                     flag = true;
                 }
                 else if (buttonLabel == " - 7HP")
                 {
                     BunnyHeader.Log("a");
-                    newLabel = buttonLabel.Replace(" - 7HP", " - " + BunnyTraits.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
+                    newLabel = buttonLabel.Replace(" - 7HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
                     flag = true;
                 }
                 else if (buttonLabel == " - 15HP")
                 {
                     BunnyHeader.Log("b");
-                    newLabel = buttonLabel.Replace(" - 15HP", " - " + BunnyTraits.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
+                    newLabel = buttonLabel.Replace(" - 15HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
                     flag = true;
                 }
                 else if (buttonLabel.EndsWith("(Burn hands for 10 damage)"))
 				{
-                    newLabel = buttonLabel.Replace("(Burn hands for 10 damage)", "(Burn hands for " + BunnyTraits.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
+                    newLabel = buttonLabel.Replace("(Burn hands for 10 damage)", "(Burn hands for " + BMTraits.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
                     flag = true;
 				}
 
@@ -216,15 +216,15 @@ namespace BunnyMod.Content
         {
             if (__instance is Stove)
             {
-                if (__instance.gc.serverPlayer && !__instance.spawnedExplosion)
+                if (gc.serverPlayer && !__instance.spawnedExplosion)
                 {
                     __instance.spawnedExplosion = true;
-                    Explosion explosion = __instance.gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
+                    Explosion explosion = gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
 
                     if (Stove_Variables[(Stove)__instance].noOwnCheckCountdown)
                         explosion.noOwnCheck = true;
                 }
-                __instance.gc.audioHandler.Stop(__instance, "GeneratorHiss");
+                gc.audioHandler.Stop(__instance, "GeneratorHiss");
             }
 
             return true;
@@ -240,7 +240,7 @@ namespace BunnyMod.Content
                     if (agent.inventory.HasItem("Fud"))
                     {
                         __instance.buttons.Add("GrillFud");
-                        __instance.buttonsExtra.Add(" (Burn hands for " + BunnyTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
+                        __instance.buttonsExtra.Add(" (Burn hands for " + BMTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
                     }
                     else
                         agent.SayDialogue("CantGrillFud");
@@ -260,7 +260,7 @@ namespace BunnyMod.Content
                 if (!manhole.opened && agent.inventory.HasItem("Crowbar"))
 				{
                     __instance.buttons.Add("UseCrowbar");
-                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BunnyTraits.ToolCost(agent, 15));
+                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMTraits.ToolCost(agent, 15));
                 }
 
                 if (manhole.opened && agent.statusEffects.hasTrait("UnderdarkCitizen"))
@@ -273,7 +273,7 @@ namespace BunnyMod.Content
                     if (agent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BunnyTraits.ToolCost(agent, 30));
+                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMTraits.ToolCost(agent, 30));
                     }
 
                     if (agent.inventory.HasItem("Fud"))
@@ -369,10 +369,10 @@ namespace BunnyMod.Content
             {
                 if (damagerObject != null && __instance.interactable)
                 {
-                    __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+                    gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
 
-                    if (!__instance.gc.serverPlayer)
-                        __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "MakeNonFunctional");
+                    if (!gc.serverPlayer)
+                        gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "MakeNonFunctional");
 
                     __instance.timer = 5f;
                     __instance.timeCountdownClock = (int)__instance.timer;
@@ -450,11 +450,11 @@ namespace BunnyMod.Content
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    __instance.gc.audioHandler.Play(__instance, "Hack");
+                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    gc.audioHandler.Play(__instance, "Hack");
                     __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                    gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
                 }
             }
             else if (buttonText == "DispenseIce")
@@ -463,11 +463,11 @@ namespace BunnyMod.Content
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    //__instance.gc.audioHandler.Play(__instance, "Hack");
+                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    //gc.audioHandler.Play(__instance, "Hack");
                     __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                    gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
                 }
             }
             else if (buttonText == "FlushYourself" && __instance is Manhole)
@@ -489,10 +489,10 @@ namespace BunnyMod.Content
 
                 if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
                 {
-                    __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    __instance.gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
+                    gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    gc.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
                 }
             }
             return false;
@@ -565,7 +565,7 @@ namespace BunnyMod.Content
         #region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance)
         {
-            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
                 __instance.interactable = true;
 
             //TODO: Closed Bath Curtain sprite?
@@ -603,15 +603,15 @@ namespace BunnyMod.Content
             __instance.interactingAgent.inventory.AddItemOrDrop(hotFud);
             hotFud.ShowPickingUpText(__instance.interactingAgent);
 
-            __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
-            __instance.gc.audioHandler.Play(__instance, "Grill");
+            gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
+            gc.audioHandler.Play(__instance, "Grill");
             FlamingBarrel_GrilledFudAfter(numCooked, __instance);
         }
         public static void FlamingBarrel_GrilledFudAfter(int myCount, FlamingBarrel __instance) // Non-patch
         {
             Agent agent = __instance.interactingAgent;
 
-            __instance.gc.audioHandler.Play(__instance, "FireHit");
+            gc.audioHandler.Play(__instance, "FireHit");
 
             if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
                 agent.Say("Mmmm, toasty. Just like the burning flesh on my fingers!");
@@ -743,25 +743,25 @@ namespace BunnyMod.Content
         {
             BunnyHeader.Log("Manhole_UseCrowbar");
 
-            if (__instance.gc.serverPlayer)
+            if (gc.serverPlayer)
             {
                 Vector3 position = __instance.tr.position;
                 position = new Vector3(__instance.tr.position.x, __instance.tr.position.y - 0.24f, __instance.tr.position.z);
                 
-                __instance.hole = __instance.gc.spawnerMain.SpawnHole(__instance, position, new Vector3(1.5f, 1.5f, 1f), Quaternion.identity, false, true);
+                __instance.hole = gc.spawnerMain.SpawnHole(__instance, position, new Vector3(1.5f, 1.5f, 1f), Quaternion.identity, false, true);
                 __instance.hole.ObjectHoleAppear("Manhole");
-                __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "HoleAppear");
+                gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "HoleAppear");
                 __instance.operatingAgent.inventory.SubtractFromItemCount(__instance.operatingItem, 15); // SubtractFromItemCount is Postfixed! ToolCost is already in there.
             }
 
             __instance.objectSprite.meshRenderer.enabled = false;
             __instance.opened = true;
             __instance.SetSDangerousToWalk(true);
-            __instance.gc.audioHandler.Play(__instance, "ManholeOpen");
+            gc.audioHandler.Play(__instance, "ManholeOpen");
 
-            if (__instance.gc.levelFeeling == "WarZone")
+            if (gc.levelFeeling == "WarZone")
             {
-                __instance.objectRealRealName = __instance.gc.nameDB.GetName("Hole", "Object");
+                __instance.objectRealRealName = gc.nameDB.GetName("Hole", "Object");
                 __instance.normalHole = true;
             }
         }
@@ -769,7 +769,7 @@ namespace BunnyMod.Content
         #region Plant
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
-            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -784,7 +784,7 @@ namespace BunnyMod.Content
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
-            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -800,7 +800,7 @@ namespace BunnyMod.Content
 
         //          Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
         //          __instance.SpawnParticleEffect("Smoke", particlePosition);
-        //          __instance.PlayAnim("MachineGoingToExplode", __instance.gc.playerAgent);
+        //          __instance.PlayAnim("MachineGoingToExplode", gc.playerAgent);
         //          __instance.RemoveObjectAgent();
         //          __instance.cantMakeFollowersAttack = true;
 
@@ -891,7 +891,7 @@ namespace BunnyMod.Content
         //		num = i;
         //	}
 
-        //	Explosion explosion = __instance.gc.spawnerMain.SpawnExplosion(__instance, __instance.tr.position, "Normal", false, -1, false, true);
+        //	Explosion explosion = gc.spawnerMain.SpawnExplosion(__instance, __instance.tr.position, "Normal", false, -1, false, true);
         //	explosion.agent = __instance.interactingAgent;
         //	explosion.realSource = __instance;
         //	__instance.DestroyMe();
@@ -905,9 +905,9 @@ namespace BunnyMod.Content
         //          //{
         //          //	__instance.owner = fireworksOwner;
         //          //}
-        //          Bullet bullet = __instance.gc.spawnerMain.SpawnBullet(__instance.tr.position, bulletStatus.FreezeRay, __instance);
+        //          Bullet bullet = gc.spawnerMain.SpawnBullet(__instance.tr.position, bulletStatus.FreezeRay, __instance);
         //	float angle;
-        //	if (__instance.gc.serverPlayer)
+        //	if (gc.serverPlayer)
         //	{
         //		angle = (float)UnityEngine.Random.Range(0, 359);
         //	}
@@ -917,8 +917,8 @@ namespace BunnyMod.Content
         //	}
         //	bullet.movement.RotateToAngleTransform(angle);
         //	bullet.movement.MoveForwardTransform(0.48f);
-        //	__instance.gc.audioHandler.Play(__instance, "FireworksFire");
-        //	if (__instance.gc.multiplayerMode && __instance.gc.serverPlayer)
+        //	gc.audioHandler.Play(__instance, "FireworksFire");
+        //	if (gc.multiplayerMode && gc.serverPlayer)
         //	{
         //		bullet.bulletNetID = UnityEngine.Random.Range(0, 10000);
         //		NetworkInstanceId extraObjectID = NetworkInstanceId.Invalid;
@@ -926,7 +926,7 @@ namespace BunnyMod.Content
         //		{
         //			extraObjectID = __instance.interactingAgent.objectNetID;
         //		}
-        //		__instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "FireworksFire", angle.ToString(), (float)bulletNetID, extraObjectID);
+        //		gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "FireworksFire", angle.ToString(), (float)bulletNetID, extraObjectID);
         //	}
         //}
         //public static bool Refrigerator_Interact(Agent agent, Refrigerator __instance) // Replacement
@@ -989,7 +989,7 @@ namespace BunnyMod.Content
         //          {
         //              BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + "Remote Run");
 
-        //              __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
+        //              gc.audioHandler.Play(__instance.interactingAgent, "Success");
         //              __instance.RefrigeratorRun(__instance.interactingAgent);
         //              __instance.StopInteraction();
         //              return false;
@@ -998,7 +998,7 @@ namespace BunnyMod.Content
         //          {
         //              BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + "Manual Run");
 
-        //              __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
+        //              gc.audioHandler.Play(__instance.interactingAgent, "Success");
         //              __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
         //              Refrigerator_IceDispense(__instance);
         //              return false;
@@ -1023,16 +1023,16 @@ namespace BunnyMod.Content
         //{
         //          BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-        //          if (__instance.gc.serverPlayer)
+        //          if (gc.serverPlayer)
         //          {
         //              __instance.MakeNonFunctional(__instance.interactingAgent);
         //              __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30);
         //              __instance.interactingAgent.skillPoints.AddPoints("TamperGeneratorPoints");
-        //              __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+        //              gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
         //              return;
         //          }
         //          __instance.functional = false;
-        //          __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+        //          gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
         //          __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToRun");
 
         //          //TODO: See Item.FireworksFire if you want to turn this into randomly shooting Freeze Rays
@@ -1111,22 +1111,22 @@ namespace BunnyMod.Content
 
             advantage = __instance.interactingAgent.DetermineLuck(advantage, "SlotMachine", true);
 
-            if (__instance.gc.percentChance(1))
+            if (gc.percentChance(1))
             {
                 SlotMachine_Jackpot(gambleAmt * 10, __instance);
             }
-            else if (__instance.gc.percentChance(advantage - 1))
+            else if (gc.percentChance(advantage - 1))
             {
                 __instance.interactingAgent.inventory.AddItem("Money", gambleAmt * 2);
                 __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, gambleAmt * 2);
                 __instance.interactingAgent.SayDialogue("SlotMachineWon");
                 __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
-                __instance.gc.audioHandler.Play(__instance, "Win");
+                gc.audioHandler.Play(__instance, "Win");
             }
             else
             {
                 __instance.interactingAgent.SayDialogue("SlotMachineLost");
-                __instance.gc.audioHandler.Play(__instance, "Fail");
+                gc.audioHandler.Play(__instance, "Fail");
             }
 
             __instance.StopInteraction();
@@ -1142,7 +1142,7 @@ namespace BunnyMod.Content
                 SlotMachine_DropMoney(payout / 10, __instance);
 
                 __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
-                __instance.gc.audioHandler.Play(__instance, "Win");
+                gc.audioHandler.Play(__instance, "Win");
 
                 await Task.Delay(200);
             }
@@ -1164,7 +1164,7 @@ namespace BunnyMod.Content
                 __instance.Gamble(100);
             else if (buttonText != "IncreaseSlotMachineOdds")
             {
-                __instance.gc.audioHandler.Play(__instance.interactingAgent, "Success");
+                gc.audioHandler.Play(__instance.interactingAgent, "Success");
                 __instance.IncreaseSlotMachineOdds(__instance.interactingAgent);
                 __instance.StopInteraction();
             }
@@ -1185,8 +1185,8 @@ namespace BunnyMod.Content
 
             if (__instance.lastHitByAgent != null)
             {
-                __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.lastHitByAgent);
-                __instance.gc.OwnCheck(__instance.lastHitByAgent, __instance.go, "Normal", 0);
+                gc.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.lastHitByAgent);
+                gc.OwnCheck(__instance.lastHitByAgent, __instance.go, "Normal", 0);
             }
 
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
@@ -1195,7 +1195,7 @@ namespace BunnyMod.Content
             BunnyHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
 
             //__instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent); // 202103031538
-            __instance.gc.audioHandler.Play(__instance, "GeneratorHiss");
+            gc.audioHandler.Play(__instance, "GeneratorHiss");
 
             __instance.RemoveObjectAgent();
             __instance.cantMakeFollowersAttack = true;
@@ -1205,7 +1205,7 @@ namespace BunnyMod.Content
             if (!__instance.destroying)
             {
                 BunnyHeader.Log("Firebomb 1");
-                __instance.gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
+                gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
                 __instance.DestroyMe(Stove_Variables[__instance].savedDamagerObject);
             }
 
@@ -1258,7 +1258,7 @@ namespace BunnyMod.Content
 
                 Stove_Variables[__instance].savedDamagerObject = damagerObject;
 
-                __instance.gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
+                gc.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
                 __instance.DestroyMe(damagerObject);
             }
 
@@ -1266,10 +1266,10 @@ namespace BunnyMod.Content
         }
         public static bool Stove_DestroyMe3(Stove __instance) // Replacement
         {
-            if (__instance.gc.serverPlayer || !__instance.objectBeingThrown)
+            if (gc.serverPlayer || !__instance.objectBeingThrown)
             {
-                __instance.gc.spawnerMain.SpawnFire(__instance.tossedBy, __instance.tr.position);
-                __instance.gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
+                gc.spawnerMain.SpawnFire(__instance.tossedBy, __instance.tr.position);
+                gc.spawnerMain.SpawnExplosion(Stove_Variables[(Stove)__instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove)__instance].savedDamagerObject));
             }
             return false;
         }
@@ -1292,8 +1292,8 @@ namespace BunnyMod.Content
             __instance.interactingAgent.inventory.AddItemOrDrop(hotFud);
             hotFud.ShowPickingUpText(__instance.interactingAgent);
 
-            __instance.gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
-            __instance.gc.audioHandler.Play(__instance, "Grill");
+            gc.spawnerMain.SpawnNoise(__instance.curPosition, 1f, null, null, __instance.lastHitByAgent);
+            gc.audioHandler.Play(__instance, "Grill");
         }
         public static void Stove_RevertAllVars(Stove __instance) // Postfix
         {
@@ -1343,16 +1343,16 @@ namespace BunnyMod.Content
         {
             BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-            if (__instance.gc.serverPlayer)
+            if (gc.serverPlayer)
             {
                 __instance.MakeNonFunctional(__instance.interactingAgent);
                 __instance.interactingAgent.inventory.SubtractFromItemCount(__instance.interactingAgent.inventory.FindItem("Wrench"), 30);
                 __instance.interactingAgent.skillPoints.AddPoints("TamperGeneratorPoints");
-                __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+                gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
                 return;
             }
             __instance.functional = false;
-            __instance.gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
+            gc.playerAgent.SetCheckUseWithItemsAgain(__instance);
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
         }
         public static Dictionary<Stove, Stove_Remora> Stove_Variables = new Dictionary<Stove, Stove_Remora>();
@@ -1360,7 +1360,7 @@ namespace BunnyMod.Content
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
-            if (BunnyTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -1381,7 +1381,7 @@ namespace BunnyMod.Content
             if (myAgent.statusEffects.hasTrait("BigCollider"))
             {
                 __instance.interactingAgent.SayDialogue("CantFit");
-                __instance.gc.audioHandler.Play(myAgent, "CantDo");
+                gc.audioHandler.Play(myAgent, "CantDo");
 
                 __instance.StopInteraction();
 
@@ -1389,7 +1389,7 @@ namespace BunnyMod.Content
             }
 
             if (!myAgent.statusEffects.hasTrait("StealthBastardDeluxe"))
-                __instance.gc.audioHandler.Play(myAgent, "MeleeHitAgentCutSmallClients");
+                gc.audioHandler.Play(myAgent, "MeleeHitAgentCutSmallClients");
 
             __instance.StopInteraction();
 
@@ -1411,13 +1411,13 @@ namespace BunnyMod.Content
             float dmg = 15f;
             myAgent.deathMethod = "BrokenGlass";
 
-            if (__instance.gc.challenges.Contains("LowHealth"))
+            if (gc.challenges.Contains("LowHealth"))
                 dmg = 7f;
             if (myAgent.health <= dmg)
                 dmg = myAgent.health - 1f;
 
             myAgent.statusEffects.ChangeHealth(-dmg);
-            __instance.gc.spawnerMain.SpawnNoise(myAgent.tr.position, 0.2f, null, null, myAgent);
+            gc.spawnerMain.SpawnNoise(myAgent.tr.position, 0.2f, null, null, myAgent);
 
             return false;
         }
@@ -1439,12 +1439,12 @@ namespace BunnyMod.Content
 
         public void Countdown()
         {
-            Stove stove = BunnyObjects.Stove_Variables.FirstOrDefault(x => x.Value == this).Key;
+            Stove stove = BMObjects.Stove_Variables.FirstOrDefault(x => x.Value == this).Key;
 
             string myText = string.Concat(stove.timeCountdownClock);
 
             if (stove.timeCountdownClock > 0 && !stove.destroyed && !stove.destroying)
-                stove.gc.spawnerMain.SpawnStatusText(stove, "Countdown", myText);
+                gc.spawnerMain.SpawnStatusText(stove, "Countdown", myText);
 
             stove.timeCountdownClock--;
 
@@ -1470,7 +1470,7 @@ namespace BunnyMod.Content
  //           string myText = string.Concat(Refrigerator.timeCountdownClock);
 
  //           if (Refrigerator.timeCountdownClock > 0 && !Refrigerator.destroyed && !Refrigerator.destroying)
- //               Refrigerator.gc.spawnerMain.SpawnStatusText(Refrigerator, "Countdown", myText);
+ //               gc.spawnerMain.SpawnStatusText(Refrigerator, "Countdown", myText);
 
  //           Refrigerator.timeCountdownClock--;
 

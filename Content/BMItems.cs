@@ -10,10 +10,12 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-    public class BunnyItems 
+    public class BMItems 
     {
-		#region Generic
-		public void Awake()
+        public static GameController gc => GameController.gameController;
+
+        #region Generic
+        public void Awake()
 		{
             InitializeItems();
 
@@ -68,7 +70,7 @@ namespace BunnyMod.Content
                 __instance.canMove = false; //
                 __instance.realArm1.enabled = false; //
                 if (!flag2)
-                    __instance.gc.audioHandler.Play(__instance.agent, "SwingWeaponLarge");
+                    gc.audioHandler.Play(__instance.agent, "SwingWeaponLarge");
                 __instance.hitParticlesTr.localPosition = new Vector3(0.3f, 0f, 0f);
                 __instance.animClass = "Stab";
             }

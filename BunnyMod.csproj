@@ -83,16 +83,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\BunnyAbilities.cs" />
-    <Compile Include="Content\BunnyBehaviors.cs" />
-    <Compile Include="Content\BunnyDisasters.cs" />
-    <Compile Include="Content\BunnyMutators.cs" />
-    <Compile Include="Content\BunnySprites.cs" />
-    <Compile Include="Content\BunnyHeader.cs" />
-    <Compile Include="Content\BunnyObjects.cs" />
-    <Compile Include="Content\BunnyTraits.cs" />
+    <Compile Include="Content\BMAbilities.cs" />
+    <Compile Include="Content\BMBehaviors.cs" />
+    <Compile Include="Content\BMDisasters.cs" />
+    <Compile Include="Content\BMMutators.cs" />
+    <Compile Include="Content\BMSprites.cs" />
+    <Compile Include="Content\BMHeader.cs" />
+    <Compile Include="Content\BMObjects.cs" />
+    <Compile Include="Content\BMTraits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Content\BunnyItems.cs" />
+    <Compile Include="Content\BMItems.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

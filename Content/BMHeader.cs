@@ -32,13 +32,13 @@ namespace BunnyMod
 			MainInstance = this;
 			ConsoleMessage = Logger;
 
-			new BunnyAbilities().Awake();
+			new BMAbilities().Awake();
 			//new BunnyBehaviors().Awake();
 			//new BunnyItems().Awake();
-			new BunnyMutators().Awake();
-			new BunnyObjects().Awake();
+			new BMMutators().Awake();
+			new BMObjects().Awake();
 			//new BunnySprites().Awake();
-			new BunnyTraits().Awake();
+			new BMTraits().Awake();
 		}
 		#region Category Lists
 		public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };

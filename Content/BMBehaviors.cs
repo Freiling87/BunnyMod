@@ -10,8 +10,10 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-	public class BunnyBehaviors
+	public class BMBehaviors
 	{
+		public static GameController gc => GameController.gameController;
+
 		#region Generic
 		public void Awake()
 		{
@@ -99,18 +101,18 @@ namespace BunnyMod.Content
 		{
 			BunnyHeader.Log("Hobo_MugItem");
 
-			if (interactingAgent.gc.serverPlayer)
+			if (gc.serverPlayer)
 			{
 				for (int i = 0; i < agent.gangMembers.Count; i++)
 					agent.gangMembers[i].hasMugged = true;
 
-				for (int j = 0; j < agent.gc.playerAgentList.Count; j++)
-					agent.gc.playerAgentList[j].gangMugging = 0;
+				for (int j = 0; j < gc.playerAgentList.Count; j++)
+					gc.playerAgentList[j].gangMugging = 0;
 
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
 				agent.SayDialogue("Bought"); // ←
-				agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+				gc.audioHandler.Play(interactingAgent, "SelectItem");
 
 				agent.relationships.SetRel(interactingAgent, relStatus);
 
@@ -122,13 +124,13 @@ namespace BunnyMod.Content
 		{
 			BunnyHeader.Log("Hobo_MugMoney");
 
-			if (interactingAgent.gc.serverPlayer)
+			if (gc.serverPlayer)
 			{
 				for (int i = 0; i < agent.gangMembers.Count; i++)
 					agent.gangMembers[i].hasMugged = true;
 
-				for (int j = 0; j < agent.gc.playerAgentList.Count; j++)
-					agent.gc.playerAgentList[j].gangMugging = 0;
+				for (int j = 0; j < gc.playerAgentList.Count; j++)
+					gc.playerAgentList[j].gangMugging = 0;
 
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
@@ -197,7 +199,7 @@ namespace BunnyMod.Content
 
 			if (agent.agentName == "Hobo")
 			{
-				agent.gc.audioHandler.Play(agent, "AgentTalk");
+				gc.audioHandler.Play(agent, "AgentTalk");
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 				{
@@ -213,7 +215,7 @@ namespace BunnyMod.Content
 			}
 			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
 			{
-				agent.gc.audioHandler.Play(agent, "AgentTalk");
+				gc.audioHandler.Play(agent, "AgentTalk");
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
@@ -272,7 +274,7 @@ namespace BunnyMod.Content
 				else
 				{
 					agent.SayDialogue("Hobo_DontWant");
-					agent.gc.audioHandler.Play(interactingAgent, "CantDo");
+					gc.audioHandler.Play(interactingAgent, "CantDo");
 				}
 
 				__result = true;
@@ -299,7 +301,7 @@ namespace BunnyMod.Content
 				}
 				else if (agent.agentName == "Hobo")
 				{
-					if (agent.gc.percentChance(33))
+					if (gc.percentChance(33))
 					{
 						Agent.gangCount++;
 						agent.gang = Agent.gangCount;
@@ -320,7 +322,7 @@ namespace BunnyMod.Content
 
 			Agent agent = (Agent)__instance;
 			float num = __result;
-			int levelMultiplier = Mathf.Clamp(__instance.gc.sessionDataBig.curLevelEndless, 1, 15);
+			int levelMultiplier = Mathf.Clamp(gc.sessionDataBig.curLevelEndless, 1, 15);
 			int gangsizeMultiplier = agent.gangMembers.Count;
 
 			BunnyHeader.Log("PlayfieldObject_DetermineMoneyCost: num = " + num + "; LevelMult = " + levelMultiplier + "; gangsizeMult = " + gangsizeMultiplier);

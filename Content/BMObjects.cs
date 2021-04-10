@@ -15,6 +15,7 @@ namespace BunnyMod.Content
         public static GameController GC => GameController.gameController;
         public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
         public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+        public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
         #region Generic
         public void Awake()
@@ -165,7 +166,7 @@ namespace BunnyMod.Content
 
             foreach (string buttonLabel in objectReal.buttonsExtra)
             {
-                BMHeader.Log("Detected ButtonExtra: " + buttonLabel + " (Only non-blank when additional costs are applied to button)");
+                //BMLog("Detected ButtonExtra: " + buttonLabel + " (Only non-blank when additional costs are applied to button)");
 
                 if (buttonLabel.EndsWith("-30"))
                 {
@@ -179,13 +180,11 @@ namespace BunnyMod.Content
                 }
                 else if (buttonLabel == " - 7HP")
                 {
-                    BMHeader.Log("a");
                     newLabel = buttonLabel.Replace(" - 7HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
                     flag = true;
                 }
                 else if (buttonLabel == " - 15HP")
                 {
-                    BMHeader.Log("b");
                     newLabel = buttonLabel.Replace(" - 15HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
                     flag = true;
                 }
@@ -197,7 +196,6 @@ namespace BunnyMod.Content
 
                 if (flag)
                 {
-                    BMHeader.Log("c");
                     objectReal.buttonsExtra[objectReal.buttonsExtra.FindIndex(ind => ind.Equals(buttonLabel))] = newLabel;
                     break;
                 }
@@ -525,16 +523,16 @@ namespace BunnyMod.Content
         {
             try
             {
-                BMHeader.Log("PlayfieldObject_Operating " + __instance.name + ": ");
-                BMHeader.Log("    Agent = " + myAgent.name);
-                BMHeader.Log("    item = " + item.invItemName);
-                BMHeader.Log("    timeToUnlock = " + timeToUnlock);
-                BMHeader.Log("    makeNoise = " + makeNoise);
-                BMHeader.Log("    barType = " + barType);
+                BMLog("PlayfieldObject_Operating " + __instance.name + ": ");
+                BMLog("    Agent = " + myAgent.name);
+                BMLog("    item = " + item.invItemName);
+                BMLog("    timeToUnlock = " + timeToUnlock);
+                BMLog("    makeNoise = " + makeNoise);
+                BMLog("    barType = " + barType);
             }
             catch
             {
-                BMHeader.Log("Logging error");
+                BMLog("Logging error");
             }
 
             return true;
@@ -566,7 +564,7 @@ namespace BunnyMod.Content
         #endregion
 
         #region Bathtub
-        public static void Bathtub_SetVars(Bathtub __instance)
+        public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
             if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
                 __instance.interactable = true;
@@ -744,7 +742,7 @@ namespace BunnyMod.Content
 		}
         public static void Manhole_UseCrowbar(Manhole __instance) // Non-Patch
         {
-            BMHeader.Log("Manhole_UseCrowbar");
+            BMLog("Manhole_UseCrowbar");
 
             if (GC.serverPlayer)
             {
@@ -778,7 +776,7 @@ namespace BunnyMod.Content
         }
         #endregion
         #region PoliceBox
-        public static void PoliceBox_DetermineButtons(PoliceBox __instance)
+        public static void PoliceBox_DetermineButtons(PoliceBox __instance) // Postfix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
@@ -1195,7 +1193,7 @@ namespace BunnyMod.Content
             Vector3 particlePosition = new Vector3(__instance.tr.position.x, __instance.tr.position.y + 0.36f, __instance.tr.position.z);
             __instance.SpawnParticleEffect("Smoke", particlePosition);
 
-            BMHeader.Log("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
+            BMLog("Stove_AboutToExplode: lastHitByagent = " + __instance.lastHitByAgent.agentName);
 
             //__instance.PlayAnim("MachineGoingToExplode", __instance.lastHitByAgent); // 202103031538
             GC.audioHandler.Play(__instance, "GeneratorHiss");
@@ -1207,7 +1205,7 @@ namespace BunnyMod.Content
 
             if (!__instance.destroying)
             {
-                BMHeader.Log("Firebomb 1");
+                BMLog("Firebomb 1");
                 GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, __instance.curPosition, "FireBomb", false, -1, false, true);
                 __instance.DestroyMe(Stove_Variables[__instance].savedDamagerObject);
             }
@@ -1278,7 +1276,7 @@ namespace BunnyMod.Content
         }
         public static void Stove_GrilledFud(Stove __instance) // Non-Patch 
         {
-            BMHeader.Log("Grill GrilledFud 1");
+            BMLog("Grill GrilledFud 1");
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
             int numCooked = rawFud.invItemCount;
 

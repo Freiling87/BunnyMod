@@ -32,6 +32,7 @@ namespace BunnyMod.Content
         public static GameController GC => GameController.gameController;
         public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
         public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+        public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
         #region Main
         public void Awake()
@@ -63,8 +64,8 @@ namespace BunnyMod.Content
             Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 
             // MeleeHitbox
-            Postfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
-            Postfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
+            //Postfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
+            //Postfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
 
             // PlayerControl
             Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
@@ -661,7 +662,7 @@ namespace BunnyMod.Content
         #region Custom
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
-            BMHeader.Log("HealthCost");
+            BMLog("HealthCost");
 
             if (type == DamageType.burnedFingers)
             {
@@ -680,9 +681,17 @@ namespace BunnyMod.Content
         }
         public static bool IsTraitActive(string trait)
 		{
+            BMLog("IsTraitActive");
+
             foreach (Agent agent in GC.playerAgentList)
-                if (agent.statusEffects.hasTrait(trait))
-                    return true;
+                foreach (Trait se in agent.statusEffects.TraitList)
+				{
+                    BMLog("Trait: '" + se.traitName + "'");
+
+                    if (se.traitName == "StealthBastardDeluxe")
+                        return true;
+                }
+                    
             return false;
 		}
         public static void MoralCodeEvents(Agent agent, string action)
@@ -993,7 +1002,7 @@ namespace BunnyMod.Content
 		#region LoadLevel
         public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance) // Prefix
 		{
-            BMHeader.Log("LoadLevel_SetupMore3_3_Prefix");
+            BMLog("LoadLevel_SetupMore3_3_Prefix");
 
             if (!GC.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
             {
@@ -1176,365 +1185,365 @@ namespace BunnyMod.Content
         }
 		#endregion
 		#region MeleeHitbox
-        public static void MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // 
+		public static void MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // 
 		{
-            if (!__instance.myMelee.agent.statusEffects.hasTrait("SpectralStrikes"))
-                return;
+			if (!__instance.myMelee.agent.statusEffects.hasTrait("SpectralStrikes"))
+				return;
 
-            InvItem invItem = null;
+			InvItem invItem = null;
 
-            try
-            {
-                invItem = __instance.myMelee.agent.inventory.equippedWeapon;
+			try
+			{
+				invItem = __instance.myMelee.agent.inventory.equippedWeapon;
 
-                if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
-                {
-                    invItem = __instance.myMelee.agent.inventory.fist;
-                }
-            }
-            catch
-            {
-            }
+				if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
+				{
+					invItem = __instance.myMelee.agent.inventory.fist;
+				}
+			}
+			catch
+			{
+			}
 
-            if ((!__instance.ObjectListContains(hitObject) && __instance.myMelee.canDamage && __instance.canHitMore) || fromClient)
-            {
-                if (hitObject.CompareTag("AgentSprite"))
-                {
-                    __instance.objectList.Add(hitObject);
-                    Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
+			if ((!__instance.ObjectListContains(hitObject) && __instance.myMelee.canDamage && __instance.canHitMore) || fromClient)
+			{
+				if (hitObject.CompareTag("AgentSprite"))
+				{
+					__instance.objectList.Add(hitObject);
+					Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
 
-                    if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !GC.cinematic && __instance.HasLOSMelee(agent3))
-                    {
-                        __instance.objectList.Add(agent3.melee.meleeHitbox.gameObject);
+					if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !GC.cinematic && __instance.HasLOSMelee(agent3))
+					{
+						__instance.objectList.Add(agent3.melee.meleeHitbox.gameObject);
 
-                        if (__instance.myMelee.invItem.meleeNoHit && !agent3.dead)
-                        {
-                            Relationship relationship = agent3.relationships.GetRelationship(__instance.myMelee.agent);
+						if (__instance.myMelee.invItem.meleeNoHit && !agent3.dead)
+						{
+							Relationship relationship = agent3.relationships.GetRelationship(__instance.myMelee.agent);
 
-                            if (!agent3.movement.HasLOSObjectBehind(__instance.myMelee.agent) || agent3.sleeping || __instance.myMelee.agent.isPlayer == 0 || __instance.myMelee.agent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && __instance.myMelee.agent.oma.superSpecialAbility))
-                                __instance.canHitMore = false;
-                            else
-                                if (GC.serverPlayer)
-                                    GC.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
-                        }
+							if (!agent3.movement.HasLOSObjectBehind(__instance.myMelee.agent) || agent3.sleeping || __instance.myMelee.agent.isPlayer == 0 || __instance.myMelee.agent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && __instance.myMelee.agent.oma.superSpecialAbility))
+								__instance.canHitMore = false;
+							else
+								if (GC.serverPlayer)
+								GC.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
+						}
 
-                        bool flag3 = !__instance.myMelee.invItem.meleeNoHit && __instance.myMelee.agent.DontHitAlignedCheck(agent3);
+						bool flag3 = !__instance.myMelee.invItem.meleeNoHit && __instance.myMelee.agent.DontHitAlignedCheck(agent3);
 
-                        if (flag3)
-                        {
-                            agent3.melee.meleeHitbox.objectList.Add(__instance.gameObject);
-                            agent3.melee.meleeHitbox.objectList.Add(__instance.myMelee.agent.sprTr.gameObject);
+						if (flag3)
+						{
+							agent3.melee.meleeHitbox.objectList.Add(__instance.gameObject);
+							agent3.melee.meleeHitbox.objectList.Add(__instance.myMelee.agent.sprTr.gameObject);
 
-                            if (__instance.myMelee.agent.zombified && agent3.isPlayer == 0 && !agent3.oma.bodyGuarded)
-                                agent3.zombieWhenDead = true;
+							if (__instance.myMelee.agent.zombified && agent3.isPlayer == 0 && !agent3.oma.bodyGuarded)
+								agent3.zombieWhenDead = true;
 
-                            if (agent3.isPlayer == 0 && __instance.myMelee.agent.isPlayer != 0 && !agent3.dead && agent3.agentName != "Zombie" && !agent3.inhuman && !agent3.mechEmpty && !agent3.mechFilled && __instance.myMelee.agent.localPlayer && !agent3.statusEffects.hasStatusEffect("Invincible"))
-                            {
-                                if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast2"))
-                                    __instance.myMelee.agent.statusEffects.ChangeHealth(6f);
-                                else if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast"))
-                                    __instance.myMelee.agent.statusEffects.ChangeHealth(3f);
-                            }
+							if (agent3.isPlayer == 0 && __instance.myMelee.agent.isPlayer != 0 && !agent3.dead && agent3.agentName != "Zombie" && !agent3.inhuman && !agent3.mechEmpty && !agent3.mechFilled && __instance.myMelee.agent.localPlayer && !agent3.statusEffects.hasStatusEffect("Invincible"))
+							{
+								if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast2"))
+									__instance.myMelee.agent.statusEffects.ChangeHealth(6f);
+								else if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast"))
+									__instance.myMelee.agent.statusEffects.ChangeHealth(3f);
+							}
 
-                            if (GC.serverPlayer || agent3.health > 0f || agent3.dead)
-                                agent3.Damage(__instance.myMelee, fromClient);
-                            
-                            __instance.myMelee.agent.relationships.FollowerAlert(agent3);
-                            
-                            if (agent3.statusEffects.hasTrait("AttacksDamageAttacker2") && __instance.myMelee.agent.ghost)
-                            {
-                                int myChance = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
-                                if (GC.percentChance(myChance))
-                                {
-                                    __instance.myMelee.agent.lastHitByAgent = agent3;
-                                    __instance.myMelee.agent.justHitByAgent2 = agent3;
-                                    __instance.myMelee.agent.lastHitByAgent = agent3;
-                                    __instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
-                                    __instance.myMelee.agent.deathKiller = agent3.agentName;
-                                    __instance.myMelee.agent.statusEffects.ChangeHealth(-10f);
-                                }
-                            }
-                            else if (agent3.statusEffects.hasTrait("AttacksDamageAttacker") && __instance.myMelee.agent.ghost)
-                            {
-                                int myChance2 = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
+							if (GC.serverPlayer || agent3.health > 0f || agent3.dead)
+								agent3.Damage(__instance.myMelee, fromClient);
 
-                                if (GC.percentChance(myChance2))
-                                {
-                                    __instance.myMelee.agent.lastHitByAgent = agent3;
-                                    __instance.myMelee.agent.justHitByAgent2 = agent3;
-                                    __instance.myMelee.agent.lastHitByAgent = agent3;
-                                    __instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
-                                    __instance.myMelee.agent.deathKiller = agent3.agentName;
-                                    __instance.myMelee.agent.statusEffects.ChangeHealth(-5f);
-                                }
-                            }
+							__instance.myMelee.agent.relationships.FollowerAlert(agent3);
 
-                            if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode && GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
-                            {
-                                if (GC.challenges.Contains("LowHealth"))
-                                    if (GC.percentChance(50))
-                                        GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
-                                else
-                                    GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
-                            }
+							if (agent3.statusEffects.hasTrait("AttacksDamageAttacker2") && __instance.myMelee.agent.ghost)
+							{
+								int myChance = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
+								if (GC.percentChance(myChance))
+								{
+									__instance.myMelee.agent.lastHitByAgent = agent3;
+									__instance.myMelee.agent.justHitByAgent2 = agent3;
+									__instance.myMelee.agent.lastHitByAgent = agent3;
+									__instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
+									__instance.myMelee.agent.deathKiller = agent3.agentName;
+									__instance.myMelee.agent.statusEffects.ChangeHealth(-10f);
+								}
+							}
+							else if (agent3.statusEffects.hasTrait("AttacksDamageAttacker") && __instance.myMelee.agent.ghost)
+							{
+								int myChance2 = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
 
-                            float num = 0f;
+								if (GC.percentChance(myChance2))
+								{
+									__instance.myMelee.agent.lastHitByAgent = agent3;
+									__instance.myMelee.agent.justHitByAgent2 = agent3;
+									__instance.myMelee.agent.lastHitByAgent = agent3;
+									__instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
+									__instance.myMelee.agent.deathKiller = agent3.agentName;
+									__instance.myMelee.agent.statusEffects.ChangeHealth(-5f);
+								}
+							}
 
-                            if (__instance.myMelee.successfullySleepKilled || __instance.myMelee.successfullyBackstabbed)
-                                num = 0f;
-                            else if ((!agent3.dead || agent3.justDied) && !agent3.disappeared)
-                                num = (float)Mathf.Clamp(agent3.damagedAmount * 20, 80, 9999);
-                            else if (!agent3.disappeared)
-                                num = 80f;
+							if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode && GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
+							{
+								if (GC.challenges.Contains("LowHealth"))
+									if (GC.percentChance(50))
+										GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
+									else
+										GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
+							}
 
-                            if (__instance.myMelee.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
-                                num *= 2f;
-                            
-                            Vector3 position = agent3.tr.position;
-                            Vector2 velocity = agent3.rb.velocity;
+							float num = 0f;
 
-                            if (!agent3.disappeared && !fromClient)
-                                agent3.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, __instance.myMelee.agent);
+							if (__instance.myMelee.successfullySleepKilled || __instance.myMelee.successfullyBackstabbed)
+								num = 0f;
+							else if ((!agent3.dead || agent3.justDied) && !agent3.disappeared)
+								num = (float)Mathf.Clamp(agent3.damagedAmount * 20, 80, 9999);
+							else if (!agent3.disappeared)
+								num = 80f;
 
-                            bool flag4 = false;
+							if (__instance.myMelee.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
+								num *= 2f;
 
-                            if (agent3.hasEmployer && agent3.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.employer.objectMult.chargingSpecialLunge)
-                                flag4 = true;
-                            
-                            if (agent3.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.objectMult.chargingSpecialLunge)
-                                flag4 = true;
-                            
-                            if (flag4)
-                            {
-                                bool flag5 = true;
-                                
-                                if (GC.multiplayerMode && GC.serverPlayer)
-                                {
-                                    if (agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myMelee.agent.isPlayer == 0)
-                                        flag5 = false;
-                                    if (__instance.myMelee.agent.isPlayer != 0 && !__instance.myMelee.agent.localPlayer && agent3.isPlayer == 0)
-                                        flag5 = false;
-                                }
-                                
-                                if (flag5)
-                                {
-                                    __instance.myMelee.agent.movement.KnockBackBullet(agent3.gameObject, 240f, true, agent3);
+							Vector3 position = agent3.tr.position;
+							Vector2 velocity = agent3.rb.velocity;
 
-                                    if (GC.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
-                                    {
-                                        int myChance3 = agent3.DetermineLuck(15, "ChanceToKnockWeapons", true);
+							if (!agent3.disappeared && !fromClient)
+								agent3.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, __instance.myMelee.agent);
 
-                                        if (GC.percentChance(myChance3))
-                                        {
-                                            InvItem invItem2 = __instance.myMelee.agent.inventory.FindItem(invItem.invItemName);
-                                            __instance.myMelee.agent.inventory.DestroyItem(invItem2);
-                                            GC.spawnerMain.SpillItem(__instance.tr.position, invItem2);
-                                            GC.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
+							bool flag4 = false;
 
-                                            if (!GC.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
-                                                __instance.myMelee.agent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", __instance.myMelee.agent.objectNetID, "", "");
+							if (agent3.hasEmployer && agent3.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.employer.objectMult.chargingSpecialLunge)
+								flag4 = true;
 
-                                            __instance.myMelee.agent.statusEffects.CreateBuffText("DroppedWeapon", __instance.myMelee.agent.objectNetID);
-                                            __instance.myMelee.agent.dontPickUpWeapons = true;
-                                        }
-                                    }
-                                }
-                            }
+							if (agent3.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.objectMult.chargingSpecialLunge)
+								flag4 = true;
 
-                            if (!GC.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
-                            {
-                                __instance.myMelee.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
-                                Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
-                                __instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
-                                __instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
-                                __instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
-                                Vector3 position2 = __instance.myMelee.meleeHelperTr.position;
-                                __instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
-                                __instance.myMelee.meleeHelperTr.localRotation = localRotation;
+							if (flag4)
+							{
+								bool flag5 = true;
 
-                                if (!__instance.myMelee.agent.testingNewClientLerps)
-                                {
-                                    if (__instance.myMelee.agent.isPlayer != 0)
-                                        __instance.myMelee.agent.objectMult.CallCmdMeleeHitAgent(agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
-                                    else
-                                        GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
-                                }
-                            }
-                            else if (GC.multiplayerMode && GC.serverPlayer)
-                                __instance.myMelee.agent.objectMult.CallRpcMeleeHitObjectFake(agent3.objectNetID);
+								if (GC.multiplayerMode && GC.serverPlayer)
+								{
+									if (agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myMelee.agent.isPlayer == 0)
+										flag5 = false;
+									if (__instance.myMelee.agent.isPlayer != 0 && !__instance.myMelee.agent.localPlayer && agent3.isPlayer == 0)
+										flag5 = false;
+								}
 
-                            if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent3.isPlayer > 0 && agent3.localPlayer))
-                            {
-                                if (agent3.justDied)
-                                    GC.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
-                                else
-                                    GC.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
-                            }
+								if (flag5)
+								{
+									__instance.myMelee.agent.movement.KnockBackBullet(agent3.gameObject, 240f, true, agent3);
 
-                            GC.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
-                            __instance.myMelee.agent.combat.meleeJustHitCooldown = __instance.myMelee.agent.combat.meleeJustHitTimeStart;
-                            __instance.myMelee.agent.combat.meleeJustHitCloseCooldown = __instance.myMelee.agent.combat.meleeJustHitCloseTimeStart;
+									if (GC.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
+									{
+										int myChance3 = agent3.DetermineLuck(15, "ChanceToKnockWeapons", true);
 
-                            if (GC.serverPlayer)
-                            {
-                                if (__instance.myMelee.successfullyBackstabbed)
-                                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
-                                else if (!__instance.myMelee.successfullySleepKilled)
-                                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
-                            }
+										if (GC.percentChance(myChance3))
+										{
+											InvItem invItem2 = __instance.myMelee.agent.inventory.FindItem(invItem.invItemName);
+											__instance.myMelee.agent.inventory.DestroyItem(invItem2);
+											GC.spawnerMain.SpillItem(__instance.tr.position, invItem2);
+											GC.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
 
-                            __instance.MeleeHitEffect(hitObject);
+											if (!GC.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
+												__instance.myMelee.agent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", __instance.myMelee.agent.objectNetID, "", "");
 
-                            GC.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+											__instance.myMelee.agent.statusEffects.CreateBuffText("DroppedWeapon", __instance.myMelee.agent.objectNetID);
+											__instance.myMelee.agent.dontPickUpWeapons = true;
+										}
+									}
+								}
+							}
 
-                            if (GC.levelType == "Tutorial")
-                            {
-                                GC.tutorial.MeleeTarget(agent3);
+							if (!GC.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
+							{
+								__instance.myMelee.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
+								Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
+								__instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
+								__instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
+								__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
+								Vector3 position2 = __instance.myMelee.meleeHelperTr.position;
+								__instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
+								__instance.myMelee.meleeHelperTr.localRotation = localRotation;
 
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public static void MeleeHitbox_MeleeHitEffect(GameObject hitObject, MeleeHitbox __instance) // Postfix
+								if (!__instance.myMelee.agent.testingNewClientLerps)
+								{
+									if (__instance.myMelee.agent.isPlayer != 0)
+										__instance.myMelee.agent.objectMult.CallCmdMeleeHitAgent(agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
+									else
+										GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
+								}
+							}
+							else if (GC.multiplayerMode && GC.serverPlayer)
+								__instance.myMelee.agent.objectMult.CallRpcMeleeHitObjectFake(agent3.objectNetID);
+
+							if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent3.isPlayer > 0 && agent3.localPlayer))
+							{
+								if (agent3.justDied)
+									GC.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
+								else
+									GC.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
+							}
+
+							GC.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
+							__instance.myMelee.agent.combat.meleeJustHitCooldown = __instance.myMelee.agent.combat.meleeJustHitTimeStart;
+							__instance.myMelee.agent.combat.meleeJustHitCloseCooldown = __instance.myMelee.agent.combat.meleeJustHitCloseTimeStart;
+
+							if (GC.serverPlayer)
+							{
+								if (__instance.myMelee.successfullyBackstabbed)
+									GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
+								else if (!__instance.myMelee.successfullySleepKilled)
+									GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
+							}
+
+							__instance.MeleeHitEffect(hitObject);
+
+							GC.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+
+							if (GC.levelType == "Tutorial")
+							{
+								GC.tutorial.MeleeTarget(agent3);
+
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		public static void MeleeHitbox_MeleeHitEffect(GameObject hitObject, MeleeHitbox __instance) // Postfix
 		{
-            // Gate to weapon/fist and trait
+			// Gate to weapon/fist and trait
 
-            if (hitObject.GetComponent<ObjectSprite>().agent.ghost && hitObject.CompareTag("AgentSprite"))
-            {
-                InvItem invItem = null;
+			if (hitObject.GetComponent<ObjectSprite>().agent.ghost && hitObject.CompareTag("AgentSprite"))
+			{
+				InvItem invItem = null;
 
-                try
-                {
-                    invItem = __instance.myMelee.agent.inventory.equippedWeapon;
+				try
+				{
+					invItem = __instance.myMelee.agent.inventory.equippedWeapon;
 
-                    if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
-                        invItem = __instance.myMelee.agent.inventory.fist;
-                }
-                catch
-                {
-                }
+					if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
+						invItem = __instance.myMelee.agent.inventory.fist;
+				}
+				catch
+				{
+				}
 
-                if (__instance.myMelee.fakeHitAgent)
-                    return;
+				if (__instance.myMelee.fakeHitAgent)
+					return;
 
-                Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
+				Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
 
-                if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
-                    return;
+				if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
+					return;
 
-                if (agent.hologram || agent.objectAgent)
-                    return;
+				if (agent.hologram || agent.objectAgent)
+					return;
 
-                bool flag = false;
+				bool flag = false;
 
-                if (invItem.hitSoundType == "Cut")
-                {
-                    if (agent.damagedAmount < 12)
-                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
-                    else
-                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
-                    
-                    flag = true;
-                }
+				if (invItem.hitSoundType == "Cut")
+				{
+					if (agent.damagedAmount < 12)
+						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
+					else
+						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
 
-                if (agent.damagedAmount < 10)
-                {
-                    if (!flag)
-                    {
-                        string hitSoundType = invItem.hitSoundType;
+					flag = true;
+				}
 
-                        if (!(hitSoundType == "Normal"))
-                        {
-                            if (!(hitSoundType == "WerewolfSlash"))
-                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
-                            else
-                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-                        }
-                        else
-                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
-                    }
+				if (agent.damagedAmount < 10)
+				{
+					if (!flag)
+					{
+						string hitSoundType = invItem.hitSoundType;
 
-                    if (agent.damagedAmount > 0)
-                    {
-                        if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                            GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                        else
-                            GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    }
-                    else
-                        GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    
-                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-                    {
-                        GC.FreezeFrames(1);
-                    
-                        return;
-                    }
-                }
-                else if (agent.damagedAmount < 15)
-                {
-                    if (!flag)
-                    {
-                        string hitSoundType = invItem.hitSoundType;
+						if (!(hitSoundType == "Normal"))
+						{
+							if (!(hitSoundType == "WerewolfSlash"))
+								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+							else
+								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+						}
+						else
+							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+					}
 
-                        if (!(hitSoundType == "Normal"))
-                        {
-                            if (!(hitSoundType == "WerewolfSlash"))
-                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-                            else
-                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-                        }
-                        else
-                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-                    }
+					if (agent.damagedAmount > 0)
+					{
+						if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+							GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+						else
+							GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+					}
+					else
+						GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 
-                    if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                        GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    else
-                        GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    
-                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-                    {
-                        GC.FreezeFrames(2);
+					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+					{
+						GC.FreezeFrames(1);
 
-                        return;
-                    }
-                }
-                else
-                {
-                    if (!flag)
-                    {
-                        string hitSoundType = invItem.hitSoundType;
+						return;
+					}
+				}
+				else if (agent.damagedAmount < 15)
+				{
+					if (!flag)
+					{
+						string hitSoundType = invItem.hitSoundType;
 
-                        if (!(hitSoundType == "Normal"))
-                        {
-                            if (!(hitSoundType == "WerewolfSlash"))
-                                GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-                            else
-                                GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-                        }
-                        else
-                            GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-                        
-                        GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-                    }
-                    if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                        GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    else
-                        GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-                    
-                    if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-                    {
-                        GC.FreezeFrames(3);
-                    
-                        return;
-                    }
-                }
-            }
-        } 
+						if (!(hitSoundType == "Normal"))
+						{
+							if (!(hitSoundType == "WerewolfSlash"))
+								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+							else
+								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+						}
+						else
+							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+					}
+
+					if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+						GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+					else
+						GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
+					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+					{
+						GC.FreezeFrames(2);
+
+						return;
+					}
+				}
+				else
+				{
+					if (!flag)
+					{
+						string hitSoundType = invItem.hitSoundType;
+
+						if (!(hitSoundType == "Normal"))
+						{
+							if (!(hitSoundType == "WerewolfSlash"))
+								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+							else
+								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+						}
+						else
+							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+
+						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+					}
+					if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+						GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+					else
+						GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
+					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
+					{
+						GC.FreezeFrames(3);
+
+						return;
+					}
+				}
+			}
+		}
 		#endregion
 		#region PlayerControl
 		public static void PlayerControl_Update() // Postfix

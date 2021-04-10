@@ -11,6 +11,7 @@ namespace BunnyMod.Content
 		public static GameController GC => GameController.gameController;
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
 		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		public void Awake()
 		{
@@ -72,9 +73,9 @@ namespace BunnyMod.Content
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		public static void MSA_CD_LogVariables(Agent agent)
 		{
-			BMHeader.Log("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
-			BMHeader.Log("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
-			BMHeader.Log("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
+			BMLog("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
+			BMLog("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
+			BMLog("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
 		}
 		public static void MSA_CD_SetCast(Agent agent, bool value)
 		{
@@ -285,7 +286,7 @@ namespace BunnyMod.Content
 					timescale += 0.250f;
 			}
 
-			BMHeader.Log("ChronomancyRollTimescale: " + timescale);
+			BMLog("ChronomancyRollTimescale: " + timescale);
 
 			return timescale;
 		}
@@ -300,7 +301,7 @@ namespace BunnyMod.Content
 			GC.mainTimeScale = baseTimeScale / speedupfactor;
 			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
 
-			BMHeader.Log("Timescale: " + GC.mainTimeScale.ToString());
+			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
 		public static async void MSA_CD_StartDecast(Agent agent)
 		{
@@ -317,11 +318,11 @@ namespace BunnyMod.Content
 
 			await MSA_CD_StartWindingUp(agent);
 
-			BMHeader.Log("Timescale: " + GC.mainTimeScale.ToString());
+			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
 		public static async void MSA_CD_StartMiscast(Agent agent, float slowdownFactor)
 		{
-			BMHeader.Log("ChronomancyStartMiscast: " + slowdownFactor);
+			BMLog("ChronomancyStartMiscast: " + slowdownFactor);
 
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			GC.audioHandler.Play(agent, "ToiletTeleportIn");
@@ -340,7 +341,7 @@ namespace BunnyMod.Content
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 
-			BMHeader.Log("Timescale: " + GC.mainTimeScale.ToString());
+			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 
 			await Task.Delay(5000);
 
@@ -349,7 +350,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_CD_StartRecharge(Agent agent, bool routine)
 		{
-			BMHeader.Log("ChronomancyStartRecharge");
+			BMLog("ChronomancyStartRecharge");
 
 			if (!routine)
 			{
@@ -375,7 +376,7 @@ namespace BunnyMod.Content
 				agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 			}
 
-			BMHeader.Log("Timescale: " + GC.mainTimeScale.ToString());
+			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
 		public static async Task MSA_CD_StartWindingUp(Agent agent)
 		{
@@ -407,45 +408,45 @@ namespace BunnyMod.Content
 		#region Pyromantic Jet - Bits
 		public static bool MSA_PJ_IsBurnedOut(Agent agent)
 		{
-			BMHeader.Log("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
+			BMLog("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
 		public static bool MSA_PJ_IsCoolingDown(Agent agent)
 		{
-			BMHeader.Log("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
+			BMLog("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
 		public static bool MSA_PJ_IsMiscast(Agent agent)
 		{
-			BMHeader.Log("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
+			BMLog("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		}
 		public static void MSA_PJ_LogBooleans(Agent agent)
 		{
-			BMHeader.Log("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
-			BMHeader.Log("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
-			BMHeader.Log("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
+			BMLog("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
+			BMLog("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
+			BMLog("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
 		}
 		public static void MSA_PJ_SetBurnedOut(Agent agent, bool value)
 		{
-			BMHeader.Log("PyromancySetBurnedOut " + value);
+			BMLog("PyromancySetBurnedOut " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
 		public static void MSA_PJ_SetCoolingDown(Agent agent, bool value)
 		{
-			BMHeader.Log("PyromancySetCoolingDown " + value);
+			BMLog("PyromancySetCoolingDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
 		public static void MSA_PJ_SetMiscast(Agent agent, bool value)
 		{
-			BMHeader.Log("PyromancySetMiscast " + value);
+			BMLog("PyromancySetMiscast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
@@ -669,7 +670,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_PJ_StartCast(Agent agent)
 		{
-			BMHeader.Log("PyromancyStartCast");
+			BMLog("PyromancyStartCast");
 
 			Bullet bullet = GC.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
@@ -701,7 +702,7 @@ namespace BunnyMod.Content
 		}
 		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
 		{
-			BMHeader.Log("PyromancyStartCoolingDown");
+			BMLog("PyromancyStartCoolingDown");
 
 			if (MSA_PJ_IsCoolingDown(agent) == false)
 			{
@@ -731,7 +732,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_PJ_StartMiscast(Agent agent, int degree)
 		{
-			BMHeader.Log("PyromancyStartMiscast");
+			BMLog("PyromancyStartMiscast");
 
 			MSA_PJ_DialogueMiscast(agent);
 
@@ -741,7 +742,7 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_PJ_CompleteRecharge(Agent agent, bool routine)
 		{
-			BMHeader.Log("PyromancyStartRecharge");
+			BMLog("PyromancyStartRecharge");
 
 			if (!routine)
 			{
@@ -774,19 +775,19 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_TB_LogBits(Agent agent)
 		{
-			BMHeader.Log("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
-			BMHeader.Log("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
+			BMLog("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
+			BMLog("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
 		}
 		public static void MSA_TB_SetReturning(Agent agent, bool value)
 		{
-			BMHeader.Log("TelemancySetReturning: " + value);
+			BMLog("TelemancySetReturning: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
 		public static void MSA_TB_SetMiscast(Agent agent, bool value)
 		{
-			BMHeader.Log("TelemancySetMiscast: " + value);
+			BMLog("TelemancySetMiscast: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
@@ -900,7 +901,7 @@ namespace BunnyMod.Content
 					{
 						tbHeldCounter++;
 
-						BMHeader.Log("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + timeHeld);
+						BMLog("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + timeHeld);
 
 						int manaCost = Mathf.Min(MSA_TB_RollManaCost(agent), 100 - tbNetCharge);
 
@@ -992,7 +993,7 @@ namespace BunnyMod.Content
 		}
 		public static int MSA_TB_RollManaCost(Agent agent)
 		{
-			BMHeader.Log("TelemancyRollManaCost");
+			BMLog("TelemancyRollManaCost");
 
 			float min = 25.000f;
 			float max = 33.000f;
@@ -1189,13 +1190,13 @@ namespace BunnyMod.Content
 				randomTeleport = true;
 			}
 
-			BMHeader.Log("TelemancyTryMiscast: stroke");
+			BMLog("TelemancyTryMiscast: stroke");
 			agent.statusEffects.ChangeHealth(-severity * 5);
 			MSA_TB_DialogueMiscast(agent);
 
 			if (randomTeleport)
 			{
-				BMHeader.Log("TelemancyTryMiscast: randomTeleport");
+				BMLog("TelemancyTryMiscast: randomTeleport");
 
 				agent.statusEffects.UseQuickEscapeTeleporter(false);
 				failTeleport = true;
@@ -1203,7 +1204,7 @@ namespace BunnyMod.Content
 
 			if (lightAndSound)
 			{
-				BMHeader.Log("TelemancyTryMiscast: lightAndSound");
+				BMLog("TelemancyTryMiscast: lightAndSound");
 
 				GC.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
 				agent.SpawnParticleEffect("ExplosionEMP", agent.tr.position);
@@ -1217,7 +1218,7 @@ namespace BunnyMod.Content
 
 			if (loseItem)
 			{
-				BMHeader.Log("TelemancyTryMiscast: LoseItem");
+				BMLog("TelemancyTryMiscast: LoseItem");
 
 				// To pick random item: compare from NPC Thief stealing? That would exclude quest items and your money supply, at least.
 

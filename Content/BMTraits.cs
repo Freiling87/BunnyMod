@@ -60,7 +60,6 @@ namespace BunnyMod.Content
             Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
             // LoadLevel
-            Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
             Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 
             // MeleeHitbox
@@ -510,7 +509,43 @@ namespace BunnyMod.Content
 			EagleEyes_2.IsActive = true;
 			EagleEyes_2.Upgrade = null;
 
-			CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
+            CustomTrait Haunted = RogueLibs.CreateCustomTrait("Haunted", true,
+                new CustomNameInfo("Haunted"),
+                new CustomNameInfo("You spent too long spelunking in an ancient treasure vault. The local ghosts were very unhappy with you, and you had their legal case dismissed. Now they're taking it into their own hands."));
+            Haunted.Available = true;
+            Haunted.AvailableInCharacterCreation = true;
+            Haunted.CanRemove = true;
+            Haunted.CanSwap = false;
+            Haunted.Conflicting.AddRange(new string[] { });
+            Haunted.CostInCharacterCreation = -2;
+            Haunted.IsActive = true;
+            Haunted.Upgrade = null;
+
+            CustomTrait MobDebt = RogueLibs.CreateCustomTrait("MobDebt", true,
+                new CustomNameInfo("Mob Debt"),
+                new CustomNameInfo("You found a sack of money, and the people to whom it belongs want it back. With interest. You have $1,000, but need to pay back double the amount by Level 10, or else your kneecaps (and the rest of your body) will pay the price."));
+            MobDebt.Available = true;
+            MobDebt.AvailableInCharacterCreation = true;
+            MobDebt.CanRemove = true;
+            MobDebt.CanSwap = false;
+            MobDebt.Conflicting.AddRange(new string[] { });
+            MobDebt.CostInCharacterCreation = -10;
+            MobDebt.IsActive = true;
+            MobDebt.Upgrade = null;
+
+            CustomTrait MookMasher = RogueLibs.CreateCustomTrait("MookMasher", true,
+                new CustomNameInfo("Mook Masher"),
+                new CustomNameInfo("The Mayor knows you're a threat, and you're coming for him. He could just destroy you, but as a villain, he prefers to send his henchmen at you in steadily increasing but manageable waves."));
+            MookMasher.Available = true;
+            MookMasher.AvailableInCharacterCreation = true;
+            MookMasher.CanRemove = true;
+            MookMasher.CanSwap = false;
+            MookMasher.Conflicting.AddRange(new string[] { });
+            MookMasher.CostInCharacterCreation = -5;
+            MookMasher.IsActive = true;
+            MookMasher.Upgrade = null;
+
+            CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
 				new CustomNameInfo("Myopic"),
 				new CustomNameInfo("You can't see too far."));
 			Myopic.Available = true;
@@ -533,46 +568,70 @@ namespace BunnyMod.Content
 			Myopic_2.CostInCharacterCreation = -8;
 			Myopic_2.IsActive = true;
 			Myopic_2.Upgrade = null;
-			#endregion
-			#region Social
-			//CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
-			//    new CustomNameInfo("Artificial Insermonation"),
-			//    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
-			//ArtificialInsermonation.AvailableInCharacterCreation = false; //
-			//ArtificialInsermonation.CostInCharacterCreation = 2;
-			//ArtificialInsermonation.IsActive = false; //
-			//ArtificialInsermonation.Available = false; //
-			//ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
 
-			//CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
-			//    new CustomNameInfo("Artificial Insermonation +"),
-			//    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
-			//ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
-			//ArtificialInsermonation_2.CostInCharacterCreation = 2;
-			//ArtificialInsermonation_2.IsActive = false; //
-			//ArtificialInsermonation_2.Available = false; //
-			//ArtificialInsermonation_2.Upgrade = null;
+            CustomTrait Reinforcements = RogueLibs.CreateCustomTrait("Reinforcements", true,
+                new CustomNameInfo("Reinforcements"),
+                new CustomNameInfo("You have worked to create an army for the Resistance. That army now patrols the City secretly, looking for the opportunity to aid the cause."));
+            Reinforcements.Available = true;
+            Reinforcements.AvailableInCharacterCreation = true;
+            Reinforcements.CanRemove = false;
+            Reinforcements.CanSwap = true;
+            Reinforcements.Conflicting.AddRange(new string[] { });
+            Reinforcements.CostInCharacterCreation = 5;
+            Reinforcements.IsActive = true;
+            Reinforcements.Upgrade = "Reinforcements_2";
 
-			//CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
-			//    new CustomNameInfo("Undead Bane"),
-			//    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
-			//UndeadBane.AvailableInCharacterCreation = false; //
-			//UndeadBane.CostInCharacterCreation = -4;
-			//UndeadBane.IsActive = false; //
-			//UndeadBane.Available = false; //
-			//UndeadBane.Upgrade = null;
+            CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait("Reinforcements_2", true,
+                new CustomNameInfo("Reinforcements +"),
+                new CustomNameInfo("Your allies now have top-of-the-line equipment."));
+            Reinforcements_2.Available = true;
+            Reinforcements_2.AvailableInCharacterCreation = true;
+            Reinforcements_2.CanRemove = false;
+            Reinforcements_2.CanSwap = true;
+            Reinforcements_2.Conflicting.AddRange(new string[] { });
+            Reinforcements_2.CostInCharacterCreation = 10;
+            Reinforcements_2.IsActive = true;
+            Reinforcements_2.Upgrade = "Reinforcements_2";
+            #endregion
+            #region Social
+            //CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
+            //    new CustomNameInfo("Artificial Insermonation"),
+            //    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
+            //ArtificialInsermonation.AvailableInCharacterCreation = false; //
+            //ArtificialInsermonation.CostInCharacterCreation = 2;
+            //ArtificialInsermonation.IsActive = false; //
+            //ArtificialInsermonation.Available = false; //
+            //ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
 
-			//CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
-			//    new CustomNameInfo("Veiled Threats"),
-			//    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
-			//VeiledThreats.AvailableInCharacterCreation = false; //
-			//VeiledThreats.CostInCharacterCreation = 3;
-			//VeiledThreats.IsActive = false; //
-			//VeiledThreats.Available = false; //
-			//VeiledThreats.Upgrade = null;
-			#endregion
-			#region Stealth
-			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+            //CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
+            //    new CustomNameInfo("Artificial Insermonation +"),
+            //    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
+            //ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
+            //ArtificialInsermonation_2.CostInCharacterCreation = 2;
+            //ArtificialInsermonation_2.IsActive = false; //
+            //ArtificialInsermonation_2.Available = false; //
+            //ArtificialInsermonation_2.Upgrade = null;
+
+            //CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
+            //    new CustomNameInfo("Undead Bane"),
+            //    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
+            //UndeadBane.AvailableInCharacterCreation = false; //
+            //UndeadBane.CostInCharacterCreation = -4;
+            //UndeadBane.IsActive = false; //
+            //UndeadBane.Available = false; //
+            //UndeadBane.Upgrade = null;
+
+            //CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
+            //    new CustomNameInfo("Veiled Threats"),
+            //    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+            //VeiledThreats.AvailableInCharacterCreation = false; //
+            //VeiledThreats.CostInCharacterCreation = 3;
+            //VeiledThreats.IsActive = false; //
+            //VeiledThreats.Available = false; //
+            //VeiledThreats.Upgrade = null;
+            #endregion
+            #region Stealth
+            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
@@ -1000,189 +1059,6 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region LoadLevel
-        public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance) // Prefix
-		{
-            BMLog("LoadLevel_SetupMore3_3_Prefix");
-
-            if (!GC.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
-            {
-                int bigTries = (int)((float)UnityEngine.Random.Range(8, 12) * __instance.levelSizeModifier);
-                int numTries;
-
-                for (int i = 0; i < bigTries; i = numTries + 1)
-                {
-                    Vector2 vector14 = Vector2.zero;
-                    int num34 = 0;
-
-                    do
-                    {
-                        vector14 = GC.tileInfo.FindRandLocationGeneral(2f);
-
-                        for (int num35 = 0; num35 < GC.objectRealList.Count; num35++)
-                            if (GC.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(GC.objectRealList[num35].tr.position, vector14) < 14f)
-                                vector14 = Vector2.zero;
-
-                        if (vector14 != Vector2.zero)
-                        {
-                            if (GC.tileInfo.WaterNearby(vector14))
-                                vector14 = Vector2.zero;
-                            if (GC.tileInfo.IceNearby(vector14))
-                                vector14 = Vector2.zero;
-                            if (GC.tileInfo.BridgeNearby(vector14))
-                                vector14 = Vector2.zero;
-                        }
-                        num34++;
-                    }
-                    while ((vector14 == Vector2.zero || Vector2.Distance(vector14, GC.playerAgent.tr.position) < 5f) && num34 < 100);
-
-                    if (vector14 != Vector2.zero && Vector2.Distance(vector14, GC.playerAgent.tr.position) >= 5f)
-                        GC.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
-
-                    //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-                    //{
-                    //    yield return null;
-                    //    chunkStartTime = Time.realtimeSinceStartup;
-                    //}
-                    UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-
-                    numTries = i;
-                }
-
-                int numObjects = (int)((float)UnityEngine.Random.Range(2, 4) * __instance.levelSizeModifier);
-                List<Manhole> manholeList = new List<Manhole>();
-
-
-                for (int num36 = 0; num36 < GC.objectRealList.Count; num36++)
-                    if (GC.objectRealList[num36].objectName == "Manhole")
-                        manholeList.Add((Manhole)GC.objectRealList[num36]);
-
-                if (manholeList.Count > 0)
-                {
-                    for (int i = 0; i < numObjects; i = numTries + 1)
-                    {
-                        int numberOfHiddenAgents = 0;
-                        Manhole manhole;
-                        bool flag13;
-
-                        do
-                        {
-                            UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-                            manhole = manholeList[UnityEngine.Random.Range(0, manholeList.Count)];
-                            flag13 = true;
-
-                            for (int j = 0; j < GC.agentList.Count; j++)
-                                if (GC.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, GC.agentList[j].tr.position) < 10f)
-                                {
-                                    numberOfHiddenAgents++;
-                                    flag13 = false;
-                                }
-
-                            numberOfHiddenAgents++;
-                        }
-                        while (numberOfHiddenAgents < 50 && !flag13);
-
-                        if (flag13)
-                        {
-                            string text3 = GC.Choose<string>("Thief", "Thief", new string[]
-                            {
-                                    "Thief",
-                                    "Cannibal"
-                            });
-
-                            if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
-                            {
-                                Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
-                                agent2.SetDefaultGoal("Idle");
-                                agent2.statusEffects.BecomeHidden(manhole);
-                                agent2.oma.mustBeGuilty = true;
-                            }
-                        }
-
-                        //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-                        //{
-                        //    yield return null;
-                        //    chunkStartTime = Time.realtimeSinceStartup;
-                        //}
-
-                        UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-                        numTries = i;
-                    }
-                }
-                manholeList = null;
-            }
-
-            return true;
-        }
-        public static void LoadLevel_SetupMore3_3_Postfix(LoadLevel __instance) // Postfix
-		{
-            for (int agentSearch = 0; agentSearch < GC.agentList.Count; agentSearch++)
-                if (GC.agentList[agentSearch].isPlayer > 0)
-                    LoadLevel_SpawnHitSquad(GC.agentList[agentSearch], 150, "Ghost", __instance);
-        }
-        public static void LoadLevel_SpawnHitSquad(Agent targetAgent, int currentDebt, string agentType, LoadLevel __instance) // Non-Patch
-        {
-            List<Agent> list = new List<Agent>();
-            Agent.gangCount++;
-            targetAgent.gangStalking = Agent.gangCount;
-            Vector2 pos = Vector2.zero;
-            int debt50s = 0;
-
-            while (currentDebt > 0)
-            {
-                currentDebt -= 50;
-                debt50s++;
-            }
-            
-            if (GC.challenges.Contains("AssassinsEveryLevel"))
-                debt50s = 3;
-            
-            for (int i = 0; i < debt50s; i++)
-            {
-                Vector2 vector = Vector2.zero;
-                int attempts = 0;
-
-                if (i == 0)
-                {
-                    do
-                    {
-                        vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
-                        attempts++;
-                    }
-                    while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
-
-                    pos = vector;
-                }
-                else
-                    vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
-
-                if (vector != Vector2.zero && attempts < 300)
-                {
-                    Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
-                    agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
-                    agent.gang = Agent.gangCount;
-                    agent.modLeashes = 0;
-                    agent.alwaysRun = true;
-                    agent.wontFlee = true;
-                    agent.agentActive = true;
-                    //agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-                    agent.oma.mustBeGuilty = true;
-                    list.Add(agent);
-
-                    if (list.Count > 1)
-                        for (int j = 0; j < list.Count; j++)
-                            if (list[j] != agent)
-                            {
-                                agent.relationships.SetRelInitial(list[j], "Aligned");
-                                list[j].relationships.SetRelInitial(agent, "Aligned");
-                            }
-
-                    agent.relationships.SetRel(targetAgent, "Hateful");
-                    agent.relationships.SetRelHate(targetAgent, 5);
-                    targetAgent.relationships.SetRel(agent, "Hateful");
-                    targetAgent.relationships.SetRelHate(agent, 5);
-                }
-            }
-        }
 		#endregion
 		#region MeleeHitbox
 		public static void MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // 

@@ -175,95 +175,6 @@ namespace BunnyMod.Content
 			}
 		}
 		#endregion
-		#region LevelFeelings
-		public static void Riot2(LevelFeelings __instance) // Replacement
-		{
-			for (int i = 0; i < GC.agentList.Count; i++)
-			{
-				Agent agentSubject = GC.agentList[i];
-
-				if (agentSubject.ownerID == 0 && agentSubject.isPlayer == 0 && !GC.tileInfo.IsIndoors(agentSubject.tr.position) && !agentSubject.enforcer)
-				{
-					for (int j = 0; j < GC.agentList.Count; j++)
-					{
-						Agent agentObject = GC.agentList[j];
-						string rel = agentSubject.relationships.GetRel(agentObject);
-
-						if (agentObject != agentSubject && (rel == "Neutral" || rel == "Annoyed" || rel == "Friendly") && agentSubject.agentName != "Slave" && (!agentObject.statusEffects.hasTrait("GenericAgentsAligned") || !(agentSubject.agentName == "Hobo")) && (!agentObject.statusEffects.hasTrait("MafiaAligned") || !(agentSubject.agentName == "Mafia")) && (!agentObject.statusEffects.hasTrait("CannibalsNeutral") || !(agentSubject.agentName == "Cannibal")))
-						{
-							agentSubject.relationships.SetRel(agentObject, "Hateful");
-							agentSubject.relationships.SetRelHate(agentObject, 5);
-							agentSubject.relationships.SetRelInitial(agentObject, "Hateful");
-						}
-					}
-
-					agentSubject.oma.rioter = true;
-					Object.Destroy(agentSubject.nonQuestObjectMarker);
-				}
-			
-				if (!GC.tileInfo.IsIndoors(agentSubject.tr.position))
-					agentSubject.alwaysRun = true;
-			}
-		}
-		#endregion
-		#region Quests
-		public static void Quests_CheckIfBigQuestObject(PlayfieldObject myObject, Quests __instance) // Postfix
-		{
-			if (GC.levelFeeling == "Riot" || GC.percentChance(2) || GC.challenges.Contains("AlwaysSpawnArsonists"))
-			{
-				for (int i = 0; i < GC.playerAgentList.Count; i++)
-				{
-					Agent agent_i = GC.playerAgentList[i];
-
-					if ((agent_i.localPlayer || GC.serverPlayer) && __instance.CanHaveBigQuest(agent_i))
-					{
-						if (GC.serverPlayer && !GC.loadLevel.setArsonist && !GC.loadLevel.LevelContainsMayor())
-						{
-							for (int j = 0; j < GC.agentList.Count; j++)
-							{
-								Agent agent_j = GC.agentList[j];
-
-								if (agent_j.isPlayer == 0 && !agent_j.dead && !agent_j.objectAgent && !agent_j.oma.rioter && !agent_j.ghost && !agent_j.inhuman && !agent_j.beast && !agent_j.zombified && !agent_j.oma.hidden && !agent_j.arsonist && !agent_j.oma.secretWerewolf && agent_j.ownerID == 0 && agent_j.startingChunk == 0 && !agent_j.enforcer && !agent_j.upperCrusty && agent_j.agentName != "Assassin" && agent_j.agentName != "Custom")
-									if (!agent_j.QuestInvolvementFull())
-										continue;
-									else if (agent_j.arsonist)
-									{
-										if (!__instance.bigQuestObjectList.Contains(agent_j))
-											__instance.bigQuestObjectList.Add(agent_j);
-
-										if (!agent_i.localPlayer)
-											agent_j.noBigQuestMarker = true;
-
-										agent_j.isBigQuestObject = true;
-										agent_j.bigQuestType = agent_i.bigQuest;
-										agent_j.noBigQuestMarker = true;
-									}
-							}
-
-							if (!GC.loadLevel.LevelContainsMayor())
-							{
-								UnityEngine.Random.InitState(GC.loadLevel.randomSeedNum + GC.sessionDataBig.curLevelEndless + agent_i.isPlayer);
-								agent_i.needArsonist = 1;
-								agent_i.arsonistAppearance = (float)UnityEngine.Random.Range(20, 75);
-							}
-
-							GC.loadLevel.setArsonist = true;
-						}
-
-						if (myObject.isAgent && ((Agent)myObject).arsonist)
-							return; // true;
-
-						if (agent_i.oma.bigQuestTarget1 == "")
-						{
-							agent_i.oma.NetworkbigQuestTarget1 = "x";
-							return; // false
-						}
-					}
-				}
-				return;
-			}
-		}
-		#endregion
 		#region RandomWalls
 		public static bool RandomWalls_fillWalls() // Replacement
 		{
@@ -277,7 +188,6 @@ namespace BunnyMod.Content
 				return true;
 
 			RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
-
 			RandomList rList;
 
 			rList = component.CreateRandomList("WallsNormal", "Walls", "Wall");

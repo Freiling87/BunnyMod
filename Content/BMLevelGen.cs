@@ -39,6 +39,25 @@ namespace BunnyMod.Content
 			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "LoadLevel_fillAgentWeapons", new Type[0] { });
 		}
 
+		#region Custom
+		public static int LevelSizeMod(int vanilla)
+		{
+			if (GC.challenges.Contains("CitySprawl"))
+				return (int)(vanilla * 1.5f);
+			else if (GC.challenges.Contains("CloseQuarters"))
+				return (int)(vanilla * 0.5f);
+			else
+				return vanilla;
+		}
+		public static int ForceQuestCount(int vanilla)
+		{
+			if (GC.challenges.Contains("FourQuests"))
+				return 4;
+			else
+				return vanilla;
+		}
+		#endregion
+
 		#region Agent
 		public static void Agent_SetupAgentStats(string transformationType, Agent __instance) // Postfix
 		{
@@ -90,7 +109,7 @@ namespace BunnyMod.Content
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
 			__instance.levelSizeMax = 30;
-			__instance.levelSizeAxis = 10;
+			__instance.levelSizeAxis = LevelSizeMod(10);
 
 			if (GC.customLevel && !GC.customRandomLevel)
 			{
@@ -552,6 +571,8 @@ namespace BunnyMod.Content
 						__instance.levelSize++;
 					}
 				}
+
+				__instance.levelSizeMax = LevelSizeMod(__instance.levelSizeMax);
 
 				Debug.Log("LEVEL SIZE: " + __instance.levelSizeMax);
 
@@ -4556,23 +4577,23 @@ namespace BunnyMod.Content
 				
 				if (agent.isPlayer > 0)
 				{
-					if (agent.statusEffects.hasTrait("Haunted"))
+					if (agent.statusEffects.hasTrait(cTraits.Haunted))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "Ghost", __instance, false);
 
 					if (level >= 10)
 					{
-						if (agent.statusEffects.hasTrait("MobDebt"))
+						if (agent.statusEffects.hasTrait(cTraits.MobDebt))
 							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Mafia", __instance, false);
-						else if (agent.statusEffects.hasTrait("MobDebt_2"))
+						else if (agent.statusEffects.hasTrait(cTraits.MobDebt_2))
 							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Mafia", __instance, false);
 					}
 
-					if (agent.statusEffects.hasTrait("MookMasher"))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level, "Goon", __instance, false);
+					if (agent.statusEffects.hasTrait(cTraits.MookMasher))
+						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Goon", __instance, false);
 
-					if (agent.statusEffects.hasTrait("Reinforcements"))
+					if (agent.statusEffects.hasTrait(cTraits.Reinforcements))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "ResistanceLeader", __instance, true);
-					else if (agent.statusEffects.hasTrait("Reinforcements_2"))
+					else if (agent.statusEffects.hasTrait(cTraits.Reinforcements_2))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "ResistanceLeader", __instance, true);
 				}
 			}

@@ -25,9 +25,6 @@ namespace BunnyMod.Content
 
 			// LoadLevel
 
-			// Quests
-			//Postfix(typeof(Quests), "CheckIfBigQuestObject", GetType(), "Quests_CheckIfBigQuestObject", new Type[1] { typeof(PlayfieldObject) });
-
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
 
@@ -74,12 +71,7 @@ namespace BunnyMod.Content
 			//returnToShrunke.Available = true;
 			//returnToShrunke.IsActive = true;
 			#endregion
-
-			#region Interface
-			#endregion
-
 			#region Map Modification
-
 			CustomMutator cityOfSteel = RogueLibs.CreateCustomMutator("CityOfSteel", true,
 				new CustomNameInfo("City Of Steel"),
 				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
@@ -108,7 +100,6 @@ namespace BunnyMod.Content
 			shantyTown.Conflicting.AddRange(new string[] { "SteelCity" });
 			shantyTown.IsActive = false;
 			#endregion
-
 			#region Overhauls
 			//CustomMutator cyberWarfare = RogueLibs.CreateCustomMutator("CyberWarfare", true,
 			//	new CustomNameInfo("Cyber Warfare"),
@@ -135,7 +126,6 @@ namespace BunnyMod.Content
 			//wagTheDog.Available = true;
 			//wagTheDog.IsActive = true;
 			#endregion
-
 			#region Miscellaneous
 			CustomMutator fourQuests = RogueLibs.CreateCustomMutator("FourQuests", true,
 				new CustomNameInfo("Four Quests"),
@@ -146,24 +136,7 @@ namespace BunnyMod.Content
 			#endregion
 		}
 
-		#region Custom
-		public static int LevelSizeMod(int vanilla)
-		{
-			if (GC.challenges.Contains("CitySprawl"))
-				return (int)(vanilla * 2.0f);
-			else if (GC.challenges.Contains("CloseQuarters"))
-				return (int)(vanilla * 0.5f);
-			else
-				return vanilla;
-		}
-		public static int ForceQuestCount(int vanilla)
-		{
-			if (GC.challenges.Contains("FourQuests"))
-				return 4;
-			else 
-				return vanilla;
-		}
-		#endregion
+
 
 		#region Bullet
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix

@@ -1135,12 +1135,18 @@ namespace BunnyMod.Content
         #region SkillPoints
         public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
         {
+            BMLog("SkillPoints_AddPointsLate");
+
             __result = SkillPoints_AddPointsLate_IEnumerator(pointsType, extraNum, __result, __instance, ___agent);
 
             return false;
         }
         private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, IEnumerator __result, SkillPoints __instance, Agent ___agent)
         {
+            BMLog("SkillPoints_AddPointsLate_IEnumerator:");
+            BMLog("\tpointsType = " + pointsType);
+            BMLog("\textraNum = " + extraNum);
+
 			if (pointsType == "DestructionPoints" || pointsType == "DestructionPoints2" || pointsType == "FireExtinguishPoints")
 				yield return null;
 			else
@@ -1155,7 +1161,7 @@ namespace BunnyMod.Content
 			}
 			
 			int xpReward = 0;
-			bool flag = false;
+			bool suppressAnimation = false;
 			string text = pointsType;
 			
 			switch (text)
@@ -1164,13 +1170,16 @@ namespace BunnyMod.Content
                     xpReward = 100;
                     break;
                 case "ArrestedPointsInnocent":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = -40;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility)
-                        xpReward = -80;
-                    else
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward = -40;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -80;
+                    }
+					else
                         xpReward = 10;
                     break;
                 case "BigQuestBonusDowntown":
@@ -1242,11 +1251,11 @@ namespace BunnyMod.Content
                     break;
                 case "DestructionPoints":
                     xpReward = 1;
-                    flag = true;
+                    suppressAnimation = true;
                     break;
                 case "DestructionPoints2":
                     xpReward = 2;
-                    flag = true;
+                    suppressAnimation = true;
                     break;
                 case "DisarmDetonatorPoints":
                     xpReward = 20;
@@ -1263,7 +1272,7 @@ namespace BunnyMod.Content
                     break;
                 case "FireExtinguishPoints":
                     xpReward = 5;
-                    flag = true;
+                    suppressAnimation = true;
                     break;
                 case "FreedPrisoner":
                     xpReward = 20 * extraNum;
@@ -1282,12 +1291,15 @@ namespace BunnyMod.Content
                     xpReward = 30;
                     break;
                 case "IndirectlyKillInnocent":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = -15;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility)
-                        xpReward = -30;
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward = -15;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -30;
+                    }
                     else
                         xpReward = 10;
                     break;
@@ -1304,12 +1316,15 @@ namespace BunnyMod.Content
                     xpReward = 50;
                     break;
                 case "KillPointsInnocent":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = -20;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility)
-                        xpReward = -40;
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward = -20;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
+                        else if (!___agent.oma.superSpecialAbility)
+                            xpReward = -40;
+                    }
                     else
                         xpReward = 10;
                     break;
@@ -1320,12 +1335,15 @@ namespace BunnyMod.Content
                     xpReward = 75;
                     break;
                 case "KnockOutPointsInnocent":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = -20;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility)
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility)
-                        xpReward = -40;
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward = -20;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -40;
+                    }
                     else
                         xpReward = 10;
                     break;
@@ -1366,12 +1384,15 @@ namespace BunnyMod.Content
 					xpReward = 200;
 					break;
                 case "PickpocketPoints":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
-                        xpReward = -10;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
-                        xpReward = -15;
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait(vTraits.PromiseIllReturnIt))
+                    {
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward = -10;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -15;
+                    }
                     else
                         xpReward = 15;
                     break;
@@ -1405,32 +1426,17 @@ namespace BunnyMod.Content
                     }
                     break;
                 case "StealPointsNegative":
-                    if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("LessArrestXPLoss") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
+                    xpReward = extraNum * 10;
+
+                    if (___agent.statusEffects.hasTrait(vTraits.TheLaw) && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait(vTraits.PromiseIllReturnIt))
                     {
-                        if (extraNum == 1)
-                            xpReward = -5;
-                        else if (extraNum == 2)
-                            xpReward = -10;
-                        else if (extraNum == 3)
-                            xpReward = -15;
+                        xpReward *= -1;
+
+                        if (___agent.statusEffects.hasTrait(vTraits.Crooked))
+                            xpReward /= 2;
+                        else if (___agent.statusEffects.hasTrait(vTraits.Crooked2))
+                            xpReward = 0;
                     }
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && ___agent.statusEffects.hasTrait("NoArrestXPLoss") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
-                        xpReward = 0;
-                    else if (___agent.statusEffects.hasTrait("TheLaw") && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait("NoStealPenalty"))
-                    {
-                        if (extraNum == 1)
-                            xpReward = -10;
-                        else if (extraNum == 2)
-                            xpReward = -20;
-                        else if (extraNum == 3)
-                            xpReward = -30;
-                    }
-                    else if (extraNum == 1)
-                        xpReward = 10;
-                    else if (extraNum == 2)
-                        xpReward = 20;
-                    else if (extraNum == 3)
-                        xpReward = 30;
                     break;
                 case "StoleLots":
                     xpReward = 200;
@@ -1468,23 +1474,23 @@ namespace BunnyMod.Content
 			{
 				if (xpReward > 0)
 				{
-					if (___agent.statusEffects.hasTrait("MoreSkillPoints"))
+					if (___agent.statusEffects.hasTrait(vTraits.Studious))
 						xpReward = (int)((float)xpReward * 1.3f);
 
-					if (___agent.statusEffects.hasTrait("MoreSkillPoints2"))
+					if (___agent.statusEffects.hasTrait(vTraits.Studious2))
 						xpReward = (int)((float)xpReward * 1.5f);
 				}
 
-				float num3 = 0.075f;
-				int num4 = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 16);
+				float floorXpAcceleration = 0.075f;
+				int cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 16);
 
 				if (GC.sessionDataBig.challenges.Contains("QuickGame"))
 				{
-					num3 *= 1.5f;
-					num4 = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 11);
+					floorXpAcceleration *= 1.5f;
+					cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 11);
 				}
 
-				xpReward = (int)((float)xpReward * (1f + (float)(num4 - 1) * num3));
+				xpReward = (int)((float)xpReward * (1f + (float)(cityFloor - 1) * floorXpAcceleration));
 				GC.sessionData.skillPoints[___agent.isPlayer] += xpReward;
 				Color32 myColor;
 
@@ -1517,7 +1523,7 @@ namespace BunnyMod.Content
 					
                     if (GC.unlocks.CanDoUnlocks())
 					{
-						if (___agent.statusEffects.hasTrait("MoreSkillPoints2"))
+						if (___agent.statusEffects.hasTrait(vTraits.Studious2))
 						{
 							GC.unlocks.AddNuggets(2);
 							GC.spawnerMain.SpawnStatusText(___agent, "ItemPickupSlower", "Nuggets", "Item", "Add2Nuggets", "");
@@ -1537,7 +1543,7 @@ namespace BunnyMod.Content
                     if (!___agent.finishedLevel)
 						GC.spawnerMain.SpawnStatusText(___agent, "LevelUp", "LevelUp", "Interface");
 					
-                    if (___agent.statusEffects.hasTrait("IncreaseStatEvery2Levels"))
+                    if (___agent.statusEffects.hasTrait(vTraits.PotentialtoNotSuck))
 					{
 						Agent agent = ___agent;
 
@@ -1661,7 +1667,7 @@ namespace BunnyMod.Content
 					else
 						___agent.fullHealthAfterResurrect = true;
 					
-                    if (___agent.localPlayer && !flag)
+                    if (___agent.localPlayer && !suppressAnimation)
 					{
 						if (GC.fourPlayerMode)
 							__instance.SpawnSkillPointsStatusText(pointsType, xpReward);
@@ -1677,7 +1683,7 @@ namespace BunnyMod.Content
 					else if (___agent.failingBigQuestLevel)
 						GC.quests.SpawnBigQuestFailedText2(___agent, true);
 				}
-				else if (___agent.localPlayer && !flag)
+				else if (___agent.localPlayer && !suppressAnimation)
 				{
 					if (GC.fourPlayerMode)
 					{

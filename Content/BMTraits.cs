@@ -86,7 +86,7 @@ namespace BunnyMod.Content
         {
             #region Consumables
             CustomTrait Carnivore = RogueLibs.CreateCustomTrait(cTrait.Carnivore, true,
-                new CustomNameInfo(cTrait.Carnivore),
+                new CustomNameInfo("Carnivore"),
                 new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
             Carnivore.Available = true;
             Carnivore.AvailableInCharacterCreation = true;
@@ -98,7 +98,7 @@ namespace BunnyMod.Content
             Carnivore.Upgrade = null;
 
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,
-                new CustomNameInfo(cTrait.DAREdevil),
+                new CustomNameInfo("DAREdevil"),
                 new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
             DAREdevil.Available = true;
             DAREdevil.AvailableInCharacterCreation = true;
@@ -122,7 +122,7 @@ namespace BunnyMod.Content
             FriendOfBill.Upgrade = null;
 
             CustomTrait Teetotaller = RogueLibs.CreateCustomTrait(cTrait.Teetotaller, true,
-                new CustomNameInfo(cTrait.Teetotaller),
+                new CustomNameInfo("Teetotaller"),
                 new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
             Teetotaller.Available = true;
             Teetotaller.AvailableInCharacterCreation = true;
@@ -134,7 +134,7 @@ namespace BunnyMod.Content
             Teetotaller.Upgrade = null;
 
             CustomTrait Vegetarian = RogueLibs.CreateCustomTrait(cTrait.Vegetarian, true,
-                new CustomNameInfo(cTrait.Vegetarian),
+                new CustomNameInfo("Vegetarian"),
                 new CustomNameInfo("You are one of those people."));
             Vegetarian.Available = true;
             Vegetarian.AvailableInCharacterCreation = true;
@@ -143,7 +143,7 @@ namespace BunnyMod.Content
             Vegetarian.Conflicting.AddRange(new string[] { vTrait.Jugularious, vTrait.StrictCannibal, cTrait.Carnivore, vTrait.Electronic, vTrait.FleshFeast, vTrait.OilLessEssential, vTrait.OilReliant, vTrait.Zombiism });
             Vegetarian.CostInCharacterCreation = -1;
             Vegetarian.IsActive = true;
-            Vegetarian.Available = false;
+            Vegetarian.Available = true;
             Vegetarian.Upgrade = null;
             #endregion
             #region Equipment
@@ -199,7 +199,7 @@ namespace BunnyMod.Content
             CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait(cTrait.Charmed_2, false,
                 new CustomNameInfo("Charmed & Dangerous +"),
                 new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
-            Charmed_2.Available = false;
+            Charmed_2.Available = true;
             Charmed_2.AvailableInCharacterCreation = false;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
@@ -476,7 +476,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant.Upgrade = null;
 
             CustomTrait Polarizing = RogueLibs.CreateCustomTrait(cTrait.Polarizing, true,
-                new CustomNameInfo(cTrait.Polarizing_2),
+                new CustomNameInfo("Polarizing"),
                 new CustomNameInfo("Everyone has an opinion on you, when they first meet you. Might be good or bad, but at least you feel noticed!"));
             Polarizing.Available = true;
             Polarizing.AvailableInCharacterCreation = true;
@@ -720,6 +720,8 @@ namespace BunnyMod.Content
 		#region Agent
         public static bool Agent_CanShakeDown(ref bool __result) // Prefix
 		{
+            BMLog("Agent_CanShakeDown");
+
             if (BMTraits.IsTraitActive(cTrait.Warlord))
 			{
                 __result = true;
@@ -1075,37 +1077,38 @@ namespace BunnyMod.Content
 		#region Relationships
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
-            if (__instance.GetRel(otherAgent) == "Neutral")
+            BMLog("Relationships_SetupRelationshipOriginal: ");
+            BMLog("\tAgent = " + ___agent.name);
+            BMLog("\totherAgent = " + otherAgent.name);
+            BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
+
+            if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
             {
                 int roll = Random.Range(0, 100);
-                string newRel = "";
+                string newRel = vRelationship.Neutral;
 
-                if (___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant))
-                {
-                    if (roll <= 20)
-                        newRel = "Annoyed";
-                }
-                else if (___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
-                    newRel = "Annoyed";
+                if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
+                    ___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
+                        newRel = vRelationship.Annoyed;
                 else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
 				{
                     if (roll <= 50)
-                        newRel = "Annoyed";
+                        newRel = vRelationship.Annoyed;
                     else
-                        newRel = "Friendly";
+                        newRel = vRelationship.Friendly;
 				}
                 else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
 				{
                     if (roll <= 25)
-                        newRel = "Hostile";
+                        newRel = vRelationship.Hateful;
                     else if (roll <= 50)
-                        newRel = "Annoyed";
+                        newRel = vRelationship.Annoyed;
                     else if (roll <= 67)
-                        newRel = "Friendly";
+                        newRel = vRelationship.Friendly;
                     else if (roll <= 88)
-                        newRel = "Loyal";
+                        newRel = vRelationship.Loyal;
                     else if (roll <= 100)
-                        newRel = "Aligned";
+                        newRel = vRelationship.Aligned;
 				}
 
                 roll = Random.Range(0, 100);
@@ -1113,16 +1116,19 @@ namespace BunnyMod.Content
                 if (___agent.statusEffects.hasTrait(cTrait.Domineering))
 				{
                     if (roll <= 10)
-                        newRel = "Submissive";
+                        newRel = vRelationship.Submissive;
 				}
                 else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
 				{
                     if (roll <= 20)
-                        newRel = "Submissive";
+                        newRel = vRelationship.Submissive;
 				}
 
-                if (newRel != "")
+                if (newRel != vRelationship.Neutral)
+				{
                     __instance.SetRelInitial(otherAgent, newRel);
+                    otherAgent.relationships.SetRelInitial(___agent, newRel);
+                }
             }
 		}
         #endregion

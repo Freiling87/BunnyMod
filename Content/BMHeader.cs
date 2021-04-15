@@ -113,10 +113,11 @@ namespace BunnyMod
 	{
         public const string
             ACityForAnts = "ACityForAnts",
+            ArcologyEcology = "ArcologyEcology",
             CityOfSteel = "CityOfSteel",
             Claustrophobia = "Claustrophobia",
             GhostTown = "GhostTown",
-            ArcologyEcology = "ArcologyEcology",
+            GreenLiving = "GreenLiving",
             HoodlumsWonderland = "HoodlumsWonderland",
             LetMeSeeThatThrong = "LetMeSeeThatThrong",
             Megalopolis = "Megalopolis",
@@ -1331,15 +1332,26 @@ namespace BunnyMod
             NotAccepted = "NotAccepted",
             Null = "";
 	}
+    public static class vRelationship // Vanilla Relationships
+	{
+        public const string
+            Aligned = "Aligned",
+            Annoyed = "Annoyed",
+            Friendly = "Friendly",
+            Hateful = "Hateful",
+            Loyal = "Loyal",
+            Neutral = "Neutral",
+            Submissive = "Submissive";
+    }
     public static class vSecurityType // Vanilla Security Types
 	{
         public const string
-        ID = "ID",
-        Laptop = "Laptop",
-        MayorTrigger = "MayorTrigger",
-        Normal = "Normal",
-        Null = "",
-        Weapons = "Weapons";
+            ID = "ID",
+            Laptop = "Laptop",
+            MayorTrigger = "MayorTrigger",
+            Normal = "Normal",
+            Null = "",
+            Weapons = "Weapons";
 	}
     public static class vSpecialAbility // Vanilla Special Abilities
     {

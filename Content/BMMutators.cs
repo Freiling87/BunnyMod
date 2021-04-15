@@ -34,35 +34,42 @@ namespace BunnyMod.Content
 				new CustomNameInfo("Construction: City Of Steel"),
 				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
 			CityOfSteel.Available = true;
-			CityOfSteel.Conflicting.AddRange(new string[] { cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+			CityOfSteel.Conflicting.AddRange(new string[] { cChallenge.GreenLiving, cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
 			CityOfSteel.IsActive = false;
+
+			CustomMutator GreenLiving = RogueLibs.CreateCustomMutator(cChallenge.GreenLiving, true,
+				new CustomNameInfo("Construction: Green Living"),
+				new CustomNameInfo("The Mayor has retrofitted most buildings to eco-friendly plant-based construction. Caterpillars crawl on your face while you sleep, but the air is mighty fresh!"));
+			GreenLiving.Available = true;
+			GreenLiving.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+			GreenLiving.IsActive = false;
 
 			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
 				new CustomNameInfo("Construction: Panoptikopolis"),
 				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
 			Panoptikopolis.Available = true;
-			Panoptikopolis.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+			Panoptikopolis.Conflicting.AddRange(new string[] { cChallenge.GreenLiving, cChallenge.CityOfSteel, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
 
 			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
 				new CustomNameInfo("Construction: Shanty Town"),
 				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
 			ShantyTown.Available = true;
-			ShantyTown.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.SpelunkyDory });
+			ShantyTown.Conflicting.AddRange(new string[] { cChallenge.GreenLiving, cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.SpelunkyDory });
 			ShantyTown.IsActive = false;
 
 			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
 				new CustomNameInfo("Construction: Spelunky Dory"),
 				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
 			SpelunkyDory.Available = true;
-			SpelunkyDory.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown });
+			SpelunkyDory.Conflicting.AddRange(new string[] { cChallenge.GreenLiving, cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown });
 			SpelunkyDory.IsActive = false;
 
 			#endregion
-			#region FloorTiles
+			#region Floors & Features
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
 				new CustomNameInfo("FloorTiles: Arcology Ecology"),
-				new CustomNameInfo("Grass! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
+				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(new string[] { cChallenge.SunkenCity, cChallenge.TransitExperiment });
 			ArcologyEcology.IsActive = false;
@@ -85,7 +92,7 @@ namespace BunnyMod.Content
 			#region Map Size
 
 			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
-				new CustomNameInfo("MapSize: A City for Ants"),
+				new CustomNameInfo("MapSize: A City for Ants?!"),
 				new CustomNameInfo("Yes, that is indeed what it is, figuratively speaking."));
 			ACityForAnts.Available = true;
 			ACityForAnts.Conflicting.AddRange(new string[] { cChallenge.Claustrophobia, cChallenge.Megalopolis, cChallenge.Ultrapolis });
@@ -198,7 +205,6 @@ namespace BunnyMod.Content
 			}
 		}
 		#endregion
-
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{

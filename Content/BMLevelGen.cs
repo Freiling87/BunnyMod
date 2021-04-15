@@ -33,6 +33,9 @@ namespace BunnyMod.Content
 			// BasicFloor
 			Prefix(typeof(BasicFloor), "Spawn", GetType(), "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 
+			// BasicSpawn
+			Prefix(typeof(BasicSpawn), "Spawn", GetType(), "BasicSpawn_Spawn", new Type[3] { typeof(SpawnerBasic), typeof(string), typeof(Chunk) });
+
 			// LoadLevel
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
@@ -40,6 +43,9 @@ namespace BunnyMod.Content
 
 			// RandomAgentWeapons
 			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "RandomAgentWeapons_fillAgentWeapons", new Type[0] { });
+
+			// RandomFloorsWalls
+			Postfix(typeof(RandomFloorsWalls), "fillFloorsWalls", GetType(), "RandomFloorsWalls_fillFloorsWalls", new Type[0] { });
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
@@ -62,6 +68,12 @@ namespace BunnyMod.Content
 				
 			return vanilla;
 		}
+		public static bool IsFloorModActive() =>
+				GC.challenges.Contains(cChallenge.CityOfSteel) ||
+				GC.challenges.Contains(cChallenge.GreenLiving) ||
+				GC.challenges.Contains(cChallenge.Panoptikopolis) ||
+				GC.challenges.Contains(cChallenge.ShantyTown) ||
+				GC.challenges.Contains(cChallenge.SpelunkyDory);
 		public static int ForceQuestCount(int vanilla)
 		{
 			if (GC.challenges.Contains(cChallenge.ZeroQuests))
@@ -72,6 +84,56 @@ namespace BunnyMod.Content
 				vanilla = 4;
 
 			return vanilla;
+		}
+		private static List<string> wallAndFloorMutators = new List<string>()
+			{
+				cChallenge.CityOfSteel,
+				cChallenge.GreenLiving,
+				cChallenge.Panoptikopolis,
+				cChallenge.ShantyTown,
+				cChallenge.SpelunkyDory
+			};
+		private static List<string> floorMutators = new List<string>()
+			{
+				cChallenge.ArcologyEcology,
+				cChallenge.SunkenCity,
+				cChallenge.TransitExperiment
+			};
+		public static string GetFloorMutator()
+		{
+			foreach (string mutator in floorMutators)
+				if (GC.challenges.Contains(mutator))
+					return mutator;
+
+			foreach (string mutator in wallAndFloorMutators)
+				if (GC.challenges.Contains(mutator))
+					return mutator;
+
+			return "";
+		}
+		public static string GetFloorTypeFromMutator()
+		{
+			switch (GetFloorMutator())
+			{
+				case cChallenge.CityOfSteel:
+					return vFloor.MetalFloor;
+				case cChallenge.GreenLiving:
+					return vFloor.Grass;
+				case cChallenge.Panoptikopolis:
+					return vFloor.PrisonFloor;
+				case cChallenge.ShantyTown:
+					return vFloor.DirtFloor;
+				case cChallenge.SpelunkyDory:
+					return vFloor.DirtFloor;
+				case cChallenge.ArcologyEcology:
+					return vFloor.Grass;
+				case cChallenge.SunkenCity:
+					return vFloor.Pool;
+				case cChallenge.TransitExperiment:
+					return vFloor.IceRink;
+				default:
+					return "";
+			}
 		}
 		public static int SetRoamerCount(int vanilla)
 		{
@@ -174,6 +236,40 @@ namespace BunnyMod.Content
 			}
 
 			BMLog("\t\t\t" + floorName);
+
+			return true;
+		}
+		#endregion
+		#region BasicSpawn
+		public static bool BasicSpawn_Spawn(SpawnerBasic spawnerBasic, string spawnerName, Chunk startingChunkReal, BasicSpawn __instance) // Prefix
+		{
+			BMLog("floorName: " + spawnerName);
+
+			if (spawnerBasic.spawnerType == "Floor")
+			{
+				if (spawnerName == vFloor.Normal)
+				{
+					// Walls and Floors
+					if (GC.challenges.Contains(cChallenge.CityOfSteel))
+						spawnerName = vFloor.MetalFloor;
+					else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+						spawnerName = vFloor.PrisonFloor;
+					else if (GC.challenges.Contains(cChallenge.ShantyTown))
+						spawnerName = vFloor.DirtFloor;
+					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+						spawnerName = vFloor.CaveFloor;
+
+					// Floors only
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+						spawnerName = vFloor.Grass;
+					else if (GC.challenges.Contains(cChallenge.SunkenCity))
+						spawnerName = vFloor.Pool;
+					else if (GC.challenges.Contains(cChallenge.TransitExperiment))
+						spawnerName = vFloor.IceRink;
+				}
+			}
+
+			BMLog("\t\t\t" + spawnerName);
 
 			return true;
 		}
@@ -1148,6 +1244,87 @@ namespace BunnyMod.Content
 			}
 
 			return false;
+		}
+		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors2, ref IEnumerator __result) // Replacement
+		{
+			__result = LoadLevel_FillFloors_Prefix_Replacement(__instance, ___tilemapFloors2);
+
+			return false;
+		}
+		public static IEnumerator LoadLevel_FillFloors_Prefix_Replacement (LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Non-Patch
+		{
+			float maxChunkTime = 0.02f;
+			float realtimeSinceStartup = Time.realtimeSinceStartup;
+			int triesCount = 0;
+			int num;
+
+			for (int i2 = 0; i2 < __instance.levelSizeAxis; i2 = num + 1)
+			{
+				for (int j2 = 0; j2 < __instance.levelSizeAxis; j2 = num + 1)
+				{
+					num = triesCount;
+					triesCount = num + 1;
+					int num2 = i2 * 16;
+					int num3 = i2 * 16 + 16;
+					int num4 = 160 - j2 * 16;
+					int num5 = 160 - j2 * 16 - 16;
+
+					for (int k = num2; k < num3; k++)
+					{
+						for (int l = num4; l > num5; l--)
+						{
+							__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+							int tile = 0;
+
+							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
+							{
+								string floorMod = "FloorTilesMain";
+
+								switch (GC.levelTheme)
+								{
+									case 0:
+										floorMod = "FloorTilesMain";
+										break;
+									case 1:
+										floorMod = "FloorTilesIndustrial";
+										break;
+									case 2:
+										floorMod = "FloorTilesOutdoor";
+										break;
+									case 3:
+										floorMod = "FloorTilesDowntown";
+										break;
+									case 4:
+										floorMod = "FloorTilesWealthy";
+										break;
+									case 5:
+										floorMod = "FloorTilesMayor";
+										break;
+								}
+
+								if (IsFloorModActive())
+									floorMod = GetFloorTypeFromMutator();
+
+								tile = int.Parse(GC.rnd.RandomSelect(floorMod, "RandomFloorsWalls"));
+							}
+							else
+								tile = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
+							
+							___tilemapFloors2.SetTile(k, l - 1, 0, tile);
+						}
+					}
+					if (Time.realtimeSinceStartup - realtimeSinceStartup > maxChunkTime)
+					{
+						yield return null;
+						realtimeSinceStartup = Time.realtimeSinceStartup;
+					}
+					Random.InitState(__instance.randomSeedNum + triesCount);
+					num = j2;
+				}
+				num = i2;
+			}
+			__instance.allChunksFilled = true;
+			yield break;
 		}
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Replacement
 		{
@@ -4809,38 +4986,41 @@ namespace BunnyMod.Content
 					GC.rnd.randomListTableStatic["ResistanceLeaderWeapon" + tier].elementList.Add(tuple.Key);
 		}
 		#endregion
+		#region RandomFloorsWalls
+		public static void RandomFloorsWalls_fillFloorsWalls(RandomFloorsWalls __instance) // Postfix
+		{
+			if (IsFloorModActive())
+			{
+
+			}
+		}
+		#endregion
 		#region RandomWalls
 		public static bool RandomWalls_fillWalls() // Replacement
 		{
-			string wallType;
+			string wallType = GetFloorTypeFromMutator();
 
-			if (GC.challenges.Contains(cChallenge.CityOfSteel))
-				wallType = vWall.Steel;
-			else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
-				wallType = vWall.Glass;
-			else if (GC.challenges.Contains(cChallenge.ShantyTown))
-				wallType = vWall.Wood;
-			else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-				wallType = vWall.Cave;
-			else
-				return true;
+			if (wallType != "");
+			{
+				RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
+				RandomList rList;
 
-			RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
-			RandomList rList;
+				rList = component.CreateRandomList("WallsNormal", "Walls", "Wall");
+				component.CreateRandomElement(rList, wallType, 3);
 
-			rList = component.CreateRandomList("WallsNormal", "Walls", "Wall");
-			component.CreateRandomElement(rList, wallType, 3);
+				rList = component.CreateRandomList("WallsWeak", "Walls", "Wall");
+				component.CreateRandomElement(rList, wallType, 3);
 
-			rList = component.CreateRandomList("WallsWeak", "Walls", "Wall");
-			component.CreateRandomElement(rList, wallType, 3);
+				rList = component.CreateRandomList("WallsStrong", "Walls", "Wall");
+				component.CreateRandomElement(rList, wallType, 3);
 
-			rList = component.CreateRandomList("WallsStrong", "Walls", "Wall");
-			component.CreateRandomElement(rList, wallType, 3);
+				rList = component.CreateRandomList("WallsHideout", "Walls", "Wall");
+				component.CreateRandomElement(rList, wallType, 3);
 
-			rList = component.CreateRandomList("WallsHideout", "Walls", "Wall");
-			component.CreateRandomElement(rList, wallType, 3);
+				return false;
+			}
 
-			return false;
+			return true;
 		}
 		#endregion
 		#region SpawnerFloor
@@ -4848,31 +5028,14 @@ namespace BunnyMod.Content
 		{
 			BMLog("floorName: " + floorName);
 
-			if (floorName == vFloor.Normal)
-			{
-				// Walls and Floors
-				if (GC.challenges.Contains(cChallenge.CityOfSteel))
-					floorName = vFloor.MetalFloor;
-				else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
-					floorName = vFloor.PrisonFloor;
-				else if (GC.challenges.Contains(cChallenge.ShantyTown))
-					floorName = vFloor.DirtFloor;
-				else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-					floorName = vFloor.CaveFloor;
-
-				// Floors only
-				if (GC.challenges.Contains(cChallenge.ArcologyEcology))
-					floorName = vFloor.Grass;
-				else if (GC.challenges.Contains(cChallenge.SunkenCity))
-					floorName = vFloor.Pool;
-				else if (GC.challenges.Contains(cChallenge.TransitExperiment))
-					floorName = vFloor.IceRink;
-			}
+			if (floorName == vFloor.Normal && GetFloorTypeFromMutator() != null)
+				floorName = GetFloorTypeFromMutator();
 
 			BMLog("\t\t\t" + floorName);
 
 			return true;
 		}
 		#endregion
+
 	}
 }

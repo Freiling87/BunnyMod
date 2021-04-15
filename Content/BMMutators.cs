@@ -86,6 +86,44 @@ namespace BunnyMod.Content
 			ScaryGuns.IsActive = false;
 
 			#endregion
+			#region Roamers
+
+			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cMutators.GhostTown, true,
+				new CustomNameInfo("Ghost Town"),
+				new CustomNameInfo(""));
+			GhostTown.Available = true;
+			GhostTown.Conflicting.AddRange(new string[] { cMutators.LetMeSeeThatThrong, cMutators.SwarmWelcome });
+			GhostTown.IsActive = false;
+
+			CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cMutators.HoodlumsWonderland, true,
+				new CustomNameInfo("Hoodlum's Wonderland"),
+				new CustomNameInfo(""));
+			HoodlumsWonderland.Available = true;
+			HoodlumsWonderland.Conflicting.AddRange(new string[] { });
+			HoodlumsWonderland.IsActive = false;
+
+			CustomMutator LetMeSeeThatThrong = RogueLibs.CreateCustomMutator(cMutators.LetMeSeeThatThrong, true,
+				new CustomNameInfo("Let Me See That Throng"),
+				new CustomNameInfo(""));
+			LetMeSeeThatThrong.Available = true;
+			LetMeSeeThatThrong.Conflicting.AddRange(new string[] { cMutators.GhostTown, cMutators.SwarmWelcome });
+			LetMeSeeThatThrong.IsActive = false;
+
+			CustomMutator MobTown = RogueLibs.CreateCustomMutator(cMutators.MobTown, true,
+				new CustomNameInfo("Mob Town"),
+				new CustomNameInfo(""));
+			MobTown.Available = true;
+			MobTown.Conflicting.AddRange(new string[] { });
+			MobTown.IsActive = false;
+
+			CustomMutator SwarmWelcome = RogueLibs.CreateCustomMutator(cMutators.SwarmWelcome, true,
+				new CustomNameInfo("Swarm Welcome"),
+				new CustomNameInfo(""));
+			SwarmWelcome.Available = true;
+			SwarmWelcome.Conflicting.AddRange(new string[] { cMutators.GhostTown, cMutators.LetMeSeeThatThrong });
+			SwarmWelcome.IsActive = false;
+
+			#endregion
 			#region Quests
 
 			CustomMutator SingleMinded = RogueLibs.CreateCustomMutator(cMutators.SingleMinded, true,

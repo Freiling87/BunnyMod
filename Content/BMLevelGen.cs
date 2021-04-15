@@ -46,26 +46,52 @@ namespace BunnyMod.Content
 		public static int LevelSizeMod(int vanilla)
 		{
 			if (GC.challenges.Contains(cMutators.ACityForAnts))
-				return 4;
+				vanilla = 4;
 			else if (GC.challenges.Contains(cMutators.Claustrophobia))
-				return 12;
+				vanilla = 12;
 			else if (GC.challenges.Contains(cMutators.Megalopolis))
-				return 48;
+				vanilla = 48;
 			else if (GC.challenges.Contains(cMutators.Ultrapolis))
-				return 64;
-			else
-				return vanilla;
+				vanilla = 64;
+				
+			return vanilla;
 		}
 		public static int ForceQuestCount(int vanilla)
 		{
 			if (GC.challenges.Contains(cMutators.ZeroQuests))
-				return 0;
+				vanilla = 0;
 			else if (GC.challenges.Contains(cMutators.SingleMinded))
-				return 1;
+				vanilla = 1;
 			else if (GC.challenges.Contains(cMutators.Workhorse))
-				return 8;
-			else
-				return vanilla;
+				vanilla = 4;
+
+			return vanilla;
+		}
+		public static int SetRoamerCount(int vanilla)
+		{
+			if (GC.challenges.Contains(cMutators.GhostTown))
+				vanilla *= 0;
+			if (GC.challenges.Contains(cMutators.LetMeSeeThatThrong))
+				vanilla *= 4;
+			else if (GC.challenges.Contains(cMutators.SwarmWelcome))
+				vanilla *= 8;
+
+			return vanilla;
+		}
+		public static int SetGangCount(int vanilla)
+		{
+			BMLog("SetGangCount");
+
+			if (GC.challenges.Contains(cMutators.HoodlumsWonderland))
+				vanilla = 12;
+
+			return vanilla;
+		}
+		public static int SetMafiaCount(int vanilla)
+		{
+
+
+			return vanilla;
 		}
 		#endregion
 
@@ -1384,24 +1410,24 @@ namespace BunnyMod.Content
 					}
 
 					int earlyCops = 0;
-					bool flag = false;
+					bool hasPowerBoxes = false;
 					bool hasExtraPowerBoxes = false;
 
 					if ((GC.sessionDataBig.curLevel >= 2 || GC.levelTheme != 0) && GC.levelTheme != 2)
-						flag = true;
+						hasPowerBoxes = true;
 
 					if (GC.levelTheme == 3 && GC.debugMode)
-						flag = true;
+						hasPowerBoxes = true;
 
 					if (GC.customLevel)
-						flag = __instance.customLevel.levelFeatures.Contains("PowerBox");
+						hasPowerBoxes = __instance.customLevel.levelFeatures.Contains("PowerBox");
 
 					if (GC.quests.CanHaveBigQuest(null))
 					{
 						for (int num13 = 0; num13 < 5; num13++)
 							if (GC.sessionData.bigQuest[num13] == "RobotPlayer")
 							{
-								flag = true;
+								hasPowerBoxes = true;
 								hasExtraPowerBoxes = true;
 							}
 
@@ -1409,12 +1435,12 @@ namespace BunnyMod.Content
 							for (int num14 = 0; num14 < GC.playerAgentList.Count; num14++)
 								if (GC.playerAgentList[num14].bigQuest == "RobotPlayer")
 								{
-									flag = true;
+									hasPowerBoxes = true;
 									hasExtraPowerBoxes = true;
 								}
 					}
 
-					if (flag)
+					if (hasPowerBoxes)
 					{
 						Debug.Log("Loading Power Boxes");
 						int bigTries = GC.Choose<int>(0, 1, new int[0]);
@@ -1467,15 +1493,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag2 = false;
+					bool hasSlimeBarrels = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag2 = true;
+						hasSlimeBarrels = true;
 
 					if (GC.customLevel)
-						flag2 = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
+						hasSlimeBarrels = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
 
-					if (flag2)
+					if (hasSlimeBarrels)
 					{
 						Debug.Log("Loading Slime Barrels");
 						int bigTries = Random.Range(2, 6);
@@ -1517,15 +1543,15 @@ namespace BunnyMod.Content
 						myLake = null;
 					}
 
-					bool flag3 = false;
+					bool hasOilSpills = false;
 
 					if (GC.levelTheme == 1 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag3 = true;
+						hasOilSpills = true;
 
 					if (GC.customLevel)
-						flag3 = __instance.customLevel.levelFeatures.Contains("OilSpill");
+						hasOilSpills = __instance.customLevel.levelFeatures.Contains("OilSpill");
 
-					if (flag3 && GC.serverPlayer)
+					if (hasOilSpills && GC.serverPlayer)
 					{
 						Debug.Log("Loading Oil Spills");
 						int bigTries = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -1548,12 +1574,12 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag4 = true;
+					bool hasVendingMachines = true;
 
 					if (GC.customLevel)
-						flag4 = __instance.customLevel.levelFeatures.Contains("VendingMachine");
+						hasVendingMachines = __instance.customLevel.levelFeatures.Contains("VendingMachine");
 
-					if (flag4)
+					if (hasVendingMachines)
 					{
 						Debug.Log("Loading Vending Machines");
 						Random.InitState(GC.loadLevel.randomSeedNum + GC.sessionDataBig.curLevelEndless + 12);
@@ -1791,12 +1817,12 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag7 = true;
+					bool hasTrashCans = true;
 
 					if (GC.customLevel)
-						flag7 = __instance.customLevel.levelFeatures.Contains("TrashCan");
+						hasTrashCans = __instance.customLevel.levelFeatures.Contains("TrashCan");
 
-					if (flag7)
+					if (hasTrashCans)
 					{
 						Debug.Log("Loading Trash Cans");
 						int bigTries = (int)((float)Random.Range(6, 12) * __instance.levelSizeModifier);
@@ -1966,18 +1992,18 @@ namespace BunnyMod.Content
 						spawnedInChunks = null;
 					}
 
-					bool flag10 = false;
+					bool hasVendorCarts = false;
 
 					if (GC.levelTheme == 2)
-						flag10 = true;
+						hasVendorCarts = true;
 
 					if (GC.levelFeeling == "HarmAtIntervals" || GC.levelFeeling == "Lockdown" || GC.levelFeeling == "WarZone")
-						flag10 = false;
+						hasVendorCarts = false;
 
 					if (GC.customLevel)
-						flag10 = __instance.customLevel.levelFeatures.Contains("VendorCart");
+						hasVendorCarts = __instance.customLevel.levelFeatures.Contains("VendorCart");
 
-					if (flag10)
+					if (hasVendorCarts)
 					{
 						Debug.Log("Loading Vendor Carts");
 						int bigTries = 2;
@@ -2166,15 +2192,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag11 = false;
+					bool hasAlarmButtons = false;
 
 					if (GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
-						flag11 = true;
+						hasAlarmButtons = true;
 
 					if (GC.customLevel)
-						flag11 = __instance.customLevel.levelFeatures.Contains("AlarmButton");
+						hasAlarmButtons = __instance.customLevel.levelFeatures.Contains("AlarmButton");
 
-					if (flag11)
+					if (hasAlarmButtons)
 					{
 						Debug.Log("Loading Alarm Buttons");
 						int bigTries = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -2277,15 +2303,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag12 = false;
+					bool hasManholes = false;
 
 					if ((GC.levelTheme == 3 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && !hasManholesWarZone)
-						flag12 = true;
+						hasManholes = true;
 
 					if (GC.customLevel)
-						flag12 = __instance.customLevel.levelFeatures.Contains("Manhole");
+						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
-					if (flag12)
+					if (hasManholes)
 					{
 						Debug.Log("Loading Manholes");
 						int bigTries = (int)((float)Random.Range(8, 12) * __instance.levelSizeModifier);
@@ -2394,15 +2420,15 @@ namespace BunnyMod.Content
 						manholeList = null;
 					}
 
-					bool flag14 = false;
+					bool hasFireHydrants = false;
 
 					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag14 = true;
+						hasFireHydrants = true;
 
 					if (GC.customLevel)
-						flag14 = __instance.customLevel.levelFeatures.Contains("FireHydrant");
+						hasFireHydrants = __instance.customLevel.levelFeatures.Contains("FireHydrant");
 
-					if (flag14)
+					if (hasFireHydrants)
 					{
 						Debug.Log("Loading Fire Hydrants");
 						int numObjects = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -2449,15 +2475,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag15 = false;
+					bool hasExplodingSlimeBarrels = false;
 
 					if (GC.levelTheme == 1)
-						flag15 = true;
+						hasExplodingSlimeBarrels = true;
 
 					if (GC.customLevel)
-						flag15 = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
+						hasExplodingSlimeBarrels = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
 
-					if (flag15 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+					if (hasExplodingSlimeBarrels || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 					{
 						Debug.Log("Loading Exploding and Slime Barrels");
 						int numObjects = (int)((float)Random.Range(11, 16) * __instance.levelSizeModifier);
@@ -2491,15 +2517,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag16 = false;
+					bool hasFlamingBarrels = false;
 
 					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag16 = true;
+						hasFlamingBarrels = true;
 
 					if (GC.customLevel)
-						flag16 = __instance.customLevel.levelFeatures.Contains("FlamingBarrel");
+						hasFlamingBarrels = __instance.customLevel.levelFeatures.Contains("FlamingBarrel");
 
-					if (flag16)
+					if (hasFlamingBarrels)
 					{
 						Debug.Log("Loading Flaming Barrels");
 						int numObjects = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -2605,15 +2631,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag18 = false;
+					bool hasBarbecues = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag18 = true;
+						hasBarbecues = true;
 
 					if (GC.customLevel)
-						flag18 = __instance.customLevel.levelFeatures.Contains("Barbecue");
+						hasBarbecues = __instance.customLevel.levelFeatures.Contains("Barbecue");
 
-					if (flag18)
+					if (hasBarbecues)
 					{
 						Debug.Log("Loading Barbecues");
 						int numObjects = (int)((float)Random.Range(3, 5) * __instance.levelSizeModifier);
@@ -2690,15 +2716,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag19 = false;
+					bool hasTrees = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag19 = true;
+						hasTrees = true;
 
 					if (GC.customLevel)
-						flag19 = __instance.customLevel.levelFeatures.Contains("Tree");
+						hasTrees = __instance.customLevel.levelFeatures.Contains("Tree");
 
-					if (flag19)
+					if (hasTrees)
 					{
 						Debug.Log("Loading Trees");
 						int numObjects = (int)((float)Random.Range(30, 40) * __instance.levelSizeModifier);
@@ -2740,15 +2766,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag20 = false;
+					bool hasBoulders = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag20 = true;
+						hasBoulders = true;
 
 					if (GC.customLevel)
-						flag20 = __instance.customLevel.levelFeatures.Contains("Boulder");
+						hasBoulders = __instance.customLevel.levelFeatures.Contains("Boulder");
 
-					if (flag20)
+					if (hasBoulders)
 					{
 						Debug.Log("Loading Boulders");
 						int numObjects = (int)((float)Random.Range(10, 20) * __instance.levelSizeModifier);
@@ -2817,15 +2843,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag21 = false;
+					bool hasBushes = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag21 = true;
+						hasBushes = true;
 
 					if (GC.customLevel)
-						flag21 = __instance.customLevel.levelFeatures.Contains("Bush");
+						hasBushes = __instance.customLevel.levelFeatures.Contains("Bush");
 
-					if (flag21)
+					if (hasBushes)
 					{
 						Debug.Log("Loading Bushes");
 						Random.InitState(__instance.randomSeedNum);
@@ -2933,15 +2959,15 @@ namespace BunnyMod.Content
 						bushList = null;
 					}
 
-					bool flag23 = false;
+					bool hasMines = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag23 = true;
+						hasMines = true;
 
 					if (GC.customLevel)
-						flag23 = __instance.customLevel.levelFeatures.Contains("Mine");
+						hasMines = __instance.customLevel.levelFeatures.Contains("Mine");
 
-					if (flag23)
+					if (hasMines)
 					{
 						Debug.Log("Loading Mines");
 
@@ -3061,15 +3087,15 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag24 = false;
+					bool hasBearTraps = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-						flag24 = true;
+						hasBearTraps = true;
 
 					if (GC.customLevel)
-						flag24 = __instance.customLevel.levelFeatures.Contains("BearTrap");
+						hasBearTraps = __instance.customLevel.levelFeatures.Contains("BearTrap");
 
-					if (flag24)
+					if (hasBearTraps)
 					{
 						Debug.Log("Loading Bear Traps");
 						int bigTries = (int)((float)Random.Range(10, 20) * __instance.levelSizeModifier);
@@ -3117,12 +3143,12 @@ namespace BunnyMod.Content
 						}
 					}
 
-					bool flag25 = true;
+					bool hasLamps = true;
 
 					if (GC.customLevel)
-						flag25 = __instance.customLevel.levelFeatures.Contains("Lamp");
+						hasLamps = __instance.customLevel.levelFeatures.Contains("Lamp");
 
-					if (flag25)
+					if (hasLamps)
 					{
 						Debug.Log("Loading Lamps");
 						int bigTries = (int)((float)Random.Range(18, 22) * __instance.levelSizeModifier);
@@ -3234,15 +3260,15 @@ namespace BunnyMod.Content
 					}
 
 					__instance.LevelContainsMayor();
-					bool flag26 = false;
+					bool hasMayor = false;
 
 					if (__instance.LevelContainsMayor())
-						flag26 = true;
+						hasMayor = true;
 
 					if (GC.customLevel)
-						flag26 = __instance.customLevel.levelFeatures.Contains("Mayor");
+						hasMayor = __instance.customLevel.levelFeatures.Contains("Mayor");
 
-					if (flag26)
+					if (hasMayor)
 					{
 						Debug.Log("Loading Mayor");
 						bool findingFactoryLake = false;
@@ -3647,6 +3673,7 @@ namespace BunnyMod.Content
 						{
 							Debug.Log("Loading Slum Dwellers");
 							int bigTries = (int)((float)Random.Range(16, 20) * __instance.levelSizeModifier);
+							bigTries = SetRoamerCount(bigTries);
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
@@ -3958,18 +3985,18 @@ namespace BunnyMod.Content
 							}
 						}
 
-						bool flag30 = false;
+						bool hasCops = false;
 
 						if ((GC.sessionDataBig.curLevel >= 2 || GC.levelTheme != 0) && GC.levelTheme != 2 && !GC.challenges.Contains("NoCops"))
-							flag30 = true;
+							hasCops = true;
 
 						if ((GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5) && !GC.challenges.Contains("NoCops") && GC.debugMode)
-							flag30 = true;
+							hasCops = true;
 
 						if (GC.customLevel)
-							flag30 = __instance.customLevel.levelFeatures.Contains("Cop");
+							hasCops = __instance.customLevel.levelFeatures.Contains("Cop");
 
-						if (flag30)
+						if (hasCops)
 						{
 							Debug.Log("Loading Cops");
 							int bigTries = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -4017,15 +4044,15 @@ namespace BunnyMod.Content
 							}
 						}
 
-						bool flag31 = false;
+						bool extraCops = false;
 
 						if (GC.sessionData.nextLevelExtraCops)
 						{
-							flag31 = true;
+							extraCops = true;
 							GC.sessionData.nextLevelExtraCops = false;
 						}
 
-						if (flag31)
+						if (extraCops)
 						{
 							Debug.Log("Loading Extra Cops");
 							int bigTries = (int)((float)Random.Range(6, 10) * __instance.levelSizeModifier);
@@ -4081,15 +4108,15 @@ namespace BunnyMod.Content
 								__instance.SpawnCopNearLocation(objectReal11.tr.position, 0.64f, 2.56f);
 						}
 
-						bool flag32 = false;
+						bool hasCopBots = false;
 
 						if (GC.levelTheme == 4 && !GC.challenges.Contains("NoCops"))
-							flag32 = true;
+							hasCopBots = true;
 
 						if (GC.customLevel)
-							flag32 = __instance.customLevel.levelFeatures.Contains("CopBot");
+							hasCopBots = __instance.customLevel.levelFeatures.Contains("CopBot");
 
-						if (flag32)
+						if (hasCopBots)
 						{
 							Debug.Log("Loading CopBots");
 							int bigTries = (int)((float)Random.Range(4, 6) * __instance.levelSizeModifier);
@@ -4145,15 +4172,15 @@ namespace BunnyMod.Content
 							lakeType = null;
 						}
 
-						bool flag33 = false;
+						bool hasZombies = false;
 
 						if (GC.challenges.Contains("ZombieMutator"))
-							flag33 = true;
+							hasZombies = true;
 
 						if (GC.customLevel)
-							flag33 = __instance.customLevel.levelFeatures.Contains("Zombie");
+							hasZombies = __instance.customLevel.levelFeatures.Contains("Zombie");
 
-						if (flag33)
+						if (hasZombies)
 						{
 							Debug.Log("Loading Zombies");
 							int bigTries = (int)((float)Random.Range(25, 36) * __instance.levelSizeModifier);
@@ -4192,12 +4219,12 @@ namespace BunnyMod.Content
 							}
 						}
 
-						bool flag34 = false;
+						bool hasGangbangers = false;
 						bool removeAgentsInBuilding = false;
 						bool findingFactoryLake = false;
 
 						if ((GC.sessionDataBig.curLevel >= 2 && (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || GC.levelTheme == 3)) || (GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-							flag34 = true;
+							hasGangbangers = true;
 
 						if (GC.levelTheme == 2 || GC.levelTheme == 4)
 						{
@@ -4210,17 +4237,21 @@ namespace BunnyMod.Content
 							}
 
 							if (removeAgentsInBuilding || findingFactoryLake)
-								flag34 = true;
+								hasGangbangers = true;
 						}
 
 						if (GC.customLevel)
-							flag34 = __instance.customLevel.levelFeatures.Contains("Gangbanger");
+							hasGangbangers = __instance.customLevel.levelFeatures.Contains("Gangbanger");
 
-						if (flag34 && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" && GC.levelFeeling != "Riot")
+						if (GC.challenges.Contains(cMutators.HoodlumsWonderland))
+							hasGangbangers = true;
+
+						if (hasGangbangers && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" && GC.levelFeeling != "Riot")
 						{
 							Debug.Log("Loading Roving Gangs");
 
 							int bigTries = GC.Choose<int>(0, 0, 0, 0, 1, 1, 2);
+							bigTries = (int)(SetGangCount(bigTries) * (float)__instance.levelSizeMax / 30f);
 
 							bool placedGangbangers = false;
 							bool placedGangbangersB = false;
@@ -4312,18 +4343,22 @@ namespace BunnyMod.Content
 							}
 						}
 
-						bool flag35 = false;
+						bool hasMafia = false;
 
 						if (GC.levelTheme == 3 || (GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
-							flag35 = true;
+							hasMafia = true;
 
 						if (GC.customLevel)
-							flag35 = __instance.customLevel.levelFeatures.Contains("Mafia");
+							hasMafia = __instance.customLevel.levelFeatures.Contains("Mafia");
 
-						if (flag35 && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
+						if (GC.challenges.Contains(cMutators.MobTown))
+							hasMafia = true;
+
+						if (hasMafia && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
 						{
 							Debug.Log("Loading Mafia");
 							int bigTries = Random.Range(3, 5);
+							bigTries = SetMafiaCount(bigTries);
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)

@@ -112,13 +112,18 @@ namespace BunnyMod
     public static class cMutators // Custom Mutators
 	{
         public const string
+            ACityForAnts = "ACityForAnts",
             CityOfSteel = "CityOfSteel",
             Claustrophobia = "Claustrophobia",
+            GhostTown = "GhostTown",
+            HoodlumsWonderland = "HoodlumsWonderland",
+            LetMeSeeThatThrong = "LetMeSeeThatThrong",
             Megalopolis = "Megalopolis",
+            MobTown = "MobTown",
             ScaryGuns = "ScaryGuns",
             ShantyTown = "ShantyTown",
             SingleMinded = "SingleMinded",
-            ACityForAnts = "ACityForAnts",
+            SwarmWelcome = "SwarmWelcome",
             Ultrapolis = "Ultrapolis",
             Workhorse = "Workhorse",
             ZeroQuests = "ZeroQuests";

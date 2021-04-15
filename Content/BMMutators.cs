@@ -61,21 +61,21 @@ namespace BunnyMod.Content
 			#region FloorTiles
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("FloorTiles: Green City"),
+				new CustomNameInfo("FloorTiles: Arcology Ecology"),
 				new CustomNameInfo("Grass! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(new string[] { cChallenge.SunkenCity, cChallenge.TransitExperiment });
 			ArcologyEcology.IsActive = false;
 
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
-				new CustomNameInfo("FloorTiles:Sunken City"),
+				new CustomNameInfo("FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
 			SunkenCity.Available = true;
 			SunkenCity.Conflicting.AddRange(new string[] { cChallenge.ArcologyEcology, cChallenge.TransitExperiment });
 			SunkenCity.IsActive = false;
 
 			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
-				new CustomNameInfo("Transit Experiment"),
+				new CustomNameInfo("FloorTiles: Transit Experiment"),
 				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
 			TransitExperiment.Available = true;
 			TransitExperiment.Conflicting.AddRange(new string[] { cChallenge.ArcologyEcology, cChallenge.SunkenCity });

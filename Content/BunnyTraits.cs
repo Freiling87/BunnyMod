@@ -324,7 +324,7 @@ namespace BunnyMod
             Vegetarian.CanSwap = true;
             Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Electronic", "FleshFeast", "OilRestoresHealth", "Zombify" });
             Vegetarian.CostInCharacterCreation = -1;
-            Vegetarian.IsActive = false;
+            Vegetarian.IsActive = true;
             Vegetarian.Available = false;
             Vegetarian.Upgrade = null;
             #endregion
@@ -350,7 +350,7 @@ namespace BunnyMod
             DrawNoBlood.CanSwap = false;
             DrawNoBlood.Conflicting.AddRange(new string[] { "AttacksOneDamage", "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
             DrawNoBlood.CostInCharacterCreation = -5;
-            DrawNoBlood.IsActive = false;
+            DrawNoBlood.IsActive = true;
             DrawNoBlood.Upgrade = null;
 
             CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
@@ -397,7 +397,7 @@ namespace BunnyMod
             Cursed.CanSwap = false;
             Cursed.Conflicting.AddRange(new string[] { "Cursed_2", "Charmed", "Charmed_2" });
             Cursed.CostInCharacterCreation = -2;
-            Cursed.IsActive = false;
+            Cursed.IsActive = true;
             Cursed.Upgrade = null;
 
             CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
@@ -409,7 +409,7 @@ namespace BunnyMod
             Cursed_2.CanSwap = false;
             Cursed_2.Conflicting.AddRange(new string[] { "Cursed", "Charmed", "Charmed_2" });
             Cursed_2.CostInCharacterCreation = -4;
-            Cursed_2.IsActive = false;
+            Cursed_2.IsActive = true;
             Cursed_2.Upgrade = null;
             #endregion
             #region Magic - General

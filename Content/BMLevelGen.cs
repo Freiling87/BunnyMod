@@ -45,35 +45,35 @@ namespace BunnyMod.Content
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
 		{
-			if (GC.challenges.Contains(cMutators.ACityForAnts))
+			if (GC.challenges.Contains(cChallenge.ACityForAnts))
 				vanilla = 4;
-			else if (GC.challenges.Contains(cMutators.Claustrophobia))
+			else if (GC.challenges.Contains(cChallenge.Claustrophobia))
 				vanilla = 12;
-			else if (GC.challenges.Contains(cMutators.Megalopolis))
+			else if (GC.challenges.Contains(cChallenge.Megalopolis))
 				vanilla = 48;
-			else if (GC.challenges.Contains(cMutators.Ultrapolis))
+			else if (GC.challenges.Contains(cChallenge.Ultrapolis))
 				vanilla = 64;
 				
 			return vanilla;
 		}
 		public static int ForceQuestCount(int vanilla)
 		{
-			if (GC.challenges.Contains(cMutators.ZeroQuests))
+			if (GC.challenges.Contains(cChallenge.ZeroQuests))
 				vanilla = 0;
-			else if (GC.challenges.Contains(cMutators.SingleMinded))
+			else if (GC.challenges.Contains(cChallenge.SingleMinded))
 				vanilla = 1;
-			else if (GC.challenges.Contains(cMutators.Workhorse))
+			else if (GC.challenges.Contains(cChallenge.Workhorse))
 				vanilla = 4;
 
 			return vanilla;
 		}
 		public static int SetRoamerCount(int vanilla)
 		{
-			if (GC.challenges.Contains(cMutators.GhostTown))
+			if (GC.challenges.Contains(cChallenge.GhostTown))
 				vanilla *= 0;
-			if (GC.challenges.Contains(cMutators.LetMeSeeThatThrong))
+			if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong))
 				vanilla *= 4;
-			else if (GC.challenges.Contains(cMutators.SwarmWelcome))
+			else if (GC.challenges.Contains(cChallenge.SwarmWelcome))
 				vanilla *= 8;
 
 			return vanilla;
@@ -82,7 +82,7 @@ namespace BunnyMod.Content
 		{
 			BMLog("SetGangCount");
 
-			if (GC.challenges.Contains(cMutators.HoodlumsWonderland))
+			if (GC.challenges.Contains(cChallenge.HoodlumsWonderland))
 				vanilla = 12;
 
 			return vanilla;
@@ -1000,29 +1000,7 @@ namespace BunnyMod.Content
 						num48 = -1;
 				}
 
-				Debug.Log(string.Concat(new object[]
-				{
-					"Num Sectors: ",
-					num46,
-					" - Door 1: ",
-					num40,
-					" - Door 2: ",
-					num41,
-					" - End: ",
-					num36,
-					" - Branch 1: ",
-					num42,
-					" - Branch 2: ",
-					num43,
-					" - Branch 3: ",
-					num47,
-					" - Branch 4: ",
-					num44,
-					" - Branch 5: ",
-					num45,
-					" - Branch 6: ",
-					num48
-				}));
+				Debug.Log(string.Concat(new object[] { "Num Sectors: ", num46, " - Door 1: ", num40, " - Door 2: ", num41, " - End: ", num36, " - Branch 1: ", num42, " - Branch 2: ", num43, " - ranch3: ", num47, " - Branch 4: ", num44, " - Branch 5: ", num45, " - Branch 6: ", num48 }));
 
 				for (int num49 = 0; num49 < __instance.levelSizeAxis; num49++)
 					for (int num50 = 0; num50 < __instance.levelSizeAxis; num50++)
@@ -1165,6 +1143,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						__instance.hasLakes = __instance.customLevel.levelFeatures.Contains("Lake");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						__instance.hasLakes = true;
 
 					if (__instance.hasLakes)
 					{
@@ -1501,6 +1482,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasSlimeBarrels = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
 
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasSlimeBarrels = false;
+
 					if (hasSlimeBarrels)
 					{
 						Debug.Log("Loading Slime Barrels");
@@ -1550,6 +1534,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasOilSpills = __instance.customLevel.levelFeatures.Contains("OilSpill");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasOilSpills = false;
 
 					if (hasOilSpills && GC.serverPlayer)
 					{
@@ -1821,6 +1808,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasTrashCans = __instance.customLevel.levelFeatures.Contains("TrashCan");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasTrashCans = true;
 
 					if (hasTrashCans)
 					{
@@ -2311,6 +2301,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
+					if (BMTraits.IsTraitActive(cTrait.UnderdarkCitizen))
+						hasManholes = true;
+
 					if (hasManholes)
 					{
 						Debug.Log("Loading Manholes");
@@ -2482,6 +2475,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasExplodingSlimeBarrels = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasExplodingSlimeBarrels = false;
 
 					if (hasExplodingSlimeBarrels || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 					{
@@ -2724,6 +2720,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasTrees = __instance.customLevel.levelFeatures.Contains("Tree");
 
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasTrees = true;
+
 					if (hasTrees)
 					{
 						Debug.Log("Loading Trees");
@@ -2773,6 +2772,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasBoulders = __instance.customLevel.levelFeatures.Contains("Boulder");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity) || GC.challenges.Contains(cChallenge.SpelunkyDory))
+						hasBoulders = true;
 
 					if (hasBoulders)
 					{
@@ -2850,6 +2852,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasBushes = __instance.customLevel.levelFeatures.Contains("Bush");
+
+					if (GC.challenges.Contains(cChallenge.GreenCity))
+						hasBushes = true;
 
 					if (hasBushes)
 					{
@@ -3220,10 +3225,12 @@ namespace BunnyMod.Content
 						for (int num65 = 0; num65 < __instance.levelChunks.Count; num65++)
 						{
 							Chunk chunk = __instance.levelChunks[num65];
-							string text4 = "";
+							string ambience = "";
 							string description = chunk.description;
 
-							if (!(description == "Graveyard"))
+							if (GC.challenges.Contains(cChallenge.GreenCity))
+								ambience = "ParkAmbience";
+							else if (!(description == "Graveyard"))
 							{
 								if (!(description == "Casino"))
 								{
@@ -3232,29 +3239,31 @@ namespace BunnyMod.Content
 										if (!(description == "Cave"))
 										{
 											if (description == "CityPark")
-												text4 = "ParkAmbience";
+												ambience = "ParkAmbience";
 										}
 										else
-											text4 = "CavernAmbience";
+											ambience = "CavernAmbience";
 									}
 									else
-										text4 = "SpaAmbience";
+										ambience = "SpaAmbience";
 								}
 							}
 							else
-								text4 = "GraveyardAmbience";
+								ambience = "GraveyardAmbience";
 
-							if (text4 != "")
+
+
+							if (ambience != "")
 							{
 								if (chunk.shape == 6)
 								{
 									Vector2 v2 = new Vector2((chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f, (chunk.chunkLeash1Tr.y + chunk.chunkLeash2Tr.y + chunk.chunkLeash3Tr.y + chunk.chunkLeash4Tr.y) / 4f);
-									GC.spawnerMain.spawnObjectReal(v2, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = text4 + "_Huge";
+									GC.spawnerMain.spawnObjectReal(v2, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Huge";
 								}
 								else if (chunk.shape == 5)
-									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = text4 + "_Long";
+									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Long";
 								else
-									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = text4;
+									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience;
 							}
 						}
 					}
@@ -3690,24 +3699,28 @@ namespace BunnyMod.Content
 
 								if (vector30 != Vector2.zero)
 								{
-									string text5 = "Hobo";
+									string roamerAgent = "Hobo";
 									Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
 
 									if (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))
 									{
-										text5 = GC.Choose<string>("Hobo", "Worker", "ParkAgent", "Agents", "UpperCruster");
+										roamerAgent = GC.Choose<string>("Hobo", "Worker", "ParkAgent", "Agents", "UpperCruster");
 
-										if (GC.percentChance(10))
-											text5 = "Thief";
+										if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+											roamerAgent = "Thief";
+										else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+											roamerAgent = "Thief";
+										else if (GC.percentChance(10))
+											roamerAgent = "Thief";
 
 										if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-											text5 = "Zombie";
+											roamerAgent = "Zombie";
 
 										if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-											text5 = "Cannibal";
+											roamerAgent = "Cannibal";
 
 										if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-											text5 = "Doctor";
+											roamerAgent = "Doctor";
 									}
 									else
 									{
@@ -3716,125 +3729,143 @@ namespace BunnyMod.Content
 											if (hasPoliceBoxes)
 											{
 												if (GC.percentChance(10))
-													text5 = "Firefighter";
+													roamerAgent = "Firefighter";
 												else
-													text5 = GC.Choose<string>("Hobo", "UpperCruster", new string[0]);
+													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", new string[0]);
 											}
 
-											if (GC.percentChance(10))
-												text5 = "Thief";
+											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+												roamerAgent = "Thief";
+											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+												roamerAgent = "Thief";
+											else if (GC.percentChance(10))
+												roamerAgent = "Thief";
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
 
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
 
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 										}
 
 										if (GC.levelTheme == 1)
 										{
 											if (GC.percentChance(10))
-												text5 = "Firefighter";
+												roamerAgent = "Firefighter";
 											else if (hasPoliceBoxes)
-												text5 = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
+												roamerAgent = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
 											else
-												text5 = GC.Choose<string>("Hobo", "Worker", new string[0]);
+												roamerAgent = GC.Choose<string>("Hobo", "Worker", new string[0]);
 
-											if (GC.percentChance(10))
-												text5 = "Thief";
+											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+												roamerAgent = "Thief";
+											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+												roamerAgent = "Thief";
+											else if (GC.percentChance(10))
+												roamerAgent = "Thief";
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
 
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
 
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 										}
 										else if (GC.levelTheme == 2)
 										{
 											if (hasPoliceBoxes)
 												GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster", new string[0]);
 											else
-												text5 = GC.rnd.RandomSelect("ParkAgent", "Agents");
+												roamerAgent = GC.rnd.RandomSelect("ParkAgent", "Agents");
 
-											if (GC.percentChance(10))
-												text5 = "Thief";
+											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+												roamerAgent = "Thief";
+											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+												roamerAgent = "Thief";
+											else if (GC.percentChance(10))
+												roamerAgent = "Thief";
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
 
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
 
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 										}
 										else if (GC.levelTheme == 3)
 										{
 											if (GC.percentChance(8))
-												text5 = "Firefighter";
+												roamerAgent = "Firefighter";
 											else
-												text5 = GC.Choose<string>("Hobo", "UpperCruster", "UpperCruster");
+												roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", "UpperCruster");
 
-											if (GC.percentChance(10))
-												text5 = "Thief";
+											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+												roamerAgent = "Thief";
+											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+												roamerAgent = "Thief";
+											else if (GC.percentChance(10))
+												roamerAgent = "Thief";
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
 
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
 
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 
 											if (GC.percentChance(3))
-												text5 = "Vampire";
+												roamerAgent = "Vampire";
 										}
 										else if (GC.levelTheme == 4)
 										{
 											if (GC.percentChance(8))
-												text5 = "Firefighter";
+												roamerAgent = "Firefighter";
 											else
-												text5 = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
+												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
 
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
 
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 
 											if (GC.percentChance(3))
-												text5 = "Vampire";
+												roamerAgent = "Vampire";
 										}
 										else if (GC.levelTheme == 5)
 										{
 											if (GC.percentChance(10))
-												text5 = "Firefighter";
+												roamerAgent = "Firefighter";
 											else
-												text5 = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
+												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												text5 = "Zombie";
+												roamerAgent = "Zombie";
+
 											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												text5 = "Cannibal";
+												roamerAgent = "Cannibal";
+
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												text5 = "Doctor";
+												roamerAgent = "Doctor";
 										}
 									}
 
-									Agent agent14 = GC.spawnerMain.SpawnAgent(vector30, null, text5);
-									agent14.movement.RotateToAngleTransform((float)Random.Range(0, 360));
+									Agent spawnedAgent = GC.spawnerMain.SpawnAgent(vector30, null, roamerAgent);
+									spawnedAgent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 
-									if (text5 == "UpperCruster")
+									if (roamerAgent == "UpperCruster")
 									{
 										if (GC.percentChance(20))
 										{
@@ -3844,32 +3875,32 @@ namespace BunnyMod.Content
 
 											do
 											{
-												vector30 = GC.tileInfo.FindLocationNearLocation(agent14.tr.position, null, 0.32f, 1.28f, true, true);
+												vector30 = GC.tileInfo.FindLocationNearLocation(spawnedAgent.tr.position, null, 0.32f, 1.28f, true, true);
 												num80++;
 											}
 											while (vector30 == Vector2.zero && num80 < 300);
 
 											if (vector30 != Vector2.zero && num80 < 300)
 											{
-												text5 = "Slave";
-												Agent agent15 = GC.spawnerMain.SpawnAgent(vector30, null, text5);
+												roamerAgent = "Slave";
+												Agent agent15 = GC.spawnerMain.SpawnAgent(vector30, null, roamerAgent);
 												agent15.movement.RotateToAngleTransform((float)Random.Range(0, 360));
-												agent15.relationships.SetRelInitial(agent14, "Submissive");
-												agent14.relationships.SetRelInitial(agent15, "Aligned");
-												agent15.slaveOwners.Add(agent14);
-												agent14.slavesOwned.Add(agent15);
+												agent15.relationships.SetRelInitial(spawnedAgent, "Submissive");
+												spawnedAgent.relationships.SetRelInitial(agent15, "Aligned");
+												agent15.slaveOwners.Add(spawnedAgent);
+												spawnedAgent.slavesOwned.Add(agent15);
 												Agent.gangCount++;
-												agent14.gang = Agent.gangCount;
+												spawnedAgent.gang = Agent.gangCount;
 												agent15.gang = Agent.gangCount;
 												agent15.modLeashes = 0;
-												agent14.gangMembers.Add(agent15);
-												agent15.gangMembers.Add(agent14);
+												spawnedAgent.gangMembers.Add(agent15);
+												agent15.gangMembers.Add(spawnedAgent);
 												agent15.SetDefaultGoal("WanderFar");
 											}
 										}
 									}
-									else if (text5 == "Thief" && GC.percentChance(50))
-										agent14.losCheckAtIntervals = true;
+									else if (roamerAgent == "Thief" && GC.percentChance(50))
+										spawnedAgent.losCheckAtIntervals = true;
 								}
 
 								if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
@@ -3883,15 +3914,15 @@ namespace BunnyMod.Content
 							}
 						}
 
-						bool flag29 = false;
+						bool hasMusician = false;
 
 						if ((GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && GC.percentChance(33))
-							flag29 = true;
+							hasMusician = true;
 
 						if (GC.customLevel)
-							flag29 = __instance.customLevel.levelFeatures.Contains("Musician");
+							hasMusician = __instance.customLevel.levelFeatures.Contains("Musician");
 
-						if (flag29 && GC.levelFeeling != "Riot" && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
+						if (hasMusician && GC.levelFeeling != "Riot" && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
 						{
 							Debug.Log("Loading Musician");
 							int bigTries = 1;
@@ -4243,7 +4274,7 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasGangbangers = __instance.customLevel.levelFeatures.Contains("Gangbanger");
 
-						if (GC.challenges.Contains(cMutators.HoodlumsWonderland))
+						if (GC.challenges.Contains(cChallenge.YoungMenInTheNeighborhood))
 							hasGangbangers = true;
 
 						if (hasGangbangers && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" && GC.levelFeeling != "Riot")
@@ -4351,7 +4382,7 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasMafia = __instance.customLevel.levelFeatures.Contains("Mafia");
 
-						if (GC.challenges.Contains(cMutators.MobTown))
+						if (GC.challenges.Contains(cChallenge.MobTown))
 							hasMafia = true;
 
 						if (hasMafia && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
@@ -4546,16 +4577,16 @@ namespace BunnyMod.Content
 				Debug.Log("Loading Pool Agents");
 				__instance.spawningAgentPool = true;
 				List<Agent> objectAgents = new List<Agent>();
-				int num2;
+				int earlyCopCount;
 
-				for (int earlyCops = 0; earlyCops < 149; earlyCops = num2 + 1)
+				for (int earlyCops = 0; earlyCops < 149; earlyCops = earlyCopCount + 1)
 				{
-					Agent agent24 = GC.spawnerMain.SpawnAgent(Vector3.zero, null, "");
+					Agent earlyCop = GC.spawnerMain.SpawnAgent(Vector3.zero, null, "");
 
 					if (!GC.serverPlayer)
-						agent24.tr.SetParent(GC.agentsNest.transform);
+						earlyCop.tr.SetParent(GC.agentsNest.transform);
 
-					objectAgents.Add(agent24);
+					objectAgents.Add(earlyCop);
 
 					if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 					{
@@ -4565,12 +4596,12 @@ namespace BunnyMod.Content
 					}
 
 					Random.InitState(__instance.randomSeedNum + earlyCops);
-					num2 = earlyCops;
+					earlyCopCount = earlyCops;
 				}
 
 				yield return null;
 
-				for (int earlyCops = 0; earlyCops < objectAgents.Count; earlyCops = num2 + 1)
+				for (int earlyCops = 0; earlyCops < objectAgents.Count; earlyCops = earlyCopCount + 1)
 				{
 					objectAgents[earlyCops].DestroyMe();
 
@@ -4582,7 +4613,7 @@ namespace BunnyMod.Content
 					}
 
 					Random.InitState(__instance.randomSeedNum + earlyCops);
-					num2 = earlyCops;
+					earlyCopCount = earlyCops;
 				}
 
 				__instance.loadedPoolAgents = true;
@@ -4621,23 +4652,23 @@ namespace BunnyMod.Content
 				
 				if (agent.isPlayer > 0)
 				{
-					if (agent.statusEffects.hasTrait(cTraits.Haunted))
+					if (agent.statusEffects.hasTrait(cTrait.Haunted))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "Ghost", __instance, false);
 
 					if (level >= 10)
 					{
-						if (agent.statusEffects.hasTrait(cTraits.MobDebt))
+						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
 							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Mafia", __instance, false);
-						else if (agent.statusEffects.hasTrait(cTraits.MobDebt_2))
+						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
 							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Mafia", __instance, false);
 					}
 
-					if (agent.statusEffects.hasTrait(cTraits.MookMasher))
+					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, "Goon", __instance, false);
 
-					if (agent.statusEffects.hasTrait(cTraits.Reinforcements))
+					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "ResistanceLeader", __instance, true);
-					else if (agent.statusEffects.hasTrait(cTraits.Reinforcements_2))
+					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
 						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, "ResistanceLeader", __instance, true);
 				}
 			}
@@ -4737,10 +4768,14 @@ namespace BunnyMod.Content
 		{
 			string wallType;
 
-			if (GC.challenges.Contains("ShantyTown"))
-				wallType = "Wood";
-			else if (GC.challenges.Contains("CityOfSteel"))
-				wallType = "Steel";
+			if (GC.challenges.Contains(cChallenge.CityOfSteel))
+				wallType = vWall.Steel;
+			else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+				wallType = vWall.Glass;
+			else if (GC.challenges.Contains(cChallenge.ShantyTown))
+				wallType = vWall.Wood;
+			else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+				wallType = vWall.Cave;
 			else
 				return true;
 

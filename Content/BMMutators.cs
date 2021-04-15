@@ -28,116 +28,109 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeMutators()
 		{
-			#region Buildings
-
-			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cMutators.CityOfSteel, true,
-				new CustomNameInfo("City Of Steel"),
-				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
-			CityOfSteel.Available = true;
-			CityOfSteel.Conflicting.AddRange(new string[] { cMutators.ShantyTown });
-			CityOfSteel.IsActive = false;
-
-			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cMutators.ShantyTown, true,
-				new CustomNameInfo("Shanty Town"),
-				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
-			ShantyTown.Available = true;
-			ShantyTown.Conflicting.AddRange(new string[] { cMutators.CityOfSteel });
-			ShantyTown.IsActive = false;
-
-			#endregion
 			#region Map Size
 
-			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cMutators.ACityForAnts, true,
-				new CustomNameInfo("A City for Ants"),
+			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
+				new CustomNameInfo("MapSize: A City for Ants"),
 				new CustomNameInfo("Yes, that is indeed what it is, figuratively speaking."));
 			ACityForAnts.Available = true;
-			ACityForAnts.Conflicting.AddRange(new string[] { cMutators.Claustrophobia, cMutators.Megalopolis, cMutators.Ultrapolis });
+			ACityForAnts.Conflicting.AddRange(new string[] { cChallenge.Claustrophobia, cChallenge.Megalopolis, cChallenge.Ultrapolis });
 			ACityForAnts.IsActive = false;
 
-			CustomMutator Claustrophobia = RogueLibs.CreateCustomMutator(cMutators.Claustrophobia, true,
-				new CustomNameInfo(cMutators.Claustrophobia),
+			CustomMutator Claustrophobia = RogueLibs.CreateCustomMutator(cChallenge.Claustrophobia, true,
+				new CustomNameInfo("MapSize: Claustrophobia"),
 				new CustomNameInfo("Damn, this city is cramped! Who's Claus, anyway?"));
 			Claustrophobia.Available = true;
-			Claustrophobia.Conflicting.AddRange(new string[] { cMutators.ACityForAnts, cMutators.Megalopolis, cMutators.Ultrapolis});
+			Claustrophobia.Conflicting.AddRange(new string[] { cChallenge.ACityForAnts, cChallenge.Megalopolis, cChallenge.Ultrapolis});
 			Claustrophobia.IsActive = false;
 
-			CustomMutator Megalopolis = RogueLibs.CreateCustomMutator(cMutators.Megalopolis, true,
-				new CustomNameInfo(cMutators.Megalopolis),
+			CustomMutator Megalopolis = RogueLibs.CreateCustomMutator(cChallenge.Megalopolis, true,
+				new CustomNameInfo("MapSize: Megalopolis"),
 				new CustomNameInfo("Damn, this town has gotten big. You remember when it was just a small Mega-Arcology. Now it's a Mega-Mega-Arcology."));
 			Megalopolis.Available = true;
-			Megalopolis.Conflicting.AddRange(new string[] { cMutators.ACityForAnts, cMutators.Claustrophobia, cMutators.Ultrapolis });
+			Megalopolis.Conflicting.AddRange(new string[] { cChallenge.ACityForAnts, cChallenge.Claustrophobia, cChallenge.Ultrapolis });
 			Megalopolis.IsActive = false;
 
-			CustomMutator Ultrapolis = RogueLibs.CreateCustomMutator(cMutators.Ultrapolis, true,
-				new CustomNameInfo(cMutators.Ultrapolis),
+			CustomMutator Ultrapolis = RogueLibs.CreateCustomMutator(cChallenge.Ultrapolis, true,
+				new CustomNameInfo("MapSize: Ultrapolis"),
 				new CustomNameInfo("You get vertigo when you look up. This city is MASSIVE."));
 			Ultrapolis.Available = true;
-			Ultrapolis.Conflicting.AddRange(new string[] { cMutators.ACityForAnts, cMutators.Claustrophobia, cMutators.Megalopolis });
+			Ultrapolis.Conflicting.AddRange(new string[] { cChallenge.ACityForAnts, cChallenge.Claustrophobia, cChallenge.Megalopolis });
 			Ultrapolis.IsActive = false;
 
 			#endregion
-			#region Mechanics
+			#region Miscellaneous
 
-			CustomMutator ScaryGuns = RogueLibs.CreateCustomMutator(cMutators.ScaryGuns, true,
-				new CustomNameInfo("Scary Guns"),
-				new CustomNameInfo("Guns are deadlier, but adds Cover mechanics. Get good, or get dead."));
-			ScaryGuns.Available = true;
-			ScaryGuns.Conflicting.AddRange(new string[] { });
-			ScaryGuns.IsActive = false;
+			CustomMutator GreenCity = RogueLibs.CreateCustomMutator(cChallenge.GreenCity, true,
+				new CustomNameInfo("Green City"),
+				new CustomNameInfo(""));
+			GreenCity.Available = true;
+			GreenCity.Conflicting.AddRange(new string[] { });
+			GreenCity.IsActive = false;
+
+			#endregion
+			#region Population
+
+			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cChallenge.GhostTown, true,
+				new CustomNameInfo("Population: Ghost Town"),
+				new CustomNameInfo("No one walks the streets in this city. Don't act all innocent, I know what you do to people in this game!"));
+			GhostTown.Available = true;
+			GhostTown.Conflicting.AddRange(new string[] { cChallenge.LetMeSeeThatThrong, cChallenge.SwarmWelcome });
+			GhostTown.IsActive = false;
+
+			CustomMutator LetMeSeeThatThrong = RogueLibs.CreateCustomMutator(cChallenge.LetMeSeeThatThrong, true,
+				new CustomNameInfo("Population: Let Me See That Throng"),
+				new CustomNameInfo("The City's HR department is still working out an effective Eugenics program. For now, people are breeding out of control."));
+			LetMeSeeThatThrong.Available = true;
+			LetMeSeeThatThrong.Conflicting.AddRange(new string[] { cChallenge.GhostTown, cChallenge.SwarmWelcome });
+			LetMeSeeThatThrong.IsActive = false;
+
+			CustomMutator SwarmWelcome = RogueLibs.CreateCustomMutator(cChallenge.SwarmWelcome, true,
+				new CustomNameInfo("Population: Swarm Welcome"),
+				new CustomNameInfo("This whole city feels like a crowded subway. Pickpocketing is bad enough, but the frottage is out of control!"));
+			SwarmWelcome.Available = true;
+			SwarmWelcome.Conflicting.AddRange(new string[] { cChallenge.GhostTown, cChallenge.LetMeSeeThatThrong });
+			SwarmWelcome.IsActive = false;
 
 			#endregion
 			#region Roamers
 
-			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cMutators.GhostTown, true,
-				new CustomNameInfo("Ghost Town"),
-				new CustomNameInfo(""));
-			GhostTown.Available = true;
-			GhostTown.Conflicting.AddRange(new string[] { cMutators.LetMeSeeThatThrong, cMutators.SwarmWelcome });
-			GhostTown.IsActive = false;
+			CustomMutator YoungMenIntheNeighborhood = RogueLibs.CreateCustomMutator(cChallenge.YoungMenInTheNeighborhood, true,
+				new CustomNameInfo("Young Men in the Neighborhood"),
+				new CustomNameInfo("Beause the young gentlemen in the hood are always polite; If you start acting rude, we'll set you right!\nYour friendly local Gangbangers now roam every district."));
+			YoungMenIntheNeighborhood.Available = true;
+			YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
+			YoungMenIntheNeighborhood.IsActive = false;
 
-			CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cMutators.HoodlumsWonderland, true,
+			CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cChallenge.HoodlumsWonderland, true,
 				new CustomNameInfo("Hoodlum's Wonderland"),
-				new CustomNameInfo(""));
+				new CustomNameInfo("The annual charity drive for the Blahds and Crepes happened to overlap this year. They're in tough competition to sell the most cookies! Roaming gang spawns are increased. By a lot."));
 			HoodlumsWonderland.Available = true;
 			HoodlumsWonderland.Conflicting.AddRange(new string[] { });
 			HoodlumsWonderland.IsActive = false;
 
-			CustomMutator LetMeSeeThatThrong = RogueLibs.CreateCustomMutator(cMutators.LetMeSeeThatThrong, true,
-				new CustomNameInfo("Let Me See That Throng"),
-				new CustomNameInfo(""));
-			LetMeSeeThatThrong.Available = true;
-			LetMeSeeThatThrong.Conflicting.AddRange(new string[] { cMutators.GhostTown, cMutators.SwarmWelcome });
-			LetMeSeeThatThrong.IsActive = false;
-
-			CustomMutator MobTown = RogueLibs.CreateCustomMutator(cMutators.MobTown, true,
+			CustomMutator MobTown = RogueLibs.CreateCustomMutator(cChallenge.MobTown, true,
 				new CustomNameInfo("Mob Town"),
-				new CustomNameInfo(""));
+				new CustomNameInfo("Turns out the Union Membership is high here for all the wrong reasons. The Mob is in every district."));
 			MobTown.Available = true;
 			MobTown.Conflicting.AddRange(new string[] { });
 			MobTown.IsActive = false;
 
-			CustomMutator SwarmWelcome = RogueLibs.CreateCustomMutator(cMutators.SwarmWelcome, true,
-				new CustomNameInfo("Swarm Welcome"),
-				new CustomNameInfo(""));
-			SwarmWelcome.Available = true;
-			SwarmWelcome.Conflicting.AddRange(new string[] { cMutators.GhostTown, cMutators.LetMeSeeThatThrong });
-			SwarmWelcome.IsActive = false;
-
 			#endregion
-			#region Quests
+			#region QuestCount
 
-			CustomMutator SingleMinded = RogueLibs.CreateCustomMutator(cMutators.SingleMinded, true,
-				new CustomNameInfo("Single-minded"),
+			CustomMutator SingleMinded = RogueLibs.CreateCustomMutator(cChallenge.SingleMinded, true,
+				new CustomNameInfo("QuestCount: Single-minded"),
 				new CustomNameInfo("Your Resistance HR profile says \"Not a good multi-tasker.\" They only give you one job per Floor."));
 			SingleMinded.Available = true;
-			SingleMinded.Conflicting.AddRange(new string[] { cMutators.Workhorse, cMutators.ZeroQuests });
+			SingleMinded.Conflicting.AddRange(new string[] { cChallenge.Workhorse, cChallenge.ZeroQuests });
 			SingleMinded.IsActive = false;
 
-			CustomMutator Workhorse = RogueLibs.CreateCustomMutator(cMutators.Workhorse, true,
-				new CustomNameInfo("Workhorse"),
+			CustomMutator Workhorse = RogueLibs.CreateCustomMutator(cChallenge.Workhorse, true,
+				new CustomNameInfo("QuestCount: Workhorse"),
 				new CustomNameInfo("You made the mistake of being reliable. Now the Resistance sends you all the work. You're never short on jobs.."));
 			Workhorse.Available = true;
-			Workhorse.Conflicting.AddRange(new string[] { cMutators.SingleMinded, cMutators.ZeroQuests });
+			Workhorse.Conflicting.AddRange(new string[] { cChallenge.SingleMinded, cChallenge.ZeroQuests });
 			Workhorse.IsActive = false;
 
 			//CustomMutator ZeroQuests = RogueLibs.CreateCustomMutator(cMutators.ZeroQuests, true,
@@ -149,12 +142,42 @@ namespace BunnyMod.Content
 			// This one needs an additional check. The elevator to exit the level is not activated.
 
 			#endregion
+			#region Walls
+
+			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
+				new CustomNameInfo("Walls: City Of Steel"),
+				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
+			CityOfSteel.Available = true;
+			CityOfSteel.Conflicting.AddRange(new string[] { cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+			CityOfSteel.IsActive = false;
+
+			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
+				new CustomNameInfo("Walls: Panoptikopolis"),
+				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
+			Panoptikopolis.Available = true;
+			Panoptikopolis.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+
+			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
+				new CustomNameInfo("Walls: Shanty Town"),
+				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
+			ShantyTown.Available = true;
+			ShantyTown.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.SpelunkyDory });
+			ShantyTown.IsActive = false;
+
+			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
+				new CustomNameInfo("Walls: Spelunky Dory"),
+				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
+			SpelunkyDory.Available = true;
+			SpelunkyDory.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown });
+			SpelunkyDory.IsActive = false;
+
+			#endregion
 		}
 
 		#region Bullet
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
-			if (GC.challenges.Contains(cMutators.ScaryGuns))
+			if (GC.challenges.Contains(cChallenge.ScaryGuns))
 			{
 				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
@@ -165,7 +188,7 @@ namespace BunnyMod.Content
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{
-			if (!GC.challenges.Contains(cMutators.ScaryGuns)
+			if (!GC.challenges.Contains(cChallenge.ScaryGuns)
 				|| bulletType != bulletStatus.Normal || bulletType != bulletStatus.Shotgun || bulletType != bulletStatus.Revolver)
 				return true;
 

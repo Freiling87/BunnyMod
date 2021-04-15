@@ -28,6 +28,60 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeMutators()
 		{
+			#region Construction
+
+			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
+				new CustomNameInfo("Construction: City Of Steel"),
+				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
+			CityOfSteel.Available = true;
+			CityOfSteel.Conflicting.AddRange(new string[] { cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+			CityOfSteel.IsActive = false;
+
+			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
+				new CustomNameInfo("Construction: Panoptikopolis"),
+				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
+			Panoptikopolis.Available = true;
+			Panoptikopolis.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
+
+			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
+				new CustomNameInfo("Construction: Shanty Town"),
+				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
+			ShantyTown.Available = true;
+			ShantyTown.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.SpelunkyDory });
+			ShantyTown.IsActive = false;
+
+			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
+				new CustomNameInfo("Construction: Spelunky Dory"),
+				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
+			SpelunkyDory.Available = true;
+			SpelunkyDory.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown });
+			SpelunkyDory.IsActive = false;
+
+			#endregion
+			#region FloorTiles
+
+			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
+				new CustomNameInfo("FloorTiles: Green City"),
+				new CustomNameInfo("Grass! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
+			ArcologyEcology.Available = true;
+			ArcologyEcology.Conflicting.AddRange(new string[] { cChallenge.SunkenCity, cChallenge.TransitExperiment });
+			ArcologyEcology.IsActive = false;
+
+			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
+				new CustomNameInfo("FloorTiles:Sunken City"),
+				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
+			SunkenCity.Available = true;
+			SunkenCity.Conflicting.AddRange(new string[] { cChallenge.ArcologyEcology, cChallenge.TransitExperiment });
+			SunkenCity.IsActive = false;
+
+			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
+				new CustomNameInfo("Transit Experiment"),
+				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
+			TransitExperiment.Available = true;
+			TransitExperiment.Conflicting.AddRange(new string[] { cChallenge.ArcologyEcology, cChallenge.SunkenCity });
+			TransitExperiment.IsActive = false;
+
+			#endregion
 			#region Map Size
 
 			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
@@ -57,16 +111,6 @@ namespace BunnyMod.Content
 			Ultrapolis.Available = true;
 			Ultrapolis.Conflicting.AddRange(new string[] { cChallenge.ACityForAnts, cChallenge.Claustrophobia, cChallenge.Megalopolis });
 			Ultrapolis.IsActive = false;
-
-			#endregion
-			#region Miscellaneous
-
-			CustomMutator GreenCity = RogueLibs.CreateCustomMutator(cChallenge.GreenCity, true,
-				new CustomNameInfo("Green City"),
-				new CustomNameInfo(""));
-			GreenCity.Available = true;
-			GreenCity.Conflicting.AddRange(new string[] { });
-			GreenCity.IsActive = false;
 
 			#endregion
 			#region Population
@@ -140,36 +184,6 @@ namespace BunnyMod.Content
 			//ZeroQuests.Conflicting.AddRange(new string[] { cMutators.FourQuests, cMutators.OneQuest });
 			//ZeroQuests.IsActive = false;
 			// This one needs an additional check. The elevator to exit the level is not activated.
-
-			#endregion
-			#region Walls
-
-			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
-				new CustomNameInfo("Walls: City Of Steel"),
-				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
-			CityOfSteel.Available = true;
-			CityOfSteel.Conflicting.AddRange(new string[] { cChallenge.Panoptikopolis, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
-			CityOfSteel.IsActive = false;
-
-			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
-				new CustomNameInfo("Walls: Panoptikopolis"),
-				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
-			Panoptikopolis.Available = true;
-			Panoptikopolis.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.ShantyTown, cChallenge.SpelunkyDory });
-
-			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
-				new CustomNameInfo("Walls: Shanty Town"),
-				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
-			ShantyTown.Available = true;
-			ShantyTown.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.SpelunkyDory });
-			ShantyTown.IsActive = false;
-
-			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
-				new CustomNameInfo("Walls: Spelunky Dory"),
-				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
-			SpelunkyDory.Available = true;
-			SpelunkyDory.Conflicting.AddRange(new string[] { cChallenge.CityOfSteel, cChallenge.Panoptikopolis, cChallenge.ShantyTown });
-			SpelunkyDory.IsActive = false;
 
 			#endregion
 		}

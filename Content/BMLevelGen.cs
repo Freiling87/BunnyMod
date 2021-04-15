@@ -30,6 +30,9 @@ namespace BunnyMod.Content
 			// Agent
 			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
 
+			// BasicFloor
+			Prefix(typeof(BasicFloor), "Spawn", GetType(), "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+
 			// LoadLevel
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
@@ -40,6 +43,9 @@ namespace BunnyMod.Content
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+
+			// SpawnerFloor
+			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
 		}
 
 		#region Custom
@@ -139,6 +145,37 @@ namespace BunnyMod.Content
 				__instance.agentCategories.Add("Defense");
 				__instance.setInitialCategories = true;
 			}
+		}
+		#endregion
+		#region BasicFloor
+		public static bool BasicFloor_Spawn(SpawnerBasic spawner, string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal, BasicFloor __instance) // Prefix
+		{
+			BMLog("floorName: " + floorName);
+
+			if (floorName == vFloor.Normal)
+			{
+				// Walls and Floors
+				if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					floorName = vFloor.MetalFloor;
+				else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+					floorName = vFloor.PrisonFloor;
+				else if (GC.challenges.Contains(cChallenge.ShantyTown))
+					floorName = vFloor.DirtFloor;
+				else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					floorName = vFloor.CaveFloor;
+
+				// Floors only
+				if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					floorName = vFloor.Grass;
+				else if (GC.challenges.Contains(cChallenge.SunkenCity))
+					floorName = vFloor.Pool;
+				else if (GC.challenges.Contains(cChallenge.TransitExperiment))
+					floorName = vFloor.IceRink;
+			}
+
+			BMLog("\t\t\t" + floorName);
+
+			return true;
 		}
 		#endregion
 		#region LoadLevel
@@ -1144,7 +1181,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						__instance.hasLakes = __instance.customLevel.levelFeatures.Contains("Lake");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						__instance.hasLakes = true;
 
 					if (__instance.hasLakes)
@@ -1482,7 +1519,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasSlimeBarrels = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasSlimeBarrels = false;
 
 					if (hasSlimeBarrels)
@@ -1535,7 +1572,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasOilSpills = __instance.customLevel.levelFeatures.Contains("OilSpill");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasOilSpills = false;
 
 					if (hasOilSpills && GC.serverPlayer)
@@ -1809,7 +1846,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasTrashCans = __instance.customLevel.levelFeatures.Contains("TrashCan");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasTrashCans = true;
 
 					if (hasTrashCans)
@@ -2476,7 +2513,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasExplodingSlimeBarrels = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasExplodingSlimeBarrels = false;
 
 					if (hasExplodingSlimeBarrels || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2520,6 +2557,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasFlamingBarrels = __instance.customLevel.levelFeatures.Contains("FlamingBarrel");
+
+					if (GC.challenges.Contains(cChallenge.TransitExperiment))
+						hasFlamingBarrels = false;
 
 					if (hasFlamingBarrels)
 					{
@@ -2565,6 +2605,9 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
+
+					if (GC.challenges.Contains(cChallenge.TransitExperiment))
+						__instance.hasFlameGrates = false;
 
 					if (__instance.hasFlameGrates)
 					{
@@ -2634,6 +2677,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasBarbecues = __instance.customLevel.levelFeatures.Contains("Barbecue");
+
+					if (GC.challenges.Contains(cChallenge.TransitExperiment))
+						hasBarbecues = false;
 
 					if (hasBarbecues)
 					{
@@ -2720,7 +2766,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasTrees = __instance.customLevel.levelFeatures.Contains("Tree");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasTrees = true;
 
 					if (hasTrees)
@@ -2773,7 +2819,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasBoulders = __instance.customLevel.levelFeatures.Contains("Boulder");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity) || GC.challenges.Contains(cChallenge.SpelunkyDory))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.SpelunkyDory))
 						hasBoulders = true;
 
 					if (hasBoulders)
@@ -2853,7 +2899,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasBushes = __instance.customLevel.levelFeatures.Contains("Bush");
 
-					if (GC.challenges.Contains(cChallenge.GreenCity))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						hasBushes = true;
 
 					if (hasBushes)
@@ -3228,7 +3274,7 @@ namespace BunnyMod.Content
 							string ambience = "";
 							string description = chunk.description;
 
-							if (GC.challenges.Contains(cChallenge.GreenCity))
+							if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 								ambience = "ParkAmbience";
 							else if (!(description == "Graveyard"))
 							{
@@ -4795,6 +4841,37 @@ namespace BunnyMod.Content
 			component.CreateRandomElement(rList, wallType, 3);
 
 			return false;
+		}
+		#endregion
+		#region SpawnerFloor
+		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
+		{
+			BMLog("floorName: " + floorName);
+
+			if (floorName == vFloor.Normal)
+			{
+				// Walls and Floors
+				if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					floorName = vFloor.MetalFloor;
+				else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+					floorName = vFloor.PrisonFloor;
+				else if (GC.challenges.Contains(cChallenge.ShantyTown))
+					floorName = vFloor.DirtFloor;
+				else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					floorName = vFloor.CaveFloor;
+
+				// Floors only
+				if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					floorName = vFloor.Grass;
+				else if (GC.challenges.Contains(cChallenge.SunkenCity))
+					floorName = vFloor.Pool;
+				else if (GC.challenges.Contains(cChallenge.TransitExperiment))
+					floorName = vFloor.IceRink;
+			}
+
+			BMLog("\t\t\t" + floorName);
+
+			return true;
 		}
 		#endregion
 	}

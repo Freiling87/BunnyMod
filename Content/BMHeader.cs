@@ -109,6 +109,20 @@ namespace BunnyMod
             PyromanticJet = "PyromanticJet",
             TelemanticBlink = "TelemanticBlink";
     }
+    public static class cMutators // Custom Mutators
+	{
+        public const string
+            CityOfSteel = "CityOfSteel",
+            Claustrophobia = "Claustrophobia",
+            Megalopolis = "Megalopolis",
+            ScaryGuns = "ScaryGuns",
+            ShantyTown = "ShantyTown",
+            SingleMinded = "SingleMinded",
+            ACityForAnts = "ACityForAnts",
+            Ultrapolis = "Ultrapolis",
+            Workhorse = "Workhorse",
+            ZeroQuests = "ZeroQuests";
+	}
 	public static class cTraits // Custom Traits
 	{
 		public const string

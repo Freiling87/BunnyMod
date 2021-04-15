@@ -33,26 +33,37 @@ namespace BunnyMod.Content
 			// LoadLevel
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
-			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevle_SetupMore3_3_Postfix", new Type[0] { });
+			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 
 			// RandomAgentWeapons
-			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "LoadLevel_fillAgentWeapons", new Type[0] { });
+			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "RandomAgentWeapons_fillAgentWeapons", new Type[0] { });
+
+			// RandomWalls
+			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
 		}
 
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
 		{
-			if (GC.challenges.Contains("CitySprawl"))
-				return (int)(vanilla * 1.5f);
-			else if (GC.challenges.Contains("CloseQuarters"))
-				return (int)(vanilla * 0.5f);
+			if (GC.challenges.Contains(cMutators.ACityForAnts))
+				return 4;
+			else if (GC.challenges.Contains(cMutators.Claustrophobia))
+				return 12;
+			else if (GC.challenges.Contains(cMutators.Megalopolis))
+				return 48;
+			else if (GC.challenges.Contains(cMutators.Ultrapolis))
+				return 64;
 			else
 				return vanilla;
 		}
 		public static int ForceQuestCount(int vanilla)
 		{
-			if (GC.challenges.Contains("FourQuests"))
-				return 4;
+			if (GC.challenges.Contains(cMutators.ZeroQuests))
+				return 0;
+			else if (GC.challenges.Contains(cMutators.SingleMinded))
+				return 1;
+			else if (GC.challenges.Contains(cMutators.Workhorse))
+				return 8;
 			else
 				return vanilla;
 		}
@@ -109,7 +120,7 @@ namespace BunnyMod.Content
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
 			__instance.levelSizeMax = 30;
-			__instance.levelSizeAxis = LevelSizeMod(10);
+			__instance.levelSizeAxis = 10;
 
 			if (GC.customLevel && !GC.customRandomLevel)
 			{
@@ -454,6 +465,8 @@ namespace BunnyMod.Content
 				
 				if (GC.fourPlayerMode && GC.quests.questTriesTotal < 3)
 					GC.quests.questTriesTotal = 3;
+
+				GC.quests.questTriesTotal = ForceQuestCount(GC.quests.questTriesTotal);
 				
 				if (__instance.squareMap)
 				{
@@ -842,14 +855,7 @@ namespace BunnyMod.Content
 					{
 						num35++;
 
-						string text = GC.Choose<string>("N", "N", new string[]
-						{
-							"S",
-							"E",
-							"E",
-							"W",
-							"W"
-						});
+						string text = GC.Choose<string>("N", "N", "S", "E", "E", "W", "W");
 
 						if (__instance.levelSize == 1)
 							text = "N";
@@ -4567,8 +4573,11 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static void LoadLevel_SetupMore3_3_Postfix(LoadLevel __instance) // Postfix
+		public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
 		{
+			while (__result.MoveNext())
+				yield return __result.Current;
+
 			int level = GC.sessionDataBig.curLevel;
 
 			for (int agentSearch = 0; agentSearch < GC.agentList.Count; agentSearch++)
@@ -4686,6 +4695,36 @@ namespace BunnyMod.Content
 			for (int tier = 1; tier < 5; tier++)
 				foreach (KeyValuePair<RandomElement, int> tuple in elementList)
 					GC.rnd.randomListTableStatic["ResistanceLeaderWeapon" + tier].elementList.Add(tuple.Key);
+		}
+		#endregion
+		#region RandomWalls
+		public static bool RandomWalls_fillWalls() // Replacement
+		{
+			string wallType;
+
+			if (GC.challenges.Contains("ShantyTown"))
+				wallType = "Wood";
+			else if (GC.challenges.Contains("CityOfSteel"))
+				wallType = "Steel";
+			else
+				return true;
+
+			RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
+			RandomList rList;
+
+			rList = component.CreateRandomList("WallsNormal", "Walls", "Wall");
+			component.CreateRandomElement(rList, wallType, 3);
+
+			rList = component.CreateRandomList("WallsWeak", "Walls", "Wall");
+			component.CreateRandomElement(rList, wallType, 3);
+
+			rList = component.CreateRandomList("WallsStrong", "Walls", "Wall");
+			component.CreateRandomElement(rList, wallType, 3);
+
+			rList = component.CreateRandomList("WallsHideout", "Walls", "Wall");
+			component.CreateRandomElement(rList, wallType, 3);
+
+			return false;
 		}
 		#endregion
 	}

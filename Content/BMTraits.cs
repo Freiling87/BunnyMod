@@ -62,9 +62,6 @@ namespace BunnyMod.Content
             Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
-            // LoadLevel
-            Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
-
             // PlayerControl
             Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 
@@ -73,6 +70,9 @@ namespace BunnyMod.Content
 
             // Relationships
             Postfix(typeof(Relationships), "SetupRelationshipOriginal", GetType(), "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
+
+            // SkillPoints
+            Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
 
             // StatusEffects
             Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
@@ -674,17 +674,11 @@ namespace BunnyMod.Content
         }
         public static bool IsTraitActive(string trait)
 		{
-            BMLog("IsTraitActive");
-
             foreach (Agent agent in GC.playerAgentList)
                 if (agent.isPlayer != 0)
                     foreach (Trait se in agent.statusEffects.TraitList)
-				    {
-                        BMLog("Trait: '" + se.traitName + "'");
-
                         if (se.traitName == trait)
                             return true;
-                    }
                     
             return false;
 		}
@@ -1141,7 +1135,7 @@ namespace BunnyMod.Content
 
             return false;
         }
-        private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, IEnumerator __result, SkillPoints __instance, Agent ___agent)
+        private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, IEnumerator __result, SkillPoints __instance, Agent ___agent) // Non-Patch
         {
             BMLog("SkillPoints_AddPointsLate_IEnumerator:");
             BMLog("\tpointsType = " + pointsType);

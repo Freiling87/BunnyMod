@@ -29,8 +29,6 @@ namespace BunnyMod.Content
 		public static void InitializeAbilities()
 		{
 			MSA_CD_Initialize();
-			//Cryomancy_Initialize();
-			//Electromancy_Initialize();
 			MSA_PJ_Initialize();
 			MSA_TB_Initialize();
 		}
@@ -38,11 +36,11 @@ namespace BunnyMod.Content
 		#region Magic General
 		public static int CalcMaxMana(Agent agent)
 		{
-			if (agent.statusEffects.hasTrait("ManaBattery"))
+			if (agent.statusEffects.hasTrait(cTrait.ManaBattery))
 				return 150;
-			else if (agent.statusEffects.hasTrait("ManaBattery_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.ManaBattery_2))
 				return 200;
-			else if (agent.statusEffects.hasTrait("Archmage"))
+			else if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 10000;
 			else
 				return 100;
@@ -148,7 +146,7 @@ namespace BunnyMod.Content
 		{
 			Sprite spriteChronomanticDilation = RogueUtilities.ConvertToSprite(Properties.Resources.ChronomanticDilation);
 
-			CustomAbility chronomanticDilation = RogueLibs.CreateCustomAbility("ChronomanticDilation", spriteChronomanticDilation, true,
+			CustomAbility chronomanticDilation = RogueLibs.CreateCustomAbility(cSpecialAbility.ChronomanticDilation, spriteChronomanticDilation, true,
 				new CustomNameInfo("Chronomantic Dilation"),
 				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself."),
 				delegate (InvItem item)
@@ -207,15 +205,15 @@ namespace BunnyMod.Content
 		{
 			int manaCost = 15;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				manaCost -= 2;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				manaCost -= 4;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				manaCost += UnityEngine.Random.Range(-2, 2);
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				manaCost = UnityEngine.Random.Range(-5, 5);
-			else if (agent.statusEffects.hasTrait("Archmage"))
+			else if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				manaCost = 0;
 
 			return manaCost;
@@ -224,20 +222,20 @@ namespace BunnyMod.Content
 		{
 			float risk = 1.0f + percentMod;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return false;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				risk -= 0.25f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				risk -= 0.50f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				risk += 0.75f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				risk += 1.50f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				risk *= (4 / 5);
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				risk *= (3 / 5);
 
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
@@ -246,43 +244,43 @@ namespace BunnyMod.Content
 		{
 			float timescale = 1.000f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 4.000f;
 
 			if (!MisCast)
 			{
 				timescale = 2.000f;
 
-				if (agent.statusEffects.hasTrait("FocusedCasting"))
+				if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 					timescale += 0.250f;
-				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 					timescale += 0.500f;
-				else if (agent.statusEffects.hasTrait("WildCasting"))
+				else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 					timescale += 0.750f;
-				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 					timescale += 1.500f;
 
-				if (agent.statusEffects.hasTrait("MagicTraining"))
+				if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 					timescale += 0.500f;
-				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 					timescale += 1.000f;
 			}
 			else if (MisCast)
 			{
 				timescale = 0.250f;
 
-				if (agent.statusEffects.hasTrait("FocusedCasting"))
+				if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 					timescale += 0.375f;
-				else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 					timescale += 0.500f;
-				else if (agent.statusEffects.hasTrait("WildCasting"))
+				else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 					timescale -= 0.063f;
-				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 					timescale -= 0.188f;
 
-				if (agent.statusEffects.hasTrait("MagicTraining"))
+				if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 					timescale += 0.125f;
-				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 					timescale += 0.250f;
 			}
 
@@ -384,16 +382,16 @@ namespace BunnyMod.Content
 
 			float duration = 4000f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				duration = 1000f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				duration -= 1000f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				duration -= 2000f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				duration -= 1000f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				duration -= 2000f;
 
 			await Task.Delay((int)duration);
@@ -508,7 +506,7 @@ namespace BunnyMod.Content
 		{
 			Sprite spritePyromanticJet = RogueUtilities.ConvertToSprite(Properties.Resources.PyromanticJet);
 
-			CustomAbility pyromanticJet = RogueLibs.CreateCustomAbility("PyromanticJet", spritePyromanticJet, true,
+			CustomAbility pyromanticJet = RogueLibs.CreateCustomAbility(cSpecialAbility.PyromanticJet, spritePyromanticJet, true,
 				new CustomNameInfo("Pyromantic Jet"),
 				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat?? "),
 				delegate (InvItem item)
@@ -582,51 +580,51 @@ namespace BunnyMod.Content
 
 			StatusEffects se = agent.statusEffects;
 
-			if (se.hasTrait("FocusedCasting"))
+			if (se.hasTrait(cTrait.FocusedCasting))
 				divisor -= 0.250f;
-			else if (se.hasTrait("FocusedCasting_2"))
+			else if (se.hasTrait(cTrait.FocusedCasting_2))
 				divisor -= 0.500f;
-			else if (se.hasTrait("WildCasting"))
+			else if (se.hasTrait(cTrait.WildCasting))
 				divisor -= 0.750f;
-			else if (se.hasTrait("WildCasting_2"))
+			else if (se.hasTrait(cTrait.WildCasting_2))
 				divisor -= 1.500f;
 
-			if (se.hasTrait("MagicTraining"))
+			if (se.hasTrait(cTrait.MagicTraining))
 				divisor -= 0.250f;
-			else if (se.hasTrait("MagicTraining_2"))
+			else if (se.hasTrait(cTrait.MagicTraining_2))
 				divisor -= 0.500f;
 
 			return divisor;
 		}
 		public static int MSA_PJ_RollManaCost(Agent agent)
 		{
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 0;
 
 			float min = 3.000f;
 			float max = 5.000f;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				max -= 0.500f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				max -= 1.000f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 			{
 				min -= 1.500f;
 				max += 1.500f;
 			}
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 			{
 				min -= 3.000f;
 				max += 3.000f;
 			}
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 			{
 				min -= 0.250f;
 				max -= 0.250f;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 			{
 				min -= 0.500f;
 				max -= 0.500f;
@@ -638,27 +636,27 @@ namespace BunnyMod.Content
 		{
 			float risk = 1.000f + modifier;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return false;
-			else if (agent.statusEffects.hasTrait("FocusedCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				risk -= 0.500f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				risk -= 0.750f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				risk += 0.250f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				risk += 0.500f;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				risk *= 0.75f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				risk *= 0.50f;
 
 			return risk >= UnityEngine.Random.Range(0f, 100f);
 		}
 		public static void MSA_PJ_StartBurnout(Agent agent)
 		{
-			if (!agent.statusEffects.hasTrait("WildCasting") && !agent.statusEffects.hasTrait("WildCasting_2"))
+			if (!agent.statusEffects.hasTrait(cTrait.WildCasting) && !agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 			{
 				GC.audioHandler.Play(agent, "MindControlEnd");
 				MSA_PJ_SetBurnedOut(agent, true);
@@ -690,14 +688,14 @@ namespace BunnyMod.Content
 
 			bullet.speed = 6;
 
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				bullet.speed += 1;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				bullet.speed += 2;
 
-			if (agent.statusEffects.hasTrait("WildCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				bullet.speed += 3;
-			else if (agent.statusEffects.hasTrait("WildCasting_2") || agent.statusEffects.hasTrait("Archmage"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2) || agent.statusEffects.hasTrait(cTrait.Archmage))
 				bullet.speed += 6;
 		}
 		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
@@ -710,17 +708,17 @@ namespace BunnyMod.Content
 
 				float duration = 2000f;
 
-				if (agent.statusEffects.hasTrait("MagicTraining"))
+				if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 					duration -= 500f;
-				else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 					duration -= 1000f;
 
-				if (agent.statusEffects.hasTrait("WildCasting"))
+				if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 					duration -= 1250f;
-				else if (agent.statusEffects.hasTrait("WildCasting_2"))
+				else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 					duration -= 2000f;
 
-				if (agent.statusEffects.hasTrait("Archmage"))
+				if (agent.statusEffects.hasTrait(cTrait.Archmage))
 					duration = 0f;
 
 				duration = Mathf.Max(0f, duration);
@@ -858,7 +856,7 @@ namespace BunnyMod.Content
 		{
 			Sprite spriteTelemanticBlink = RogueUtilities.ConvertToSprite(Properties.Resources.TelemanticBlink);
 
-			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility("TelemanticBlink", spriteTelemanticBlink, true,
+			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility(cSpecialAbility.TelemanticBlink, spriteTelemanticBlink, true,
 				new CustomNameInfo("Telemantic Blink"),
 				new CustomNameInfo("Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke."),
 				delegate (InvItem item)
@@ -950,20 +948,20 @@ namespace BunnyMod.Content
 		{
 			float rate = 1.000f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 10;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				rate *= 1.250f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				rate *= 1.500f;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				rate *= 1.250f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				rate *= 1.500f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				rate *= 2.000f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				rate *= 3.000f;
 
 			return (int)rate;
@@ -998,35 +996,35 @@ namespace BunnyMod.Content
 			float min = 25.000f;
 			float max = 33.000f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 0;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 			{
 				min *= 0.875f;
 				max *= 0.875f;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 			{
 				min *= 0.750f;
 				max *= 0.750f;
 			}
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 			{
 				min *= 0.750f;
 				max *= 0.750f;
 			}
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 			{
 				min *= 0.500f;
 				max *= 0.500f;
 			}
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 			{
 				min *= 0.500f;
 				max *= 1.250f;
 			}
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 			{
 				min *= 0.250f;
 				max *= 1.500f;
@@ -1039,35 +1037,35 @@ namespace BunnyMod.Content
 			float min = 5.00f;
 			float max = 10.00f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 1000;
-			if (agent.statusEffects.hasTrait("MagicTraining"))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 			{
 				min *= 1.500f;
 				max *= 1.500f;
 			}
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 			{
 				min *= 2.250f;
 				max *= 2.250f;
 			}
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 			{
 				min *= 2.000f;
 				max *= 1.250f;
 			}
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 			{
 				min *= 3.000f;
 				max *= 1.750f;
 			}
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 			{
 				min *= 0.500f;
 				max *= 3.000f;
 			}
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 			{
 				min *= 0.250f;
 				max *= 4.000f;
@@ -1079,20 +1077,20 @@ namespace BunnyMod.Content
 		{
 			float duration = 4000f;
 
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return 0;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				duration *= 0.500f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				duration *= 0.250f;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				duration *= 0.875f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				duration *= 0.750f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				duration *= 0.250f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				duration *= 0.000f;
 
 			return (int)duration;
@@ -1101,13 +1099,13 @@ namespace BunnyMod.Content
 		{
 			float maxError = 200.000f;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				maxError -=  25.000f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				maxError -=  50.000f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				maxError +=  25.000f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				maxError +=  50.000f;
 
 			maxError = (maxError - charge) / 20f;
@@ -1136,20 +1134,20 @@ namespace BunnyMod.Content
 		}
 		public static bool MSA_TB_TryMiscast(Agent agent, float netCharge) 
 		{
-			if (agent.statusEffects.hasTrait("Archmage"))
+			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return false;
-			else if (agent.statusEffects.hasTrait("MagicTraining"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				netCharge *= 0.750f;
-			else if (agent.statusEffects.hasTrait("MagicTraining_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				netCharge *= 0.500f;
 
-			if (agent.statusEffects.hasTrait("FocusedCasting"))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				netCharge *= 0.500f;
-			else if (agent.statusEffects.hasTrait("FocusedCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				netCharge *= 0.250f;
-			else if (agent.statusEffects.hasTrait("WildCasting"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				netCharge *= 1.500f;
-			else if (agent.statusEffects.hasTrait("WildCasting_2"))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				netCharge *= 2.000f;
 
 			netCharge -= UnityEngine.Random.Range(0f, 100f);
@@ -1257,11 +1255,9 @@ namespace BunnyMod.Content
 
 				string[] magicAbilities = 
 				{ 
-					"ChronomanticDilation", 
-					"Cryomancy",
-					"Electromancy", 
-					"PyromanticJet", 
-					"TelemanticBlink" 
+					cSpecialAbility.ChronomanticDilation, 
+					cSpecialAbility.PyromanticJet, 
+					cSpecialAbility.TelemanticBlink 
 				};
 
 				if (magicAbilities.Contains(abilityName))

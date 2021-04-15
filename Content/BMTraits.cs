@@ -9,6 +9,8 @@ using UnityEngine;
 using RogueLibsCore;
 
 using Random = UnityEngine.Random;
+using UnityEngine.Networking;
+using System.Linq;
 
 /*
     IsActive is the state of the unlock in the Rewards/Traits/Mutators menu
@@ -21,11 +23,9 @@ using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
-    public enum DamageType
-	{
-        burnedFingers,
-        brokenWindow
-	}
+	#region Enums
+
+    #endregion
 
     public class BMTraits
     {
@@ -39,6 +39,9 @@ namespace BunnyMod.Content
         {
             Initialize_Names();
             Initialize_Traits();
+
+            // Agent
+            Prefix(typeof(Agent), "CanShakeDown", GetType(), "Agent_CanShakeDown", new Type[0] { });
 
             // AgentInteractions
             Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
@@ -59,19 +62,17 @@ namespace BunnyMod.Content
             Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
-            // LoadLevel
-            Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
-            Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
-
-            // MeleeHitbox
-            //Postfix(typeof(MeleeHitbox), "HitObject", GetType(), "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
-            //Postfix(typeof(MeleeHitbox), "MeleeHitEffect", GetType(), "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
-
             // PlayerControl
             Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 
             // PlayfieldObject
             Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
+
+            // Relationships
+            Postfix(typeof(Relationships), "SetupRelationshipOriginal", GetType(), "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
+
+            // SkillPoints
+            Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
 
             // StatusEffects
             Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
@@ -83,305 +84,195 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Traits()
         {
-			#region Codes of Conduct
-			//CustomTrait CodeOfHonor = RogueLibs.CreateCustomTrait("CodeOfHonor", true,
-			//    new CustomNameInfo("Code of Honor"),
-			//    new CustomNameInfo("You have sworn to protect the innocent, and generally just be a good guy. You lose XP for dishonorable acts."));
-			//CodeOfHonor.Available = false; //
-			//CodeOfHonor.AvailableInCharacterCreation = false; //
-			//CodeOfHonor.CostInCharacterCreation = -6;
-			//CodeOfHonor.IsActive = false; // 
-			//CodeOfHonor.Upgrade = null;
-			#endregion
-			#region Combat
-			//CustomTrait ReturnToBonke = RogueLibs.CreateCustomTrait("ReturnToBonke", true,
-			//    new CustomNameInfo("Return to Bonke"),
-			//    new CustomNameInfo("Chance to inflict Dizziness when striking an NPC with a blunt weapon."));
-			//ReturnToBonke.AvailableInCharacterCreation = false; //
-			//ReturnToBonke.CostInCharacterCreation = 3;
-			//ReturnToBonke.IsActive = false; //
-			//ReturnToBonke.Available = false; //
-			//ReturnToBonke.Upgrade = null;
-
-			CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait("SpectralStrikes", true,
-				new CustomNameInfo("Spectral Strikes"),
-				new CustomNameInfo("Your unarmed attacks can damage Ghosts."));
-			SpectralStrikes.AvailableInCharacterCreation = true;
-			SpectralStrikes.CostInCharacterCreation = 1;
-			SpectralStrikes.IsActive = true;
-			SpectralStrikes.Available = true;
-			SpectralStrikes.Upgrade = "SpectralStrikes_2";
-
-            CustomTrait SpectralStrikes_2 = RogueLibs.CreateCustomTrait("SpectralStrikes_2", true,
-                new CustomNameInfo("Spectral Strikes +"),
-                new CustomNameInfo("Your melee attacks can damage Ghosts."));
-            SpectralStrikes_2.AvailableInCharacterCreation = true;
-            SpectralStrikes_2.CostInCharacterCreation = 2;
-            SpectralStrikes_2.IsActive = true;
-            SpectralStrikes_2.Available = true;
-            SpectralStrikes_2.Upgrade = null;
-
-            //CustomTrait Whiffist = RogueLibs.CreateCustomTrait("Whiffist", true,
-            //    new CustomNameInfo("Whiffist"),
-            //    new CustomNameInfo("Small chance for Melee or Thrown attacks to miss you completely."));
-            //Whiffist.AvailableInCharacterCreation = false; //
-            //Whiffist.CostInCharacterCreation = 3;
-            //Whiffist.IsActive = false; //
-            //Whiffist.Available = false; //
-            //Whiffist.Upgrade = "Whiffist_2";
-            #endregion
             #region Consumables
-            //CustomTrait Alcoholic = RogueLibs.CreateCustomTrait("Alcoholic", true,
-            //    new CustomNameInfo("Alcoholic"),
-            //    new CustomNameInfo("Alcoholic? What? This must be a mistake. You can stop drinking any time you want. You just don't want to."));
-            //Alcoholic.Available = true;
-            //Alcoholic.AvailableInCharacterCreation = true;
-            //Alcoholic.CanRemove = true;
-            //Alcoholic.CanSwap = false;
-            //Alcoholic.CostInCharacterCreation = -5;
-            //Alcoholic.IsActive = true;
-            //Alcoholic.Upgrade = null;
-            //// TODO: Allow consumption at full health
-
-            CustomTrait Carnivore = RogueLibs.CreateCustomTrait("Carnivore", true,
-                new CustomNameInfo("Carnivore"),
+            CustomTrait Carnivore = RogueLibs.CreateCustomTrait(cTrait.Carnivore, true,
+                new CustomNameInfo(cTrait.Carnivore),
                 new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
             Carnivore.Available = true;
             Carnivore.AvailableInCharacterCreation = true;
             Carnivore.CanRemove = true;
             Carnivore.CanSwap = false;
-            Carnivore.Conflicting.AddRange(new string[] { "BananaLover", "OilRestoresHealth", "Vegetarian" });
+            Carnivore.Conflicting.AddRange(new string[] { vTrait.BananaLover, vTrait.OilLessEssential, vTrait.OilReliant, cTrait.Vegetarian });
             Carnivore.CostInCharacterCreation = -1;
             Carnivore.IsActive = true;
             Carnivore.Upgrade = null;
 
-            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait("DAREdevil", true,
-                new CustomNameInfo("DAREdevil"),
+            CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,
+                new CustomNameInfo(cTrait.DAREdevil),
                 new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
             DAREdevil.Available = true;
             DAREdevil.AvailableInCharacterCreation = true;
             DAREdevil.CanRemove = true;
             DAREdevil.CanSwap = false;
-            DAREdevil.Conflicting.AddRange(new string[] { "Addict", "FriendOfBill", "Teetotaller" });
+            DAREdevil.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.FriendOfBill, cTrait.Teetotaller});
             DAREdevil.CostInCharacterCreation = -3;
             DAREdevil.IsActive = true;
             DAREdevil.Upgrade = null;
 
-            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait("FriendofBill", true,
+            CustomTrait FriendOfBill = RogueLibs.CreateCustomTrait(cTrait.FriendOfBill, true,
                 new CustomNameInfo("Friend Of Bill"),
                 new CustomNameInfo("You are taking things one day at a time. But every day sucks when you can't get drunk anymore."));
             FriendOfBill.Available = true;
             FriendOfBill.AvailableInCharacterCreation = true;
             FriendOfBill.CanRemove = true;
             FriendOfBill.CanSwap = false;
-            FriendOfBill.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Teetotaller" });
+            FriendOfBill.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.DAREdevil, cTrait.Teetotaller});
             FriendOfBill.CostInCharacterCreation = -1;
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
 
-            //CustomTrait HungryBoy = RogueLibs.CreateCustomTrait("HungryBoy", true,
-            //    new CustomNameInfo("Hungry Boy"),
-            //    new CustomNameInfo("Less healing from food and alcohol."));
-            //HungryBoy.AvailableInCharacterCreation = false; //
-            //HungryBoy.CostInCharacterCreation = -3;
-            //HungryBoy.IsActive = false; //
-            //HungryBoy.Available = false; //
-            //HungryBoy.Upgrade = null;
-
-            CustomTrait Teetotaller = RogueLibs.CreateCustomTrait("Teetotaller", true,
-                new CustomNameInfo("Teetotaller"),
+            CustomTrait Teetotaller = RogueLibs.CreateCustomTrait(cTrait.Teetotaller, true,
+                new CustomNameInfo(cTrait.Teetotaller),
                 new CustomNameInfo("Wow, you're really boring. You don't do drugs *or* alcohol. What do you even do?"));
             Teetotaller.Available = true;
             Teetotaller.AvailableInCharacterCreation = true;
             Teetotaller.CanRemove = true;
             Teetotaller.CanSwap = false;
-            Teetotaller.Conflicting.AddRange(new string[] { "Addict", "DAREdevil", "Electronic", "FriendOfBill", "OilRestoresHealth" });
+            Teetotaller.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.DAREdevil, vTrait.Electronic, cTrait.FriendOfBill, vTrait.OilLessEssential, vTrait.OilReliant });
             Teetotaller.CostInCharacterCreation = -4;
             Teetotaller.IsActive = true;
             Teetotaller.Upgrade = null;
 
-            CustomTrait Vegetarian = RogueLibs.CreateCustomTrait("Vegetarian", true,
-                new CustomNameInfo("Vegetarian"),
+            CustomTrait Vegetarian = RogueLibs.CreateCustomTrait(cTrait.Vegetarian, true,
+                new CustomNameInfo(cTrait.Vegetarian),
                 new CustomNameInfo("You are one of those people."));
             Vegetarian.Available = true;
             Vegetarian.AvailableInCharacterCreation = true;
             Vegetarian.CanRemove = true;
             Vegetarian.CanSwap = true;
-            Vegetarian.Conflicting.AddRange(new string[] { "BloodRestoresHealth", "CannibalizeRestoresHealth", "Carnivore", "Electronic", "FleshFeast", "OilRestoresHealth", "Zombify" });
+            Vegetarian.Conflicting.AddRange(new string[] { vTrait.Jugularious, vTrait.StrictCannibal, cTrait.Carnivore, vTrait.Electronic, vTrait.FleshFeast, vTrait.OilLessEssential, vTrait.OilReliant, vTrait.Zombiism });
             Vegetarian.CostInCharacterCreation = -1;
-            Vegetarian.IsActive = false;
+            Vegetarian.IsActive = true;
             Vegetarian.Available = false;
             Vegetarian.Upgrade = null;
             #endregion
-            #region Economic
-            //CustomTrait DeathToSnitches = RogueLibs.CreateCustomTrait("DeathToSnitches", true,
-            //    new CustomNameInfo("Death To Snitches"),
-            //    new CustomNameInfo("Cops & Upper-Crusters will ignore your Pusher attempts. You may attempt to sell to Cops, but failure will turn them hostile."));
-            //DeathToSnitches.AvailableInCharacterCreation = false; //
-            //DeathToSnitches.IsActive = false; //
-            //DeathToSnitches.Available = false; //
-            //DeathToSnitches.Upgrade = null;
-            ////TODO: Unlock DeathToSnitches when Pusher gained
-
-            //CustomTrait Pusher = RogueLibs.CreateCustomTrait("Pusher", true,
-            //    new CustomNameInfo("Pusher"),
-            //    new CustomNameInfo("You can interact with most NPCs to attempt to sell them any drug item you have (or simplified, just Sugar). If you fail, they become annoyed (Upper Crusters will call the cops immediately). Cops who witness a dealing attempt will go Hostile. If you succeed at a sale, they have a chance to become Hooked. After a certain interval of withdrawal, NPCs will gain the Jonesing status. They'll seek you out in the level and beg you for a particular drug. If you go too long without selling them the requested drug, they'll go hostile, but selling them other types of drugs will keep them at bay for a while. When Jonesing, they will freely give you keys and safe combos if you ask. Jonesing NPCs may also attack other drug dealers, doctors, or scientists if they can't track you down."));//
-            //Pusher.AvailableInCharacterCreation = false; //
-            //Pusher.CanRemove = false;
-            //Pusher.CanSwap = false;
-            //Pusher.CostInCharacterCreation = 6;
-            //Pusher.IsActive = false; //
-            //Pusher.Available = false; //
-            //Pusher.Upgrade = "Pusher_2";
-            ////TODO: Unlock DeathToSnitches when Pusher gained
-
-            //CustomTrait Pusher_2 = RogueLibs.CreateCustomTrait("Pusher_2", true,
-            //    new CustomNameInfo("Pusher +"),
-            //    new CustomNameInfo("Increased chances of success when pushing drugs."));//
-            //Pusher_2.AvailableInCharacterCreation = false; //
-            //Pusher_2.IsActive = false; //
-            //Pusher_2.Available = false; //
-            //Pusher_2.Upgrade = null;
-            #endregion
             #region Equipment
-            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait("AfraidOfLoudNoises", true,
+            CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait(cTrait.AfraidOfLoudNoises, true,
                 new CustomNameInfo("Afraid of Loud Noises"),
                 new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!"));
             AfraidOfLoudNoises.Available = true;
             AfraidOfLoudNoises.AvailableInCharacterCreation = true;
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
-            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { "AttacksOneDamage", "CantUseGuns", "CantUseWeapons2", "DrawNoBlood" });
+            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { cTrait.DrawNoBlood, vTrait.NearHarmless, vTrait.StubbyFingers, vTrait.SausageFingers });
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
 
-            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait("DrawNoBlood", true,
+            CustomTrait DrawNoBlood = RogueLibs.CreateCustomTrait(cTrait.DrawNoBlood, true,
                 new CustomNameInfo("Draw No Blood"),
                 new CustomNameInfo("You have taken an oath to draw no blood. Guess you'll have to smash skulls really carefully, then. You cannot use bullet-based guns, sharp weapons, or most explosives."));
             DrawNoBlood.Available = true;
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { "AttacksOneDamage", "AfraidOfLoudNoises", "BloodRestoresHealth", "FleshFeast", "CantUseGuns", "CantUseWeapons2" });
+            DrawNoBlood.Conflicting.AddRange(new string[] { cTrait.AfraidOfLoudNoises, vTrait.NearHarmless, vTrait.Jugularious, vTrait.FleshFeast, vTrait.StubbyFingers, vTrait.SausageFingers });
             DrawNoBlood.CostInCharacterCreation = -5;
-            DrawNoBlood.IsActive = false;
+            DrawNoBlood.IsActive = true;
             DrawNoBlood.Upgrade = null;
 
-            //CustomTrait Fatass = RogueLibs.CreateCustomTrait("Fatass", true,
-            //    new CustomNameInfo("Fatass"),
-            //    new CustomNameInfo("Becoming a fat fuck was not a decision you took lightly. In fact, you don't do anything lightly. You move slower and can't wear Armor, but you *really* enjoy food. If Stomping is your thing, it increases that damage too."));
-            //Fatass.Available = true;
-            //Fatass.AvailableInCharacterCreation = true;
-            //Fatass.CanRemove = true;
-            //Fatass.CanSwap = false;
-            //Fatass.Conflicting.AddRange(new string[] { "Diminutive", "DontTriggerFloorHazards", "Electronic", "KnockbackMore" });
-            //Fatass.CostInCharacterCreation = -2;
-            //Fatass.IsActive = true;
-            //Fatass.Recommendations.AddRange(new string[] { "Stomp" });
-            //Fatass.Upgrade = null;
-
-            CustomTrait FatHead = RogueLibs.CreateCustomTrait("FatHead", true,
+            CustomTrait FatHead = RogueLibs.CreateCustomTrait(cTrait.FatHead, true,
                 new CustomNameInfo("Fat Head"),
                 new CustomNameInfo("You have a big, fat, ugly head. You can't wear hats of any kind. No one will lend you their headphones or sunglasses, because your big, fat, dumb, ugly head will break them. Your self-esteem is pretty much in the toilet."));
             FatHead.Available = true;
             FatHead.AvailableInCharacterCreation = true;
             FatHead.CanRemove = true;
             FatHead.CanSwap = false;
+            FatHead.Conflicting.AddRange(new string[] { vTrait.Diminutive });
             FatHead.CostInCharacterCreation = -1;
             FatHead.IsActive = true;
             FatHead.Upgrade = null;
             #endregion
             #region Luck
-            CustomTrait Charmed = RogueLibs.CreateCustomTrait("Charmed", true,
+            CustomTrait Charmed = RogueLibs.CreateCustomTrait(cTrait.Charmed, true,
                 new CustomNameInfo("Charmed & Dangerous"),
                 new CustomNameInfo("You once found a fourteen-leaf clover."));
             Charmed.Available = true;
             Charmed.AvailableInCharacterCreation = true;
             Charmed.CanRemove = false;
             Charmed.CanSwap = true;
-            Charmed.Conflicting.AddRange(new string[] { "Charmed_2", "Cursed", "Cursed_2" });
+            Charmed.Conflicting.AddRange(new string[] { cTrait.Charmed_2, cTrait.Cursed, cTrait.Cursed_2 });
             Charmed.CostInCharacterCreation = 3;
             Charmed.IsActive = true;
-            Charmed.Upgrade = "Charmed_2";
+            Charmed.Upgrade = cTrait.Charmed_2;
 
-            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait("Charmed_2", false,
+            CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait(cTrait.Charmed_2, false,
                 new CustomNameInfo("Charmed & Dangerous +"),
                 new CustomNameInfo("You are *really* lucky. Anyone who's been at the urinal next to you can attest."));
             Charmed_2.Available = false;
             Charmed_2.AvailableInCharacterCreation = false;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
-            Charmed_2.Conflicting.AddRange(new string[] { "Charmed", "Cursed", "Cursed_2" });
+            Charmed_2.Conflicting.AddRange(new string[] { cTrait.Charmed, cTrait.Cursed, cTrait.Cursed_2 });
             Charmed_2.CostInCharacterCreation = 6;
             Charmed_2.Upgrade = null;
 
-            CustomTrait Cursed = RogueLibs.CreateCustomTrait("Cursed", true,
+            CustomTrait Cursed = RogueLibs.CreateCustomTrait(cTrait.Cursed, true,
                 new CustomNameInfo("Unlucky"),
                 new CustomNameInfo("You pissed in some old Gypsy lady's cereal, and you still refuse to apologize. She didn't like that."));
             Cursed.Available = true;
             Cursed.AvailableInCharacterCreation = true;
             Cursed.CanRemove = true;
             Cursed.CanSwap = false;
-            Cursed.Conflicting.AddRange(new string[] { "Cursed_2", "Charmed", "Charmed_2" });
+            Cursed.Conflicting.AddRange(new string[] { cTrait.Charmed, cTrait.Charmed_2, cTrait.Cursed_2 });
             Cursed.CostInCharacterCreation = -2;
-            Cursed.IsActive = false;
+            Cursed.IsActive = true;
             Cursed.Upgrade = null;
 
-            CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait("Cursed_2", true,
+            CustomTrait Cursed_2 = RogueLibs.CreateCustomTrait(cTrait.Cursed_2, true,
                 new CustomNameInfo("Unlucky +"),
                 new CustomNameInfo("You bought up an old Indian graveyard, and there you built a black cat sanctuary and mirror-breakery. Not your best choice."));
             Cursed_2.Available = true;
             Cursed_2.AvailableInCharacterCreation = true;
             Cursed_2.CanRemove = true;
             Cursed_2.CanSwap = false;
-            Cursed_2.Conflicting.AddRange(new string[] { "Cursed", "Charmed", "Charmed_2" });
+            Cursed_2.Conflicting.AddRange(new string[] { cTrait.Cursed, cTrait.Charmed, cTrait.Charmed_2 });
             Cursed_2.CostInCharacterCreation = -4;
-            Cursed_2.IsActive = false;
+            Cursed_2.IsActive = true;
             Cursed_2.Upgrade = null;
             #endregion
             #region Magic - General
-            CustomTrait Archmage = RogueLibs.CreateCustomTrait("Archmage", true,
+            CustomTrait Archmage = RogueLibs.CreateCustomTrait(cTrait.Archmage, true,
                 new CustomNameInfo("Archmage"),
                 new CustomNameInfo("You are an unrivalled master of the magical arts. Basically cheat mode for magical abilities, added by request."));
             Archmage.Available = true;
             Archmage.AvailableInCharacterCreation = true;
             Archmage.CanRemove = false;
             Archmage.CanSwap = false;
-            Archmage.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2", "MagicTraining", "MagicTraining_2", "WildCasting", "WildCasting_2" });
+            Archmage.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2, cTrait.MagicTraining, cTrait.MagicTraining_2, cTrait.ManaBattery, cTrait.ManaBattery_2, cTrait.WildCasting, cTrait.WildCasting_2 });
             Archmage.CostInCharacterCreation = 100;
             Archmage.IsActive = true;
-            Archmage.Recommendations.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            Archmage.SpecialAbilities.AddRange(new string[] { "ManaBattery", "ManaBattery_2", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            Archmage.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            Archmage.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
             Archmage.Upgrade = null;
 
-            CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait("FocusedCasting", true,
+            CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait(cTrait.FocusedCasting, true,
                 new CustomNameInfo("Focused Casting"),
                 new CustomNameInfo("You've carefully refined your magic techniques to improve accuracy and reduce the chances of miscasting spells."));
             FocusedCasting.Available = true;
             FocusedCasting.AvailableInCharacterCreation = true;
             FocusedCasting.CanRemove = false;
             FocusedCasting.CanSwap = false;
-            FocusedCasting.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
+            FocusedCasting.Conflicting.AddRange(new string[] { cTrait.WildCasting, cTrait.WildCasting_2 });
             FocusedCasting.CostInCharacterCreation = 3;
             FocusedCasting.IsActive = true;
-            FocusedCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            FocusedCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            FocusedCasting.Upgrade = "FocusedCasting_2";
+            FocusedCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            FocusedCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            FocusedCasting.Upgrade = cTrait.FocusedCasting_2;
 
-            CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait("FocusedCasting_2", true,
+            CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait(cTrait.FocusedCasting_2, true,
                 new CustomNameInfo("Focused Casting +"),
                 new CustomNameInfo("You've even more carefully refined your techniques even more to improve accuracy and reduce the chances of miscasting spells EVEN MORE."));
             FocusedCasting_2.Available = false;
             FocusedCasting_2.AvailableInCharacterCreation = false;
             FocusedCasting_2.CanRemove = false;
             FocusedCasting_2.CanSwap = false;
-            FocusedCasting_2.Conflicting.AddRange(new string[] { "WildCasting", "WildCasting_2" });
+            FocusedCasting_2.Conflicting.AddRange(new string[] { cTrait.WildCasting, cTrait.WildCasting_2 });
             FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true;
             FocusedCasting_2.Upgrade = null;
 
-            CustomTrait MagicTraining = RogueLibs.CreateCustomTrait("MagicTraining", true,
+            CustomTrait MagicTraining = RogueLibs.CreateCustomTrait(cTrait.MagicTraining, true,
                 new CustomNameInfo("Magic Training"),
                 new CustomNameInfo("Improves your skills with any Magic Special Ability."));
             MagicTraining.Available = true;
@@ -389,12 +280,12 @@ namespace BunnyMod.Content
             MagicTraining.CostInCharacterCreation = 5;
             MagicTraining.CanRemove = false;
             MagicTraining.CanSwap = false;
-            MagicTraining.Conflicting.AddRange(new string[] { });
+            MagicTraining.Conflicting.AddRange(new string[] { cTrait.MagicTraining_2 });
             MagicTraining.IsActive = true;
-            MagicTraining.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            MagicTraining.Upgrade = "MagicTraining_2";
+            MagicTraining.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            MagicTraining.Upgrade = cTrait.MagicTraining_2;
 
-            CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait("MagicTraining_2", true,
+            CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait(cTrait.MagicTraining_2, true,
                 new CustomNameInfo("Magic Training +"),
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
             MagicTraining_2.Available = false;
@@ -402,12 +293,12 @@ namespace BunnyMod.Content
             MagicTraining_2.CostInCharacterCreation = 10;
             MagicTraining_2.CanRemove = false;
             MagicTraining_2.CanSwap = false;
-            MagicTraining_2.Conflicting.AddRange(new string[] { });
+            MagicTraining_2.Conflicting.AddRange(new string[] { cTrait.MagicTraining });
             MagicTraining_2.IsActive = true;
-            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
             MagicTraining_2.Upgrade = null;
 
-            CustomTrait ManaBattery = RogueLibs.CreateCustomTrait("ManaBattery", true,
+            CustomTrait ManaBattery = RogueLibs.CreateCustomTrait(cTrait.ManaBattery, true,
                 new CustomNameInfo("Mana Battery"),
                 new CustomNameInfo("You can store more mana. Nifty."));
             ManaBattery.Available = true;
@@ -417,10 +308,10 @@ namespace BunnyMod.Content
             ManaBattery.CanSwap = false;
             ManaBattery.Conflicting.AddRange(new string[] { });
             ManaBattery.IsActive = true;
-            ManaBattery.SpecialAbilities.AddRange(new string[] { "Archmage", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            ManaBattery.Upgrade = "ManaBattery_2";
+            ManaBattery.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            ManaBattery.Upgrade = cTrait.ManaBattery_2;
 
-            CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait("ManaBattery_2", true,
+            CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait(cTrait.ManaBattery_2, true,
                 new CustomNameInfo("Mana Battery +"),
                 new CustomNameInfo("You can store even more mana. Even niftier."));
             ManaBattery_2.Available = true;
@@ -430,22 +321,22 @@ namespace BunnyMod.Content
             ManaBattery_2.CanSwap = false;
             ManaBattery_2.Conflicting.AddRange(new string[] { });
             ManaBattery_2.IsActive = true;
-            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "Archmage", "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
+            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
             ManaBattery_2.Upgrade = null;
 
-            CustomTrait WildCasting = RogueLibs.CreateCustomTrait("WildCasting", true,
+            CustomTrait WildCasting = RogueLibs.CreateCustomTrait(cTrait.WildCasting, true,
                 new CustomNameInfo("Wild Casting"),
                 new CustomNameInfo("You don't need all that safety shit. You wanna cast some damn spells! Your spells are more powerful, but you have a greater chance of miscasting them."));
             WildCasting.Available = true;
             WildCasting.AvailableInCharacterCreation = true;
             WildCasting.CanRemove = false;
             WildCasting.CanSwap = false;
-            WildCasting.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
+            WildCasting.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2 });
             WildCasting.CostInCharacterCreation = 3;
             WildCasting.IsActive = true;
-            WildCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            WildCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "Cryomancy", "Electromancy", "PyromanticJet", "TelemanticBlink" });
-            WildCasting.Upgrade = "WildCasting_2";
+            WildCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            WildCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            WildCasting.Upgrade = cTrait.WildCasting_2;
 
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
                 new CustomNameInfo("Wild Casting +"),
@@ -454,226 +345,328 @@ namespace BunnyMod.Content
             WildCasting_2.AvailableInCharacterCreation = false;
             WildCasting_2.CanRemove = false;
             WildCasting_2.CanSwap = false;
-            WildCasting_2.Conflicting.AddRange(new string[] { "FocusedCasting", "FocusedCasting_2" });
+            WildCasting_2.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2});
             WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true;
             WildCasting_2.Upgrade = null;
             #endregion
             #region Magic - Chronomantic Dilation
-            CustomTrait RATS = RogueLibs.CreateCustomTrait("RATS", true,
+            CustomTrait RATS = RogueLibs.CreateCustomTrait(cTrait.RATS, true,
                 new CustomNameInfo("R.A.T.S. Mk VI"),
                 new CustomNameInfo("Resistance-Tec Assisted Targeting System. The latest cybernetic enhancement to shooting accuracy, crit chance, & some combat traits with a double effect when time is slowed down."));
             RATS.Available = true;
             RATS.AvailableInCharacterCreation = true;
             RATS.CanRemove = false;
             RATS.CanSwap = true;
-            RATS.Conflicting.AddRange(new string[] { "RATS_2" });
+            RATS.Conflicting.AddRange(new string[] { cTrait.RATS_2 });
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
-            RATS.Recommendations.AddRange(new string[] { "ChronomanticDilation", "ChanceAttacksDoZeroDamage", "ChanceToSlowEnemies", "IncreasedCritChance", "KnockWeapons" });
-            RATS.Upgrade = "RATS_2";
+            RATS.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, "ChronomanticDilation", vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
+            RATS.Upgrade = cTrait.RATS_2;
 
-            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait("RATS_2", true,
+            CustomTrait RATS_2 = RogueLibs.CreateCustomTrait(cTrait.RATS_2, true,
                 new CustomNameInfo("R.A.T.S. Mk VII"),
                 new CustomNameInfo("\"Various bug fixes and performance improvements.\" That's all the fucking update notes say. Also, they took out the headphone jack??"));
             RATS_2.Available = true;
             RATS_2.AvailableInCharacterCreation = true;
             RATS_2.CanRemove = false;
             RATS_2.CanSwap = false;
-            RATS_2.Conflicting.AddRange(new string[] { "RATS" });
+            RATS_2.Conflicting.AddRange(new string[] { cTrait.RATS });
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
+            RATS_2.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, "ChronomanticDilation", vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
             RATS_2.Upgrade = null;
 			#endregion
 			#region Miscellaneous
-			CustomTrait EagleEyes = RogueLibs.CreateCustomTrait("EagleEyes", true,
+			CustomTrait EagleEyes = RogueLibs.CreateCustomTrait(cTrait.EagleEyes, true,
 				new CustomNameInfo("Eagle Eyes"),
 				new CustomNameInfo("You can see further than normal. Hell, you can see further than *abnormal*."));
 			EagleEyes.Available = true;
 			EagleEyes.AvailableInCharacterCreation = true;
 			EagleEyes.CanRemove = false;
 			EagleEyes.CanSwap = true;
-            EagleEyes.Conflicting.AddRange(new string[] { "EagleEyes_2", "Myopic", "Myopic_2" });
+            EagleEyes.Conflicting.AddRange(new string[] { cTrait.EagleEyes_2, cTrait.Myopic, cTrait.Myopic2});
 			EagleEyes.CostInCharacterCreation = 3;
 			EagleEyes.IsActive = true;
-			EagleEyes.Upgrade = "EagleEyes_2";
+			EagleEyes.Upgrade = cTrait.EagleEyes_2;
 
-			CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait("EagleEyes_2", true,
+			CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait(cTrait.EagleEyes_2, true,
 				new CustomNameInfo("Eagle Eyes +"),
-				new CustomNameInfo("You can see *really* far. You might have been a good sniper or pilot, but you spent most of your early life peeping into windows."));
+				new CustomNameInfo("You might have been a good sniper, but you were kicked out of training when they didn't believe that you worked better without a rifle scope."));
 			EagleEyes_2.Available = true;
 			EagleEyes_2.AvailableInCharacterCreation = true;
 			EagleEyes_2.CanRemove = false;
 			EagleEyes_2.CanSwap = false;
-            EagleEyes_2.Conflicting.AddRange(new string[] { "EagleEyes", "Myopic", "Myopic_2" });
+            EagleEyes_2.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.Myopic, cTrait.Myopic2 });
 			EagleEyes_2.CostInCharacterCreation = 6;
 			EagleEyes_2.IsActive = true;
 			EagleEyes_2.Upgrade = null;
 
-			CustomTrait Myopic = RogueLibs.CreateCustomTrait("Myopic", true,
+            CustomTrait Myopic = RogueLibs.CreateCustomTrait(cTrait.Myopic, true,
 				new CustomNameInfo("Myopic"),
-				new CustomNameInfo("You can't see too far."));
+				new CustomNameInfo("You can't see too far. In fact, you can't see far enough."));
 			Myopic.Available = true;
 			Myopic.AvailableInCharacterCreation = true;
 			Myopic.CanRemove = true;
 			Myopic.CanSwap = true;
-            Myopic.Conflicting.AddRange(new string[] { "EagleEyes", "EagleEyes_2", "Myopic_2" });
+            Myopic.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.EagleEyes_2, cTrait.Myopic2 });
 			Myopic.CostInCharacterCreation = -4;
 			Myopic.IsActive = true;
 			Myopic.Upgrade = null;
 
-			CustomTrait Myopic_2 = RogueLibs.CreateCustomTrait("Myopic_2", true,
+            CustomTrait Myopic_2 = RogueLibs.CreateCustomTrait(cTrait.Myopic2, true,
 				new CustomNameInfo("Ultramyopic"),
 				new CustomNameInfo("You tend to keep people at arm's length, where you can't see them."));
 			Myopic_2.Available = true;
 			Myopic_2.AvailableInCharacterCreation = true;
 			Myopic_2.CanRemove = true;
 			Myopic_2.CanSwap = true;
-            Myopic_2.Conflicting.AddRange(new string[] { "EagleEyes", "EagleEyes_2", "Myopic" });
+            Myopic_2.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.EagleEyes_2, cTrait.Myopic });
 			Myopic_2.CostInCharacterCreation = -8;
 			Myopic_2.IsActive = true;
 			Myopic_2.Upgrade = null;
-			#endregion
-			#region Social
-			//CustomTrait ArtificialInsermonation = RogueLibs.CreateCustomTrait("ArtificialInsermonation", true,
-			//    new CustomNameInfo("Artificial Insermonation"),
-			//    new CustomNameInfo("Activate an Altar to deliver a Sermon, randomly improving relations with NPCs within earshot. They may donate tithes."));
-			//ArtificialInsermonation.AvailableInCharacterCreation = false; //
-			//ArtificialInsermonation.CostInCharacterCreation = 2;
-			//ArtificialInsermonation.IsActive = false; //
-			//ArtificialInsermonation.Available = false; //
-			//ArtificialInsermonation.Upgrade = "ArtificialInsermonation_2";
+            #endregion
+            #region Social
+            CustomTrait Domineering = RogueLibs.CreateCustomTrait(cTrait.Domineering, true,
+                new CustomNameInfo(cTrait.Domineering),
+                new CustomNameInfo("There's just something about how you carry yourself. Maybe it's the way you walk, or maybe it's the way you demand obedience from the weak around you. People will occasionally be Submissive to you. Kinky!"));
+            Domineering.Available = true;
+            Domineering.AvailableInCharacterCreation = true;
+            Domineering.CanRemove = true;
+            Domineering.CanSwap = false;
+            Domineering.Conflicting.AddRange(new string[] { cTrait.Domineering_2 });
+            Domineering.CostInCharacterCreation = 2;
+            Domineering.IsActive = true;
+            Domineering.Upgrade = cTrait.Domineering_2;
 
-			//CustomTrait ArtificialInsermonation_2 = RogueLibs.CreateCustomTrait("ArtificialInsermonation_2", true,
-			//    new CustomNameInfo("Artificial Insermonation +"),
-			//    new CustomNameInfo("Improved relationships and tithes from Sermonizing."));
-			//ArtificialInsermonation_2.AvailableInCharacterCreation = false; //
-			//ArtificialInsermonation_2.CostInCharacterCreation = 2;
-			//ArtificialInsermonation_2.IsActive = false; //
-			//ArtificialInsermonation_2.Available = false; //
-			//ArtificialInsermonation_2.Upgrade = null;
+            CustomTrait Domineering_2 = RogueLibs.CreateCustomTrait(cTrait.Domineering_2, true,
+                new CustomNameInfo("Domineering +"),
+                new CustomNameInfo("Some people make sure their social skills work for them. You crack the whip! You're finding more and more Subs everywhere you look."));
+            Domineering_2.Available = true;
+            Domineering_2.AvailableInCharacterCreation = true;
+            Domineering_2.CanRemove = true;
+            Domineering_2.CanSwap = false;
+            Domineering_2.Conflicting.AddRange(new string[] { cTrait.Domineering });
+            Domineering_2.CostInCharacterCreation = 4;
+            Domineering_2.IsActive = true;
+            Domineering_2.Upgrade = null;
 
-			//CustomTrait UndeadBane = RogueLibs.CreateCustomTrait("UndeadBane", true,
-			//    new CustomNameInfo("Undead Bane"),
-			//    new CustomNameInfo("The undead fear and hate you. They're probably just jealous. All Vampires, Zombies & Ghosts are hostile on sight."));
-			//UndeadBane.AvailableInCharacterCreation = false; //
-			//UndeadBane.CostInCharacterCreation = -4;
-			//UndeadBane.IsActive = false; //
-			//UndeadBane.Available = false; //
-			//UndeadBane.Upgrade = null;
+            CustomTrait GenerallyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant, true,
+                new CustomNameInfo("Generally Unpleasant"),
+                new CustomNameInfo("You have a certain way with people! It's... very annoying."));
+            GenerallyUnpleasant.Available = true;
+            GenerallyUnpleasant.AvailableInCharacterCreation = true;
+            GenerallyUnpleasant.CanRemove = true;
+            GenerallyUnpleasant.CanSwap = false;
+            GenerallyUnpleasant.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
+            GenerallyUnpleasant.CostInCharacterCreation = -3;
+            GenerallyUnpleasant.IsActive = true;
+            GenerallyUnpleasant.Upgrade = null;
 
-			//CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait("VeiledThreats", true,
-			//    new CustomNameInfo("Veiled Threats"),
-			//    new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
-			//VeiledThreats.AvailableInCharacterCreation = false; //
-			//VeiledThreats.CostInCharacterCreation = 3;
-			//VeiledThreats.IsActive = false; //
-			//VeiledThreats.Available = false; //
-			//VeiledThreats.Upgrade = null;
-			#endregion
-			#region Stealth
-			CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait("StealthBastardDeluxe", true,
+            CustomTrait ObjectivelyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant_2, true,
+                new CustomNameInfo("Objectively Unpleasant"),
+                new CustomNameInfo("You chew with your mouth open. You rightfully have no friends in the world. You are scum. Everyone starts out Annoyed, including me."));
+            ObjectivelyUnpleasant.Available = true;
+            ObjectivelyUnpleasant.AvailableInCharacterCreation = true;
+            ObjectivelyUnpleasant.CanRemove = true;
+            ObjectivelyUnpleasant.CanSwap = false;
+            ObjectivelyUnpleasant.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, vTrait.Malodorous, cTrait.Polarizing, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
+            ObjectivelyUnpleasant.CostInCharacterCreation = -8;
+            ObjectivelyUnpleasant.IsActive = true;
+            ObjectivelyUnpleasant.Upgrade = null;
+
+            CustomTrait Polarizing = RogueLibs.CreateCustomTrait(cTrait.Polarizing, true,
+                new CustomNameInfo(cTrait.Polarizing_2),
+                new CustomNameInfo("Everyone has an opinion on you, when they first meet you. Might be good or bad, but at least you feel noticed!"));
+            Polarizing.Available = true;
+            Polarizing.AvailableInCharacterCreation = true;
+            Polarizing.CanRemove = false;
+            Polarizing.CanSwap = true;
+            Polarizing.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
+            Polarizing.CostInCharacterCreation = 0;
+            Polarizing.IsActive = true;
+            Polarizing.Upgrade = cTrait.Polarizing_2;
+
+            CustomTrait Polarizing_2 = RogueLibs.CreateCustomTrait(cTrait.Polarizing_2, true,
+                new CustomNameInfo("Polarizing +"),
+                new CustomNameInfo("People have *strong* opinions of you. Like me. I think you're just great."));
+            Polarizing_2.Available = true;
+            Polarizing_2.AvailableInCharacterCreation = true;
+            Polarizing_2.CanRemove = false;
+            Polarizing_2.CanSwap = true;
+            Polarizing_2.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing, vTrait.Suspicious, vTrait.Wanted });
+            Polarizing_2.CostInCharacterCreation = 1;
+            Polarizing_2.IsActive = true;
+            Polarizing_2.Upgrade = null;
+
+            CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
+                new CustomNameInfo("Priors"),
+                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. They are sick of your shit, and just looking for an excuse to beat you down."));
+            Priors.Available = true;
+            Priors.AvailableInCharacterCreation = true;
+            Priors.CanRemove = true;
+            Priors.CanSwap = true;
+            Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
+            Priors.CostInCharacterCreation = -2;
+            Priors.IsActive = true;
+            Priors.Upgrade = null;
+
+            CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait(cTrait.VeiledThreats, true,
+				new CustomNameInfo("Veiled Threats"),
+				new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
+            VeiledThreats.Available = true;
+            VeiledThreats.AvailableInCharacterCreation = true;
+            VeiledThreats.CanRemove = false;
+            VeiledThreats.CanSwap = true;
+            VeiledThreats.Conflicting.AddRange(new string[] { });
+            VeiledThreats.CostInCharacterCreation = 2;
+            VeiledThreats.IsActive = true;
+            VeiledThreats.Recommendations.AddRange(new string[] { vTrait.Extortionist, vTrait.Mugger });
+            VeiledThreats.Upgrade = null;
+
+            CustomTrait Warlord = RogueLibs.CreateCustomTrait(cTrait.Warlord, true,
+                new CustomNameInfo(cTrait.Warlord),
+                new CustomNameInfo("To crush your enemies, to see them fall at your feet -- to take their horses and goods and hear the lamentation of their women. That is best! You can convince anyone to accept your rule by force."));
+            Warlord.Available = true;
+            Warlord.AvailableInCharacterCreation = true;
+            Warlord.CanRemove = false;
+            Warlord.CanSwap = true;
+            Warlord.Conflicting.AddRange(new string[] { });
+            Warlord.CostInCharacterCreation = 16;
+            Warlord.IsActive = true;
+            Warlord.Upgrade = null;
+            #endregion
+            #region Spawns
+            CustomTrait Haunted = RogueLibs.CreateCustomTrait("Haunted", true,
+                new CustomNameInfo("Haunted"),
+                new CustomNameInfo("You spent too long spelunking in an ancient treasure vault. The local ghosts were very unhappy with you, and you had their legal case dismissed. Now they're taking it into their own hands."));
+            Haunted.Available = true;
+            Haunted.AvailableInCharacterCreation = true;
+            Haunted.CanRemove = true;
+            Haunted.CanSwap = false;
+            Haunted.Conflicting.AddRange(new string[] { });
+            Haunted.CostInCharacterCreation = -2;
+            Haunted.IsActive = true;
+            Haunted.Upgrade = null;
+
+            CustomTrait MobDebt = RogueLibs.CreateCustomTrait("MobDebt", true,
+                new CustomNameInfo("Mob Debt"),
+                new CustomNameInfo("You found a sack of money, and the people to whom it belongs want it back with interest. Well, they certainly have your interest, but you've spent the principal. Pay it off at an ATM by Level 10, or else your kneecaps (and the rest of your body) will pay the price."));
+            MobDebt.Available = true;
+            MobDebt.AvailableInCharacterCreation = true;
+            MobDebt.CanRemove = true;
+            MobDebt.CanSwap = false;
+            MobDebt.Conflicting.AddRange(new string[] { });
+            MobDebt.CostInCharacterCreation = -10;
+            MobDebt.IsActive = true;
+            MobDebt.Upgrade = null;
+
+            CustomTrait MookMasher = RogueLibs.CreateCustomTrait("MookMasher", true,
+                new CustomNameInfo("Mook Masher"),
+                new CustomNameInfo("The Mayor knows you're a threat, and you're coming for him. He could just destroy you, but as a villain, he prefers to send his henchmen at you in steadily increasing but manageable waves."));
+            MookMasher.Available = true;
+            MookMasher.AvailableInCharacterCreation = true;
+            MookMasher.CanRemove = true;
+            MookMasher.CanSwap = false;
+            MookMasher.Conflicting.AddRange(new string[] { });
+            MookMasher.CostInCharacterCreation = -5;
+            MookMasher.IsActive = true;
+            MookMasher.Upgrade = null;
+
+
+            CustomTrait Reinforcements = RogueLibs.CreateCustomTrait("Reinforcements", true,
+                new CustomNameInfo("Reinforcements"),
+                new CustomNameInfo("You have worked to create an army for the Resistance. That army now patrols the City secretly, looking for the opportunity to aid the cause."));
+            Reinforcements.Available = true;
+            Reinforcements.AvailableInCharacterCreation = true;
+            Reinforcements.CanRemove = false;
+            Reinforcements.CanSwap = true;
+            Reinforcements.Conflicting.AddRange(new string[] { });
+            Reinforcements.CostInCharacterCreation = 5;
+            Reinforcements.IsActive = true;
+            Reinforcements.Upgrade = "Reinforcements_2";
+
+            CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait("Reinforcements_2", true,
+                new CustomNameInfo("Reinforcements +"),
+                new CustomNameInfo("Your allies now have top-of-the-line equipment."));
+            Reinforcements_2.Available = true;
+            Reinforcements_2.AvailableInCharacterCreation = true;
+            Reinforcements_2.CanRemove = false;
+            Reinforcements_2.CanSwap = true;
+            Reinforcements_2.Conflicting.AddRange(new string[] { });
+            Reinforcements_2.CostInCharacterCreation = 10;
+            Reinforcements_2.IsActive = true;
+            Reinforcements_2.Upgrade = "Reinforcements_2";
+            #endregion
+            #region Stealth
+            CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait(cTrait.StealthBastardDeluxe, true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
             StealthBastardDeluxe.AvailableInCharacterCreation = true;
             StealthBastardDeluxe.CanRemove = false;
             StealthBastardDeluxe.CanSwap = true;
-            StealthBastardDeluxe.Conflicting.AddRange(new string[] { "Fatass", "Loud" });
+            StealthBastardDeluxe.Conflicting.AddRange(new string[] { vTrait.Loud });
             StealthBastardDeluxe.CostInCharacterCreation = 4;
             StealthBastardDeluxe.IsActive = true;
             StealthBastardDeluxe.Upgrade = null;
 
-            CustomTrait UnderdarkCitizen = RogueLibs.CreateCustomTrait("UnderdarkCitizen", true,
+            CustomTrait UnderdarkCitizen = RogueLibs.CreateCustomTrait(cTrait.UnderdarkCitizen, true,
                 new CustomNameInfo("Underdark Citizen"),
                 new CustomNameInfo("You can navigate the city's sewers with ease. Their denizens no longer consider you an easy mark."));
             UnderdarkCitizen.Available = true;
             UnderdarkCitizen.AvailableInCharacterCreation = true;
             UnderdarkCitizen.CanRemove = false;
             UnderdarkCitizen.CanSwap = false;
-            UnderdarkCitizen.Conflicting.AddRange(new string[] { });
+            UnderdarkCitizen.Conflicting.AddRange(new string[] { vTrait.TheLaw });
             UnderdarkCitizen.CostInCharacterCreation = 2;
             UnderdarkCitizen.IsActive = true;
             UnderdarkCitizen.Upgrade = null;
             #endregion
             #region Tampering
-            //CustomTrait OneHappyTamper = RogueLibs.CreateCustomTrait("OneHappyTamper", true,
-            //    new CustomNameInfo("One Happy Tamper"),
-            //    new CustomNameInfo("Owners will allow you to tamper with their belongings."));
-            //OneHappyTamper.AvailableInCharacterCreation = false; //
-            //OneHappyTamper.CostInCharacterCreation = 2;
-            //OneHappyTamper.IsActive = false; //
-            //OneHappyTamper.Available = false; //
-            //OneHappyTamper.Upgrade = null;
-
-            CustomTrait TamperTantrum = RogueLibs.CreateCustomTrait("TamperTantrum", true,
+            CustomTrait TamperTantrum = RogueLibs.CreateCustomTrait(cTrait.TamperTantrum, true,
                 new CustomNameInfo("Tamper Tantrum"),
                 new CustomNameInfo("Your tools take less wear from tampering."));
             TamperTantrum.Available = true;
             TamperTantrum.AvailableInCharacterCreation = true;
             TamperTantrum.CanRemove = false;
             TamperTantrum.CanSwap = true;
+            TamperTantrum.Conflicting.AddRange(new string[] { });
             TamperTantrum.CostInCharacterCreation = 2;
             TamperTantrum.IsActive = true;
-            TamperTantrum.Upgrade = "TamperTantrum_2";
+            TamperTantrum.Upgrade = cTrait.TamperTantrum_2;
 
-            CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait("TamperTantrum_2", false,
+            CustomTrait TamperTantrum_2 = RogueLibs.CreateCustomTrait(cTrait.TamperTantrum_2, false,
                 new CustomNameInfo("Tamper Tantrum +"),
                 new CustomNameInfo("Your tools take zero wear when used in tampering."));
             TamperTantrum_2.Available = false;
             TamperTantrum_2.AvailableInCharacterCreation = false;
             TamperTantrum_2.CanRemove = false;
             TamperTantrum_2.CanSwap = false;
+            TamperTantrum_2.Conflicting.AddRange(new string[] { });
             TamperTantrum_2.CostInCharacterCreation = 5;
             TamperTantrum_2.IsActive = true;
             TamperTantrum_2.Upgrade = null;
             #endregion
-            #region Trapping
-            //CustomTrait CheekyTrappy = RogueLibs.CreateCustomTrait("CheekyTrappy", true,
-            //    new CustomNameInfo("Cheeky Trappy"),
-            //    new CustomNameInfo("All hidden traps are visible to you. NPCs will no longer avoid your traps."));
-            //CheekyTrappy.AvailableInCharacterCreation = false; //
-            //CheekyTrappy.CostInCharacterCreation = 1;
-            //CheekyTrappy.IsActive = false; //
-            //CheekyTrappy.Available = false; //
-            //CheekyTrappy.Upgrade = null;
-
-            //CustomTrait PursuitOfTrappiness = RogueLibs.CreateCustomTrait("PursuitOfTrappiness", true,
-            //    new CustomNameInfo("Pursuit Of Trappiness"),
-            //    new CustomNameInfo("Un-Aligned NPCs take additional damage from Traps."));
-            //PursuitOfTrappiness.AvailableInCharacterCreation = false; //
-            //PursuitOfTrappiness.CostInCharacterCreation = 2;
-            //PursuitOfTrappiness.IsActive = false; //
-            //PursuitOfTrappiness.Available = false; //
-            //PursuitOfTrappiness.Upgrade = null;
-
-            //CustomTrait TrapperKeeper = RogueLibs.CreateCustomTrait("TrapperKeeper", true,
-            //    new CustomNameInfo("Trapper Keeper"),
-            //    new CustomNameInfo("Interact with Traps to add them to your inventory. 100% chance to disarm Door Detonators."));
-            //TrapperKeeper.AvailableInCharacterCreation = false; //
-            //TrapperKeeper.CostInCharacterCreation = 2;
-            //TrapperKeeper.IsActive = false; //
-            //TrapperKeeper.Available = false; //
-            //TrapperKeeper.Upgrade = null;
-            #endregion
         }
         #endregion
-
-        #region Custom
+        #region Custom Methods
+        public static List<T> ConcatTraitLists<T>(params IEnumerable<T>[] enums)
+            => enums.SelectMany(e => e).ToList();
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
             BMLog("HealthCost");
 
             if (type == DamageType.burnedFingers)
             {
-                if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
+                if (agent.statusEffects.hasTrait(vTrait.ResistFire) || agent.statusEffects.hasTrait(vTrait.FireproofSkin) || agent.statusEffects.hasTrait(vTrait.FireproofSkin2))
                     return "0";
             }
             else if (type == DamageType.brokenWindow)
             {
-                if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
+                if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                     return "0";
-                else if (agent.statusEffects.hasTrait("Diminutive"))
+                else if (agent.statusEffects.hasTrait(vTrait.Diminutive))
                     return (baseDamage / 2).ToString();
             }
 
@@ -681,16 +674,11 @@ namespace BunnyMod.Content
         }
         public static bool IsTraitActive(string trait)
 		{
-            BMLog("IsTraitActive");
-
             foreach (Agent agent in GC.playerAgentList)
-                foreach (Trait se in agent.statusEffects.TraitList)
-				{
-                    BMLog("Trait: '" + se.traitName + "'");
-
-                    if (se.traitName == "StealthBastardDeluxe")
-                        return true;
-                }
+                if (agent.isPlayer != 0)
+                    foreach (Trait se in agent.statusEffects.TraitList)
+                        if (se.traitName == trait)
+                            return true;
                     
             return false;
 		}
@@ -719,16 +707,28 @@ namespace BunnyMod.Content
         }
         public static int ToolCost(Agent agent, int baseCost)
         {
-            if (agent.statusEffects.hasTrait("TamperTantrum"))
+            if (agent.statusEffects.hasTrait(cTrait.TamperTantrum))
                 return (baseCost / 2);
 
-            if (agent.statusEffects.hasTrait("TamperTantrum_2"))
+            if (agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                 return 0;
 
             return baseCost;
         }
 		#endregion
 
+		#region Agent
+        public static bool Agent_CanShakeDown(ref bool __result) // Prefix
+		{
+            if (BMTraits.IsTraitActive(cTrait.Warlord))
+			{
+                __result = true;
+                return false;
+			}
+            
+            return true;
+		}
+		#endregion
 		#region AgentInteractions
 		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
@@ -747,9 +747,9 @@ namespace BunnyMod.Content
 
             if 
             (
-                (__instance.agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing")) ||
-                (__instance.agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer")) ||
-                (__instance.agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Piercing")) ||
+                (__instance.agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer")) ||
+                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Blunt"))
             )
                 __result = false;
 
@@ -757,7 +757,7 @@ namespace BunnyMod.Content
         }
         public static bool InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Prefix
 		{
-            if (item.isArmor && __instance.agent.statusEffects.hasTrait("Fatass"))
+            if (item.isArmor && __instance.agent.statusEffects.hasTrait(cTrait.Fatass))
             {
                 __instance.agent.Say("I'm too fuckin' fat to wear this!");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
@@ -769,7 +769,7 @@ namespace BunnyMod.Content
 		}
         public static bool InvDatabase_EquipArmorHead(InvItem item, bool sfx, InvDatabase __instance) // Prefix
 		{
-            if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait("FatHead"))
+            if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait(cTrait.FatHead))
             {
                 __instance.agent.Say("Ow, I can feel it squeezing my big, stupid, dumb, ugly head!");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
@@ -786,21 +786,21 @@ namespace BunnyMod.Content
 
             Agent agent = __instance.agent;
 
-            if (agent.statusEffects.hasTrait("DrawNoBlood") && item.Categories.Contains("Piercing"))
+            if (agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Piercing"))
             {
                 agent.Say("Mommy says I can't use sharp things!");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
-            else if (agent.statusEffects.hasTrait("AfraidOfLoudNoises") && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
+            else if (agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
                 agent.Say("I can't use that! It's too loooooud.");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
-            else if (agent.statusEffects.hasTrait("NoBlunt") && item.Categories.Contains("Blunt"))
+            else if (agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Blunt"))
 			{
                 agent.Say("I need something sharper.");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
@@ -814,9 +814,9 @@ namespace BunnyMod.Content
 		{
             if (BMHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
-                if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
+                if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;
-                else if (__instance.agent.statusEffects.hasTrait("TamperTantrum"))
+                else if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum))
                     amount /= 2;
             }
             return true;
@@ -825,9 +825,9 @@ namespace BunnyMod.Content
 		{
             if (BMHeader.tools.Contains(invItem.invItemName))
             {
-                if (__instance.agent.statusEffects.hasTrait("TamperTantrum_2"))
+                if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;
-                else if (__instance.agent.statusEffects.hasTrait("TamperTantrum"))
+                else if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum))
                     amount /= 2;
             }
             return true;
@@ -852,7 +852,7 @@ namespace BunnyMod.Content
                 if (BMHeader.nonVegetarian.Contains(name))
                     __instance.Categories.Add("NonVegetarian");
                 else if (BMHeader.vegetarian.Contains(name))
-                    __instance.Categories.Add("Vegetarian");
+                    __instance.Categories.Add(cTrait.Vegetarian);
             }
             if (__instance.Categories.Contains("Weapons"))
             {
@@ -873,32 +873,32 @@ namespace BunnyMod.Content
             List<string> cats = __instance.Categories;
             bool cantDoFlag = false;
 
-            if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller")))
+            if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
                 agent.Say("Today, I choose not to drink.");
                 cantDoFlag = true;
             }
-            if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+            if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
                 agent.Say("Nope, my body is a temple!");
                 cantDoFlag = true;
             }
-            if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait("Vegetarian"))
+            if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait(cTrait.Vegetarian))
             {
                 agent.Say("Meat is murder!");
                 cantDoFlag = true;
             }
-            if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait("Carnivore"))
+            if (cats.Contains(cTrait.Vegetarian) && agent.statusEffects.hasTrait(cTrait.Carnivore))
             {
                 agent.Say("No! Me want meat!");
                 cantDoFlag = true;
             }
-            if (cats.Contains("Loud") && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
+            if (cats.Contains("Loud") && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
 			{
                 agent.Say("But that'll hurt my little ears!");
                 cantDoFlag = true;
             }
-            if (cats.Contains("Piercing") && agent.statusEffects.hasTrait("DrawNoBlood"))
+            if (cats.Contains("Piercing") && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
 			{
                 agent.Say("I swore to draw no blood. Unless I remove this trait first.");
                 cantDoFlag = true;
@@ -919,37 +919,37 @@ namespace BunnyMod.Content
             StatusEffects traits = agent.statusEffects;
             if
             (
-                (cats.Contains("Alcohol") && (traits.hasTrait("FriendOfBill") || traits.hasTrait("Teetotaller")) ) ||
-                (cats.Contains("Drugs") && (traits.hasTrait("DAREdevil") || traits.hasTrait("Teetotaller")) ) ||
-                (cats.Contains("Vegetarian") && traits.hasTrait("Carnivore")) ||
-                (cats.Contains("NonVegetarian") && traits.hasTrait("Vegetarian"))
+                (cats.Contains("Alcohol") && (traits.hasTrait(cTrait.FriendOfBill) || traits.hasTrait(cTrait.Teetotaller)) ) ||
+                (cats.Contains("Drugs") && (traits.hasTrait(cTrait.DAREdevil) || traits.hasTrait(cTrait.Teetotaller)) ) ||
+                (cats.Contains(cTrait.Vegetarian) && traits.hasTrait(cTrait.Carnivore)) ||
+                (cats.Contains("NonVegetarian") && traits.hasTrait(cTrait.Vegetarian))
             )
                 __result = 0;
-            if (traits.hasTrait("Fatass"))
+            if (traits.hasTrait(cTrait.Fatass))
                 __result = (int)((float)__result * 1.5f);
 		}
         public static bool ItemFunctions_UseItem(InvItem item, Agent agent, ItemFunctions __instance) // Prefix ***new
 		{
             if (item.itemType == "Consumable")
 			{
-                if (BMHeader.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait("FriendOfBill") || agent.statusEffects.hasTrait("Teetotaller"))))
+                if (BMHeader.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
                 {
                     agent.Say("Today, I choose not to drink.");
                     goto terminus;
                 }
 
-                if (BMHeader.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait("DAREdevil") || agent.statusEffects.hasTrait("Teetotaller")))
+                if (BMHeader.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
                 {
                     agent.Say("Nope, my body is a temple!");
                     goto terminus;
                 }
 
-                if (BMHeader.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Vegetarian"))
+                if (BMHeader.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Vegetarian))
                 {
                     agent.Say("Meat is murder!");
                     goto terminus;
                 }
-                else if (BMHeader.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait("Carnivore"))
+                else if (BMHeader.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Carnivore))
                 {
                     agent.Say("No! Me want meat!");
                     goto terminus;
@@ -957,13 +957,13 @@ namespace BunnyMod.Content
             }
 			else
             {
-                if (BMHeader.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait("AfraidOfLoudNoises"))
+                if (BMHeader.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
                 {
                     agent.Say("But that'll hurt my little ears!");
                     goto terminus;
                 }
 
-                if (BMHeader.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait("DrawNoBlood"))
+                if (BMHeader.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
                 {
                     agent.Say("I swore to draw no blood. Unless I remove this trait first.");
                     goto terminus;
@@ -979,572 +979,6 @@ namespace BunnyMod.Content
             return false;
         }
         #endregion
-        #region LevelEditor
-        public static void LevelEditor_CreateLevelFeatureListDowntown()
-        {
-        }
-        public static void LevelEditor_CreateLevelFeatureListIndustrial()
-		{
-		}
-        public static void LevelEditor_CreateLevelFeatureListMayorVillage()
-		{
-		}
-        public static void LevelEditor_CreateLevelFeatureListPark()
-		{
-        }
-        public static void LevelEditor_CreateLevelFeatureListSlums()
-        {
-        }
-        public static void LevelEditor_CreateLevelFeatureListUptown()
-		{
-		}
-		#endregion
-		#region LoadLevel
-        public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance) // Prefix
-		{
-            BMLog("LoadLevel_SetupMore3_3_Prefix");
-
-            if (!GC.customLevel && IsTraitActive("UnderdarkCitizen")) // TODO: Exclude Downtown from this
-            {
-                int bigTries = (int)((float)UnityEngine.Random.Range(8, 12) * __instance.levelSizeModifier);
-                int numTries;
-
-                for (int i = 0; i < bigTries; i = numTries + 1)
-                {
-                    Vector2 vector14 = Vector2.zero;
-                    int num34 = 0;
-
-                    do
-                    {
-                        vector14 = GC.tileInfo.FindRandLocationGeneral(2f);
-
-                        for (int num35 = 0; num35 < GC.objectRealList.Count; num35++)
-                            if (GC.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(GC.objectRealList[num35].tr.position, vector14) < 14f)
-                                vector14 = Vector2.zero;
-
-                        if (vector14 != Vector2.zero)
-                        {
-                            if (GC.tileInfo.WaterNearby(vector14))
-                                vector14 = Vector2.zero;
-                            if (GC.tileInfo.IceNearby(vector14))
-                                vector14 = Vector2.zero;
-                            if (GC.tileInfo.BridgeNearby(vector14))
-                                vector14 = Vector2.zero;
-                        }
-                        num34++;
-                    }
-                    while ((vector14 == Vector2.zero || Vector2.Distance(vector14, GC.playerAgent.tr.position) < 5f) && num34 < 100);
-
-                    if (vector14 != Vector2.zero && Vector2.Distance(vector14, GC.playerAgent.tr.position) >= 5f)
-                        GC.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
-
-                    //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-                    //{
-                    //    yield return null;
-                    //    chunkStartTime = Time.realtimeSinceStartup;
-                    //}
-                    UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-
-                    numTries = i;
-                }
-
-                int numObjects = (int)((float)UnityEngine.Random.Range(2, 4) * __instance.levelSizeModifier);
-                List<Manhole> manholeList = new List<Manhole>();
-
-
-                for (int num36 = 0; num36 < GC.objectRealList.Count; num36++)
-                    if (GC.objectRealList[num36].objectName == "Manhole")
-                        manholeList.Add((Manhole)GC.objectRealList[num36]);
-
-                if (manholeList.Count > 0)
-                {
-                    for (int i = 0; i < numObjects; i = numTries + 1)
-                    {
-                        int numberOfHiddenAgents = 0;
-                        Manhole manhole;
-                        bool flag13;
-
-                        do
-                        {
-                            UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-                            manhole = manholeList[UnityEngine.Random.Range(0, manholeList.Count)];
-                            flag13 = true;
-
-                            for (int j = 0; j < GC.agentList.Count; j++)
-                                if (GC.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, GC.agentList[j].tr.position) < 10f)
-                                {
-                                    numberOfHiddenAgents++;
-                                    flag13 = false;
-                                }
-
-                            numberOfHiddenAgents++;
-                        }
-                        while (numberOfHiddenAgents < 50 && !flag13);
-
-                        if (flag13)
-                        {
-                            string text3 = GC.Choose<string>("Thief", "Thief", new string[]
-                            {
-                                    "Thief",
-                                    "Cannibal"
-                            });
-
-                            if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
-                            {
-                                Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
-                                agent2.SetDefaultGoal("Idle");
-                                agent2.statusEffects.BecomeHidden(manhole);
-                                agent2.oma.mustBeGuilty = true;
-                            }
-                        }
-
-                        //if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-                        //{
-                        //    yield return null;
-                        //    chunkStartTime = Time.realtimeSinceStartup;
-                        //}
-
-                        UnityEngine.Random.InitState(__instance.randomSeedNum + i);
-                        numTries = i;
-                    }
-                }
-                manholeList = null;
-            }
-
-            return true;
-        }
-        public static void LoadLevel_SetupMore3_3_Postfix(LoadLevel __instance) // Postfix
-		{
-            for (int agentSearch = 0; agentSearch < GC.agentList.Count; agentSearch++)
-                if (GC.agentList[agentSearch].isPlayer > 0)
-                    LoadLevel_SpawnHitSquad(GC.agentList[agentSearch], 150, "Ghost", __instance);
-        }
-        public static void LoadLevel_SpawnHitSquad(Agent targetAgent, int currentDebt, string agentType, LoadLevel __instance) // Non-Patch
-        {
-            List<Agent> list = new List<Agent>();
-            Agent.gangCount++;
-            targetAgent.gangStalking = Agent.gangCount;
-            Vector2 pos = Vector2.zero;
-            int debt50s = 0;
-
-            while (currentDebt > 0)
-            {
-                currentDebt -= 50;
-                debt50s++;
-            }
-            
-            if (GC.challenges.Contains("AssassinsEveryLevel"))
-                debt50s = 3;
-            
-            for (int i = 0; i < debt50s; i++)
-            {
-                Vector2 vector = Vector2.zero;
-                int attempts = 0;
-
-                if (i == 0)
-                {
-                    do
-                    {
-                        vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
-                        attempts++;
-                    }
-                    while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
-
-                    pos = vector;
-                }
-                else
-                    vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
-
-                if (vector != Vector2.zero && attempts < 300)
-                {
-                    Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
-                    agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
-                    agent.gang = Agent.gangCount;
-                    agent.modLeashes = 0;
-                    agent.alwaysRun = true;
-                    agent.wontFlee = true;
-                    agent.agentActive = true;
-                    //agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-                    agent.oma.mustBeGuilty = true;
-                    list.Add(agent);
-
-                    if (list.Count > 1)
-                        for (int j = 0; j < list.Count; j++)
-                            if (list[j] != agent)
-                            {
-                                agent.relationships.SetRelInitial(list[j], "Aligned");
-                                list[j].relationships.SetRelInitial(agent, "Aligned");
-                            }
-
-                    agent.relationships.SetRel(targetAgent, "Hateful");
-                    agent.relationships.SetRelHate(targetAgent, 5);
-                    targetAgent.relationships.SetRel(agent, "Hateful");
-                    targetAgent.relationships.SetRelHate(agent, 5);
-                }
-            }
-        }
-		#endregion
-		#region MeleeHitbox
-		public static void MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // 
-		{
-			if (!__instance.myMelee.agent.statusEffects.hasTrait("SpectralStrikes"))
-				return;
-
-			InvItem invItem = null;
-
-			try
-			{
-				invItem = __instance.myMelee.agent.inventory.equippedWeapon;
-
-				if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
-				{
-					invItem = __instance.myMelee.agent.inventory.fist;
-				}
-			}
-			catch
-			{
-			}
-
-			if ((!__instance.ObjectListContains(hitObject) && __instance.myMelee.canDamage && __instance.canHitMore) || fromClient)
-			{
-				if (hitObject.CompareTag("AgentSprite"))
-				{
-					__instance.objectList.Add(hitObject);
-					Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
-
-					if (__instance.myMelee.agent != agent3 && agent3.ghost && !agent3.fellInHole && !GC.cinematic && __instance.HasLOSMelee(agent3))
-					{
-						__instance.objectList.Add(agent3.melee.meleeHitbox.gameObject);
-
-						if (__instance.myMelee.invItem.meleeNoHit && !agent3.dead)
-						{
-							Relationship relationship = agent3.relationships.GetRelationship(__instance.myMelee.agent);
-
-							if (!agent3.movement.HasLOSObjectBehind(__instance.myMelee.agent) || agent3.sleeping || __instance.myMelee.agent.isPlayer == 0 || __instance.myMelee.agent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && __instance.myMelee.agent.oma.superSpecialAbility))
-								__instance.canHitMore = false;
-							else
-								if (GC.serverPlayer)
-								GC.spawnerMain.SpawnNoise(__instance.myMelee.agent.tr.position, 0f, null, null, __instance.myMelee.agent);
-						}
-
-						bool flag3 = !__instance.myMelee.invItem.meleeNoHit && __instance.myMelee.agent.DontHitAlignedCheck(agent3);
-
-						if (flag3)
-						{
-							agent3.melee.meleeHitbox.objectList.Add(__instance.gameObject);
-							agent3.melee.meleeHitbox.objectList.Add(__instance.myMelee.agent.sprTr.gameObject);
-
-							if (__instance.myMelee.agent.zombified && agent3.isPlayer == 0 && !agent3.oma.bodyGuarded)
-								agent3.zombieWhenDead = true;
-
-							if (agent3.isPlayer == 0 && __instance.myMelee.agent.isPlayer != 0 && !agent3.dead && agent3.agentName != "Zombie" && !agent3.inhuman && !agent3.mechEmpty && !agent3.mechFilled && __instance.myMelee.agent.localPlayer && !agent3.statusEffects.hasStatusEffect("Invincible"))
-							{
-								if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast2"))
-									__instance.myMelee.agent.statusEffects.ChangeHealth(6f);
-								else if (__instance.myMelee.agent.statusEffects.hasTrait("FleshFeast"))
-									__instance.myMelee.agent.statusEffects.ChangeHealth(3f);
-							}
-
-							if (GC.serverPlayer || agent3.health > 0f || agent3.dead)
-								agent3.Damage(__instance.myMelee, fromClient);
-
-							__instance.myMelee.agent.relationships.FollowerAlert(agent3);
-
-							if (agent3.statusEffects.hasTrait("AttacksDamageAttacker2") && __instance.myMelee.agent.ghost)
-							{
-								int myChance = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
-								if (GC.percentChance(myChance))
-								{
-									__instance.myMelee.agent.lastHitByAgent = agent3;
-									__instance.myMelee.agent.justHitByAgent2 = agent3;
-									__instance.myMelee.agent.lastHitByAgent = agent3;
-									__instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
-									__instance.myMelee.agent.deathKiller = agent3.agentName;
-									__instance.myMelee.agent.statusEffects.ChangeHealth(-10f);
-								}
-							}
-							else if (agent3.statusEffects.hasTrait("AttacksDamageAttacker") && __instance.myMelee.agent.ghost)
-							{
-								int myChance2 = agent3.DetermineLuck(20, "AttacksDamageAttacker", true);
-
-								if (GC.percentChance(myChance2))
-								{
-									__instance.myMelee.agent.lastHitByAgent = agent3;
-									__instance.myMelee.agent.justHitByAgent2 = agent3;
-									__instance.myMelee.agent.lastHitByAgent = agent3;
-									__instance.myMelee.agent.deathMethod = "AttacksDamageAttacker";
-									__instance.myMelee.agent.deathKiller = agent3.agentName;
-									__instance.myMelee.agent.statusEffects.ChangeHealth(-5f);
-								}
-							}
-
-							if (agent3.justDied && __instance.myMelee.agent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode && GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
-							{
-								if (GC.challenges.Contains("LowHealth"))
-									if (GC.percentChance(50))
-										GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
-									else
-										GC.StartCoroutine(GC.SetSecondaryTimeScale(0.1f, 0.13f));
-							}
-
-							float num = 0f;
-
-							if (__instance.myMelee.successfullySleepKilled || __instance.myMelee.successfullyBackstabbed)
-								num = 0f;
-							else if ((!agent3.dead || agent3.justDied) && !agent3.disappeared)
-								num = (float)Mathf.Clamp(agent3.damagedAmount * 20, 80, 9999);
-							else if (!agent3.disappeared)
-								num = 80f;
-
-							if (__instance.myMelee.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
-								num *= 2f;
-
-							Vector3 position = agent3.tr.position;
-							Vector2 velocity = agent3.rb.velocity;
-
-							if (!agent3.disappeared && !fromClient)
-								agent3.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, __instance.myMelee.agent);
-
-							bool flag4 = false;
-
-							if (agent3.hasEmployer && agent3.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.employer.objectMult.chargingSpecialLunge)
-								flag4 = true;
-
-							if (agent3.statusEffects.hasSpecialAbility("ProtectiveShell") && agent3.objectMult.chargingSpecialLunge)
-								flag4 = true;
-
-							if (flag4)
-							{
-								bool flag5 = true;
-
-								if (GC.multiplayerMode && GC.serverPlayer)
-								{
-									if (agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myMelee.agent.isPlayer == 0)
-										flag5 = false;
-									if (__instance.myMelee.agent.isPlayer != 0 && !__instance.myMelee.agent.localPlayer && agent3.isPlayer == 0)
-										flag5 = false;
-								}
-
-								if (flag5)
-								{
-									__instance.myMelee.agent.movement.KnockBackBullet(agent3.gameObject, 240f, true, agent3);
-
-									if (GC.serverPlayer && __instance.myMelee.agent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent3.warZoneAgent)
-									{
-										int myChance3 = agent3.DetermineLuck(15, "ChanceToKnockWeapons", true);
-
-										if (GC.percentChance(myChance3))
-										{
-											InvItem invItem2 = __instance.myMelee.agent.inventory.FindItem(invItem.invItemName);
-											__instance.myMelee.agent.inventory.DestroyItem(invItem2);
-											GC.spawnerMain.SpillItem(__instance.tr.position, invItem2);
-											GC.spawnerMain.SpawnStatusText(__instance.myMelee.agent, "OutOfAmmo", invItem2.invItemName, "Item");
-
-											if (!GC.serverPlayer && (__instance.myMelee.agent.isPlayer != 0 || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
-												__instance.myMelee.agent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", __instance.myMelee.agent.objectNetID, "", "");
-
-											__instance.myMelee.agent.statusEffects.CreateBuffText("DroppedWeapon", __instance.myMelee.agent.objectNetID);
-											__instance.myMelee.agent.dontPickUpWeapons = true;
-										}
-									}
-								}
-							}
-
-							if (!GC.serverPlayer && (__instance.myMelee.agent.localPlayer || __instance.myMelee.agent.mindControlAgent == GC.playerAgent))
-							{
-								__instance.myMelee.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
-								Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
-								__instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
-								__instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
-								__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
-								Vector3 position2 = __instance.myMelee.meleeHelperTr.position;
-								__instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
-								__instance.myMelee.meleeHelperTr.localRotation = localRotation;
-
-								if (!__instance.myMelee.agent.testingNewClientLerps)
-								{
-									if (__instance.myMelee.agent.isPlayer != 0)
-										__instance.myMelee.agent.objectMult.CallCmdMeleeHitAgent(agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
-									else
-										GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(__instance.myMelee.agent.objectNetID, agent3.objectNetID, position2, (int)num, position, agent3.rb.velocity);
-								}
-							}
-							else if (GC.multiplayerMode && GC.serverPlayer)
-								__instance.myMelee.agent.objectMult.CallRpcMeleeHitObjectFake(agent3.objectNetID);
-
-							if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent3.isPlayer > 0 && agent3.localPlayer))
-							{
-								if (agent3.justDied)
-									GC.ScreenShake(0.25f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 160, 500), Vector2.zero, __instance.myMelee.agent);
-								else
-									GC.ScreenShake(0.2f, (float)Mathf.Clamp(15 * agent3.damagedAmount, 0, 500), Vector2.zero, __instance.myMelee.agent);
-							}
-
-							GC.alienFX.PlayerHitEnemy(__instance.myMelee.agent);
-							__instance.myMelee.agent.combat.meleeJustHitCooldown = __instance.myMelee.agent.combat.meleeJustHitTimeStart;
-							__instance.myMelee.agent.combat.meleeJustHitCloseCooldown = __instance.myMelee.agent.combat.meleeJustHitCloseTimeStart;
-
-							if (GC.serverPlayer)
-							{
-								if (__instance.myMelee.successfullyBackstabbed)
-									GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.7f, null, null, __instance.myMelee.agent);
-								else if (!__instance.myMelee.successfullySleepKilled)
-									GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, __instance.myMelee.agent);
-							}
-
-							__instance.MeleeHitEffect(hitObject);
-
-							GC.playerControl.Vibrate(__instance.myMelee.agent.isPlayer, Mathf.Clamp((float)agent3.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)agent3.damagedAmount / 132f + 0.05f, 0f, 0.2f));
-
-							if (GC.levelType == "Tutorial")
-							{
-								GC.tutorial.MeleeTarget(agent3);
-
-								return;
-							}
-						}
-					}
-				}
-			}
-		}
-		public static void MeleeHitbox_MeleeHitEffect(GameObject hitObject, MeleeHitbox __instance) // Postfix
-		{
-			// Gate to weapon/fist and trait
-
-			if (hitObject.GetComponent<ObjectSprite>().agent.ghost && hitObject.CompareTag("AgentSprite"))
-			{
-				InvItem invItem = null;
-
-				try
-				{
-					invItem = __instance.myMelee.agent.inventory.equippedWeapon;
-
-					if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
-						invItem = __instance.myMelee.agent.inventory.fist;
-				}
-				catch
-				{
-				}
-
-				if (__instance.myMelee.fakeHitAgent)
-					return;
-
-				Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
-
-				if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
-					return;
-
-				if (agent.hologram || agent.objectAgent)
-					return;
-
-				bool flag = false;
-
-				if (invItem.hitSoundType == "Cut")
-				{
-					if (agent.damagedAmount < 12)
-						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
-					else
-						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
-
-					flag = true;
-				}
-
-				if (agent.damagedAmount < 10)
-				{
-					if (!flag)
-					{
-						string hitSoundType = invItem.hitSoundType;
-
-						if (!(hitSoundType == "Normal"))
-						{
-							if (!(hitSoundType == "WerewolfSlash"))
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
-							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-						}
-						else
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
-					}
-
-					if (agent.damagedAmount > 0)
-					{
-						if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-							GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						else
-							GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-					}
-					else
-						GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-
-					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-					{
-						GC.FreezeFrames(1);
-
-						return;
-					}
-				}
-				else if (agent.damagedAmount < 15)
-				{
-					if (!flag)
-					{
-						string hitSoundType = invItem.hitSoundType;
-
-						if (!(hitSoundType == "Normal"))
-						{
-							if (!(hitSoundType == "WerewolfSlash"))
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-						}
-						else
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-					}
-
-					if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-						GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-					else
-						GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-
-					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-					{
-						GC.FreezeFrames(2);
-
-						return;
-					}
-				}
-				else
-				{
-					if (!flag)
-					{
-						string hitSoundType = invItem.hitSoundType;
-
-						if (!(hitSoundType == "Normal"))
-						{
-							if (!(hitSoundType == "WerewolfSlash"))
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
-						}
-						else
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-
-						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
-					}
-					if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-						GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-					else
-						GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-
-					if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
-					{
-						GC.FreezeFrames(3);
-
-						return;
-					}
-				}
-			}
-		}
-		#endregion
 		#region PlayerControl
 		public static void PlayerControl_Update() // Postfix
 		{
@@ -1614,20 +1048,20 @@ namespace BunnyMod.Content
                 RATStargetable = true;
             }
 
-            if (agent.statusEffects.hasTrait("Charmed"))
+            if (agent.statusEffects.hasTrait(cTrait.Charmed))
                 luckMultiplier = 1;
-            else if (agent.statusEffects.hasTrait("Charmed_2"))
+            else if (agent.statusEffects.hasTrait(cTrait.Charmed_2))
                 luckMultiplier = 2;
-            else if (agent.statusEffects.hasTrait("Cursed"))
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed))
                 luckMultiplier = -1;
-            else if (agent.statusEffects.hasTrait("Cursed_2"))
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed_2))
                 luckMultiplier = -2;
 
             if (RATStargetable)
             {
-                if (agent.statusEffects.hasTrait("RATS"))
+                if (agent.statusEffects.hasTrait(cTrait.RATS))
                     luckMultiplier += 1;
-                if (agent.statusEffects.hasTrait("RATS_2"))
+                if (agent.statusEffects.hasTrait(cTrait.RATS_2))
                     luckMultiplier += 2;
 
                 if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
@@ -1638,12 +1072,642 @@ namespace BunnyMod.Content
             __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);
         }
 		#endregion
+		#region Relationships
+        public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
+		{
+            if (__instance.GetRel(otherAgent) == "Neutral")
+            {
+                int roll = Random.Range(0, 100);
+                string newRel = "";
+
+                if (___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant))
+                {
+                    if (roll <= 20)
+                        newRel = "Annoyed";
+                }
+                else if (___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
+                    newRel = "Annoyed";
+                else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
+				{
+                    if (roll <= 50)
+                        newRel = "Annoyed";
+                    else
+                        newRel = "Friendly";
+				}
+                else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
+				{
+                    if (roll <= 25)
+                        newRel = "Hostile";
+                    else if (roll <= 50)
+                        newRel = "Annoyed";
+                    else if (roll <= 67)
+                        newRel = "Friendly";
+                    else if (roll <= 88)
+                        newRel = "Loyal";
+                    else if (roll <= 100)
+                        newRel = "Aligned";
+				}
+
+                roll = Random.Range(0, 100);
+
+                if (___agent.statusEffects.hasTrait(cTrait.Domineering))
+				{
+                    if (roll <= 10)
+                        newRel = "Submissive";
+				}
+                else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
+				{
+                    if (roll <= 20)
+                        newRel = "Submissive";
+				}
+
+                if (newRel != "")
+                    __instance.SetRelInitial(otherAgent, newRel);
+            }
+		}
+        #endregion
+        #region SkillPoints
+        public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
+        {
+            BMLog("SkillPoints_AddPointsLate");
+
+            __result = SkillPoints_AddPointsLate_IEnumerator(pointsType, extraNum, __result, __instance, ___agent);
+
+            return false;
+        }
+        private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, IEnumerator __result, SkillPoints __instance, Agent ___agent) // Non-Patch
+        {
+            BMLog("SkillPoints_AddPointsLate_IEnumerator:");
+            BMLog("\tpointsType = " + pointsType);
+            BMLog("\textraNum = " + extraNum);
+
+			if (pointsType == "DestructionPoints" || pointsType == "DestructionPoints2" || pointsType == "FireExtinguishPoints")
+				yield return null;
+			else
+				yield return new WaitForSeconds(0.3f);
+			
+			if (Time.timeScale == 0f && !GC.multiplayerMode)
+			{
+				while (Time.timeScale == 0f)
+					yield return null;
+			
+				yield return new WaitForSeconds(0.2f);
+			}
+			
+			int xpReward = 0;
+			bool suppressAnimation = false;
+			string text = pointsType;
+			
+			switch (text)
+            {
+                case "ArrestedPoints":
+                    xpReward = 100;
+                    break;
+                case "ArrestedPointsInnocent":
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward = -40;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -80;
+                    }
+					else
+                        xpReward = 10;
+                    break;
+                case "BigQuestBonusDowntown":
+                    xpReward = 500;
+                    break;
+                case "BigQuestBonusFloor":
+                    xpReward = 300;
+                    break;
+                case "BigQuestBonusGame":
+                    xpReward = 1000;
+                    break;
+                case "BigQuestBonusIndustrial":
+                    xpReward = 500;
+                    break;
+                case "BigQuestBonusPark":
+                    xpReward = 500;
+                    break;
+                case "BigQuestBonusSlums":
+                    xpReward = 500;
+                    break;
+                case "BigQuestBonusUptown":
+                    xpReward = 500;
+                    break;
+                case "CompleteMission":
+                    switch (extraNum)
+                    {
+                        case 1:
+                            xpReward = 300;
+                            break;
+                        case 2:
+                            xpReward = 300;
+                            break;
+                        case 3:
+                            xpReward = 300;
+                            break;
+                        case 4:
+                            xpReward = 300;
+                            break;
+                        case 5:
+                            xpReward = 300;
+                            break;
+                    }
+                    break;
+                case "CompleteMissionFindBombs":
+                    xpReward = 700;
+                    break;
+                case "CompleteMissionReduced":
+                    switch (extraNum)
+                    {
+                        case 1:
+                            xpReward = 150;
+                            break;
+                        case 2:
+                            xpReward = 150;
+                            break;
+                        case 3:
+                            xpReward = 150;
+                            break;
+                        case 4:
+                            xpReward = 150;
+                            break;
+                        case 5:
+                            xpReward = 150;
+                            break;
+                    }
+                    break;
+                case "Destruction":
+                    xpReward = 200;
+                    break;
+                case "DestructionPoints":
+                    xpReward = 1;
+                    suppressAnimation = true;
+                    break;
+                case "DestructionPoints2":
+                    xpReward = 2;
+                    suppressAnimation = true;
+                    break;
+                case "DisarmDetonatorPoints":
+                    xpReward = 20;
+                    break;
+                case "ElectabilityBonus":
+                    xpReward = 100;
+                    break;
+                case "Enslaved":
+                    xpReward = 30;
+                    break;
+                case "FindTreasure":
+                    xpReward = 100;
+                    GC.stats.AddToStat(___agent, "TreasuresFound", 1);
+                    break;
+                case "FireExtinguishPoints":
+                    xpReward = 5;
+                    suppressAnimation = true;
+                    break;
+                case "FreedPrisoner":
+                    xpReward = 20 * extraNum;
+                    if (extraNum > 1)
+                        pointsType = "FreedPrisoners";
+                    break;
+                case "FreedSlave":
+                    xpReward = 50 * extraNum;
+                    if (extraNum > 1)
+                        pointsType = "FreedSlaves";
+                    break;
+                case "HackPoints":
+                    xpReward = 20;
+                    break;
+                case "IndirectlyKill":
+                    xpReward = 30;
+                    break;
+                case "IndirectlyKillInnocent":
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward = -15;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -30;
+                    }
+                    else
+                        xpReward = 10;
+                    break;
+                case "IndirectlyKillRival":
+                    xpReward = 90;
+                    break;
+                case "Joke":
+                    xpReward = 30 * extraNum;
+                    break;
+                case "KilledRobot":
+                    xpReward = 1000;
+                    break;
+                case "KillPoints":
+                    xpReward = 50;
+                    break;
+                case "KillPointsInnocent":
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward = -20;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                        else if (!___agent.oma.superSpecialAbility)
+                            xpReward = -40;
+                    }
+                    else
+                        xpReward = 10;
+                    break;
+                case "KillPointsRival":
+                    xpReward = 150;
+                    break;
+                case "KnockOutPoints":
+                    xpReward = 75;
+                    break;
+                case "KnockOutPointsInnocent":
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility)
+					{
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward = -20;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -40;
+                    }
+                    else
+                        xpReward = 10;
+                    break;
+                case "KnockOutPointsRival":
+                    xpReward = 150;
+                    break;
+                case "LockpickPoints":
+                    xpReward = 20;
+                    break;
+                case "ManySleeping":
+                    xpReward = 100;
+                    break;
+                case "Massacre":
+                    xpReward = 100;
+                    break;
+                case "NoAngerLevel":
+                    xpReward = 100;
+                    break;
+                case "NoDamageTaken":
+                    xpReward = 100;
+                    break;
+                case "NoDestruction":
+                    xpReward = 200;
+                    break;
+                case "NoGuns":
+                    xpReward = 200;
+                    break;
+                case "NoKillBonus":
+                    xpReward = 100;
+                    break;
+                case "NoKillLevel":
+                    xpReward = 100;
+                    break;
+                case "NotAlertedBonus":
+                    xpReward = 100;
+                    break;
+                case "OnlyFists":
+					xpReward = 200;
+					break;
+                case "PickpocketPoints":
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt))
+                    {
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward = -10;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                        else
+                            xpReward = -15;
+                    }
+                    else
+                        xpReward = 15;
+                    break;
+                case "PoisonAirPoints":
+                    xpReward = 20;
+                    break;
+                case "RemoveSlaveHelmetPoints":
+                    xpReward = 20;
+                    break;
+                case "RemoveWindowPoints":
+					xpReward = 20;
+					break;
+                case "ShakedownFailPoints":
+                    xpReward = -100;
+                    break;
+                case "ShakedownPoints":
+                    xpReward = 100;
+                    break;
+                case "StealPoints":
+                    switch (extraNum)
+                    {
+                        case 1:
+                            xpReward = 10;
+                            break;
+                        case 2:
+                            xpReward = 20;
+                            break;
+                        case 3:
+                            xpReward = 30;
+                            break;
+                    }
+                    break;
+                case "StealPointsNegative":
+                    xpReward = extraNum * 10;
+
+                    if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility && !___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt))
+                    {
+                        xpReward *= -1;
+
+                        if (___agent.statusEffects.hasTrait(vTrait.Crooked))
+                            xpReward /= 2;
+                        else if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
+                            xpReward = 0;
+                    }
+                    break;
+                case "StoleLots":
+                    xpReward = 200;
+                    break;
+                case "TamperGeneratorPoints":
+                    xpReward = 20;
+                    break;
+                case "TamperLaserEmitterPoints":
+                    xpReward = 20;
+                    break;
+                case "TamperPoliceBoxPoints":
+                    xpReward = 20;
+                    break;
+                case "TamperSatelliteDishPoints":
+                    xpReward = 20;
+                    break;
+                case "TimeBonus":
+                    xpReward = 100;
+                    break;
+                case "TwoPlayerWinner1":
+                    xpReward = 200;
+                    break;
+                case "TwoPlayerWinner2":
+                    xpReward = 200;
+                    break;
+                case "UnlockSafePoints":
+                    xpReward = 20;
+                    break;
+                case "WonElectionPoints":
+                    xpReward = 100;
+                    break;
+            }
+			
+            if (xpReward != 0)
+			{
+				if (xpReward > 0)
+				{
+					if (___agent.statusEffects.hasTrait(vTrait.Studious))
+						xpReward = (int)((float)xpReward * 1.3f);
+
+					if (___agent.statusEffects.hasTrait(vTrait.Studious2))
+						xpReward = (int)((float)xpReward * 1.5f);
+				}
+
+				float floorXpAcceleration = 0.075f;
+				int cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 16);
+
+				if (GC.sessionDataBig.challenges.Contains("QuickGame"))
+				{
+					floorXpAcceleration *= 1.5f;
+					cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 11);
+				}
+
+				xpReward = (int)((float)xpReward * (1f + (float)(cityFloor - 1) * floorXpAcceleration));
+				GC.sessionData.skillPoints[___agent.isPlayer] += xpReward;
+				Color32 myColor;
+
+				if (xpReward < 0)
+				{
+					myColor = new Color32(byte.MaxValue, 0, 0, byte.MaxValue);
+
+					if (GC.sessionData.skillPoints[___agent.isPlayer] < __instance.findLevelThreshold(GC.sessionData.skillLevel[___agent.isPlayer] - 1))
+						GC.sessionData.skillPoints[___agent.isPlayer] = __instance.findLevelThreshold(GC.sessionData.skillLevel[___agent.isPlayer] - 1);
+				}
+				else
+					myColor = new Color32(byte.MaxValue, 216, 0, byte.MaxValue);
+				
+                if (GC.sessionData.skillPoints[___agent.isPlayer] >= __instance.findLevelThreshold(GC.sessionData.skillLevel[___agent.isPlayer]))
+				{
+					GC.audioHandler.Play(___agent, "LevelUp");
+
+					if (___agent.isPlayer == 1)
+						GC.alienFX.GainLevel();
+					
+                    GC.sessionData.skillLevel[___agent.isPlayer]++;
+					__instance.levelsGained++;
+					GC.sessionData.levelsGained[___agent.isPlayer]++;
+					__instance.justGainedLevel = true;
+
+                    //__instance.StartCoroutine(__instance.CancelJustGainedLevel()); // Original Private Method Inaccessible
+
+                    MethodInfo CancelJustGainedLevel = AccessTools.DeclaredMethod(typeof(SkillPoints), "CancelJustGainedLevel", new Type[0] { });
+                    CancelJustGainedLevel.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+					
+                    if (GC.unlocks.CanDoUnlocks())
+					{
+						if (___agent.statusEffects.hasTrait(vTrait.Studious2))
+						{
+							GC.unlocks.AddNuggets(2);
+							GC.spawnerMain.SpawnStatusText(___agent, "ItemPickupSlower", "Nuggets", "Item", "Add2Nuggets", "");
+						}
+						else
+						{
+							GC.unlocks.AddNuggets(3);
+							GC.spawnerMain.SpawnStatusText(___agent, "ItemPickupSlower", "Nuggets", "Item", "Add3Nuggets", "");
+						}
+					}
+
+					___agent.objectMult.SendChatAnnouncement("LevelUp", GC.sessionData.skillLevel[___agent.isPlayer].ToString(), "");
+
+					if (___agent.localPlayer)
+						___agent.skillBar.dTr.localScale = new Vector3(0f, ___agent.skillBar.dTr.localScale.y, ___agent.skillBar.dTr.localScale.z);
+					
+                    if (!___agent.finishedLevel)
+						GC.spawnerMain.SpawnStatusText(___agent, "LevelUp", "LevelUp", "Interface");
+					
+                    if (___agent.statusEffects.hasTrait(vTrait.PotentialtoNotSuck))
+					{
+						Agent agent = ___agent;
+
+						if (___agent.possessing || ___agent.transforming)
+						{
+							if (!GC.multiplayerMode)
+							{
+								if (___agent.isPlayer == 1)
+									agent = GC.backupAgent1;
+								
+                                if (___agent.isPlayer == 2)
+									agent = GC.backupAgent2;
+								
+                                if (___agent.isPlayer == 3)
+									agent = GC.backupAgent3;
+							
+                                if (___agent.isPlayer == 4)
+									agent = GC.backupAgent4;
+							}
+							else
+							{
+								if (___agent.playerColor == 1)
+									agent = GC.backupAgent1;
+								
+                                if (___agent.playerColor == 2)
+									agent = GC.backupAgent2;
+								
+                                if (___agent.playerColor == 3)
+									agent = GC.backupAgent3;
+							
+                                if (___agent.playerColor == 4)
+									agent = GC.backupAgent4;
+							}
+						}
+
+						if (GC.sessionData.skillLevel[___agent.isPlayer] % 2 == 0 && (agent.strengthStatMod != 3 || agent.enduranceStatMod != 3 || agent.accuracyStatMod != 3 || agent.speedStatMod != 3))
+						{
+							string randStatMod;
+							bool bonusStat;
+
+							do
+							{
+								randStatMod = GC.Choose<string>("Strength", "Endurance", "Accuracy", "Speed");
+								bonusStat = true;
+
+								if (randStatMod == "Strength" && agent.strengthStatMod == 3)
+									bonusStat = false;
+								else if (randStatMod == "Endurance" && agent.enduranceStatMod == 3)
+									bonusStat = false;
+								else if (randStatMod == "Accuracy" && agent.accuracyStatMod == 3)
+									bonusStat = false;
+								else if (randStatMod == "Speed" && agent.speedStatMod == 3)
+									bonusStat = false;
+							}
+							while (!bonusStat);
+
+                            switch (randStatMod)
+							{
+                                case "Accuracy":
+                                    agent.SetAccuracy(agent.accuracyStatMod + 1, true);
+                                    GC.spawnerMain.SpawnStatusText(___agent, "BuffSpecial", "Accuracy", "BuffSpecial", "");
+
+                                    break;
+                                case "Endurance":
+                                    agent.SetEndurance(agent.enduranceStatMod + 1, true);
+                                    GC.spawnerMain.SpawnStatusText(___agent, "BuffSpecial", "Endurance", "BuffSpecial", "");
+
+                                    break;
+                                case "Speed":
+                                    agent.SetSpeed(agent.speedStatMod + 1, true);
+                                    GC.spawnerMain.SpawnStatusText(___agent, "BuffSpecial", "Speed", "BuffSpecial", "");
+
+                                    break;
+                                case "Strength":
+                                    agent.SetStrength(agent.strengthStatMod + 1, true);
+                                    GC.spawnerMain.SpawnStatusText(___agent, "BuffSpecial", "Strength", "BuffSpecial", "");
+
+                                    break;
+                            }
+						}
+					}
+
+					if (___agent.health > 0f && !GC.menuGUI.demoOver)
+					{
+						if (___agent.possessing)
+						{
+							if (!GC.multiplayerMode)
+							{
+								if (___agent.isPlayer == 1)
+									GC.backupAgent1.health = GC.backupAgent1.healthMax;
+								
+                                if (___agent.isPlayer == 2)
+									GC.backupAgent2.health = GC.backupAgent2.healthMax;
+								
+                                if (___agent.isPlayer == 3)
+									GC.backupAgent3.health = GC.backupAgent3.healthMax;
+								
+                                if (___agent.isPlayer == 4)
+									GC.backupAgent4.health = GC.backupAgent4.healthMax;
+							}
+							else
+							{
+								if (___agent.playerColor == 1)
+									GC.backupAgent1.health = GC.backupAgent1.healthMax;
+								
+                                if (___agent.playerColor == 2)
+									GC.backupAgent2.health = GC.backupAgent2.healthMax;
+								
+                                if (___agent.playerColor == 3)
+									GC.backupAgent3.health = GC.backupAgent3.healthMax;
+								
+                                if (___agent.playerColor == 4)
+									GC.backupAgent4.health = GC.backupAgent4.healthMax;
+							}
+
+							GC.spawnerMain.SpawnStatusText(___agent, "HealthUpSlower", "FullHealth", "StatusEffect");
+						}
+						else
+							___agent.statusEffects.ChangeHealth(___agent.healthMax);
+					}
+					else
+						___agent.fullHealthAfterResurrect = true;
+					
+                    if (___agent.localPlayer && !suppressAnimation)
+					{
+						if (GC.fourPlayerMode)
+							__instance.SpawnSkillPointsStatusText(pointsType, xpReward);
+						else
+						{
+							___agent.skillBar.StartChange(true);
+							___agent.skillBar.StartAnim(xpReward, pointsType, myColor);
+						}
+					}
+
+					if (___agent.completingBigQuestLevel)
+						GC.quests.SpawnBigQuestCompletedText2(___agent, true);
+					else if (___agent.failingBigQuestLevel)
+						GC.quests.SpawnBigQuestFailedText2(___agent, true);
+				}
+				else if (___agent.localPlayer && !suppressAnimation)
+				{
+					if (GC.fourPlayerMode)
+					{
+						__instance.SpawnSkillPointsStatusText(pointsType, xpReward);
+
+						if (___agent.completingBigQuestLevel)
+							GC.quests.SpawnBigQuestCompletedText2(___agent, false);
+						else if (___agent.failingBigQuestLevel)
+							GC.quests.SpawnBigQuestFailedText2(___agent, false);
+					}
+					else
+					{
+						___agent.skillBar.StartChange(false);
+						___agent.skillBar.StartAnim(xpReward, pointsType, myColor);
+					}
+				}
+
+				if (___agent.localPlayer)
+					___agent.skillBar.UpdateSkillText();
+			}
+
+			yield break;
+		}
+		#endregion
 		#region StatusEffects
-        public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
+		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
             Agent agent = __instance.agent;
 
-            if (traitName == "Fatass")
+            if (traitName == cTrait.Fatass)
 			{
                 agent.SetEndurance(agent.enduranceStatMod + 1);
                 agent.SetSpeed(agent.speedStatMod - 1);
@@ -1653,7 +1717,7 @@ namespace BunnyMod.Content
 		{
             Agent agent = __instance.agent;
 
-            if (IsTraitActive("UnderdarkCitizen") && agent.isPlayer == 0)
+            if (IsTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0)
 			{
                 agent.statusEffects.BecomeNotHidden();
 			}
@@ -1661,7 +1725,7 @@ namespace BunnyMod.Content
         public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
 		{
             Agent agent = __instance.agent;
-            if (traitName == "Fatass")
+            if (traitName == cTrait.Fatass)
 			{
                 //TODO: CharacterCreation.CreatePointTallyText() for stat mods
                 agent.SetEndurance(agent.enduranceStatMod - 1);

@@ -9,7 +9,9 @@ To support this mod, please download from the **[GameBanana page](https://gameba
 # Features
 
 #### [Magic System](/MD/2.0.%20Magic.md)
-
+<!---
+#### [Mutators](/MD/2.4.%20Mutators.md)
+--->
 #### [Object Interactions](/MD/2.5.%20Objects.md)
 
 #### [Character Traits](/MD/2.6.%20Traits.md)

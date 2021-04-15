@@ -264,7 +264,7 @@ namespace BunnyMod.Content
                     __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMTraits.ToolCost(agent, 15));
                 }
 
-                if (manhole.opened && agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                if (manhole.opened && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
                     __instance.buttons.Add("FlushYourself");
             }
             else if (__instance is Stove)
@@ -338,7 +338,7 @@ namespace BunnyMod.Content
 
             if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
             {
-                if (agent.statusEffects.hasTrait("StealthBastardDeluxe"))
+                if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                 {
                     agent.SetInvisible(false);
                     agent.statusEffects.BecomeHidden(__instance);
@@ -449,7 +449,7 @@ namespace BunnyMod.Content
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
                 {
                     GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     GC.audioHandler.Play(__instance, "Hack");
@@ -462,7 +462,7 @@ namespace BunnyMod.Content
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
                 {
                     GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     //gc.audioHandler.Play(__instance, "Hack");
@@ -488,7 +488,7 @@ namespace BunnyMod.Content
             {
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait("OperateSecretly") && __instance.functional)
+                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
                 {
                     GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
                     __instance.SpawnParticleEffect("Hack", __instance.tr.position);
@@ -566,7 +566,7 @@ namespace BunnyMod.Content
         #region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
 
             //TODO: Closed Bath Curtain sprite?
@@ -614,7 +614,7 @@ namespace BunnyMod.Content
 
             GC.audioHandler.Play(__instance, "FireHit");
 
-            if (agent.statusEffects.hasTrait("ResistFire") || agent.statusEffects.hasTrait("FireproofSkin") || agent.statusEffects.hasTrait("FireproofSkin2"))
+            if (agent.statusEffects.hasTrait(vTrait.ResistFire) || agent.statusEffects.hasTrait(vTrait.FireproofSkin) || agent.statusEffects.hasTrait(vTrait.FireproofSkin2))
                 agent.Say("Mmmm, toasty. Just like the burning flesh on my fingers!");
 			else
 			{
@@ -652,7 +652,7 @@ namespace BunnyMod.Content
                 {
                     Agent agent = myObject.GetComponent<Agent>();
 
-                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait("UnderdarkCitizen"))
+                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
                     {
                         Manhole_FlushYourself(agent);
 
@@ -699,7 +699,7 @@ namespace BunnyMod.Content
 		{
 			Agent agent = __instance.interactingAgent;
 
-			if ((agent.statusEffects.hasTrait("UnderdarkCitizen")) && !agent.statusEffects.hasStatusEffect("Giant"))
+			if ((agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen)) && !agent.statusEffects.hasStatusEffect("Giant"))
 			{
 				List<ObjectReal> list = new List<ObjectReal>();
 				float furthestManholeDistance = 0f;
@@ -770,7 +770,7 @@ namespace BunnyMod.Content
         #region Plant
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -785,7 +785,7 @@ namespace BunnyMod.Content
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -1361,7 +1361,7 @@ namespace BunnyMod.Content
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive("StealthBastardDeluxe"))
+            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -1379,7 +1379,7 @@ namespace BunnyMod.Content
         }
         public static bool Window_SlipThroughWindow(Agent myAgent, Window __instance) // Replacement
 		{
-            if (myAgent.statusEffects.hasTrait("BigCollider"))
+            if (myAgent.statusEffects.hasTrait(vTrait.Bulky))
             {
                 __instance.interactingAgent.SayDialogue("CantFit");
                 GC.audioHandler.Play(myAgent, "CantDo");
@@ -1389,7 +1389,7 @@ namespace BunnyMod.Content
                 return false;
             }
 
-            if (!myAgent.statusEffects.hasTrait("StealthBastardDeluxe"))
+            if (!myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                 GC.audioHandler.Play(myAgent, "MeleeHitAgentCutSmallClients");
 
             __instance.StopInteraction();
@@ -1406,7 +1406,7 @@ namespace BunnyMod.Content
             else
                 myAgent.tr.position = new Vector3(__instance.tr.position.x, __instance.tr.position.y - 0.32f, myAgent.tr.position.z);
 
-            if (myAgent.statusEffects.hasTrait("StealthBastardDeluxe"))
+            if (myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                 return false;
 
             float dmg = 15f;

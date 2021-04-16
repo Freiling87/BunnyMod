@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BunnyMod.Content
 {
-	class BMQuests
+	public class BMQuests
 	{
 		public static GameController GC => GameController.gameController;
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -16,11 +16,12 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-
+			// ExitPoint
+			Prefix(typeof(ExitPoint), "DetermineIfCanExit", GetType(), "ExitPoint_DetermineIfCanExit", new Type[0] { });
 		}
 
 		#region ExitPoint
-		public static bool ExitPoint_DetermineIfCanExit(ref bool __result) // Prefix
+		public static bool ExitPoint_DetermineIfCanExit(ref bool __result, ExitPoint __instance) // Prefix
 		{
 			if (GC.challenges.Contains(cChallenge.RushinRevolution))
 			{

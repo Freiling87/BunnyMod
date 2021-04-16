@@ -33,10 +33,12 @@ namespace BunnyMod
 			ConsoleMessage = Logger;
 
 			new BMAbilities().Awake();
+            new BMAgents().Awake();
 			//new BunnyBehaviors().Awake();
 			//new BMDisasters().Awake();
 			//new BunnyItems().Awake();
 			new BMLevelGen().Awake();
+            new BMMiscellaneous().Awake();
 			new BMMutators().Awake();
 			new BMObjects().Awake();
 			//new BunnySprites().Awake();
@@ -116,6 +118,7 @@ namespace BunnyMod
             ArcologyEcology = "ArcologyEcology",
             CityOfSteel = "CityOfSteel",
             Claustrophobia = "Claustrophobia",
+            DoublePlyRewards = "DoublePlyRewards",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
             HoodlumsWonderland = "HoodlumsWonderland",
@@ -130,11 +133,12 @@ namespace BunnyMod
             SpelunkyDory = "SpelunkyDory",
             SwarmWelcome = "SwarmWelcome",
             SunkenCity = "SunkenCity",
+            RushinRevolution = "RushinRevolution",
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
+            UnpaidInternship = "UnpaidInternship",
             Workhorse = "Workhorse",
-            YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood",
-            ZeroQuests = "ZeroQuests";
+            YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 	}
 	public static class cTrait // Custom Traits
 	{

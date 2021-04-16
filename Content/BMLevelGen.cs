@@ -27,16 +27,10 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			// Agent
-			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
-
 			// LoadLevel
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
-
-			// RandomAgentWeapons
-			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "RandomAgentWeapons_fillAgentWeapons", new Type[0] { });
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
@@ -80,7 +74,7 @@ namespace BunnyMod.Content
 		}
 		public static int ForceQuestCount(int vanilla)
 		{
-			if (GC.challenges.Contains(cChallenge.ZeroQuests))
+			if (GC.challenges.Contains(cChallenge.RushinRevolution))
 				vanilla = 0;
 			else if (GC.challenges.Contains(cChallenge.SingleMinded))
 				vanilla = 1;
@@ -246,52 +240,6 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
-		#region Agent
-		public static void Agent_SetupAgentStats(string transformationType, Agent __instance) // Postfix
-		{
-			if (__instance.agentName == "ResistanceAgent")
-			{
-				__instance.SetStrength(2);
-				__instance.SetEndurance(1);
-				__instance.SetAccuracy(3);
-				__instance.SetSpeed(3);
-
-				__instance.modMeleeSkill = 2;
-				__instance.modGunSkill = 2;
-				__instance.modToughness = 2;
-				__instance.modVigilant = 1;
-
-				__instance.statusEffects.AddTrait("RegenerateHealthWhenLow");
-
-				__instance.AddJob("Recruit", 5);
-				__instance.AddDesire("Supplies");
-				__instance.AddDesire("Technology");
-				__instance.AddDesire("Weapons");
-
-				if (BMTraits.IsTraitActive("Reinforcements"))
-				{
-					__instance.inventory.startingHeadPiece = "HardHat";
-					__instance.inventory.AddItemPlayerStart("Pistol", 0);
-					__instance.inventory.AddItemPlayerStart("Knife", 100);
-				}
-				if (BMTraits.IsTraitActive("Reinforcements_2"))
-				{
-					__instance.inventory.startingHeadPiece = "SoldierHelmet";
-					__instance.inventory.AddItemPlayerStart("MachineGun", 0);
-					__instance.inventory.AddItemPlayerStart("Grenade", 5);
-					__instance.inventory.AddItemPlayerStart("Knife", 100);
-				}
-
-				__instance.agentHitboxScript.legsColor = new Color32(66, 101, 61, byte.MaxValue);
-
-				__instance.agentCategories.Clear();
-				__instance.agentCategories.Add("Guns");
-				__instance.agentCategories.Add("Melee");
-				__instance.agentCategories.Add("Defense");
-				__instance.setInitialCategories = true;
-			}
-		}
-		#endregion
 		#region LoadLevel
 		// There is a patch in BMAbilities for this Class, but it uses a variable in that class. TODO: Move it over here.
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
@@ -4896,33 +4844,7 @@ namespace BunnyMod.Content
 			}
 		}
 		#endregion
-		#region RandomAgentWeapons
-		public static void RandomAgentWeapons_fillAgentWeapons() // Postfix
-		{
-			int reinforcements = 0;
 
-			if (BMTraits.IsTraitActive("Reinforcements"))
-				reinforcements = 4;
-			else if (BMTraits.IsTraitActive("Reinforcements_2"))
-				reinforcements = 8;
-
-			if (reinforcements == 0)
-				return;
-
-			Dictionary<RandomElement, int> elementList = new Dictionary<RandomElement, int>()
-			{
-				{new RandomElement() { rName = "Empty",			rChance = 8 - reinforcements},		8  - reinforcements},              
-				{new RandomElement() { rName = "Grenade",		rChance = reinforcements / 2 },		reinforcements / 2},
-				{new RandomElement() { rName = "MachineGun",	rChance = reinforcements},			reinforcements},
-				{new RandomElement() { rName = "Pistol",		rChance = 12 - reinforcements },	12 - reinforcements},
-				{new RandomElement() { rName = "Revolver",		rChance = reinforcements / 2 },		reinforcements / 2},
-			};
-
-			for (int tier = 1; tier < 5; tier++)
-				foreach (KeyValuePair<RandomElement, int> tuple in elementList)
-					GC.rnd.randomListTableStatic["ResistanceLeaderWeapon" + tier].elementList.Add(tuple.Key);
-		}
-		#endregion
 		#region RandomWalls
 		public static bool RandomWalls_fillWalls() // Replacement
 		{

@@ -144,14 +144,48 @@ namespace BunnyMod.Content
 			SwarmWelcome.IsActive = false;
 
 			#endregion
-			#region Roamers
+			#region Quest Count
 
-			CustomMutator YoungMenIntheNeighborhood = RogueLibs.CreateCustomMutator(cChallenge.YoungMenInTheNeighborhood, true,
-				new CustomNameInfo("Young Men in the Neighborhood"),
-				new CustomNameInfo("Beause the young gentlemen in the hood are always polite; If you start acting rude, we'll set you right!\nYour friendly local Gangbangers now roam every district."));
-			YoungMenIntheNeighborhood.Available = true;
-			YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
-			YoungMenIntheNeighborhood.IsActive = false;
+			CustomMutator RushinRevolution = RogueLibs.CreateCustomMutator(cChallenge.RushinRevolution, true,
+				new CustomNameInfo("QuestCount: Rushin' Revolution"),
+				new CustomNameInfo("There are decades where nothing happens; and there are weeks where decades happen. And then there are days where you just don't have time for this shit.\n\nNo quests. Bum rush the Mayor. Take a long weekend."));
+			RushinRevolution.Available = true;
+			RushinRevolution.Conflicting.AddRange(new string[] { cChallenge.SingleMinded, cChallenge.Workhorse });
+			RushinRevolution.IsActive = false;
+
+			CustomMutator SingleMinded = RogueLibs.CreateCustomMutator(cChallenge.SingleMinded, true,
+				new CustomNameInfo("QuestCount: Single-minded"),
+				new CustomNameInfo("Your Resistance HR profile says \"Not a good multi-tasker.\" They only give you one job per Floor."));
+			SingleMinded.Available = true;
+			SingleMinded.Conflicting.AddRange(new string[] { cChallenge.RushinRevolution, cChallenge.Workhorse });
+			SingleMinded.IsActive = false;
+
+			CustomMutator Workhorse = RogueLibs.CreateCustomMutator(cChallenge.Workhorse, true,
+				new CustomNameInfo("QuestCount: Workhorse"),
+				new CustomNameInfo("You made the mistake of being reliable. Now the Resistance sends you all the work. You're never short on jobs.."));
+			Workhorse.Available = true;
+			Workhorse.Conflicting.AddRange(new string[] { cChallenge.RushinRevolution, cChallenge.SingleMinded });
+			Workhorse.IsActive = false;
+
+			#endregion
+			#region Quest Rewards
+
+			CustomMutator DoublePlyRewards = RogueLibs.CreateCustomMutator(cChallenge.DoublePlyRewards, true,
+				new CustomNameInfo("Rewards: Double-Ply Rewards"),
+				new CustomNameInfo("The Resistance is running low on... everything. But please, accept this stack of coupons! They are totally really actually valid.\n\nThe smell? That's *value*!"));
+			DoublePlyRewards.Available = true;
+			DoublePlyRewards.Conflicting.AddRange(new string[] { cChallenge.UnpaidInternship });
+			DoublePlyRewards.IsActive = false;
+
+			CustomMutator UnpaidInternship = RogueLibs.CreateCustomMutator(cChallenge.UnpaidInternship, true,
+				new CustomNameInfo("Rewards: Unpaid Internship"),
+				new CustomNameInfo("The double-experience you're getting working for the Resistance is worth more than any reward, they say. But so far, you're mainly learning one thing: Work for people who pay you."));
+			UnpaidInternship.Available = true;
+			UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });
+			UnpaidInternship.IsActive = false;
+
+			#endregion
+			#region Roamers
 
 			CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cChallenge.HoodlumsWonderland, true,
 				new CustomNameInfo("Hoodlum's Wonderland"),
@@ -167,30 +201,12 @@ namespace BunnyMod.Content
 			MobTown.Conflicting.AddRange(new string[] { });
 			MobTown.IsActive = false;
 
-			#endregion
-			#region QuestCount
-
-			CustomMutator SingleMinded = RogueLibs.CreateCustomMutator(cChallenge.SingleMinded, true,
-				new CustomNameInfo("QuestCount: Single-minded"),
-				new CustomNameInfo("Your Resistance HR profile says \"Not a good multi-tasker.\" They only give you one job per Floor."));
-			SingleMinded.Available = true;
-			SingleMinded.Conflicting.AddRange(new string[] { cChallenge.Workhorse, cChallenge.ZeroQuests });
-			SingleMinded.IsActive = false;
-
-			CustomMutator Workhorse = RogueLibs.CreateCustomMutator(cChallenge.Workhorse, true,
-				new CustomNameInfo("QuestCount: Workhorse"),
-				new CustomNameInfo("You made the mistake of being reliable. Now the Resistance sends you all the work. You're never short on jobs.."));
-			Workhorse.Available = true;
-			Workhorse.Conflicting.AddRange(new string[] { cChallenge.SingleMinded, cChallenge.ZeroQuests });
-			Workhorse.IsActive = false;
-
-			//CustomMutator ZeroQuests = RogueLibs.CreateCustomMutator(cMutators.ZeroQuests, true,
-			//	new CustomNameInfo("Zero Quests"),
-			//	new CustomNameInfo("The Resistance has sort of given up on asking you to do things. Just... go to the elevator. That's fine."));
-			//ZeroQuests.Available = true;
-			//ZeroQuests.Conflicting.AddRange(new string[] { cMutators.FourQuests, cMutators.OneQuest });
-			//ZeroQuests.IsActive = false;
-			// This one needs an additional check. The elevator to exit the level is not activated.
+			CustomMutator YoungMenIntheNeighborhood = RogueLibs.CreateCustomMutator(cChallenge.YoungMenInTheNeighborhood, true,
+				new CustomNameInfo("Young Men in the Neighborhood"),
+				new CustomNameInfo("Beause the young gentlemen in the hood are always polite; If you start acting rude, we'll set you right!\nYour friendly local Gangbangers now roam every district."));
+			YoungMenIntheNeighborhood.Available = true;
+			YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
+			YoungMenIntheNeighborhood.IsActive = false;
 
 			#endregion
 		}
@@ -203,6 +219,15 @@ namespace BunnyMod.Content
 				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
 			}
+		}
+		#endregion
+		#region RandomItems
+		public static void RandomItems_fillItems(ref RandomSelection __component, ref RandomList __rList) // Postfix
+		{
+			RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
+			RandomList rList = component.CreateRandomList("VoucherRewards", "Items", "Item");
+			component.CreateRandomElement(rList, "FreeItemVoucher", 1);
+			component.CreateRandomElement(rList, "HiringVoucher", 1);
 		}
 		#endregion
 		#region SpawnerMain

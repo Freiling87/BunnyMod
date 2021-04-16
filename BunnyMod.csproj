@@ -159,7 +159,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>set gameDirectory="C:\Program Files (x86)\Steam\steamapps\common\Streets of Rogue\BepInEx\plugins"
+set dll="BunnyMod.dll"
+if exist %25gameDirectory%25 ECHO "Directory Exists"
+if exist %25dll%25 ECHO "File exists"
+if exist %25gameDirectory%25 copy /y %25dll%25 %25gameDirectory%25</PostBuildEvent>
   </PropertyGroup>
 </Project>

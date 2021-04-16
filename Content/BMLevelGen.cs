@@ -40,6 +40,9 @@ namespace BunnyMod.Content
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+
+			// SpawnerFloor 
+			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -4944,6 +4947,15 @@ namespace BunnyMod.Content
 
 				return false;
 			}
+
+			return true;
+		}
+		#endregion
+		#region SpawnerFloor
+		public static bool SpawnerFloor_spawn(string floorName) // Prefix
+		{
+			if (floorName == "Normal")
+				floorName = GetFloorTileFromMutator();
 
 			return true;
 		}

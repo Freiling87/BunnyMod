@@ -428,7 +428,7 @@ namespace BunnyMod.Content
             #endregion
             #region Social
             CustomTrait Domineering = RogueLibs.CreateCustomTrait(cTrait.Domineering, true,
-                new CustomNameInfo(cTrait.Domineering),
+                new CustomNameInfo("000: Domineering"),
                 new CustomNameInfo("There's just something about how you carry yourself. Maybe it's the way you walk, or maybe it's the way you demand obedience from the weak around you. People will occasionally be Submissive to you. Kinky!"));
             Domineering.Available = true;
             Domineering.AvailableInCharacterCreation = true;
@@ -440,7 +440,7 @@ namespace BunnyMod.Content
             Domineering.Upgrade = cTrait.Domineering_2;
 
             CustomTrait Domineering_2 = RogueLibs.CreateCustomTrait(cTrait.Domineering_2, true,
-                new CustomNameInfo("Domineering +"),
+                new CustomNameInfo("000: Domineering +"),
                 new CustomNameInfo("Some people make sure their social skills work for them. You crack the whip! You're finding more and more Subs everywhere you look."));
             Domineering_2.Available = true;
             Domineering_2.AvailableInCharacterCreation = true;
@@ -452,7 +452,7 @@ namespace BunnyMod.Content
             Domineering_2.Upgrade = null;
 
             CustomTrait GenerallyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant, true,
-                new CustomNameInfo("Generally Unpleasant"),
+                new CustomNameInfo("000: Generally Unpleasant"),
                 new CustomNameInfo("You have a certain way with people! It's... very annoying."));
             GenerallyUnpleasant.Available = true;
             GenerallyUnpleasant.AvailableInCharacterCreation = true;
@@ -464,7 +464,7 @@ namespace BunnyMod.Content
             GenerallyUnpleasant.Upgrade = null;
 
             CustomTrait ObjectivelyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant_2, true,
-                new CustomNameInfo("Objectively Unpleasant"),
+                new CustomNameInfo("000: Objectively Unpleasant"),
                 new CustomNameInfo("You chew with your mouth open. You rightfully have no friends in the world. You are scum. Everyone starts out Annoyed, including me."));
             ObjectivelyUnpleasant.Available = true;
             ObjectivelyUnpleasant.AvailableInCharacterCreation = true;
@@ -476,7 +476,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant.Upgrade = null;
 
             CustomTrait Polarizing = RogueLibs.CreateCustomTrait(cTrait.Polarizing, true,
-                new CustomNameInfo("Polarizing"),
+                new CustomNameInfo("000: Polarizing"),
                 new CustomNameInfo("Everyone has an opinion on you, when they first meet you. Might be good or bad, but at least you feel noticed!"));
             Polarizing.Available = true;
             Polarizing.AvailableInCharacterCreation = true;
@@ -488,7 +488,7 @@ namespace BunnyMod.Content
             Polarizing.Upgrade = cTrait.Polarizing_2;
 
             CustomTrait Polarizing_2 = RogueLibs.CreateCustomTrait(cTrait.Polarizing_2, true,
-                new CustomNameInfo("Polarizing +"),
+                new CustomNameInfo("000: Polarizing +"),
                 new CustomNameInfo("People have *strong* opinions of you. Like me. I think you're just great."));
             Polarizing_2.Available = true;
             Polarizing_2.AvailableInCharacterCreation = true;
@@ -500,7 +500,7 @@ namespace BunnyMod.Content
             Polarizing_2.Upgrade = null;
 
             CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
-                new CustomNameInfo("Priors"),
+                new CustomNameInfo("000: Priors"),
                 new CustomNameInfo("You have a long rap sheet, and the police know you by first name. They are sick of your shit, and just looking for an excuse to beat you down."));
             Priors.Available = true;
             Priors.AvailableInCharacterCreation = true;
@@ -512,7 +512,7 @@ namespace BunnyMod.Content
             Priors.Upgrade = null;
 
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait(cTrait.VeiledThreats, true,
-				new CustomNameInfo("Veiled Threats"),
+				new CustomNameInfo("000: Veiled Threats"),
 				new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile."));
             VeiledThreats.Available = true;
             VeiledThreats.AvailableInCharacterCreation = true;
@@ -525,7 +525,7 @@ namespace BunnyMod.Content
             VeiledThreats.Upgrade = null;
 
             CustomTrait Warlord = RogueLibs.CreateCustomTrait(cTrait.Warlord, true,
-                new CustomNameInfo(cTrait.Warlord),
+                new CustomNameInfo("000: Warlord"),
                 new CustomNameInfo("To crush your enemies, to see them fall at your feet -- to take their horses and goods and hear the lamentation of their women. That is best! You can convince anyone to accept your rule by force."));
             Warlord.Available = true;
             Warlord.AvailableInCharacterCreation = true;
@@ -538,7 +538,7 @@ namespace BunnyMod.Content
             #endregion
             #region Spawns
             CustomTrait Haunted = RogueLibs.CreateCustomTrait("Haunted", true,
-                new CustomNameInfo("Haunted"),
+                new CustomNameInfo("000: Haunted"),
                 new CustomNameInfo("You spent too long spelunking in an ancient treasure vault. The local ghosts were very unhappy with you, and you had their legal case dismissed. Now they're taking it into their own hands."));
             Haunted.Available = true;
             Haunted.AvailableInCharacterCreation = true;
@@ -550,7 +550,7 @@ namespace BunnyMod.Content
             Haunted.Upgrade = null;
 
             CustomTrait MobDebt = RogueLibs.CreateCustomTrait("MobDebt", true,
-                new CustomNameInfo("Mob Debt"),
+                new CustomNameInfo("000: Mob Debt"),
                 new CustomNameInfo("You found a sack of money, and the people to whom it belongs want it back with interest. Well, they certainly have your interest, but you've spent the principal. Pay it off at an ATM by Level 10, or else your kneecaps (and the rest of your body) will pay the price."));
             MobDebt.Available = true;
             MobDebt.AvailableInCharacterCreation = true;
@@ -562,7 +562,7 @@ namespace BunnyMod.Content
             MobDebt.Upgrade = null;
 
             CustomTrait MookMasher = RogueLibs.CreateCustomTrait("MookMasher", true,
-                new CustomNameInfo("Mook Masher"),
+                new CustomNameInfo("000: Mook Masher"),
                 new CustomNameInfo("The Mayor knows you're a threat, and you're coming for him. He could just destroy you, but as a villain, he prefers to send his henchmen at you in steadily increasing but manageable waves."));
             MookMasher.Available = true;
             MookMasher.AvailableInCharacterCreation = true;
@@ -573,9 +573,8 @@ namespace BunnyMod.Content
             MookMasher.IsActive = true;
             MookMasher.Upgrade = null;
 
-
             CustomTrait Reinforcements = RogueLibs.CreateCustomTrait("Reinforcements", true,
-                new CustomNameInfo("Reinforcements"),
+                new CustomNameInfo("000: Reinforcements"),
                 new CustomNameInfo("You have worked to create an army for the Resistance. That army now patrols the City secretly, looking for the opportunity to aid the cause."));
             Reinforcements.Available = true;
             Reinforcements.AvailableInCharacterCreation = true;
@@ -587,7 +586,7 @@ namespace BunnyMod.Content
             Reinforcements.Upgrade = "Reinforcements_2";
 
             CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait("Reinforcements_2", true,
-                new CustomNameInfo("Reinforcements +"),
+                new CustomNameInfo("000: Reinforcements +"),
                 new CustomNameInfo("Your allies now have top-of-the-line equipment."));
             Reinforcements_2.Available = true;
             Reinforcements_2.AvailableInCharacterCreation = true;
@@ -612,7 +611,7 @@ namespace BunnyMod.Content
             StealthBastardDeluxe.Upgrade = null;
 
             CustomTrait UnderdarkCitizen = RogueLibs.CreateCustomTrait(cTrait.UnderdarkCitizen, true,
-                new CustomNameInfo("Underdark Citizen"),
+                new CustomNameInfo("000: Underdark Citizen"),
                 new CustomNameInfo("You can navigate the city's sewers with ease. Their denizens no longer consider you an easy mark."));
             UnderdarkCitizen.Available = true;
             UnderdarkCitizen.AvailableInCharacterCreation = true;

@@ -20,10 +20,10 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			// InvInterface
-			Prefix(typeof(InvInterface), "RealAwake", GetType(), "InvInterface_RealAwake", new Type[0] { });
+			//Prefix(typeof(InvInterface), "RealAwake", GetType(), "InvInterface_RealAwake", new Type[0] { });
 
 			// RandomOther
-			Postfix(typeof(RandomOther), "fillOther", GetType(), "RandomOther_fillOther", new Type[0] { });
+			//Postfix(typeof(RandomOther), "fillOther", GetType(), "RandomOther_fillOther", new Type[0] { });
 
 			// RandomSelection
 			Prefix(typeof(RandomSelection), "RandomSelect", GetType(), "RandomSelection_RandomSelect", new Type[2] { typeof(string), typeof(string) });

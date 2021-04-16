@@ -122,6 +122,7 @@ namespace BunnyMod
             LetMeSeeThatThrong = "LetMeSeeThatThrong",
             Megalopolis = "Megalopolis",
             MobTown = "MobTown",
+            Null = "",
             Panoptikopolis = "Panoptikopolis",
             ScaryGuns = "ScaryGuns",
             ShantyTown = "ShantyTown",
@@ -911,6 +912,24 @@ namespace BunnyMod
             WoodClean = "WoodClean",
             WoodSlats = "WoodSlats";
     }
+    public static class vFloorTileGroup // Vanilla Floor Tile Groups
+	{
+        public const string
+            Building = "FloorTilesBuilding",
+            Disposal = "Disposal",
+            Downtown = "FloorTilesDowntown",
+            UnknownPossiblyGeneric = "FloorTiles",
+            Generic = "FloorTilesMain",
+            HoleTiles = "HoleTiles",
+            Ice = "IceTiles",
+            Industrial = "FloorTilesIndustrial",
+            MayorVillage = "FloorTilesMayor",
+            Park = "FloorTilesOutdoor",
+            Rug = "Rug",
+            Uptown = "FloorTilesWealthy",
+            Wall = "WallTiles",
+            Water = "WaterTiles";
+	}
     public static class vHairType // Vanilla Hair
 	{
         public const string
@@ -1681,11 +1700,20 @@ namespace BunnyMod
             BarbedWire = "BarbedWire",
             Bars = "Bars",
             Border = "Border",
+            Brick = "Normal",
             Cave = "Cave",
             Glass = "Glass",
             Hedge = "Hedge",
-            Normal = "Normal",
+            Null = "",
             Steel = "Steel",
             Wood = "Wood";
     }
+    public static class vWallGroup // Vanilla Wall Groups
+	{
+        public const string
+            Hideout = "WallsHideout",
+            Normal = "WallsNormal",
+            Strong = "WallsStrong",
+            Weak = "WallsWeak";
+	}
 }

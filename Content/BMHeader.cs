@@ -264,6 +264,23 @@ namespace BunnyMod
             Wrestler = "Wrestler",
             Zombie = "Zombie";
     }
+    public static class vAmbience // Vanilla Ambient Audio Loops
+	{
+        public const string
+            AirConditioner = "AirFiltrationAmbience",
+            BathHouse = "SpaAmbience",
+            Casino = "CasinoAmbience",
+            Cave = "CavernAmbience",
+            Computer = "ComputerAmbience",
+            ConveyorBelt = "EscalatorAmbience",
+            Generator = "GeneratorAmbience",
+            GeneratorOverclocked = "OverclockedGeneratorAmbience",
+            Graveyard = "GraveyardAmbience",
+            LampPost = "LampPostAmbience",
+            Laser = "LaserAmbience",
+            Park = "ParkAmbience",
+            Television = "TVAmbience";
+	}
     public static class vGoal // Vanilla Agent Goals
     {
         public const string

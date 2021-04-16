@@ -64,6 +64,15 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+		public static bool IsNextToLake(Vector2 spot) =>
+			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
 		public static bool IsWallModActive()
 		{
 			foreach (string mutator in wallAndFloorMutators)
@@ -1235,6 +1244,8 @@ namespace BunnyMod.Content
 
 				if (GC.sessionDataBig.curLevel > 0 && GC.staticChunk == "" && GC.levelType != "Tutorial" && GC.levelType != "HomeBase")
 				{
+					#region Features
+					#region Lakes
 					__instance.hasLakes = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33) && GC.levelTheme != 3))
@@ -1488,7 +1499,8 @@ namespace BunnyMod.Content
 						lakeType = null;
 						factoryChunk = null;
 					}
-
+					#endregion
+					#region Power Boxes
 					int earlyCops = 0;
 					bool hasPowerBoxes = false;
 					bool hasExtraPowerBoxes = false;
@@ -1572,7 +1584,8 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
+					#endregion
+					#region Slime Barrels
 					bool hasSlimeBarrels = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -1625,7 +1638,8 @@ namespace BunnyMod.Content
 						}
 						myLake = null;
 					}
-
+					#endregion
+					#region Oil Spills
 					bool hasOilSpills = false;
 
 					if (GC.levelTheme == 1 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -1659,7 +1673,8 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
+					#endregion
+					#region Vending Machines
 					bool hasVendingMachines = true;
 
 					if (GC.customLevel)
@@ -1902,7 +1917,8 @@ namespace BunnyMod.Content
 							}
 						}
 					}
-
+					#endregion
+					#region Trash Cans
 					bool hasTrashCans = true;
 
 					if (GC.customLevel)
@@ -2080,7 +2096,8 @@ namespace BunnyMod.Content
 
 						spawnedInChunks = null;
 					}
-
+					#endregion
+					#region Vendor Carts
 					bool hasVendorCarts = false;
 
 					if (GC.levelTheme == 2)
@@ -2091,7 +2108,6 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasVendorCarts = __instance.customLevel.levelFeatures.Contains("VendorCart");
-
 					if (hasVendorCarts)
 					{
 						Debug.Log("Loading Vendor Carts");
@@ -2170,7 +2186,8 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
+					#endregion
+					#region PoliceBoxes
 					bool hasPoliceBoxes = false;
 
 					if (GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
@@ -2240,7 +2257,7 @@ namespace BunnyMod.Content
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
 							{
 								Vector2 vector11 = Vector2.zero;
-								int num28 = 0;
+								int attempts = 0;
 
 								do
 								{
@@ -2262,9 +2279,9 @@ namespace BunnyMod.Content
 											vector11 = Vector2.zero;
 									}
 
-									num28++;
+									attempts++;
 								}
-								while ((vector11 == Vector2.zero || Vector2.Distance(vector11, GC.playerAgent.tr.position) < 5f) && num28 < 100);
+								while ((vector11 == Vector2.zero || Vector2.Distance(vector11, GC.playerAgent.tr.position) < 5f) && attempts < 100);
 
 								if (vector11 != Vector2.zero)
 									GC.spawnerMain.spawnObjectReal(vector11, null, "PoliceBox");
@@ -2280,7 +2297,8 @@ namespace BunnyMod.Content
 							}
 						}
 					}
-
+					#endregion
+					#region AlarmButtons
 					bool hasAlarmButtons = false;
 
 					if (GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
@@ -2298,7 +2316,7 @@ namespace BunnyMod.Content
 						for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
 						{
 							Vector2 vector12 = Vector2.zero;
-							int num30 = 0;
+							int attempts = 0;
 
 							do
 							{
@@ -2320,9 +2338,9 @@ namespace BunnyMod.Content
 										vector12 = Vector2.zero;
 								}
 
-								num30++;
+								attempts++;
 							}
-							while ((vector12 == Vector2.zero || Vector2.Distance(vector12, GC.playerAgent.tr.position) < 5f) && num30 < 100);
+							while ((vector12 == Vector2.zero || Vector2.Distance(vector12, GC.playerAgent.tr.position) < 5f) && attempts < 100);
 
 							if (vector12 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector12, null, "AlarmButton");
@@ -2337,13 +2355,9 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
-					bool hasManholesWarZone = false;
-
-					if (GC.levelFeeling == "WarZone")
-						hasManholesWarZone = true;
-
-					if (hasManholesWarZone)
+					#endregion
+					#region Manholes - Warzone
+					if (GC.levelFeeling == vLevelFeeling.WarZone)
 					{
 						Debug.Log("Loading Manholes (War Zone)");
 						int bigTries = (int)((float)Random.Range(4, 8) * __instance.levelSizeModifier);
@@ -2391,19 +2405,50 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
+					#endregion
+					#region Manholes
 					bool hasManholes = false;
 
-					if ((GC.levelTheme == 3 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && !hasManholesWarZone)
+					if ((GC.levelTheme == 3 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && !(GC.levelFeeling == vLevelFeeling.WarZone))
 						hasManholes = true;
 
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
-					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen))
-						hasManholes = true;
+					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Custom
+					{
+						BMLog("Loading Underdark Manholes");
 
-					if (hasManholes)
+						int manholeCount = (int)((float)Random.Range(30, 40) * __instance.levelSizeModifier);
+
+						for (int i = 0; i < manholeCount; i++)
+						{
+							Vector2 spot = Vector2.zero;
+							int spotsTried = 0;
+
+							do
+							{
+								spot = GC.tileInfo.FindRandLocationGeneral(0.64f);
+								spotsTried++;
+							}
+							while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 5f) && spotsTried < 300);
+
+							if (spot != Vector2.zero && IsNextToLake(spot))
+								spot = Vector2.zero;
+
+							if (spot != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(spot, null, "Manhole");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + i);
+						}
+					} // Custom
+					else if (hasManholes) // Vanilla
 					{
 						Debug.Log("Loading Manholes");
 						int bigTries = (int)((float)Random.Range(8, 12) * __instance.levelSizeModifier);
@@ -2411,35 +2456,35 @@ namespace BunnyMod.Content
 
 						for (int i = 0; i < bigTries; i = num2 + 1)
 						{
-							Vector2 vector14 = Vector2.zero;
+							Vector2 locationCandidate = Vector2.zero;
 							int num34 = 0;
 
 							do
 							{
-								vector14 = GC.tileInfo.FindRandLocationGeneral(2f);
+								locationCandidate = GC.tileInfo.FindRandLocationGeneral(2f);
 
-								for (int num35 = 0; num35 < GC.objectRealList.Count; num35++)
-									if (GC.objectRealList[num35].objectName == "Manhole" && Vector2.Distance(GC.objectRealList[num35].tr.position, vector14) < 14f)
-										vector14 = Vector2.zero;
+								for (int j = 0; j < GC.objectRealList.Count; j++)
+									if (GC.objectRealList[j].objectName == "Manhole" && Vector2.Distance(GC.objectRealList[j].tr.position, locationCandidate) < 14f)
+										locationCandidate = Vector2.zero;
 
-								if (vector14 != Vector2.zero)
+								if (locationCandidate != Vector2.zero)
 								{
-									if (GC.tileInfo.WaterNearby(vector14))
-										vector14 = Vector2.zero;
+									if (GC.tileInfo.WaterNearby(locationCandidate))
+										locationCandidate = Vector2.zero;
 
-									if (GC.tileInfo.IceNearby(vector14))
-										vector14 = Vector2.zero;
+									if (GC.tileInfo.IceNearby(locationCandidate))
+										locationCandidate = Vector2.zero;
 
-									if (GC.tileInfo.BridgeNearby(vector14))
-										vector14 = Vector2.zero;
+									if (GC.tileInfo.BridgeNearby(locationCandidate))
+										locationCandidate = Vector2.zero;
 								}
 
 								num34++;
 							}
-							while ((vector14 == Vector2.zero || Vector2.Distance(vector14, GC.playerAgent.tr.position) < 5f) && num34 < 100);
+							while ((locationCandidate == Vector2.zero || Vector2.Distance(locationCandidate, GC.playerAgent.tr.position) < 5f) && num34 < 100);
 
-							if (vector14 != Vector2.zero && Vector2.Distance(vector14, GC.playerAgent.tr.position) >= 5f)
-								GC.spawnerMain.spawnObjectReal(vector14, null, "Manhole");
+							if (locationCandidate != Vector2.zero && Vector2.Distance(locationCandidate, GC.playerAgent.tr.position) >= 5f)
+								GC.spawnerMain.spawnObjectReal(locationCandidate, null, "Manhole");
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -2510,8 +2555,9 @@ namespace BunnyMod.Content
 							}
 
 						manholeList = null;
-					}
-
+					} // Vanilla
+					#endregion
+					#region Fire Hydrants
 					bool hasFireHydrants = false;
 
 					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2543,8 +2589,10 @@ namespace BunnyMod.Content
 								{
 									if (GC.tileInfo.WaterNearby(vector15))
 										vector15 = Vector2.zero;
+
 									if (GC.tileInfo.IceNearby(vector15))
 										vector15 = Vector2.zero;
+
 									if (GC.tileInfo.BridgeNearby(vector15))
 										vector15 = Vector2.zero;
 								}
@@ -2566,7 +2614,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Exploding Slime Barrels
 					bool hasExplodingSlimeBarrels = false;
 
 					if (GC.levelTheme == 1)
@@ -2611,7 +2660,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Flaming Barrels
 					bool hasFlamingBarrels = false;
 
 					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2667,7 +2717,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Flame Grates
 					if (GC.challenges.Contains(cChallenge.TransitExperiment))
 						__instance.hasFlameGrates = false;
 
@@ -2731,7 +2782,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Barbecues
 					bool hasBarbecues = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2779,7 +2831,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Fountains
 					if (GC.levelTheme != 2 && GC.challenges.Contains("MixedUpLevels"))
 						GC.percentChance(33);
 
@@ -2819,7 +2872,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Trees
 					bool hasTrees = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2834,6 +2888,7 @@ namespace BunnyMod.Content
 					if (hasTrees)
 					{
 						Debug.Log("Loading Trees");
+
 						int numObjects = (int)((float)Random.Range(30, 40) * __instance.levelSizeModifier);
 						int num2;
 
@@ -2872,7 +2927,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Boulders
 					bool hasBoulders = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -2952,7 +3008,8 @@ namespace BunnyMod.Content
 							num2 = bigTries;
 						}
 					}
-
+					#endregion
+					#region Bushes
 					bool hasBushes = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -3071,7 +3128,8 @@ namespace BunnyMod.Content
 
 						bushList = null;
 					}
-
+					#endregion
+					#region Land Mines
 					bool hasMines = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -3199,7 +3257,8 @@ namespace BunnyMod.Content
 							}
 						}
 					}
-
+					#endregion
+					#region Bear Traps
 					bool hasBearTraps = false;
 
 					if (GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -3255,7 +3314,8 @@ namespace BunnyMod.Content
 							num2 = numObjects;
 						}
 					}
-
+					#endregion
+					#region Lamps
 					bool hasLamps = true;
 
 					if (GC.customLevel)
@@ -3325,57 +3385,56 @@ namespace BunnyMod.Content
 
 						spawnedInChunks = null;
 					}
+					#endregion
+					#endregion
+					#region Ambience
+					Debug.Log("Loading Ambient Objects");
 
-					if (true)
+					for (int num65 = 0; num65 < __instance.levelChunks.Count; num65++)
 					{
-						Debug.Log("Loading Ambient Objects");
+						Chunk chunk = __instance.levelChunks[num65];
+						string ambience = "";
+						string description = chunk.description;
 
-						for (int num65 = 0; num65 < __instance.levelChunks.Count; num65++)
+						if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+							ambience = vAmbience.Park;
+						else 
+							switch(description)
+							{
+								case vChunkType.Casino:
+									ambience = vAmbience.Casino; // This was left out of vanilla.
+									break;
+								case vChunkType.Cave:
+									ambience = vAmbience.Cave;
+									break;
+								case vChunkType.CityPark:
+									ambience = vAmbience.Park;
+									break;
+								case vChunkType.Bathhouse:
+									ambience = vAmbience.BathHouse;
+									break;
+								case vChunkType.Graveyard:
+									ambience = vAmbience.Graveyard;
+									break;
+							}
+
+						if (ambience != "")
 						{
-							Chunk chunk = __instance.levelChunks[num65];
-							string ambience = "";
-							string description = chunk.description;
-
-							if (GC.challenges.Contains(cChallenge.ArcologyEcology))
-								ambience = "ParkAmbience";
-							else if (!(description == "Graveyard"))
+							if (chunk.shape == 6)
 							{
-								if (!(description == "Casino"))
-								{
-									if (!(description == "Bathhouse"))
-									{
-										if (!(description == "Cave"))
-										{
-											if (description == "CityPark")
-												ambience = "ParkAmbience";
-										}
-										else
-											ambience = "CavernAmbience";
-									}
-									else
-										ambience = "SpaAmbience";
-								}
+								Vector2 v2 = new Vector2(
+									(chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f, 
+									(chunk.chunkLeash1Tr.y + chunk.chunkLeash2Tr.y + chunk.chunkLeash3Tr.y + chunk.chunkLeash4Tr.y) / 4f);
+								GC.spawnerMain.spawnObjectReal(v2, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Huge";
 							}
+							else if (chunk.shape == 5)
+								GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Long";
 							else
-								ambience = "GraveyardAmbience";
-
-
-
-							if (ambience != "")
-							{
-								if (chunk.shape == 6)
-								{
-									Vector2 v2 = new Vector2((chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f, (chunk.chunkLeash1Tr.y + chunk.chunkLeash2Tr.y + chunk.chunkLeash3Tr.y + chunk.chunkLeash4Tr.y) / 4f);
-									GC.spawnerMain.spawnObjectReal(v2, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Huge";
-								}
-								else if (chunk.shape == 5)
-									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience + "_Long";
-								else
-									GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience;
-							}
+								GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject = ambience;
 						}
 					}
-
+					#endregion
+					#region Mayor
 					__instance.LevelContainsMayor();
 					bool hasMayor = false;
 
@@ -3775,37 +3834,40 @@ namespace BunnyMod.Content
 						mayorAgent = null;
 						lakeType = null;
 					}
-
-					if (GC.levelFeeling != "HarmAtIntervals")
+					#endregion
+					#region Roamers
+					if (GC.levelFeeling != vLevelFeeling.RadiationBlasts)
 					{
-						bool flag28 = true;
+						#region Generic
+						bool hasGenericRoamers = true;
 
 						if (GC.sessionDataBig.curLevel >= 1)
-							flag28 = true;
+							hasGenericRoamers = true;
 
 						if (GC.customLevel)
-							flag28 = __instance.customLevel.levelFeatures.Contains("Hobo");
+							hasGenericRoamers = __instance.customLevel.levelFeatures.Contains("Hobo");
 
-						if (flag28 && GC.levelFeeling != "Riot" && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
+						if (hasGenericRoamers && GC.levelFeeling != vLevelFeeling.Riot && GC.levelFeeling != vLevelFeeling.Lockdown && GC.levelFeeling != vLevelFeeling.WarZone)
 						{
-							Debug.Log("Loading Slum Dwellers");
+							Debug.Log("Loading Roamers");
+
 							int bigTries = (int)((float)Random.Range(16, 20) * __instance.levelSizeModifier);
 							bigTries = SetRoamerCount(bigTries);
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
 							{
-								Vector2 vector30 = Vector2.zero;
+								Vector2 trySpot = Vector2.zero;
 								int num80 = 0;
 
 								do
 								{
-									vector30 = GC.tileInfo.FindRandLocationGeneral(0.32f);
+									trySpot = GC.tileInfo.FindRandLocationGeneral(0.32f);
 									num80++;
 								}
-								while ((vector30 == Vector2.zero || Vector2.Distance(vector30, GC.playerAgent.tr.position) < 10f) && num80 < 300);
+								while ((trySpot == Vector2.zero || Vector2.Distance(trySpot, GC.playerAgent.tr.position) < 10f) && num80 < 300);
 
-								if (vector30 != Vector2.zero)
+								if (trySpot != Vector2.zero)
 								{
 									string roamerAgent = "Hobo";
 									Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
@@ -3858,8 +3920,7 @@ namespace BunnyMod.Content
 											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
 												roamerAgent = "Doctor";
 										}
-
-										if (GC.levelTheme == 1)
+										else if (GC.levelTheme == 1)
 										{
 											if (GC.percentChance(10))
 												roamerAgent = "Firefighter";
@@ -3970,28 +4031,28 @@ namespace BunnyMod.Content
 										}
 									}
 
-									Agent spawnedAgent = GC.spawnerMain.SpawnAgent(vector30, null, roamerAgent);
+									Agent spawnedAgent = GC.spawnerMain.SpawnAgent(trySpot, null, roamerAgent);
 									spawnedAgent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 
 									if (roamerAgent == "UpperCruster")
 									{
 										if (GC.percentChance(20))
 										{
-											vector30 = Vector2.zero;
+											trySpot = Vector2.zero;
 											num80 = 0;
 											Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
 
 											do
 											{
-												vector30 = GC.tileInfo.FindLocationNearLocation(spawnedAgent.tr.position, null, 0.32f, 1.28f, true, true);
+												trySpot = GC.tileInfo.FindLocationNearLocation(spawnedAgent.tr.position, null, 0.32f, 1.28f, true, true);
 												num80++;
 											}
-											while (vector30 == Vector2.zero && num80 < 300);
+											while (trySpot == Vector2.zero && num80 < 300);
 
-											if (vector30 != Vector2.zero && num80 < 300)
+											if (trySpot != Vector2.zero && num80 < 300)
 											{
 												roamerAgent = "Slave";
-												Agent agent15 = GC.spawnerMain.SpawnAgent(vector30, null, roamerAgent);
+												Agent agent15 = GC.spawnerMain.SpawnAgent(trySpot, null, roamerAgent);
 												agent15.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 												agent15.relationships.SetRelInitial(spawnedAgent, "Submissive");
 												spawnedAgent.relationships.SetRelInitial(agent15, "Aligned");
@@ -4021,7 +4082,8 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
-
+						#endregion
+						#region Musician
 						bool hasMusician = false;
 
 						if ((GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && GC.percentChance(33))
@@ -4123,7 +4185,8 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
-
+						#endregion
+						#region Cops
 						bool hasCops = false;
 
 						if ((GC.sessionDataBig.curLevel >= 2 || GC.levelTheme != 0) && GC.levelTheme != 2 && !GC.challenges.Contains("NoCops"))
@@ -4182,7 +4245,8 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
-
+						#endregion
+						#region Extra Cops
 						bool extraCops = false;
 
 						if (GC.sessionData.nextLevelExtraCops)
@@ -4246,7 +4310,8 @@ namespace BunnyMod.Content
 							else if (objectReal11.objectName == "ATMMachine")
 								__instance.SpawnCopNearLocation(objectReal11.tr.position, 0.64f, 2.56f);
 						}
-
+						#endregion
+						#region Cop Bots
 						bool hasCopBots = false;
 
 						if (GC.levelTheme == 4 && !GC.challenges.Contains("NoCops"))
@@ -4310,7 +4375,8 @@ namespace BunnyMod.Content
 
 							lakeType = null;
 						}
-
+						#endregion
+						#region Zombies
 						bool hasZombies = false;
 
 						if (GC.challenges.Contains("ZombieMutator"))
@@ -4357,12 +4423,14 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
-
+						#endregion
+						#region Gangbangers
 						bool hasGangbangers = false;
 						bool removeAgentsInBuilding = false;
 						bool findingFactoryLake = false;
 
-						if ((GC.sessionDataBig.curLevel >= 2 && (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || GC.levelTheme == 3)) || (GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+						if ((GC.sessionDataBig.curLevel >= 2 && (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || GC.levelTheme == 3)) || 
+							(GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 							hasGangbangers = true;
 
 						if (GC.levelTheme == 2 || GC.levelTheme == 4)
@@ -4481,7 +4549,8 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
-
+						#endregion
+						#region Mafia
 						bool hasMafia = false;
 
 						if (GC.levelTheme == 3 || (GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -4556,11 +4625,14 @@ namespace BunnyMod.Content
 								num2 = numObjects;
 							}
 						}
+						#endregion
 					}
-
+					#region Assassins
 					for (int num98 = 0; num98 < GC.agentList.Count; num98++)
 						if (GC.agentList[num98].isPlayer > 0 && (GC.agentList[num98].statusEffects.hasStatusEffect("InDebt3") || (GC.agentList[num98].isPlayer == 1 && GC.challenges.Contains("AssassinsEveryLevel"))))
 							__instance.SpawnAssassins(GC.agentList[num98], GC.agentList[num98].CalculateDebt());
+					#endregion
+					#endregion
 				}
 
 				if (!__instance.loadedObjectAgents)

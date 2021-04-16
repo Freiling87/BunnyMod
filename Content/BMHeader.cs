@@ -46,17 +46,17 @@ namespace BunnyMod
 			new BMTraits().Awake();
 		}
 		#region Category Lists
-		public static List<string> alcohol = new List<string>() { "Beer", "Cocktail", "Whiskey" };
-		public static List<string> drugs = new List<string>() { "Antidote", "Cigarettes", "Cocaine", "CritterUpper", "CyanidePill", "ElectroPill", "Giantizer", "KillerThrower", "RagePoison", "Shrinker", "Steroids", "Syringe" };
-		public static List<string> nonVegetarian = new List<string>() { "BaconCheeseburger", "HamSandwich" };
-		public static List<string> vegetarian = new List<string>() { "Banana", "Fud", "HotFud" };
+		public static List<string> alcohol = new List<string>() { vItem.Beer, vItem.Cocktail, vItem.Whiskey};
+		public static List<string> drugs = new List<string>() { vItem.Antidote, vItem.Cigarettes, vItem.Sugar, vItem.CritterUpper, vItem.CyanidePill, vItem.ElectroPill, vItem.Giantizer, vItem.KillerThrower, vItem.RagePoison, vItem.Shrinker, vItem.MusclyPill, vItem.Syringe };
+		public static List<string> nonVegetarian = new List<string>() { vItem.BaconCheeseburger, vItem.HamSandwich };
+		public static List<string> vegetarian = new List<string>() { vItem.Banana, vItem.Fud, vItem.HotFud };
 
 		public static List<string> blunt = new List<string>() { };
 		public static List<string> explosive = new List<string>() { };
-		public static List<string> heavy = new List<string>() { "Axe", "BaseballBat", "BearTrap", "BombTrigger", "BulletproofVest", "FireExtinguisher", "FireproofSuit", "Flamethrower", "GhostBlaster", "LandMine", "MachineGun", "Revolver", "RocketLauncher", "Shotgun", "Sledgehammer", "Wrench" };
-		public static List<string> loud = new List<string>() { "BoomBox", "DizzyGrenade", "DoorDetonator", "EMPGrenade", "ExplosiveStimulator", "FireExtinguisher", "Fireworks", "GhostBlaster", "Grenade", "HearingBlocker", "Leafblower", "LandMine", "MachineGun", "MolotovCocktail", "Pistol", "RemoteBomb", "Revolver", "RocketLauncher", "Shotgun", "TimeBomb", "WarpGrenade" };
-		public static List<string> piercing = new List<string>() { "Axe", "BearTrap", "Grenade", "Knife", "LandMine", "MachineGun", "Pistol", "Revolver", "RocketLauncher", "Shotgun", "Shuriken", "Sword" };
-		public static List<string> tools = new List<string> { "Crowbar", "Wrench" };
+        public static List<string> heavy = new List<string>() { vItem.Axe, vItem.BaseballBat, vItem.Beartrap, vItem.BulletproofVest, vItem.Crowbar, vItem.FireExtinguisher, vItem.FireproofSuit, vItem.Flamethrower, vItem.GhostGibber, vItem.LandMine, vItem.MachineGun, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.Sledgehammer, vItem.Wrench };
+        public static List<string> loud = new List<string>() { vItem.BoomBox, vItem.DizzyGrenade, vItem.DoorDetonator, vItem.EMPGrenade, vItem.Explodevice, vItem.FireExtinguisher, vItem.Fireworks, vItem.GhostGibber, vItem.Grenade, vItem.EarWarpWhistle, vItem.Leafblower, vItem.LandMine, vItem.MachineGun, vItem.MolotovCocktail, vItem.Pistol, vItem.RemoteBomb, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.TimeBomb, vItem.WarpGrenade };
+        public static List<string> piercing = new List<string>() { vItem.Axe, vItem.Beartrap, vItem.Grenade, vItem.Knife, vItem.LandMine, vItem.MachineGun, vItem.Pistol, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.Shuriken, vItem.Sword };
+        public static List<string> tools = new List<string> { vItem.Crowbar, vItem.Wrench };
 		#endregion
 		public static void Log (string logMessage) =>
 			ConsoleMessage.LogMessage(logMessage);
@@ -98,7 +98,6 @@ namespace BunnyMod
 			};
 		}
 	}
-
 
     public enum DamageType
     {

@@ -288,22 +288,22 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region LoadLevel
-		public static void LoadLevel_SetupMore4(LoadLevel __instance, ref GameController ___gc) // Prefix
+		public static void LoadLevel_SetupMore4(LoadLevel __instance) // Prefix
 		{
 			BMLog("LoadLevel.SetupMore4");
 
 			List<int> gangsAssigned = new List<int>();
 
-			foreach (Agent agent in ___gc.agentList)
+			foreach (Agent agent in GC.agentList)
 			{
-				BMLog("Detected " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2) + ", member of gang #" + agent.gang + ", which has " + agent.gangMembers.Count + " members. He is/not a leader: " + agent.gangLeader);
+				BMLog("Detected " + agent.agentName.PadLeft(12) + " #" + GC.agentList.IndexOf(agent).ToString().PadRight(2) + ", member of gang #" + agent.gang + ", which has " + agent.gangMembers.Count + " members. He is/not a leader: " + agent.gangLeader);
 
 				if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB") && agent.gang != 0 && agent.gangMembers.Count > 1 && !gangsAssigned.Contains(agent.gang))
 				{
 					agent.gangLeader = true;
 					gangsAssigned.Add(agent.gang);
 
-					BMLog("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+					BMLog("Added Leader to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + GC.agentList.IndexOf(agent).ToString().PadRight(2));
 				}
 				else if (agent.agentName == "Hobo")
 				{
@@ -315,7 +315,7 @@ namespace BunnyMod.Content
 						agent.gangLeader = true;
 						gangsAssigned.Add(agent.gang);
 
-						BMLog("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + ___gc.agentList.IndexOf(agent).ToString().PadRight(2));
+						BMLog("Added Hobo to Gang " + agent.gang + ": " + agent.agentName.PadLeft(12) + " #" + GC.agentList.IndexOf(agent).ToString().PadRight(2));
 					}
 				}
 			}

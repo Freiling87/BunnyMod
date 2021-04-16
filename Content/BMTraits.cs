@@ -51,8 +51,8 @@ namespace BunnyMod.Content
             Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
             Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_a", new Type[3] { typeof(int), typeof(int), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_b", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
 
             // InvItem
             Postfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
@@ -812,7 +812,7 @@ namespace BunnyMod.Content
 
             return true;
         }
-        public static bool InvDatabase_SubtractFromItemCount_a(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+        public static bool InvDatabase_SubtractFromItemCount_c(int slotNum, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
             if (BMHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
@@ -823,7 +823,7 @@ namespace BunnyMod.Content
             }
             return true;
 		}
-        public static bool InvDatabase_SubtractFromItemCount_b(InvItem invItem, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+        public static bool InvDatabase_SubtractFromItemCount_d(InvItem invItem, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
             if (BMHeader.tools.Contains(invItem.invItemName))
             {

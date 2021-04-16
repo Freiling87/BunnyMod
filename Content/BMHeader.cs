@@ -41,6 +41,7 @@ namespace BunnyMod
             new BMMiscellaneous().Awake();
 			new BMMutators().Awake();
 			new BMObjects().Awake();
+            new BMQuests().Awake();
 			//new BunnySprites().Awake();
 			new BMTraits().Awake();
 		}

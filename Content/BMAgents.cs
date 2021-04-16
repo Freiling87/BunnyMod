@@ -27,7 +27,14 @@ namespace BunnyMod.Content
 		#region Agent
 		public static void Agent_SetupAgentStats(string transformationType, Agent __instance) // Postfix
 		{
-			if (__instance.agentName == "ResistanceAgent")
+			if (__instance.agentName == vAgent.ResistanceLeader)
+			{
+				if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
+					__instance.inventory.startingHeadPiece = vArmorHead.HardHat;
+				else if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
+					__instance.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
+			}
+			else if (__instance.agentName == cAgent.ResistanceSoldier)
 			{
 				__instance.SetStrength(2);
 				__instance.SetEndurance(1);
@@ -41,18 +48,18 @@ namespace BunnyMod.Content
 
 				__instance.statusEffects.AddTrait("RegenerateHealthWhenLow");
 
-				__instance.AddJob("Recruit", 5);
+				__instance.AddJob("Recruit", 0);
 				__instance.AddDesire("Supplies");
 				__instance.AddDesire("Technology");
 				__instance.AddDesire("Weapons");
 
-				if (BMTraits.IsTraitActive("Reinforcements"))
+				if (BMTraits.IsPlayerTraitActive("Reinforcements"))
 				{
 					__instance.inventory.startingHeadPiece = "HardHat";
 					__instance.inventory.AddItemPlayerStart("Pistol", 0);
 					__instance.inventory.AddItemPlayerStart("Knife", 100);
 				}
-				if (BMTraits.IsTraitActive("Reinforcements_2"))
+				if (BMTraits.IsPlayerTraitActive("Reinforcements_2"))
 				{
 					__instance.inventory.startingHeadPiece = "SoldierHelmet";
 					__instance.inventory.AddItemPlayerStart("MachineGun", 0);
@@ -75,9 +82,9 @@ namespace BunnyMod.Content
 		{
 			int reinforcements = 0;
 
-			if (BMTraits.IsTraitActive("Reinforcements"))
+			if (BMTraits.IsPlayerTraitActive("Reinforcements"))
 				reinforcements = 4;
-			else if (BMTraits.IsTraitActive("Reinforcements_2"))
+			else if (BMTraits.IsPlayerTraitActive("Reinforcements_2"))
 				reinforcements = 8;
 
 			if (reinforcements == 0)

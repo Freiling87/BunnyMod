@@ -566,7 +566,7 @@ namespace BunnyMod.Content
         #region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
+            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
 
             //TODO: Closed Bath Curtain sprite?
@@ -770,7 +770,7 @@ namespace BunnyMod.Content
         #region Plant
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
+            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -785,7 +785,7 @@ namespace BunnyMod.Content
         #region PoolTable
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
+            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }
@@ -1361,7 +1361,7 @@ namespace BunnyMod.Content
 		#region TableBig
 		public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
-            if (BMTraits.IsTraitActive(cTrait.StealthBastardDeluxe))
+            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
             //__instance.lowInteractionPriority = true;
         }

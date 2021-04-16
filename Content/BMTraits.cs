@@ -672,13 +672,11 @@ namespace BunnyMod.Content
 
             return baseDamage.ToString();
         }
-        public static bool IsTraitActive(string trait)
+        public static bool IsPlayerTraitActive(string trait)
 		{
             foreach (Agent agent in GC.playerAgentList)
-                if (agent.isPlayer != 0)
-                    foreach (Trait se in agent.statusEffects.TraitList)
-                        if (se.traitName == trait)
-                            return true;
+                if (agent.isPlayer != 0 && agent.statusEffects.hasTrait(trait))
+                    return true;
                     
             return false;
 		}
@@ -694,13 +692,13 @@ namespace BunnyMod.Content
 		{
             float zoomLevel = GC.cameraScript.zoomLevel;
 
-            if (IsTraitActive("EagleEyes"))
+            if (IsPlayerTraitActive("EagleEyes"))
                 zoomLevel = 0.60f;
-            else if (IsTraitActive("EagleEyes_2"))
+            else if (IsPlayerTraitActive("EagleEyes_2"))
                 zoomLevel = 0.40f;
-            else if (IsTraitActive("Myopic"))
+            else if (IsPlayerTraitActive("Myopic"))
                 zoomLevel = 1.50f;
-            else if (IsTraitActive("Myopic_2"))
+            else if (IsPlayerTraitActive("Myopic_2"))
                 zoomLevel = 2.00f;
 
             GC.cameraScript.zoomLevel = zoomLevel;
@@ -722,7 +720,7 @@ namespace BunnyMod.Content
 		{
             BMLog("Agent_CanShakeDown");
 
-            if (BMTraits.IsTraitActive(cTrait.Warlord))
+            if (BMTraits.IsPlayerTraitActive(cTrait.Warlord))
 			{
                 __result = true;
                 return false;
@@ -1723,7 +1721,7 @@ namespace BunnyMod.Content
 		{
             Agent agent = __instance.agent;
 
-            if (IsTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0)
+            if (IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0)
 			{
                 agent.statusEffects.BecomeNotHidden();
 			}

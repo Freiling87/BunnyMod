@@ -104,13 +104,28 @@ namespace BunnyMod
         burnedFingers,
         brokenWindow
     }
-    public static class cSpecialAbility // Custom Abilities
+
+    public static class cAgent // Custom Agents
 	{
         public const string
-            ChronomanticDilation = "ChronomanticDilation",
-            PyromanticJet = "PyromanticJet",
-            TelemanticBlink = "TelemanticBlink";
-    }
+            Cook = "Cook",
+            Driver = "Driver",
+            Fence = "Fence",
+            Fixer = "Fixer",
+            Hitman = "Hitman",
+            Janitor = "Janitor",
+            Junkie = "Junkie",
+            Priest = "Priest",
+            RentACop = "RentACop",
+            ResistanceBreacher = "ResistanceBreacher",
+            ResistanceDoctor = "ReistanceDoctor",
+            ResistanceHacker = "ResistanceHacker",
+            ResistanceInfiltrator = "ResistanceInfiltrator",
+            ResistanceSoldier = "ResistanceSoldier",
+            Teamster = "Teamster",
+            Tourist = "Tourist",
+            Wildfolk = "Wildfolk";
+	}
     public static class cChallenge // Custom Mutators
 	{
         public const string
@@ -190,6 +205,13 @@ namespace BunnyMod
 			Warlord = "Warlord",
 			WildCasting = "WildCasting",
 			WildCasting_2 = "WildCasting_2";
+    }
+    public static class cSpecialAbility // Custom Abilities
+    {
+        public const string
+            ChronomanticDilation = "ChronomanticDilation",
+            PyromanticJet = "PyromanticJet",
+            TelemanticBlink = "TelemanticBlink";
     }
 
     public static class vAgent // Vanilla Agent Classes

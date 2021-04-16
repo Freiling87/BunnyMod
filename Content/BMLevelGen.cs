@@ -2400,7 +2400,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
-					if (BMTraits.IsTraitActive(cTrait.UnderdarkCitizen))
+					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen))
 						hasManholes = true;
 
 					if (hasManholes)
@@ -4844,7 +4844,6 @@ namespace BunnyMod.Content
 			}
 		}
 		#endregion
-
 		#region RandomWalls
 		public static bool RandomWalls_fillWalls() // Replacement
 		{

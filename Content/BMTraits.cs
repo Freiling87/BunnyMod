@@ -62,6 +62,9 @@ namespace BunnyMod.Content
             Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
             Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 
+            // LoadLevel
+            Prefix(typeof(LoadLevel), "SetupRels", GetType(), "LoadLevel_SetupRels", new Type[0] { });
+
             // PlayerControl
             Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 
@@ -428,7 +431,7 @@ namespace BunnyMod.Content
             #endregion
             #region Social
             CustomTrait Domineering = RogueLibs.CreateCustomTrait(cTrait.Domineering, true,
-                new CustomNameInfo("000: Domineering"),
+                new CustomNameInfo("Domineering"),
                 new CustomNameInfo("There's just something about how you carry yourself. Maybe it's the way you walk, or maybe it's the way you demand obedience from the weak around you. People will occasionally be Submissive to you. Kinky!"));
             Domineering.Available = true;
             Domineering.AvailableInCharacterCreation = true;
@@ -440,7 +443,7 @@ namespace BunnyMod.Content
             Domineering.Upgrade = cTrait.Domineering_2;
 
             CustomTrait Domineering_2 = RogueLibs.CreateCustomTrait(cTrait.Domineering_2, true,
-                new CustomNameInfo("000: Domineering +"),
+                new CustomNameInfo("Domineering +"),
                 new CustomNameInfo("Some people make sure their social skills work for them. You crack the whip! You're finding more and more Subs everywhere you look."));
             Domineering_2.Available = true;
             Domineering_2.AvailableInCharacterCreation = true;
@@ -452,7 +455,7 @@ namespace BunnyMod.Content
             Domineering_2.Upgrade = null;
 
             CustomTrait GenerallyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant, true,
-                new CustomNameInfo("000: Generally Unpleasant"),
+                new CustomNameInfo("Generally Unpleasant"),
                 new CustomNameInfo("You have a certain way with people! It's... very annoying."));
             GenerallyUnpleasant.Available = true;
             GenerallyUnpleasant.AvailableInCharacterCreation = true;
@@ -649,9 +652,20 @@ namespace BunnyMod.Content
             #endregion
         }
         #endregion
-        #region Custom Methods
+        #region Custom
+        public static bool isPlayerInitialRelationshipTraitActive = false;
         public static List<T> ConcatTraitLists<T>(params IEnumerable<T>[] enums)
             => enums.SelectMany(e => e).ToList();
+        public static List<string> InitialRelationshipTraits = new List<string>()
+        {
+            cTrait.Domineering,
+            cTrait.Domineering_2,
+            cTrait.GenerallyUnpleasant,
+            cTrait.GenerallyUnpleasant_2,
+            cTrait.Polarizing,
+            cTrait.Polarizing_2,
+            cTrait.Priors
+        };
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
             BMLog("HealthCost");
@@ -671,6 +685,21 @@ namespace BunnyMod.Content
 
             return baseDamage.ToString();
         }
+        public static void setPlayerInitialRelationshipTraitActive()
+		{
+            foreach (Agent agent in GC.agentList)
+                if (agent.isPlayer != 0)
+                    foreach (string se in InitialRelationshipTraits)
+                        if (agent.statusEffects.hasTrait(se))
+						{
+                            isPlayerInitialRelationshipTraitActive = true;
+                            return;
+                        }
+
+            isPlayerInitialRelationshipTraitActive = false;
+
+            BMLog("SetPlayerIRTActive" + isPlayerInitialRelationshipTraitActive);
+		}
         public static bool IsPlayerTraitActive(string trait)
 		{
             foreach (Agent agent in GC.playerAgentList)
@@ -977,7 +1006,13 @@ namespace BunnyMod.Content
 
             return false;
         }
-        #endregion
+		#endregion
+		#region LoadLevel
+        public static void LoadLevel_SetupRels() // Prefix
+		{
+            setPlayerInitialRelationshipTraitActive();
+		}
+		#endregion
 		#region PlayerControl
 		public static void PlayerControl_Update() // Postfix
 		{
@@ -1074,60 +1109,63 @@ namespace BunnyMod.Content
 		#region Relationships
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
-            BMLog("Relationships_SetupRelationshipOriginal: ");
-            BMLog("\tAgent = " + ___agent.name);
-            BMLog("\totherAgent = " + otherAgent.name);
-            BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
+            if (isPlayerInitialRelationshipTraitActive)
+			{
+                BMLog("Relationships_SetupRelationshipOriginal: ");
+                BMLog("\tAgent = " + ___agent.name);
+                BMLog("\totherAgent = " + otherAgent.name);
+                BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
 
-            if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
-            {
-                int roll = Random.Range(0, 100);
-                string newRel = vRelationship.Neutral;
+                if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
+                {
+                    int roll = Random.Range(0, 100);
+                    string newRel = vRelationship.Neutral;
 
-                if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
-                    ___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
+                    if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
+                        ___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
                         newRel = vRelationship.Annoyed;
-                else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
-				{
-                    if (roll <= 50)
-                        newRel = vRelationship.Annoyed;
-                    else
-                        newRel = vRelationship.Friendly;
-				}
-                else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
-				{
-                    if (roll <= 25)
-                        newRel = vRelationship.Hateful;
-                    else if (roll <= 50)
-                        newRel = vRelationship.Annoyed;
-                    else if (roll <= 67)
-                        newRel = vRelationship.Friendly;
-                    else if (roll <= 88)
-                        newRel = vRelationship.Loyal;
-                    else if (roll <= 100)
-                        newRel = vRelationship.Aligned;
-				}
+                    else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
+                    {
+                        if (roll <= 50)
+                            newRel = vRelationship.Annoyed;
+                        else
+                            newRel = vRelationship.Friendly;
+                    }
+                    else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
+                    {
+                        if (roll <= 25)
+                            newRel = vRelationship.Hateful;
+                        else if (roll <= 50)
+                            newRel = vRelationship.Annoyed;
+                        else if (roll <= 67)
+                            newRel = vRelationship.Friendly;
+                        else if (roll <= 88)
+                            newRel = vRelationship.Loyal;
+                        else if (roll <= 100)
+                            newRel = vRelationship.Aligned;
+                    }
 
-                roll = Random.Range(0, 100);
+                    roll = Random.Range(0, 100);
 
-                if (___agent.statusEffects.hasTrait(cTrait.Domineering))
-				{
-                    if (roll <= 10)
-                        newRel = vRelationship.Submissive;
-				}
-                else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
-				{
-                    if (roll <= 20)
-                        newRel = vRelationship.Submissive;
-				}
+                    if (___agent.statusEffects.hasTrait(cTrait.Domineering))
+                    {
+                        if (roll <= 5)
+                            newRel = vRelationship.Submissive;
+                    }
+                    else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
+                    {
+                        if (roll <= 10)
+                            newRel = vRelationship.Submissive;
+                    }
 
-                if (newRel != vRelationship.Neutral)
-				{
-                    __instance.SetRelInitial(otherAgent, newRel);
-                    otherAgent.relationships.SetRelInitial(___agent, newRel);
+                    if (newRel != vRelationship.Neutral)
+                    {
+                        __instance.SetRelInitial(otherAgent, newRel);
+                        otherAgent.relationships.SetRelInitial(___agent, newRel);
+                    }
                 }
             }
-		}
+        }
         #endregion
         #region SkillPoints
         public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix

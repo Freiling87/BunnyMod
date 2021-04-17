@@ -34,9 +34,6 @@ namespace BunnyMod.Content
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
-
-			// SpawnerFloor 
-			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -192,14 +189,16 @@ namespace BunnyMod.Content
 		}
 		public static string GetWallMutator()
 		{
-			foreach (string mutator in wallAndFloorMutators)
-				if (GC.challenges.Contains(mutator))
+			foreach (string mutator in GC.challenges)
+				if (wallAndFloorMutators.Contains(mutator))
 					return mutator;
 
-			return "";
+			return null;
 		}
 		public static string GetWallTypeFromMutator()
 		{
+			BMLog("GetWallTypeFromMutator: '" + GetWallMutator() + "'");
+			
 			switch (GetWallMutator())
 			{
 				case cChallenge.CityOfSteel:
@@ -216,10 +215,9 @@ namespace BunnyMod.Content
 
 				case cChallenge.SpelunkyDory:
 					return vWall.Cave;
-
-				default:
-					return vWall.Null;
 			}
+
+			return null;
 		}
 		public static int SetRoamerCount(int vanilla)
 		{
@@ -303,63 +301,53 @@ namespace BunnyMod.Content
 						
 						__instance.mapChunkArray[x, y].chunkRotate = levelEditorTileChunk.rotation;
 
-						Debug.Log(string.Concat(new object[]
-						{
-							"Fill Custom Level Tile: ",
-							__instance.mapChunkArray[x, y].chunkName,
-							" - ",
-							levelEditorTileChunk.directionX,
-							" - ",
-							__instance.mapChunkArray[x, y].chunkDirX,
-							" - ",
-							levelEditorTileChunk.rotation
-						}));
+						Debug.Log(string.Concat(new object[] { "Fill Custom Level Tile: ", __instance.mapChunkArray[x, y].chunkName, " - ", levelEditorTileChunk.directionX, " - ", __instance.mapChunkArray[x, y].chunkDirX, " - ", levelEditorTileChunk.rotation }));
 					}
 				}
 
-				for (int i = 0; i < __instance.levelSizeAxis; i++)
-					for (int j = 0; j < __instance.levelSizeAxis; j++)
-						if (__instance.mapChunkArray[i, j].chunkID != 0)
+				for (int x = 0; x < __instance.levelSizeAxis; x++)
+					for (int y = 0; y < __instance.levelSizeAxis; y++)
+						if (__instance.mapChunkArray[x, y].chunkID != 0)
 						{
-							if (i > 0)
+							if (x > 0)
 							{
-								if (__instance.mapChunkArray[i - 1, j].chunkID != 0)
-									__instance.mapChunkArray[i, j].exitW = true;
+								if (__instance.mapChunkArray[x - 1, y].chunkID != 0)
+									__instance.mapChunkArray[x, y].exitW = true;
 								else
-									__instance.mapChunkArray[i, j].exitW = false;
+									__instance.mapChunkArray[x, y].exitW = false;
 							}
 							else
-								__instance.mapChunkArray[i, j].exitW = false;
+								__instance.mapChunkArray[x, y].exitW = false;
 							
-							if (i < __instance.levelSizeAxis - 1)
+							if (x < __instance.levelSizeAxis - 1)
 							{
-								if (__instance.mapChunkArray[i + 1, j].chunkID != 0)
-									__instance.mapChunkArray[i, j].exitE = true;
+								if (__instance.mapChunkArray[x + 1, y].chunkID != 0)
+									__instance.mapChunkArray[x, y].exitE = true;
 								else
-									__instance.mapChunkArray[i, j].exitE = false;
+									__instance.mapChunkArray[x, y].exitE = false;
 							}
 							else
-								__instance.mapChunkArray[i, j].exitE = false;
+								__instance.mapChunkArray[x, y].exitE = false;
 							
-							if (j > 0)
+							if (y > 0)
 							{
-								if (__instance.mapChunkArray[i, j - 1].chunkID != 0)
-									__instance.mapChunkArray[i, j].exitN = true;
+								if (__instance.mapChunkArray[x, y - 1].chunkID != 0)
+									__instance.mapChunkArray[x, y].exitN = true;
 								else
-									__instance.mapChunkArray[i, j].exitN = false;
+									__instance.mapChunkArray[x, y].exitN = false;
 							}
 							else
-								__instance.mapChunkArray[i, j].exitN = false;
+								__instance.mapChunkArray[x, y].exitN = false;
 							
-							if (j < __instance.levelSizeAxis - 1)
+							if (y < __instance.levelSizeAxis - 1)
 							{
-								if (__instance.mapChunkArray[i, j + 1].chunkID != 0)
-									__instance.mapChunkArray[i, j].exitS = true;
+								if (__instance.mapChunkArray[x, y + 1].chunkID != 0)
+									__instance.mapChunkArray[x, y].exitS = true;
 								else
-									__instance.mapChunkArray[i, j].exitS = false;
+									__instance.mapChunkArray[x, y].exitS = false;
 							}
 							else
-								__instance.mapChunkArray[i, j].exitS = false;
+								__instance.mapChunkArray[x, y].exitS = false;
 						}
 
 				Debug.Log("LEVEL SIZE: " + tilesFilled);
@@ -4857,7 +4845,7 @@ namespace BunnyMod.Content
 		{
 			List<Agent> spawnedAgentList = new List<Agent>();
 			Agent.gangCount++;
-			playerAgent.gangStalking = Agent.gangCount;
+			//playerAgent.gangStalking = Agent.gangCount;
 			Vector2 pos = Vector2.zero;
 
 			for (int i = 0; i < number; i++)
@@ -4889,7 +4877,7 @@ namespace BunnyMod.Content
 					agent.wontFlee = true;
 					agent.agentActive = true;
 					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-					agent.oma.mustBeGuilty = true;
+					//agent.oma.mustBeGuilty = true;
 					spawnedAgentList.Add(agent);
 
 					if (spawnedAgentList.Count > 1)
@@ -4921,7 +4909,9 @@ namespace BunnyMod.Content
 		{
 			string wallType = GetWallTypeFromMutator();
 
-			if (wallType != "");
+			if (wallType == null)
+				return true;
+			else
 			{
 				RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
 				RandomList rList;
@@ -4937,20 +4927,9 @@ namespace BunnyMod.Content
 
 				rList = component.CreateRandomList(vWallGroup.Hideout, "Walls", "Wall");
 				component.CreateRandomElement(rList, wallType, 3);
-
-				return false;
 			}
 
-			return true;
-		}
-		#endregion
-		#region SpawnerFloor
-		public static bool SpawnerFloor_spawn(string floorName) // Prefix
-		{
-			if (floorName == "Normal")
-				floorName = GetFloorTileFromMutator();
-
-			return true;
+			return false;
 		}
 		#endregion
 	}

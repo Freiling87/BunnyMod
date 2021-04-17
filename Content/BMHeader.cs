@@ -11,7 +11,7 @@ using RogueLibsCore;
 using System.Threading.Tasks;
 using BunnyMod.Content;
 
-namespace BunnyMod
+namespace BunnyMod.Content
 {
 	[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
 	[BepInProcess("StreetsOfRogue.exe")]

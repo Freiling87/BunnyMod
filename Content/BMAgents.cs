@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace BunnyMod.Content
 {
-	class BMAgents
+	public class BMAgents
 	{
 		public static GameController GC => GameController.gameController;
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);

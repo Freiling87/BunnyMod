@@ -23,6 +23,9 @@ namespace BunnyMod.Content
 			// ExitPoint
 			Prefix(typeof(ExitPoint), "DetermineIfCanExit", GetType(), "ExitPoint_DetermineIfCanExit", new Type[0] { });
 
+            // Quests
+            Prefix(typeof(Quests), "GetLevelExitChallengeItem", GetType(), "Quests_GetLevelExitChallengeItem", new Type[0] { });
+
 			// SkillPoints
 			Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
 		}
@@ -38,9 +41,41 @@ namespace BunnyMod.Content
 
 			return true;
 		}
-        #endregion
-        #region SkillPoints
-        public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
+		#endregion
+		#region Quests
+        public static bool Quests_GetLevelExitChallengeItem(Quests __instance, ref InvItem __result) // Prefix
+		{
+            bool flag = false;
+            string item = "";
+
+            if (GC.challenges.Contains(cChallenge.UnpaidInternship))
+            {
+                item = GC.Choose<string> (vItem.Banana,vItem.HamSandwich);
+                flag = true;
+            }
+            else if (GC.challenges.Contains(cChallenge.DoublePlyRewards))
+			{
+                item = GC.Choose<string>(vItem.FreeItemVoucher, vItem.HiringVoucher);
+                flag = true;
+            }
+
+            if (flag)
+			{
+                InvItem invItem3 = new InvItem();
+                invItem3.invItemName = item;
+                invItem3.SetupDetails(false);
+                invItem3.invItemCount = 0;
+                __instance.questItemsGiven.Add(item);
+
+                __result = invItem3;
+                return false;
+            }
+
+            return true;
+        }
+		#endregion
+		#region SkillPoints
+		public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
         {
             BMLog("SkillPoints_AddPointsLate");
 
@@ -574,6 +609,8 @@ namespace BunnyMod.Content
                 if (___agent.localPlayer)
                     ___agent.skillBar.UpdateSkillText();
             }
+
+            BMLog("\txpReward = " + xpReward);
 
             yield break;
         }

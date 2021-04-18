@@ -4821,35 +4821,39 @@ namespace BunnyMod.Content
 				if (agent.isPlayer > 0)
 				{
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, vAgent.Ghost, __instance, false);
+						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
 
 					if (level >= 10)
 					{
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, vAgent.Mobster, __instance, false);
+							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
 						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
-							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, vAgent.Mobster, __instance, false);
+							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
 					}
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, vAgent.Goon, __instance, false);
+						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, vAgent.ResistanceLeader, __instance, true);
+						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
 					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, vAgent.ResistanceLeader, __instance, true);
+						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
 				}
 			}
 		}
-		public static void LoadLevel_SetupMore3_3_SpawnHitSquad(Agent playerAgent, int number, string agentType, LoadLevel __instance, bool aligned) // Non-Patch
+		public static void LoadLevel_SetupMore3_3_SpawnHitSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
 		{
 			List<Agent> spawnedAgentList = new List<Agent>();
-			Agent.gangCount++;
 			//playerAgent.gangStalking = Agent.gangCount;
 			Vector2 pos = Vector2.zero;
 
-			for (int i = 0; i < number; i++)
+			numberToSpawn = (int)((float)numberToSpawn * __instance.levelSizeModifier);
+
+			for (int i = 0; i < numberToSpawn; i++)
 			{
+				if (i % splitIntoGroupSize == 0)
+					Agent.gangCount++; // Splits spawn into groups
+
 				Vector2 vector = Vector2.zero;
 				int attempts = 0;
 
@@ -4873,7 +4877,10 @@ namespace BunnyMod.Content
 					agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 					agent.gang = Agent.gangCount;
 					agent.modLeashes = 0;
-					agent.alwaysRun = true;
+
+					if (agentType == vAgent.Ghost)
+						agent.alwaysRun = true;
+
 					agent.wontFlee = true;
 					agent.agentActive = true;
 					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
@@ -4900,6 +4907,29 @@ namespace BunnyMod.Content
 						agent.relationships.SetRelHate(playerAgent, 5);
 						playerAgent.relationships.SetRelHate(agent, 5);
 					}
+
+					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
+						invItem.ItemSetup(false);
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
+					}
+					else if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
+						invItem.ItemSetup(false);
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.HardHat;
+					}
+
+					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
 				}
 			}
 		}

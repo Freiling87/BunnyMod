@@ -19,9 +19,6 @@ namespace BunnyMod.Content
 		{
 			// Agent
 			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
-
-			// RandomAgentWeapons
-			Postfix(typeof(RandomAgentWeapons), "fillAgentWeapons", GetType(), "RandomAgentWeapons_fillAgentWeapons", new Type[0] { });
 		}
 
 		#region Agent
@@ -75,33 +72,6 @@ namespace BunnyMod.Content
 				__instance.agentCategories.Add("Defense");
 				__instance.setInitialCategories = true;
 			}
-		}
-		#endregion
-		#region RandomAgentWeapons
-		public static void RandomAgentWeapons_fillAgentWeapons() // Postfix
-		{
-			int reinforcements = 0;
-
-			if (BMTraits.IsPlayerTraitActive("Reinforcements"))
-				reinforcements = 4;
-			else if (BMTraits.IsPlayerTraitActive("Reinforcements_2"))
-				reinforcements = 8;
-
-			if (reinforcements == 0)
-				return;
-
-			Dictionary<RandomElement, int> elementList = new Dictionary<RandomElement, int>()
-			{
-				{new RandomElement() { rName = "Empty",         rChance = 8 - reinforcements},      8  - reinforcements},
-				{new RandomElement() { rName = "Grenade",       rChance = reinforcements / 2 },     reinforcements / 2},
-				{new RandomElement() { rName = "MachineGun",    rChance = reinforcements},          reinforcements},
-				{new RandomElement() { rName = "Pistol",        rChance = 12 - reinforcements },    12 - reinforcements},
-				{new RandomElement() { rName = "Revolver",      rChance = reinforcements / 2 },     reinforcements / 2},
-			};
-
-			for (int tier = 1; tier < 5; tier++)
-				foreach (KeyValuePair<RandomElement, int> tuple in elementList)
-					GC.rnd.randomListTableStatic["ResistanceLeaderWeapon" + tier].elementList.Add(tuple.Key);
 		}
 		#endregion
 	}

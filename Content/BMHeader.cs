@@ -73,9 +73,9 @@ namespace BunnyMod.Content
 		public static void InvokeRepeating(object instance, string method, float delay, float interval)
 		{
 			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
-			Task task = InvokeRepeating2(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
+			Task task = InvokeRepeatingAsync(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
 		}
-		private static async Task InvokeRepeating2(object instance, MethodInfo method, int delay, int interval)
+		private static async Task InvokeRepeatingAsync(object instance, MethodInfo method, int delay, int interval)
 		{
 			await Task.Delay(delay);
 
@@ -263,6 +263,52 @@ namespace BunnyMod.Content
             Worker = "Worker",
             Wrestler = "Wrestler",
             Zombie = "Zombie";
+    }
+    public static class vAgentGoal // Vanilla Agent Goals
+	{
+        public const string
+            CuriousObject = "CuriousObject",
+            Dance = "Dance",
+            Guard = "Guard",
+            IceSkate = "IceSkate",
+            Idle = "Idle",
+            TellJoke = "Joke",
+            ListenToJoke = "ListenToJokeNPC",
+            Null = "None",
+            Patrol = "Patrol",
+            Sit = "Sit",
+            Sleep = "Sleep",
+            Swim = "Swim",
+            Wander = "Wander",
+            WanderLevel = "WanderFar",
+            WanderOwned = "WanderInOwnedProperty";
+	}
+    public static class vAgentGroup // Vanilla Agent Groups
+	{
+        public const string
+            ArenaBattlers = "ArenaBattler",
+            BlueCollars = "BlueCollars",
+            BusinessOwners = "BusinessOwners",
+            Cabin = "ParkHome",
+            Cave = "Cave",
+            Creatures = "Creatures",
+            Downtown = "Downtown",
+            Entertainers = "Entertainers",
+            Fighters = "Fighters",
+            Gangbangers = "GangbangerType",
+            Guards = "GuardType",
+            Hideout = "Hideout",
+            HideoutIndustrial = "HideoutIndustrial",
+            Hooligans = "Hooligans",
+            HooligansNoGangbangers = "HooligansNoGangbangers",
+            Hostages = "Kidnapped",
+            LabSpecimens = "LabSpecimens",
+            LawEnforcement = "LawWorkers",
+            Park = "Park",
+            Slums = "SlumsAgent",
+            Uptown = "Uptown",
+            UptownHome = "UptownHome",
+            WhiteCollars = "WhiteCollars";
     }
     public static class vAmbience // Vanilla Ambient Audio Loops
 	{

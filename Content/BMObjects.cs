@@ -43,7 +43,7 @@ namespace BunnyMod.Content
             Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
             Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
 
-
+            // Objects
 
             // Bathtub
             Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
@@ -52,7 +52,9 @@ namespace BunnyMod.Content
             Postfix(typeof(Crate), "DetermineButtons", GetType(), "Crate_DetermineButtons", new Type[0] { });
 
             // Door
+            Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
             Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
 
             // Flaming Barrel
             Postfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
@@ -581,10 +583,378 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Door
+        public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
+		{
+            bool agentMindControlled = false;
+
+            if (myAgent != null && myAgent.oma.mindControlled)
+                agentMindControlled = true;
+            
+            if (__instance.gc.serverPlayer || __instance.gc.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == __instance.gc.playerAgent || agentMindControlled)))
+            {
+                if (__instance.open && !__instance.destroyed)
+                {
+                    __instance.open = false;
+
+                    if (myAgent != null)
+                    {
+                        if (myAgent.isPlayer > 0 && myAgent.localPlayer)
+                            __instance.gc.audioHandler.Play(__instance, "DoorClose");
+                        else
+                        {
+                            bool flag2 = false;
+                         
+                            if (myAgent.oma.mindControlled && myAgent.mindControlAgent != null && myAgent.mindControlAgent.localPlayer)
+                                flag2 = true;
+                         
+                            if (flag2)
+                                __instance.gc.audioHandler.Play(__instance, "DoorClose");
+                            else
+                                __instance.gc.audioHandler.Play(__instance, "DoorCloseAI");
+                        }
+                    }
+                    else
+                        __instance.gc.audioHandler.Play(__instance, "DoorClose");
+                    
+                    if (__instance.prisonDoor > 0 && __instance.locked)
+                    {
+                        __instance.graphUpdateScene.setTag = 5;
+                        __instance.graphUpdateScene.Apply();
+                    }
+                    else if (__instance.locked)
+                    {
+                        __instance.graphUpdateScene.setTag = 4;
+                        __instance.graphUpdateScene.Apply();
+                    }
+
+                    __instance.gc.tileInfo.DirtyWalls();
+
+                    //__instance.StartCoroutine(__instance.CloseDoorAnim());
+
+                    MethodInfo CloseDoorAnim = AccessTools.DeclaredMethod(typeof(Door), "CloseDoorAnim");
+                    CloseDoorAnim.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                    if (__instance.objectShadow != null)
+                        __instance.objectShadow.gameObject.SetActive(true);
+                    
+                    if (__instance.objectShadowCustom != null)
+                        __instance.objectShadowCustom.gameObject.SetActive(true);
+                    
+                    __instance.GetComponent<BoxCollider2D>().enabled = true;
+                    __instance.bulletsCanPass = false;
+                    __instance.meleeCanPass = false;
+                    __instance.lowInteractionPriority = false;
+                    __instance.doorCooldown = 0.25f;
+                    
+                    if (!myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+                        if (myAgent != null && myAgent.isPlayer > 0 && __instance.gc.serverPlayer && !__instance.outsideDoor)
+                            __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
+                    
+                    if (__instance.locked)
+                    {
+                        if (__instance.prisonObject > 0 && !__instance.prisonWallDown)
+                            for (int i = 0; i < __instance.gc.agentList.Count; i++)
+                            {
+                                Agent agent = __instance.gc.agentList[i];
+                                TileData tileData = __instance.gc.tileInfo.GetTileData(agent.tr.position);
+
+                                if (tileData.chunkID == __instance.startingChunk && tileData.prison == __instance.prisonObject && tileData.prison > 0)
+                                    agent.prisoner = __instance.prisonObject;
+                            }
+                        
+                        if (__instance.prisonDoor > 0)
+                        {
+                            __instance.graphUpdateScene.setTag = 5;
+                            __instance.PlaceInPrison();
+                            __instance.graphUpdateScene.Apply();
+                        }
+                        else
+                        {
+                            __instance.graphUpdateScene.setTag = 4;
+                            __instance.graphUpdateScene.Apply();
+                        }
+                    }
+                    else if ((__instance.wasLocked || __instance.doorType == "DoorNoEntry") && __instance.outsideDoor)
+                    {
+                        __instance.graphUpdateScene.setTag = 8;
+                        __instance.graphUpdateScene.Apply();
+                    }
+
+                    __instance.gc.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, false);
+
+                    try
+                    {
+                        if (__instance.lightObstacle == null)
+                            __instance.lightObstacle = __instance.tr.Find("LightObstacle").gameObject;
+
+                        if (__instance.hasLightObstacle && __instance.lightObstacle != null)
+                            __instance.lightObstacle.SetActive(true);
+                    }
+                    catch { }
+                    
+                    __instance.gc.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.Door;
+                    
+                    if (__instance.gc.multiplayerMode && !__instance.gc.clientControlling)
+                    {
+                        if (!__instance.gc.serverPlayer)
+                        {
+                            if (myAgent != null)
+                            {
+                                if (myAgent.oma.mindControlled)
+                                    __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorMindControl", myAgent.objectNetID);
+                                else
+                                    myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+                            }
+                            else
+                                __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+                        }
+                        else if (myAgent != null)
+                            myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorClient");
+                        else
+                            __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorClient");
+                    }
+
+                    for (int j = 0; j < __instance.gc.playerAgentList.Count; j++)
+                    {
+                        Agent agent2 = __instance.gc.playerAgentList[j];
+                    
+                        if (agent2.localPlayer && agent2.interactionHelper.gameObject.activeSelf)
+                            agent2.interactionHelper.StartCoroutine(agent2.interactionHelper.RefreshMe());
+                    }
+
+                    return false;
+                }
+            }
+            else
+            {
+                if (myAgent != null)
+                    myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+                else
+                    __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+             
+                __instance.StopInteraction();
+            }
+
+            return false;
+		}
         public static void Door_DetermineButtons(Door __instance) // Postfix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
+        }
+        public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
+		{
+            bool agentMindControlled = false;
+
+            if (myAgent != null && myAgent.oma.mindControlled)
+                agentMindControlled = true;
+            
+            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || agentMindControlled)))
+            {
+                if (__instance.hasDetonator)
+                {
+                    if (myAgent.ownerID != __instance.owner)
+                        __instance.doorDetonatorAgent = myAgent;
+                    
+                    __instance.DoorDetonatorExplode();
+                }
+                else if (!__instance.open && !__instance.destroyed)
+                {
+                    __instance.open = true;
+
+                    if (myAgent != null)
+                    {
+                        if (myAgent.isPlayer > 0)
+                            __instance.noEntryCleared = true;
+                    }
+                    else
+                        __instance.noEntryCleared = true;
+                    
+                    __instance.RemoveObjectAgent();
+                    
+                    if (myAgent != null)
+                    {
+                        if (myAgent.isPlayer > 0 && myAgent.localPlayer)
+                            GC.audioHandler.Play(__instance, "DoorOpen");
+                        else
+                        {
+                            bool flag2 = false;
+                         
+                            if (myAgent.oma.mindControlled && myAgent.mindControlAgent != null && myAgent.mindControlAgent.localPlayer)
+                                flag2 = true;
+                            
+                            if (flag2)
+                                GC.audioHandler.Play(__instance, "DoorOpen");
+                            else
+                                GC.audioHandler.Play(__instance, "DoorOpenAI");
+                        }
+                    }
+                    else if (GC.loadCompleteReally)
+                        GC.audioHandler.Play(__instance, "DoorOpen");
+                    
+                    if (__instance.graphUpdateScene.setTag != 2)
+                    {
+                        __instance.graphUpdateScene.setTag = 2;
+                        __instance.graphUpdateScene.Apply();
+                    }
+                    
+                    GC.tileInfo.DirtyWalls();
+                    GC.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, true);
+
+                    //__instance.StartCoroutine(__instance.OpenDoorAnim());
+
+                    MethodInfo openDoorAnim = AccessTools.DeclaredMethod(typeof(Door), "OpenDoorAnim");
+                    openDoorAnim.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                    if (__instance.objectShadow != null)
+                        __instance.objectShadow.gameObject.SetActive(false);
+                    
+                    if (__instance.objectShadowCustom != null)
+                        __instance.objectShadowCustom.gameObject.SetActive(false);
+                    
+                    __instance.GetComponent<BoxCollider2D>().enabled = false;
+                    __instance.objectSprite.sprH.color = ObjectSprite.clearColor;
+                    __instance.bulletsCanPass = true;
+                    __instance.meleeCanPass = true;
+                    __instance.lowInteractionPriority = true;
+                    __instance.doorCooldown = 0.25f;
+                    
+                    if (GC.serverPlayer && ! myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+                        GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
+                    
+                    bool flag3 = false;
+                    
+                    if (__instance.prisonDoor > 0)
+                        flag3 = true;
+                    
+                    if (myAgent != null && !remote && !__instance.boughtKeyInChunk)
+                    {
+                        GC.OwnCheck(myAgent, __instance.go, "Door", 0);
+                    
+                        if (__instance.prisonObject > 0 || __instance.doorType == "DoorNoEntry")
+                        {
+                            if (__instance.interactingAgent != null)
+                            {
+                                __instance.StartCoroutine(__instance.delayedOwnCheck(__instance.interactingAgent));
+                                __instance.openingOwnCheck = true;
+                            }
+                            else if (myAgent != null && myAgent.oma.mindControlled)
+                            {
+                                __instance.StartCoroutine(__instance.delayedOwnCheck(myAgent));
+                                __instance.openingOwnCheck = true;
+                            }
+                        }
+                    }
+
+                    if ((__instance.wasLocked || __instance.doorType == "DoorNoEntry") && __instance.outsideDoor)
+                    {
+                        __instance.graphUpdateScene.setTag = 8;
+                        __instance.graphUpdateScene.Apply();
+                    }
+                    
+                    if (__instance.prisonObject > 0)
+                    {
+                        if (!__instance.prisonWallDown)
+                            Door.freerAgent = myAgent;
+                        
+                        __instance.FreeFromPrison("Door");
+                        
+                        if (__instance.locked && __instance.extraVar != 10)
+                            __instance.Unlock();
+                    }
+                    
+                    if (GC.levelType == "Tutorial" && __instance.interactingAgent == GC.playerAgent && __instance.wasLocked)
+                    {
+                        if (__instance.interactingAgent.inventory.HasItem("Key") && !___usedTutorialKey && (GC.tutorial.tutorialPart == "UseKeyOnDoor" || GC.tutorial.tutorialPart == "LoseHealth" || GC.tutorial.tutorialPart == "TranquilizeTarget"))
+                        {
+                            __instance.DestroyKeyItem("Key");
+                            GC.tutorial.UseKeyOnDoor();
+                            ___usedTutorialKey = true;
+                        }
+                    }
+                    else if (__instance.wasLocked && !__instance.locked && ((__instance.prisonDoor > 0 && flag3) || __instance.startingChunkRealDescription == "Hotel"))
+                        __instance.DestroyKeyItem("Key");
+
+                    try
+                    {
+                        if (__instance.lightObstacle == null)
+                            __instance.lightObstacle = __instance.tr.Find("LightObstacle").gameObject;
+
+                        if (__instance.hasLightObstacle && __instance.lightObstacle.activeSelf)
+                            __instance.lightObstacle.SetActive(false);
+                    }
+                    catch { }
+
+                    GC.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.None;
+                    __instance.StopInteraction();
+                    
+                    if (__instance.fire != null && !__instance.fire.destroying)
+                    {
+                        __instance.fire.timeLeft = 0f;
+                        __instance.fire.DestroyMe();
+                    }
+                    
+                    for (int i = 0; i < GC.agentList.Count; i++)
+                        if (GC.agentList[i].blockedByDoor == __instance)
+                        {
+                            GC.agentList[i].blockedByDoor = null;
+                            GC.agentList[i].isBlockedByDoor = false;
+                        }
+                    
+                    if (GC.multiplayerMode && !GC.clientControlling)
+                    {
+                        if (!GC.serverPlayer)
+                        {
+                            if (myAgent != null)
+                            {
+                                if (myAgent.oma.mindControlled)
+                                    GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoorMindControl", myAgent.objectNetID);
+                                else
+                                    myAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
+                            }
+                            else
+                                GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
+                        }
+                        else if (myAgent != null)
+                            myAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoorClient");
+                        else
+                            GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoorClient");
+                    }
+
+                    if (GC.levelType == "HomeBase")
+                        if (__instance.extraVar == 30)
+                        {
+                            for (int j = 0; j < GC.agentList.Count; j++)
+                                if (GC.agentList[j].agentName == "ResistanceLeader" && GC.agentList[j].extraVar == 30)
+                                {
+                                    GC.agentList[j].Say(GC.nameDB.GetName("Tut_BathroomLine_1", "Dialogue"));
+                                    GC.audioHandler.Play(GC.agentList[j], "AgentAnnoyed");
+                                    GC.cinematics.wentInBathroom = true;
+                                }
+                        }
+                        else if (__instance.extraVar == 31 && !GC.cinematics.playedResistanceLeaderIntro && GC.justFinishedTutorial)
+                            GC.cinematics.ResistanceLeaderIntro();
+                }
+
+                for (int k = 0; k < GC.playerAgentList.Count; k++)
+                {
+                    Agent agent = GC.playerAgentList[k];
+                 
+                    if (agent.localPlayer && agent.interactionHelper.gameObject.activeSelf)
+                        agent.interactionHelper.StartCoroutine(agent.interactionHelper.RefreshMe());
+                }
+
+                return false;
+            }
+
+            if (myAgent != null)
+                myAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
+            else
+                GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
+            
+            __instance.StopInteraction();
+
+            return false;
         }
         #endregion
         #region FlamingBarrel

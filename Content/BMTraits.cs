@@ -1106,7 +1106,7 @@ namespace BunnyMod.Content
 		#region Relationships
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
-            if (isPlayerInitialRelationshipTraitActive)
+            if (isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
 			{
                 BMLog("Relationships_SetupRelationshipOriginal: ");
                 BMLog("\tAgent = " + ___agent.name);
@@ -1159,13 +1159,16 @@ namespace BunnyMod.Content
                     {
                         __instance.SetRelInitial(otherAgent, newRel);
                         otherAgent.relationships.SetRelInitial(___agent, newRel);
+
+                        if (newRel == vRelationship.Annoyed)
+                            otherAgent.relationships.SetStrikes(___agent, 2);
                     }
                 }
             }
         }
-        #endregion
-		#region StatusEffects
-		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
+		#endregion
+        #region StatusEffects
+        public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
             Agent agent = __instance.agent;
 

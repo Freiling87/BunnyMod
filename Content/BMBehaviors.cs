@@ -290,6 +290,143 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region BrainUpdate
+		public static bool DoObjectChecks(Agent myAgent, BrainUpdate __instance) // Prefix
+		{
+			if (!BMChallenges.IsChallengeFromListActive(cChallenge.Leashes))
+				return true;
+
+			float leashShort = 13.44f;
+			float leashMedium = 16.00f;
+			float leashLong = 18.00f;
+
+			switch (BMChallenges.GetActiveChallengeFromList(cChallenge.Leashes))
+			{
+				case cChallenge.HomesickAndTired:
+					leashShort = 1.00f;
+					leashMedium = 1.00f;
+					leashLong = 1.00f;
+
+					break;
+				case cChallenge.RoaminOrgy:
+					leashShort = 10000f;
+					leashMedium = 10000f;
+					leashLong = 10000f;
+
+					break;
+			}
+
+			try
+			{
+				List<Chunk> levelChunks = GC.loadLevel.levelChunks;
+
+				for (int i = 0; i < levelChunks.Count; i++)
+				{
+					Chunk chunk = levelChunks[i];
+					bool isCloseToThisChunk_1 = false;
+					bool isCloseToThisChunk_2 = false;
+
+					if (Vector2.Distance(myAgent.curPosition, chunk.chunkLeash1Tr) <= leashMedium)
+					{
+						isCloseToThisChunk_1 = true;
+						myAgent.nearbyChunks.Add(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_1 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash2Tr) <= leashMedium)
+					{
+						isCloseToThisChunk_1 = true;
+						myAgent.nearbyChunks.Add(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_1 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash3Tr) <= leashMedium)
+					{
+						isCloseToThisChunk_1 = true;
+						myAgent.nearbyChunks.Add(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_1 && chunk.shape == 6 && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash4Tr) <= leashMedium)
+						myAgent.nearbyChunks.Add(chunk.chunkID);
+
+					if (Vector2.Distance(myAgent.curPosition, chunk.chunkPos) <= leashLong)
+					{
+						isCloseToThisChunk_2 = true;
+						__instance.SetNearbyChunksObjects(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_2 && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash1Tr) <= leashLong)
+					{
+						isCloseToThisChunk_2 = true;
+						__instance.SetNearbyChunksObjects(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_2 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash2Tr) <= leashLong)
+					{
+						isCloseToThisChunk_2 = true;
+						__instance.SetNearbyChunksObjects(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_2 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash3Tr) <= leashLong)
+					{
+						isCloseToThisChunk_2 = true;
+						__instance.SetNearbyChunksObjects(chunk.chunkID);
+					}
+
+					if (!isCloseToThisChunk_2 && chunk.shape == 6 && Vector2.Distance(myAgent.curPosition, chunk.chunkLeash4Tr) <= leashLong)
+						__instance.SetNearbyChunksObjects(chunk.chunkID);
+
+					List<PlayfieldObject> objectModifyEnvironmentList = GC.objectModifyEnvironmentList;
+
+					for (int j = 0; j < objectModifyEnvironmentList.Count; j++)
+					{
+						PlayfieldObject playfieldObject = objectModifyEnvironmentList[j];
+						bool isCloseToThisChunk_3 = false;
+
+						try
+						{
+							if (playfieldObject.makeObjectsHaveColliders)
+							{
+								if (Vector2.Distance(myAgent.curPosition, chunk.chunkPos) <= leashLong)
+								{
+									isCloseToThisChunk_3 = true;
+									__instance.SetNearbyChunksObjects(chunk.chunkID);
+									myAgent.nearbyChunks.Add(chunk.chunkID);
+								}
+
+								if (!isCloseToThisChunk_3 && Vector2.Distance(playfieldObject.curPosition, chunk.chunkLeash1Tr) <= leashShort)
+								{
+									isCloseToThisChunk_3 = true;
+									__instance.SetNearbyChunksObjects(chunk.chunkID);
+									myAgent.nearbyChunks.Add(chunk.chunkID);
+								}
+
+								if (!isCloseToThisChunk_3 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(playfieldObject.curPosition, chunk.chunkLeash2Tr) <= leashShort)
+								{
+									isCloseToThisChunk_3 = true;
+									__instance.SetNearbyChunksObjects(chunk.chunkID);
+									myAgent.nearbyChunks.Add(chunk.chunkID);
+								}
+
+								if (!isCloseToThisChunk_3 && (chunk.shape == 5 || chunk.shape == 6) && Vector2.Distance(playfieldObject.curPosition, chunk.chunkLeash3Tr) <= leashShort)
+								{
+									isCloseToThisChunk_3 = true;
+									__instance.SetNearbyChunksObjects(chunk.chunkID);
+									myAgent.nearbyChunks.Add(chunk.chunkID);
+								}
+
+								if (!isCloseToThisChunk_3 && chunk.shape == 6 && Vector2.Distance(playfieldObject.curPosition, chunk.chunkLeash4Tr) <= leashShort)
+								{
+									__instance.SetNearbyChunksObjects(chunk.chunkID);
+									myAgent.nearbyChunks.Add(chunk.chunkID);
+								}
+							}
+						}
+						catch { Debug.LogError("DoObjectChecks object error: " + playfieldObject); }
+					}
+				}
+			}
+			catch { Debug.LogError("DoObjectChecks Error");	}
+
+			return false;
+		}
 		public static bool BrainUpdate_GoalArbitrate(BrainUpdate __instance, Agent ___agent, float ___curDesirability, float ___curDesirability2, Danger ___topDanger, TileInfo ___tileInfo, GoalWalkToExit ___tempGoalWalkToExit, float ___highestDesirability, GoalBattle ___tempGoalBattle, GoalFlee ___tempGoalFlee, GoalFleeDanger ___tempGoalFleeDanger, GoalTattle ___tempGoalTattle, GoalFollow ___tempGoalFollow, GoalWaitForDangerEnd ___tempGoalWaitForDangerEnd, GoalInteract ___tempGoalInteract, GoalDoJob ___tempGoalDoJob, GoalNoiseReact ___tempGoalNoiseReact, GoalSteal ___tempGoalSteal, GoalRobotFollow ___tempGoalRobotFollow, GoalPatrol ___tempGoalPatrol, GoalInvestigate ___tempGoalInvestigate, GoalGoGet ___tempGoalGoGet, GoalFindFire ___tempGoalFindFire, GoalCuriousObject ___tempGoalCuriousObject, GoalCommitArson ___tempGoalCommitArson, GoalCannibalize ___tempGoalCannibalize, GoalBite ___tempGoalBite, GoalRobotClean ___tempGoalRobotClean, Brain ___brain, bool ___mustBeZero, List<Danger> ___dangerCombinedList) // Replacement
 		{
 			___curDesirability = 0f;
@@ -564,8 +701,6 @@ namespace BunnyMod.Content
 								___curDesirability2 = 0f;
 							}
 
-							string agentName = agent.agentName;
-							
 							if (agent.killerRobot)
 							{
 								___curDesirability = 0f;
@@ -604,29 +739,29 @@ namespace BunnyMod.Content
 
 							if (___curDesirability >= ___highestDesirability)
 							{
-								bool isFollowingAndClose = false;
+								bool activateUrgentTether = false;
 							
 								if (tetherDistance < 20f || ___agent.guardingMayor)
-									isFollowingAndClose = true;
+									activateUrgentTether = true;
 								
 								if (___agent.hasEmployer)
 								{
-									isFollowingAndClose = true;
+									activateUrgentTether = true;
 								
 									if (tetherDistance > 8f && agent.mostRecentGoalCode == goalType.Flee)
-										isFollowingAndClose = false;
+										activateUrgentTether = false;
 								}
 
 								if (___agent.attackCooldown > 0f)
-									isFollowingAndClose = true;
+									activateUrgentTether = true;
 								
 								if (___agent.jobCode == jobType.Follow && ___agent.hasFollowing && Vector2.Distance(___agent.curPosition, ___agent.following.curPosition) > 8f)
-									isFollowingAndClose = false;
+									activateUrgentTether = false;
 								
 								if (agent.onFireServer)
-									isFollowingAndClose = true;
+									activateUrgentTether = true;
 								
-								if (isFollowingAndClose && num > num3)
+								if (activateUrgentTether && num > num3)
 								{
 									num3 = num;
 									Agent battlingAgent = agent;

@@ -55,18 +55,7 @@ namespace BunnyMod.Content
 				
 			return vanilla;
 		}
-		public static bool IsChallengeFromListActive(List<string> challengeList)
-		{
-			foreach (string mutator in challengeList)
-				if (GC.challenges.Contains(mutator))
-					return true;
 
-			foreach (string mutator in challengeList)
-				if (GC.challenges.Contains(mutator))
-					return true;
-
-			return false;
-		}
 		public static bool IsNextToLake(Vector2 spot) =>
 			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
 			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
@@ -4957,7 +4946,7 @@ namespace BunnyMod.Content
 		#region SpawnerFloor
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
 		{
-			if (IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
 			{
 				BMLog("SpawnerFloor_spawn:");
 				BMLog("\tfloorName = '" + floorName + "'");
@@ -4974,7 +4963,7 @@ namespace BunnyMod.Content
 			BMLog("SpawnerObject_spawn:");
 			BMLog("\tobjectRealName = '" + objectRealName + "'");
 
-			if (IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
 			{
 				objectRealName = vObject.SecurityCam;
 			}

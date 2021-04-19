@@ -155,20 +155,25 @@ namespace BunnyMod.Content
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 
-        public static List<string> WallAndFloor = new List<string>()
-            {
-                cChallenge.CityOfSteel,
-                cChallenge.GreenLiving,
-                cChallenge.Panoptikopolis,
-                cChallenge.ShantyTown,
-                cChallenge.SpelunkyDory
-            };
+        public static List<string> FlammableWall = new List<string>()
+        {
+            cChallenge.GreenLiving,
+            cChallenge.ShantyTown
+        };
         public static List<string> Floor = new List<string>()
-            {
-                cChallenge.ArcologyEcology,
-                cChallenge.SunkenCity,
-                cChallenge.TransitExperiment
-            };
+        {
+            cChallenge.ArcologyEcology,
+            cChallenge.SunkenCity,
+            cChallenge.TransitExperiment
+        };
+        public static List<string> WallAndFloor = new List<string>()
+        {
+            cChallenge.CityOfSteel,
+            cChallenge.GreenLiving,
+            cChallenge.Panoptikopolis,
+            cChallenge.ShantyTown,
+            cChallenge.SpelunkyDory
+        };
     }
 	public static class cTrait // Custom Traits
 	{
@@ -1426,7 +1431,8 @@ namespace BunnyMod.Content
             Podium = "Podium",
             PoliceBox = "PoliceBox",
             PoolTable = "PoolTable",
-            PowerBox = "PowerBox";
+            PowerBox = "PowerBox",
+            SecurityCam = "SecurityCam";
     }
     public static class vQuest // Vanilla Quests
 	{

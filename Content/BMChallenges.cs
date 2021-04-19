@@ -221,15 +221,6 @@ namespace BunnyMod.Content
 			}
 		}
 		#endregion
-		#region RandomItems
-		public static void RandomItems_fillItems(ref RandomSelection __component, ref RandomList __rList) // Postfix
-		{
-			RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
-			RandomList rList = component.CreateRandomList("VoucherRewards", "Items", "Item");
-			component.CreateRandomElement(rList, "FreeItemVoucher", 1);
-			component.CreateRandomElement(rList, "HiringVoucher", 1);
-		}
-		#endregion
 		#region SpawnerMain
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{

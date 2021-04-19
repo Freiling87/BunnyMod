@@ -37,6 +37,9 @@ namespace BunnyMod.Content
 
 			// SpawnerFloor
 			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
+
+			// SpawnerObject
+			Prefix(typeof(SpawnerObject), "spawn", GetType(), "SpawnerObject_spawn", new Type[1] { typeof(string) });
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -52,13 +55,13 @@ namespace BunnyMod.Content
 				
 			return vanilla;
 		}
-		public static bool IsFloorModActive()
+		public static bool IsChallengeFromListActive(List<string> challengeList)
 		{
-			foreach (string mutator in cChallenge.Floor)
+			foreach (string mutator in challengeList)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
-			foreach (string mutator in cChallenge.WallAndFloor)
+			foreach (string mutator in challengeList)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
@@ -4954,12 +4957,26 @@ namespace BunnyMod.Content
 		#region SpawnerFloor
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
 		{
-			if (IsFloorModActive() && floorName == "Normal")
+			if (IsChallengeFromListActive(cChallenge.Floor) && floorName == vFloor.Normal)
 			{
 				BMLog("SpawnerFloor_spawn:");
 				BMLog("\tfloorName = '" + floorName + "'");
 
 				floorName = GetFloorTileFromMutator();
+			}
+
+			return true;
+		}
+		#endregion
+		#region SpawnerObject
+		public static bool SpawnerObject_spawn(string objectRealName) // Prefix
+		{
+			BMLog("SpawnerObject_spawn:");
+			BMLog("\tobjectRealName = '" + objectRealName + "'");
+
+			if (IsChallengeFromListActive(cChallenge.FlammableWall) && objectRealName == vObject.FireSpewer)
+			{
+				objectRealName = vObject.SecurityCam;
 			}
 
 			return true;

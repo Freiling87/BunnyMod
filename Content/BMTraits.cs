@@ -464,7 +464,7 @@ namespace BunnyMod.Content
             GenerallyUnpleasant.Upgrade = null;
 
             CustomTrait ObjectivelyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant_2, true,
-                new CustomNameInfo("000: Objectively Unpleasant"),
+                new CustomNameInfo("Objectively Unpleasant"),
                 new CustomNameInfo("You chew with your mouth open. You rightfully have no friends in the world. You are scum. Everyone starts out Annoyed, including me."));
             ObjectivelyUnpleasant.Available = true;
             ObjectivelyUnpleasant.AvailableInCharacterCreation = true;
@@ -476,7 +476,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant.Upgrade = null;
 
             CustomTrait Polarizing = RogueLibs.CreateCustomTrait(cTrait.Polarizing, true,
-                new CustomNameInfo("000: Polarizing"),
+                new CustomNameInfo("Polarizing"),
                 new CustomNameInfo("Everyone has an opinion on you, when they first meet you. Might be good or bad, but at least you feel noticed!"));
             Polarizing.Available = true;
             Polarizing.AvailableInCharacterCreation = true;
@@ -488,7 +488,7 @@ namespace BunnyMod.Content
             Polarizing.Upgrade = cTrait.Polarizing_2;
 
             CustomTrait Polarizing_2 = RogueLibs.CreateCustomTrait(cTrait.Polarizing_2, true,
-                new CustomNameInfo("000: Polarizing +"),
+                new CustomNameInfo("Polarizing +"),
                 new CustomNameInfo("People have *strong* opinions of you. Like me. I think you're just great."));
             Polarizing_2.Available = true;
             Polarizing_2.AvailableInCharacterCreation = true;

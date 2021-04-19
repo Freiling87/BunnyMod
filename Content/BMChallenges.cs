@@ -31,21 +31,21 @@ namespace BunnyMod.Content
 			#region Floors & Features
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("FloorTiles: Arcology Ecology"),
+				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
 				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(cChallenge.FloorsAndFeatures);
 			ArcologyEcology.IsActive = false;
 
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
-				new CustomNameInfo("FloorTiles: Sunken City"),
+				new CustomNameInfo("000: FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
 			SunkenCity.Available = true;
 			SunkenCity.Conflicting.AddRange(cChallenge.FloorsAndFeatures);
 			SunkenCity.IsActive = false;
 
 			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
-				new CustomNameInfo("FloorTiles: Transit Experiment"),
+				new CustomNameInfo("000: FloorTiles: Transit Experiment"),
 				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
 			TransitExperiment.Available = true;
 			TransitExperiment.Conflicting.AddRange(cChallenge.FloorsAndFeatures);
@@ -158,7 +158,7 @@ namespace BunnyMod.Content
 			DoublePlyRewards.IsActive = false;
 
 			CustomMutator UnpaidInternship = RogueLibs.CreateCustomMutator(cChallenge.UnpaidInternship, true,
-				new CustomNameInfo("Rewards: Unpaid Internship"),
+				new CustomNameInfo("000: Rewards: Unpaid Internship"),
 				new CustomNameInfo("The double-experience you're getting working for the Resistance is worth more than any reward, they say. But so far, you're mainly learning one thing: Work for people who pay you."));
 			UnpaidInternship.Available = true;
 			UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });

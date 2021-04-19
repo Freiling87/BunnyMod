@@ -29,6 +29,7 @@ namespace BunnyMod.Content
 		{
 			// LoadLevel
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 
@@ -228,6 +229,9 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
+		#region BasicSpawn
+
+		#endregion	
 		#region LoadLevel
 		// There is a patch in BMAbilities for this Class, but it uses a variable in that class. TODO: Move it over here.
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
@@ -1188,6 +1192,100 @@ namespace BunnyMod.Content
 			}
 
 			return false;
+		}
+		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2) // Prefix
+		{
+			// Structure advised by Abbysssal for patch-replacing IEnumerators.
+			__result = LoadLevel_FillFloors_Replacement(__instance, ___tilemapFloors2);
+
+			return false;
+		}
+		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Replacement
+		{
+			float maxChunkTime = 0.02f;
+			float realtimeSinceStartup = Time.realtimeSinceStartup;
+			int triesCount = 0;
+			int num;
+
+			for (int i2 = 0; i2 < __instance.levelSizeAxis; i2 = num + 1)
+			{
+				for (int j2 = 0; j2 < __instance.levelSizeAxis; j2 = num + 1)
+				{
+					num = triesCount;
+					triesCount = num + 1;
+					int num2 = i2 * 16;
+					int num3 = i2 * 16 + 16;
+					int num4 = 160 - j2 * 16;
+					int num5 = 160 - j2 * 16 - 16;
+
+					for (int k = num2; k < num3; k++)
+						for (int l = num4; l > num5; l--)
+						{
+							__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+							int tile = 0;
+
+							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
+							{
+								if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures))
+								{
+									switch (BMChallenges.GetActiveChallengeFromList(cChallenge.FloorsAndFeatures))
+									{
+										case cChallenge.ArcologyEcology:
+											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
+											break;
+
+										case cChallenge.SunkenCity:
+											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Water, "RandomFloorsWalls"));
+
+											break;
+										case cChallenge.TransitExperiment:
+											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Ice, "RandomFloorsWalls"));
+
+											break;
+									}
+								}
+								else if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+								{
+
+								}
+								else
+								{
+									if (GC.levelTheme == 0)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
+									else if (GC.levelTheme == 1)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
+									else if (GC.levelTheme == 2)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
+									else if (GC.levelTheme == 3)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
+									else if (GC.levelTheme == 4)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
+									else if (GC.levelTheme == 5)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
+								}
+							}
+							else
+								tile = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
+							
+							___tilemapFloors2.SetTile(k, l - 1, 0, tile);
+						}
+
+					if (Time.realtimeSinceStartup - realtimeSinceStartup > maxChunkTime)
+					{
+						yield return null;
+						realtimeSinceStartup = Time.realtimeSinceStartup;
+					}
+
+					Random.InitState(__instance.randomSeedNum + triesCount);
+					num = j2;
+				}
+
+				num = i2;
+			}
+
+			__instance.allChunksFilled = true;
+
+			yield break;
 		}
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Replacement
 		{
@@ -4943,16 +5041,21 @@ namespace BunnyMod.Content
 			return false;
 		}
 		#endregion
+		#region SpawnerBasic
+
+		#endregion
 		#region SpawnerFloor
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
 		{
-			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
-			{
-				BMLog("SpawnerFloor_spawn:");
-				BMLog("\tfloorName = '" + floorName + "'");
+			//if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
+			//{
+			//	BMLog("SpawnerFloor_spawn:");
+			//	BMLog("\tfloorName = '" + floorName + "'");
 
-				floorName = GetFloorTileFromMutator();
-			}
+			//	floorName = GetFloorTileFromMutator();
+			//}
+
+			floorName = vFloor.Grass;
 
 			return true;
 		}

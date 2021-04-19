@@ -34,15 +34,15 @@ namespace BunnyMod.Content
 
 			new BMAbilities().Awake();
             new BMAgents().Awake();
-			//new BunnyBehaviors().Awake();
+			new BMBehaviors().Awake();
 			//new BMDisasters().Awake();
-			//new BunnyItems().Awake();
+			//new BMItems().Awake();
 			new BMLevelGen().Awake();
             new BMMiscellaneous().Awake();
 			new BMChallenges().Awake();
 			new BMObjects().Awake();
             new BMQuests().Awake();
-			//new BunnySprites().Awake();
+			//new BMSprites().Awake();
 			new BMTraits().Awake();
 		}
 		#region Category Lists
@@ -127,15 +127,16 @@ namespace BunnyMod.Content
             Wildfolk = "Wildfolk";
 	}
     public static class cChallenge // Custom Mutators
-	{
+    {
         public const string
             ACityForAnts = "ACityForAnts",
             ArcologyEcology = "ArcologyEcology",
             CityOfSteel = "CityOfSteel",
-            Claustrophobia = "Claustrophobia",
+            Claustropolis = "Claustropolis",
             DoublePlyRewards = "DoublePlyRewards",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
+            HomesickAndTired = "HomesickandTired",
             HoodlumsWonderland = "HoodlumsWonderland",
             LetMeSeeThatThrong = "LetMeSeeThatThrong",
             Megalopolis = "Megalopolis",
@@ -148,6 +149,7 @@ namespace BunnyMod.Content
             SpelunkyDory = "SpelunkyDory",
             SwarmWelcome = "SwarmWelcome",
             SunkenCity = "SunkenCity",
+            RoaminOrgy = "RoaminOrgy",
             RushinRevolution = "RushinRevolution",
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
@@ -155,24 +157,48 @@ namespace BunnyMod.Content
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 
-        public static List<string> FlammableWall = new List<string>()
-        {
-            cChallenge.GreenLiving,
-            cChallenge.ShantyTown
-        };
-        public static List<string> Floor = new List<string>()
+        public static List<string> FloorsAndFeatures = new List<string>()
         {
             cChallenge.ArcologyEcology,
             cChallenge.SunkenCity,
             cChallenge.TransitExperiment
         };
-        public static List<string> WallAndFloor = new List<string>()
+        public static List<string> Leashes = new List<string>()
+        {
+            cChallenge.RoaminOrgy,
+            cChallenge.HomesickAndTired
+        };
+        public static List<string> MapSize = new List<string>()
+        {
+            cChallenge.ACityForAnts,
+            cChallenge.Claustropolis,
+            cChallenge.Megalopolis,
+            cChallenge.Ultrapolis
+        };
+        public static List<string> Population = new List<string>()
+        {
+            cChallenge.GhostTown,
+            cChallenge.LetMeSeeThatThrong,
+            cChallenge.SwarmWelcome,
+        };
+        public static List<string> QuestCount = new List<string>()
+        {
+            cChallenge.RushinRevolution,
+            cChallenge.SingleMinded,
+            cChallenge.Workhorse
+        };
+        public static List<string> WallsAndFloors = new List<string>()
         {
             cChallenge.CityOfSteel,
             cChallenge.GreenLiving,
             cChallenge.Panoptikopolis,
             cChallenge.ShantyTown,
             cChallenge.SpelunkyDory
+        };
+        public static List<string> WallsFlammable = new List<string>()
+        {
+            cChallenge.GreenLiving,
+            cChallenge.ShantyTown
         };
     }
 	public static class cTrait // Custom Traits

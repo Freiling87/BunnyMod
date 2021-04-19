@@ -46,7 +46,7 @@ namespace BunnyMod.Content
 		{
 			if (GC.challenges.Contains(cChallenge.ACityForAnts))
 				vanilla = 4;
-			else if (GC.challenges.Contains(cChallenge.Claustrophobia))
+			else if (GC.challenges.Contains(cChallenge.Claustropolis))
 				vanilla = 12;
 			else if (GC.challenges.Contains(cChallenge.Megalopolis))
 				vanilla = 48;
@@ -78,7 +78,7 @@ namespace BunnyMod.Content
 			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
 		public static bool IsWallModActive()
 		{
-			foreach (string mutator in cChallenge.WallAndFloor)
+			foreach (string mutator in cChallenge.WallsAndFloors)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
@@ -97,11 +97,11 @@ namespace BunnyMod.Content
 		}
 		public static string GetFloorMutator()
 		{
-			foreach (string mutator in cChallenge.Floor)
+			foreach (string mutator in cChallenge.FloorsAndFeatures)
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
-			foreach (string mutator in cChallenge.WallAndFloor)
+			foreach (string mutator in cChallenge.WallsAndFloors)
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
@@ -182,7 +182,7 @@ namespace BunnyMod.Content
 		public static string GetWallMutator()
 		{
 			foreach (string mutator in GC.challenges)
-				if (cChallenge.WallAndFloor.Contains(mutator))
+				if (cChallenge.WallsAndFloors.Contains(mutator))
 					return mutator;
 
 			return null;
@@ -4957,7 +4957,7 @@ namespace BunnyMod.Content
 		#region SpawnerFloor
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
 		{
-			if (IsChallengeFromListActive(cChallenge.Floor) && floorName == vFloor.Normal)
+			if (IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
 			{
 				BMLog("SpawnerFloor_spawn:");
 				BMLog("\tfloorName = '" + floorName + "'");
@@ -4974,7 +4974,7 @@ namespace BunnyMod.Content
 			BMLog("SpawnerObject_spawn:");
 			BMLog("\tobjectRealName = '" + objectRealName + "'");
 
-			if (IsChallengeFromListActive(cChallenge.FlammableWall) && objectRealName == vObject.FireSpewer)
+			if (IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
 			{
 				objectRealName = vObject.SecurityCam;
 			}

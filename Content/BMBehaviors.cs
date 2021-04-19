@@ -29,6 +29,7 @@ namespace BunnyMod.Content
 			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
 
 			// BrainUpdate
+			Prefix(typeof(BrainUpdate), "DoObjectChecks", GetType(), "BrainUpdate_DoObjectChecks", new Type[1] { typeof(Agent) });
 			Prefix(typeof(BrainUpdate), "GoalArbitrate", GetType(), "BrainUpdate_GoalArbitrate", new Type[0] { });
 
 			// LoadLevel

@@ -28,10 +28,12 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			// LoadLevel
+			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
+			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
@@ -231,9 +233,35 @@ namespace BunnyMod.Content
 
 		#region BasicSpawn
 
-		#endregion	
+		#endregion
 		#region LoadLevel
-		// There is a patch in BMAbilities for this Class, but it uses a variable in that class. TODO: Move it over here.
+		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, bool __result) // Prefix
+		{
+			// TODO: Do a full replacement here. There are too many edge cases to just do a simple prefix.
+
+			if (GC.challenges.Contains(cChallenge.PoliceState))
+			{
+				string description;
+
+				if (GC.basicSpawns)
+				{
+					description = myChunkBasic.description;
+				}
+				else
+				{
+					Chunk chunk = myChunkGo.GetComponent<Chunk>();
+					description = chunk.description;
+				}
+
+				if (vChunkType.PoliceState.Contains(description))
+				{
+					__result = true;
+					return false;
+				}
+			}
+
+			return true;
+		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
 			__instance.levelSizeMax = 30;
@@ -2159,6 +2187,180 @@ namespace BunnyMod.Content
 
 							Random.InitState(__instance.randomSeedNum + numObjects);
 							num2 = numObjects;
+						}
+
+						spawnedInChunks = null;
+					}
+					#endregion
+					#region Public Security Cams for Panoptikopolis/Police State
+
+					bool hasPSC = GC.challenges.Contains(cChallenge.PoliceState);
+
+					if (hasPSC)
+					{
+						Debug.Log("Loading Public Security Cams");
+
+						int bigTries = (int)(15 * __instance.levelSizeModifier);
+						List<int> spawnedInChunks = new List<int>();
+						int numObjectsIterator;
+
+						for (int numObjects = 0; numObjects < bigTries; numObjects = numObjectsIterator + 1)
+						{
+							Vector2 candidateSpot = Vector2.zero;
+							int attempts = 0;
+
+							do
+							{
+								candidateSpot = GC.tileInfo.FindRandLocationNearWall(0.64f);
+
+								if (candidateSpot != Vector2.zero)
+								{
+									TileData spotTileData = GC.tileInfo.GetTileData(candidateSpot);
+
+									if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y)).owner == 0)
+										candidateSpot = Vector2.zero;
+
+									if (!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y), "Wall"))
+										candidateSpot = Vector2.zero;
+
+									if (GC.tileInfo.IsOverlapping(candidateSpot, "ObjectRealSprite", 0.64f))
+										candidateSpot = Vector2.zero;
+
+									if (spawnedInChunks.Contains(spotTileData.chunkID))
+										candidateSpot = Vector2.zero;
+
+									if (GC.tileInfo.DestroyIfBetweenWalls(candidateSpot))
+										candidateSpot = Vector2.zero;
+								}
+
+								attempts++;
+							}
+							while ((candidateSpot == Vector2.zero || Vector2.Distance(candidateSpot, GC.playerAgent.tr.position) < 5f) && attempts < 100);
+
+							if (candidateSpot != Vector2.zero)
+							{
+								GC.spawnerMain.spawnObjectReal(candidateSpot, null, vObject.SecurityCam).ShiftTowardWalls();
+								TileData tileData5 = GC.tileInfo.GetTileData(candidateSpot);
+								spawnedInChunks.Add(tileData5.chunkID);
+								Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
+
+								if (numObjects < bigTries - 1 && GC.percentChance(25))
+								{
+									string adjoiningWall = "";
+									Vector2 zero4 = Vector2.zero;
+									Vector2 zero5 = Vector2.zero;
+
+									if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(candidateSpot.x + 1.28f, candidateSpot.y);
+										zero5 = new Vector2(candidateSpot.x - 1.28f, candidateSpot.y);
+										adjoiningWall = "N";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(candidateSpot.x + 1.28f, candidateSpot.y);
+										zero5 = new Vector2(candidateSpot.x - 1.28f, candidateSpot.y);
+										adjoiningWall = "S";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(candidateSpot.x, candidateSpot.y + 1.28f);
+										zero5 = new Vector2(candidateSpot.x, candidateSpot.y - 1.28f);
+										adjoiningWall = "E";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(candidateSpot.x, candidateSpot.y + 1.28f);
+										zero5 = new Vector2(candidateSpot.x, candidateSpot.y - 1.28f);
+										adjoiningWall = "W";
+									}
+
+									GC.tileInfo.GetTileData(zero4);
+									bool allClear = true;
+
+									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W"))
+										allClear = false;
+
+									if (GC.tileInfo.IsOverlapping(zero4, "Anything"))
+										allClear = false;
+
+									if (GC.tileInfo.IsOverlapping(zero4, "ObjectRealSprite", 0.64f))
+										allClear = false;
+
+									if (allClear && zero4 != Vector2.zero)
+									{
+										GC.spawnerMain.spawnObjectReal(zero4, null, vObject.SecurityCam).ShiftTowardWalls();
+										numObjectsIterator = numObjects;
+										numObjects = numObjectsIterator + 1;
+									}
+									else
+									{
+										GC.tileInfo.GetTileData(zero5);
+										allClear = true;
+
+										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W"))
+											allClear = false;
+
+										if (GC.tileInfo.IsOverlapping(zero5, "Anything"))
+											allClear = false;
+
+										if (GC.tileInfo.IsOverlapping(zero5, "ObjectRealSprite", 0.64f))
+											allClear = false;
+
+										if (allClear && zero5 != Vector2.zero)
+										{
+											GC.spawnerMain.spawnObjectReal(zero5, null, vObject.SecurityCam).ShiftTowardWalls();
+											numObjectsIterator = numObjects;
+											numObjects = numObjectsIterator + 1;
+										}
+									}
+								}
+							}
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + numObjects);
+							numObjectsIterator = numObjects;
 						}
 
 						spawnedInChunks = null;
@@ -4265,6 +4467,9 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasCops = __instance.customLevel.levelFeatures.Contains("Cop");
 
+						if (GC.challenges.Contains(cChallenge.PoliceState))
+							hasCops = true;
+
 						if (hasCops)
 						{
 							Debug.Log("Loading Cops");
@@ -4288,7 +4493,7 @@ namespace BunnyMod.Content
 								{
 									string text6 = "Cop";
 
-									if (GC.levelTheme == 4 || GC.levelTheme == 5 || GC.challenges.Contains("SupercopsReplaceCops"))
+									if (GC.levelTheme == 4 || GC.levelTheme == 5 || GC.challenges.Contains(vChallenge.SupercopLand) || GC.challenges.Contains(cChallenge.PoliceState))
 										text6 = "Cop2";
 
 									if (__instance.replaceCopWithGangbanger)
@@ -4381,11 +4586,14 @@ namespace BunnyMod.Content
 						#region Cop Bots
 						bool hasCopBots = false;
 
-						if (GC.levelTheme == 4 && !GC.challenges.Contains("NoCops"))
+						if (GC.levelTheme == 4 && !GC.challenges.Contains(vChallenge.NoCops))
 							hasCopBots = true;
 
 						if (GC.customLevel)
-							hasCopBots = __instance.customLevel.levelFeatures.Contains("CopBot");
+							hasCopBots = __instance.customLevel.levelFeatures.Contains(vAgent.CopBot);
+
+						if (GC.challenges.Contains(cChallenge.PoliceState))
+							hasCopBots = true;
 
 						if (hasCopBots)
 						{
@@ -5011,6 +5219,10 @@ namespace BunnyMod.Content
 					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
 				}
 			}
+		}
+		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
+		{
+			BMAbilities.baseTimeScale = GameController.gameController.selectedTimeScale;
 		}
 		#endregion
 		#region RandomWalls

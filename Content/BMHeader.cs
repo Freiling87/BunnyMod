@@ -143,6 +143,7 @@ namespace BunnyMod.Content
             MobTown = "MobTown",
             Null = "",
             Panoptikopolis = "Panoptikopolis",
+            PoliceState = "PoliceState",
             ScaryGuns = "ScaryGuns",
             ShantyTown = "ShantyTown",
             SingleMinded = "SingleMinded",
@@ -901,6 +902,14 @@ namespace BunnyMod.Content
             SlaveShop = "SlaveShop",
             TVStation = "TVStation",
             Zoo = "Zoo";
+
+        public static List<string> PoliceState = new List<string>()
+        {
+            vChunkType.ConfiscationCenter,
+            vChunkType.DeportationCenter,
+            vChunkType.PoliceOutpost,
+            vChunkType.PoliceStation
+        };
     }
     public static class vColor // Vanilla Colors
 	{
@@ -1398,7 +1407,7 @@ namespace BunnyMod.Content
             RogueVision = "RogueVision",
             SlowDown = "SlowDown",
             SpeedUp = "SpeedUp",
-            SupercopsReplaceCops = "SupercopsReplaceCops",
+            SupercopLand = "SupercopsReplaceCops",
             TimeLimit = "TimeLimit",
             TimeLimit2 = "TimeLimit2",
             TimeLimitQuestsGiveMoreTime = "TimeLimitQuestsGiveMoreTime",
@@ -1636,7 +1645,6 @@ namespace BunnyMod.Content
     public static class vSyringeEffect // Vanilla Syringe Effects
 	{
         public const string
-            Acid = "Acid",
             Confused = "Confused",
             Fast = "Fast",
             Invincible = "Invincible",
@@ -1645,6 +1653,7 @@ namespace BunnyMod.Content
             RegenerateHealth = "RegenerateHealth",
             Slow = "Slow",
             Strength = "Strength",
+            SulfuricAcid = "Acid",
             Weak = "Weak";
     }
     public static class vTrait // Vanilla Traits

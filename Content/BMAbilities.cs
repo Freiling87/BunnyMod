@@ -20,9 +20,6 @@ namespace BunnyMod.Content
 			// Agent
 			Postfix(typeof(Agent), "FindOperatingTime", GetType(), "Agent_FindOperatingTime", new Type[2] { typeof(PlayfieldObject), typeof(float) });
 
-			// LoadLevel
-			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
-
 			// StatusEffects
 			Postfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
 		}
@@ -1237,12 +1234,6 @@ namespace BunnyMod.Content
 		public static void Agent_FindOperatingTime(PlayfieldObject operatingOnObject, float timeToUnlock, Agent __instance, ref float __result) // Postfix
 		{
 			__result *= GC.selectedTimeScale;
-		}
-		#endregion
-		#region LoadLevel
-		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
-		{
-			baseTimeScale = GameController.gameController.selectedTimeScale;
 		}
 		#endregion
 		#region StatusEffects

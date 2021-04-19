@@ -28,6 +28,15 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeMutators()
 		{
+			#region Features
+			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
+				new CustomNameInfo("000: Features: Police State"),
+				new CustomNameInfo(""));
+			PoliceState.Available = true;
+			PoliceState.Conflicting.AddRange(new string[] { vChallenge.SupercopLand, vChallenge.NoCops });
+			PoliceState.IsActive = false;
+
+			#endregion
 			#region Floors & Features
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,

@@ -411,6 +411,7 @@ namespace BunnyMod.Content
 								num2 = 999999f;
 							}
 
+							#region Home Chunk Tether Distance Check
 							if (___agent.modLeashes == 1 && relationship.brainCyclesSinceLastHomeCheck > 10)
 							{
 								relationship.brainCyclesSinceLastHomeCheck = 0;
@@ -445,6 +446,7 @@ namespace BunnyMod.Content
 								tetherDistance = relationship.lastHomeCheckDistance;
 								relationship.brainCyclesSinceLastHomeCheck++;
 							}
+							#endregion
 
 							if (___agent.hasEmployer && !agent.objectAgent && agent.isPlayer == 0)
 								try
@@ -602,29 +604,29 @@ namespace BunnyMod.Content
 
 							if (___curDesirability >= ___highestDesirability)
 							{
-								bool flag5 = false;
+								bool isFollowingAndClose = false;
 							
 								if (tetherDistance < 20f || ___agent.guardingMayor)
-									flag5 = true;
+									isFollowingAndClose = true;
 								
 								if (___agent.hasEmployer)
 								{
-									flag5 = true;
+									isFollowingAndClose = true;
 								
 									if (tetherDistance > 8f && agent.mostRecentGoalCode == goalType.Flee)
-										flag5 = false;
+										isFollowingAndClose = false;
 								}
 
 								if (___agent.attackCooldown > 0f)
-									flag5 = true;
+									isFollowingAndClose = true;
 								
 								if (___agent.jobCode == jobType.Follow && ___agent.hasFollowing && Vector2.Distance(___agent.curPosition, ___agent.following.curPosition) > 8f)
-									flag5 = false;
+									isFollowingAndClose = false;
 								
 								if (agent.onFireServer)
-									flag5 = true;
+									isFollowingAndClose = true;
 								
-								if (flag5 && num > num3)
+								if (isFollowingAndClose && num > num3)
 								{
 									num3 = num;
 									Agent battlingAgent = agent;

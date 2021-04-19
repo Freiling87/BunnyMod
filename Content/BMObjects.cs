@@ -73,6 +73,7 @@ namespace BunnyMod.Content
 
             // Manhole
             Postfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
+            Prefix(typeof(Manhole), "Start", GetType(), "Manhole_Start", new Type[0] { });
 
             // Plant
             Postfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
@@ -1106,10 +1107,72 @@ namespace BunnyMod.Content
 				agent.Teleport(outHole + offset, true, false);
 			}
 		}
+        public static IEnumerator Manhole_HoleAppearAfterLoad(Manhole __instance) // Non-Patch
+		{
+            if (GC.streamingWorld)
+                while (!GC.streamingWorldController.StreamingLoaded(__instance.startingChunk, __instance.startingChunkReal))
+                    yield return null;
+            else
+                while (!GC.loadCompleteEarly)
+                    yield return null;
+            
+            __instance.HoleAppear();
+            yield break;
+        }
 		public static void Manhole_SetVars(Manhole __instance) // Postfix
 		{
             __instance.interactable = true;
 		}
+        public static IEnumerator Manhole_SetLightingLater(Manhole __instance) // Non-Patch
+		{
+            yield return null;
+            yield return null;
+
+            if (!__instance.gc.serverPlayer)
+            {
+                while (__instance.tr.Find("LightReal(Clone)") == null)
+                    yield return null;
+                
+                __instance.lightReal = __instance.tr.Find("LightReal(Clone)").GetComponent<LightReal>();
+            }
+
+            __instance.lightReal.tr.localPosition = new Vector3(0f, -0.12f);
+
+            yield break;
+        }
+        public static void Manhole_Start(Manhole __instance) // Replacement
+		{
+            MethodInfo start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start");
+            start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            if (GC.levelTheme != 3 && !GC.challenges.Contains(vChallenge.MixedUpLevels) && GC.levelFeeling != vLevelFeeling.WarZone && !BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen) && GC.serverPlayer)
+            {
+                __instance.objectName = "Manhole";
+                __instance.RemoveMe();
+
+                return;
+            }
+
+            if (__instance.opened)
+                __instance.objectSprite.meshRenderer.enabled = false;
+            
+            if (GC.lightingType != "None")
+			{
+                __instance.StartCoroutine(Manhole_SetLightingLater(__instance));
+            }
+
+            GC.tileInfo.GetTileData(__instance.tr.position).futureHole = true;
+            
+            if (GC.serverPlayer && GC.levelFeeling == "WarZone")
+            {
+                __instance.StartCoroutine(Manhole_HoleAppearAfterLoad(__instance));
+            
+                return;
+            }
+
+            if (!GC.serverPlayer && __instance.normalHole)
+                __instance.objectRealRealName = GC.nameDB.GetName("Hole", "Object");
+        }
         public static void Manhole_UseCrowbar(Manhole __instance) // Non-Patch
         {
             BMLog("Manhole_UseCrowbar");

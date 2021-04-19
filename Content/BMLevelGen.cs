@@ -4964,9 +4964,7 @@ namespace BunnyMod.Content
 			BMLog("\tobjectRealName = '" + objectRealName + "'");
 
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
-			{
 				objectRealName = vObject.SecurityCam;
-			}
 
 			return true;
 		}

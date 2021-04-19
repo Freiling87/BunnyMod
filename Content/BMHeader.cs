@@ -39,7 +39,7 @@ namespace BunnyMod.Content
 			//new BunnyItems().Awake();
 			new BMLevelGen().Awake();
             new BMMiscellaneous().Awake();
-			new BMMutators().Awake();
+			new BMChallenges().Awake();
 			new BMObjects().Awake();
             new BMQuests().Awake();
 			//new BunnySprites().Awake();
@@ -154,7 +154,22 @@ namespace BunnyMod.Content
             UnpaidInternship = "UnpaidInternship",
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
-	}
+
+        public static List<string> WallAndFloor = new List<string>()
+            {
+                cChallenge.CityOfSteel,
+                cChallenge.GreenLiving,
+                cChallenge.Panoptikopolis,
+                cChallenge.ShantyTown,
+                cChallenge.SpelunkyDory
+            };
+        public static List<string> Floor = new List<string>()
+            {
+                cChallenge.ArcologyEcology,
+                cChallenge.SunkenCity,
+                cChallenge.TransitExperiment
+            };
+    }
 	public static class cTrait // Custom Traits
 	{
 		public const string

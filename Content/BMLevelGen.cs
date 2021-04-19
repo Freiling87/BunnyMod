@@ -34,6 +34,9 @@ namespace BunnyMod.Content
 
 			// RandomWalls
 			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+
+			// SpawnerFloor
+			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -51,11 +54,11 @@ namespace BunnyMod.Content
 		}
 		public static bool IsFloorModActive()
 		{
-			foreach (string mutator in wallAndFloorMutators)
+			foreach (string mutator in cChallenge.Floor)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
-			foreach (string mutator in floorMutators)
+			foreach (string mutator in cChallenge.WallAndFloor)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
@@ -72,7 +75,7 @@ namespace BunnyMod.Content
 			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
 		public static bool IsWallModActive()
 		{
-			foreach (string mutator in wallAndFloorMutators)
+			foreach (string mutator in cChallenge.WallAndFloor)
 				if (GC.challenges.Contains(mutator))
 					return true;
 
@@ -89,27 +92,13 @@ namespace BunnyMod.Content
 
 			return vanilla;
 		}
-		private static List<string> wallAndFloorMutators = new List<string>()
-			{
-				cChallenge.CityOfSteel,
-				cChallenge.GreenLiving,
-				cChallenge.Panoptikopolis,
-				cChallenge.ShantyTown,
-				cChallenge.SpelunkyDory
-			};
-		private static List<string> floorMutators = new List<string>()
-			{
-				cChallenge.ArcologyEcology,
-				cChallenge.SunkenCity,
-				cChallenge.TransitExperiment
-			};
 		public static string GetFloorMutator()
 		{
-			foreach (string mutator in floorMutators)
+			foreach (string mutator in cChallenge.Floor)
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
-			foreach (string mutator in wallAndFloorMutators)
+			foreach (string mutator in cChallenge.WallAndFloor)
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
@@ -190,7 +179,7 @@ namespace BunnyMod.Content
 		public static string GetWallMutator()
 		{
 			foreach (string mutator in GC.challenges)
-				if (wallAndFloorMutators.Contains(mutator))
+				if (cChallenge.WallAndFloor.Contains(mutator))
 					return mutator;
 
 			return null;
@@ -4960,6 +4949,20 @@ namespace BunnyMod.Content
 			}
 
 			return false;
+		}
+		#endregion
+		#region SpawnerFloor
+		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
+		{
+			if (IsFloorModActive() && floorName == "Normal")
+			{
+				BMLog("SpawnerFloor_spawn:");
+				BMLog("\tfloorName = '" + floorName + "'");
+
+				floorName = GetFloorTileFromMutator();
+			}
+
+			return true;
 		}
 		#endregion
 	}

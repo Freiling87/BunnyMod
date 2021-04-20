@@ -28,12 +28,25 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeMutators()
 		{
-			#region Features
+			#region Map Generation Overhauls
+
+			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
+				new CustomNameInfo("000: Overhaul: AnCapistan"),
+				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
+			AnCapistan.Available = true;
+			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
+			AnCapistan.Conflicting.AddRange(vChallenge.LawEnforcement);
+			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns });
+			AnCapistan.IsActive = false;
+
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
-				new CustomNameInfo("000: Features: Police State"),
+				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
 			PoliceState.Available = true;
-			PoliceState.Conflicting.AddRange(new string[] { vChallenge.SupercopLand, vChallenge.NoCops, cChallenge.YoungMenInTheNeighborhood, cChallenge.HoodlumsWonderland, cChallenge.MobTown });
+			PoliceState.Conflicting.AddRange(cChallenge.Criminals);
+			PoliceState.Conflicting.AddRange(vChallenge.LawEnforcement);
+			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
+			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
 			PoliceState.IsActive = false;
 
 			#endregion
@@ -206,7 +219,7 @@ namespace BunnyMod.Content
 
 			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
 				new CustomNameInfo("Construction: Shanty Town"),
-				new CustomNameInfo("Hard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
+				new CustomNameInfo("Looks like we're short on Steel.\n\nHard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
 			ShantyTown.Available = true;
 			ShantyTown.Conflicting.AddRange(cChallenge.WallsAndFloors);
 			ShantyTown.IsActive = false;

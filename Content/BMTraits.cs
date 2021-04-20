@@ -1106,6 +1106,8 @@ namespace BunnyMod.Content
 		#region Relationships
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
+            // This method sets how agent feels about otherAgent
+
             if (isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
 			{
                 BMLog("Relationships_SetupRelationshipOriginal: ");

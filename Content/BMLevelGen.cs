@@ -243,17 +243,17 @@ namespace BunnyMod.Content
 		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, bool __result) // Prefix
 		{
 			Chunk chunk = null;
-			string description;
+			string type;
 
 			if (GC.basicSpawns)
-				description = myChunkBasic.description;
+				type = myChunkBasic.description;
 			else
 			{
 				chunk = myChunkGo.GetComponent<Chunk>();
-				description = chunk.description;
+				type = chunk.description;
 			}
 			
-			int num = 0;
+			int chunkTypeLimitCounter = 0;
 			
 			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
 				return false;
@@ -264,10 +264,10 @@ namespace BunnyMod.Content
 					{
 						ChunkData chunkData = enumerator.Current;
 
-						if (description == chunkData.description && checkSessionData)
-							num++;
+						if (type == chunkData.description && checkSessionData)
+							chunkTypeLimitCounter++;
 						
-						if (description != "Generic" && description != "Lake" && myChunkBasic == chunkData)
+						if (type != "Generic" && type != "Lake" && myChunkBasic == chunkData)
 							return false;
 					}
 
@@ -275,62 +275,77 @@ namespace BunnyMod.Content
 			{
 				Chunk component = gameObject.GetComponent<Chunk>();
 
-				if (description == component.description && checkSessionData)
-					num++;
+				if (type == component.description && checkSessionData)
+					chunkTypeLimitCounter++;
 				
-				if (description != "Generic" && description != "Lake" && chunk == component)
+				if (type != "Generic" && type != "Lake" && chunk == component)
+					return false;
+			}
+
+			if (GC.challenges.Contains(cChallenge.PoliceState))
+			{
+				if (vChunkType.PoliceStateAlwaysAllowed.Contains(type))
+					return true;
+				if (vChunkType.PoliceStateProhibited.Contains(type))
+					return false;
+			}
+			else if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+				if (vChunkType.AnCapistanAlwaysAllowed.Contains(type))
+					return true;
+				if (vChunkType.AnCapistanProhibited.Contains(type))
 					return false;
 			}
 
 			if (GC.levelTheme == 0)
 			{
-				if (description != "Generic")
+				if (type != "Generic")
 				{
-					if (GC.sessionDataBig.curLevelEndless == 1 && description == "PoliceStation")
+					if (GC.sessionDataBig.curLevelEndless == 1 && type == "PoliceStation")
 						return false;
 					
-					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "FireStation" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
 						return false;
 					
-					if (num >= 3 && (description == "Apartments" || description == "DrugDen" || description == "House" || description == "OfficeBuilding" || description == "Shack"))
+					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
 						return false;
 					
-					if (num >= 2 && (description == "Armory" || description == "Bar" || description == "Casino" || description == "Lab"))
+					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Lab"))
 						return false;
 					
-					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hideout" || description == "Hospital" || description == "PoliceStation" || description == "Prison" || description == "Shop" || description == "SlaveShop"))
+					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop"))
 						return false;
 				}
 			}
 			else if (GC.levelTheme == 1)
 			{
-				if (description != "Generic")
+				if (type != "Generic")
 				{
-					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
 						return false;
 					
-					if (num >= 3 && (description == "Apartments" || description == "DrugDen" || description == "House" || description == "OfficeBuilding" || description == "Shack"))
+					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
 						return false;
 					
-					if (num >= 2 && (description == "Armory" || description == "Bar" || description == "Casino" || description == "Hideout" || description == "Factory" || description == "Lab"))
+					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Hideout" || type == "Factory" || type == "Lab"))
 						return false;
 					
-					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hospital" || description == "PoliceStation" || description == "Prison" || description == "Shop" || description == "SlaveShop" || description == "FireStation"))
+					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop" || type == "FireStation"))
 						return false;
 				}
 			}
 			else if (GC.levelTheme == 2)
 			{
-				if (description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "FireStation" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+				if (type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
 					return false;
 				
-				if (num >= 3 && (description == "Cave" || description == "Cabin" || description == "Farm" || description == "Greenhouse"))
+				if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Cave" || type == "Cabin" || type == "Farm" || type == "Greenhouse"))
 					return false;
 				
-				if (num >= 2 && description == "MilitaryOutpost")
+				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "MilitaryOutpost")
 					return false;
 				
-				if (num >= 1 && (description == "HedgeMaze" || description == "Hideout" || description == "Graveyard"))
+				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "HedgeMaze" || type == "Hideout" || type == "Graveyard"))
 					return false;
 				
 				if (chunkShape >= 0 && chunkShape <= 4)
@@ -341,7 +356,7 @@ namespace BunnyMod.Content
 						if (__instance.levelChunks[i].description != "Generic" && __instance.levelChunks[i].description != "Lake" && Vector2.Distance(__instance.levelChunks[i].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
 							flag = true;
 					
-					if (flag && description != "Generic" && description != "Lake")
+					if (flag && type != "Generic" && type != "Lake")
 						return false;
 				}
 
@@ -351,23 +366,23 @@ namespace BunnyMod.Content
 					{
 						string a = GC.rnd.RandomSelect("Level3ChunkHuge", "RandomScenarios");
 				
-						if (description == "Hideout" && a == "NotHideout")
+						if (type == "Hideout" && a == "NotHideout")
 							return false;
 						
-						if (description != "Hideout" && a == "Hideout")
+						if (type != "Hideout" && a == "Hideout")
 							return false;
 					}
 
-					return description == "Hideout" || description == "Graveyard" || description == "MilitaryOutpost" || description == "Cabin" || description == "Greenhouse" || description == "Cave" || description == "Farm" || description == "HedgeMaze";
+					return type == "Hideout" || type == "Graveyard" || type == "MilitaryOutpost" || type == "Cabin" || type == "Greenhouse" || type == "Cave" || type == "Farm" || type == "HedgeMaze";
 				}
 
 				if (chunkShape == 1 || chunkShape == 2 || chunkShape == 3)
 					return true;
 				
-				if (!(description == "Generic") && !(description == "Lake") && !(description == "Hideout") && !(description == "MilitaryOutpost") && !(description == "Cabin") && !(description == "Greenhouse") && !(description == "Cave") && !(description == "Farm") && !(description == "HedgeMaze") && !(description == "Shop") && !(description == "Bathroom") && !(description == "Graveyard"))
+				if (!(type == "Generic") && !(type == "Lake") && !(type == "Hideout") && !(type == "MilitaryOutpost") && !(type == "Cabin") && !(type == "Greenhouse") && !(type == "Cave") && !(type == "Farm") && !(type == "HedgeMaze") && !(type == "Shop") && !(type == "Bathroom") && !(type == "Graveyard"))
 					return false;
 				
-				if (description == "Lake")
+				if (type == "Lake")
 				{
 					bool flag2 = false;
 				
@@ -382,50 +397,50 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == 3)
 			{
-				if (description != "Generic")
+				if (type != "Generic")
 				{
-					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Shack" || description == "Lab" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Hospital" || description == "Bank" || description == "TVStation" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Hospital" || type == "Bank" || type == "TVStation" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
 						return false;
 					
-					if (num >= 3 && description == "Temp")
+					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "Temp")
 						return false;
 					
-					if (num >= 2 && (description == "Bar" || description == "Casino" || description == "Hotel"))
+					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Bar" || type == "Casino" || type == "Hotel"))
 						return false;
 					
-					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hideout" || description == "PoliceStation" || description == "Shop" || description == "SlaveShop" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "IceRink" || description == "MovieTheater" || description == "Church" || description == "CityPark" || description == "Mall" || description == "FireStation"))
+					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "PoliceStation" || type == "Shop" || type == "SlaveShop" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "IceRink" || type == "MovieTheater" || type == "Church" || type == "CityPark" || type == "Mall" || type == "FireStation"))
 						return false;
 				}
 			}
 			else if (GC.levelTheme == 4)
 			{
-				if (description != "Generic")
+				if (type != "Generic")
 				{
-					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Farm" || description == "Shack" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Casino" || description == "Bar" || description == "Arcade" || description == "MovieTheater" || description == "Arena" || description == "DanceClub" || description == "Hotel" || description == "Hideout" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Farm" || type == "Shack" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Bar" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "DanceClub" || type == "Hotel" || type == "Hideout" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
 						return false;
 					
-					if (num >= 5 && description == "HouseUptown")
+					if (chunkTypeLimitCounter >= (5 * LevelSizeMod(30)) && type == "HouseUptown")
 						return false;
 					
-					if (num >= 3 && description == "PoliceOutpost")
+					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "PoliceOutpost")
 						return false;
 					
-					if (num >= 2 && (description == "MusicHall" || description == "GatedCommunity" || description == "PrivateClub" || description == "Bathroom"))
+					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "MusicHall" || type == "GatedCommunity" || type == "PrivateClub" || type == "Bathroom"))
 						return false;
 					
-					if (num >= 1 && !__instance.squareMap && (description == "Bank" || description == "Graveyard" || description == "Hideout" || description == "Shop" || description == "SlaveShop" || description == "IceRink" || description == "TVStation" || description == "Church" || description == "CityPark" || description == "Mall" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "DeportationCenter" || description == "PoliceStation" || description == "ConfiscationCenter" || description == "Pit" || description == "FireStation"))
+					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Graveyard" || type == "Hideout" || type == "Shop" || type == "SlaveShop" || type == "IceRink" || type == "TVStation" || type == "Church" || type == "CityPark" || type == "Mall" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "DeportationCenter" || type == "PoliceStation" || type == "ConfiscationCenter" || type == "Pit" || type == "FireStation"))
 						return false;
 				}
 			}
-			else if (GC.levelTheme == 5 && description != "Generic")
+			else if (GC.levelTheme == 5 && type != "Generic")
 			{
-				if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Shack" || description == "Lab" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Casino" || description == "Arcade" || description == "MovieTheater" || description == "Arena" || description == "Hotel" || description == "Hideout" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "Bathroom" || description == "SlaveShop" || description == "TVStation" || description == "CityPark" || description == "Hideout" || description == "IceRink" || description == "Mall" || description == "Mansion" || description == "PoliceStation" || description == "Graveyard")
+				if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "Hotel" || type == "Hideout" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "Bathroom" || type == "SlaveShop" || type == "TVStation" || type == "CityPark" || type == "Hideout" || type == "IceRink" || type == "Mall" || type == "Mansion" || type == "PoliceStation" || type == "Graveyard")
 					return false;
 				
-				if (num >= 2 && description == "HouseUptown")
+				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "HouseUptown")
 					return false;
 				
-				if (num >= 1 && !__instance.squareMap && (description == "Bank" || description == "Shop" || description == "Church" || description == "Bathhouse" || description == "Zoo" || description == "PoliceStation" || description == "Pit" || description == "FireStation" || description == "DanceClub" || description == "Bar" || description == "MusicHall" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse" || description == "PoliceOutpost" || description == "Hospital" || description == "Shop" || description == "PrivateClub" || description == "Bathroom"))
+				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Shop" || type == "Church" || type == "Bathhouse" || type == "Zoo" || type == "PoliceStation" || type == "Pit" || type == "FireStation" || type == "DanceClub" || type == "Bar" || type == "MusicHall" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse" || type == "PoliceOutpost" || type == "Hospital" || type == "Shop" || type == "PrivateClub" || type == "Bathroom"))
 					return false;
 			}
 
@@ -4808,7 +4823,7 @@ namespace BunnyMod.Content
 			}
 
 			if ((GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 4 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && 
-					GC.staticChunk == "" && GC.serverPlayer && GC.levelType == "Normal")
+					GC.staticChunk == "" && GC.serverPlayer && GC.levelType == "Normal" && !GC.challenges.Contains(cChallenge.AnCapistan))
 			{
 				GC.tileInfo.PlaceLockdownWalls();
 				__instance.hasLockdownWalls = true;
@@ -5236,8 +5251,11 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasSlimeBarrels = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
 						hasSlimeBarrels = false;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasSlimeBarrels = true;
 
 					if (hasSlimeBarrels)
 					{
@@ -5290,8 +5308,11 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasOilSpills = __instance.customLevel.levelFeatures.Contains("OilSpill");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
 						hasOilSpills = false;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasOilSpills = true;
 
 					if (hasOilSpills && GC.serverPlayer)
 					{
@@ -5321,6 +5342,9 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasVendingMachines = __instance.customLevel.levelFeatures.Contains("VendingMachine");
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasVendingMachines = true;
 
 					if (hasVendingMachines)
 					{
@@ -5566,8 +5590,11 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasTrashCans = __instance.customLevel.levelFeatures.Contains("TrashCan");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
 						hasTrashCans = true;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasTrashCans = false;
 
 					if (hasTrashCans)
 					{
@@ -5739,11 +5766,8 @@ namespace BunnyMod.Content
 						spawnedInChunks = null;
 					}
 					#endregion
-					#region Public Security Cams for Panoptikopolis/Police State
-
-					bool hasPSC = GC.challenges.Contains(cChallenge.PoliceState);
-
-					if (hasPSC)
+					#region Public Security Cams for Police State
+					if (GC.challenges.Contains(cChallenge.PoliceState))
 					{
 						Debug.Log("Loading Public Security Cams");
 
@@ -5924,6 +5948,10 @@ namespace BunnyMod.Content
 
 					if (GC.customLevel)
 						hasVendorCarts = __instance.customLevel.levelFeatures.Contains("VendorCart");
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasVendorCarts = true;
+
 					if (hasVendorCarts)
 					{
 						Debug.Log("Loading Vendor Carts");
@@ -6008,6 +6036,9 @@ namespace BunnyMod.Content
 
 					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
 						hasPoliceBoxes = true;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasPoliceBoxes = false;
 
 					if (GC.customLevel)
 						hasPoliceBoxes = __instance.customLevel.levelFeatures.Contains("PoliceBox");
@@ -6120,6 +6151,9 @@ namespace BunnyMod.Content
 					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
 						hasAlarmButtons = true;
 
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasAlarmButtons = false;
+
 					if (GC.customLevel)
 						hasAlarmButtons = __instance.customLevel.levelFeatures.Contains("AlarmButton");
 
@@ -6227,6 +6261,9 @@ namespace BunnyMod.Content
 
 					if ((GC.levelTheme == 3 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && !(GC.levelFeeling == vLevelFeeling.WarZone))
 						hasManholes = true;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasManholes = false;
 
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
@@ -6457,6 +6494,9 @@ namespace BunnyMod.Content
 					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 						hasFireHydrants = true;
 
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasFireHydrants = false;
+
 					if (GC.customLevel)
 						hasFireHydrants = __instance.customLevel.levelFeatures.Contains("FireHydrant");
 
@@ -6518,8 +6558,11 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasExplodingSlimeBarrels = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
 						hasExplodingSlimeBarrels = false;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasExplodingSlimeBarrels = true;
 
 					if (hasExplodingSlimeBarrels || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 					{
@@ -6564,8 +6607,11 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasFlamingBarrels = __instance.customLevel.levelFeatures.Contains("FlamingBarrel");
 
-					if (GC.challenges.Contains(cChallenge.TransitExperiment))
+					if (GC.challenges.Contains(cChallenge.TransitExperiment) || GC.challenges.Contains(cChallenge.PoliceState))
 						hasFlamingBarrels = false;
+
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasFlamingBarrels = true;
 
 					if (hasFlamingBarrels)
 					{
@@ -7215,6 +7261,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasLamps = __instance.customLevel.levelFeatures.Contains("Lamp");
 
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasLamps = false;
+
 					if (hasLamps)
 					{
 						Debug.Log("Loading Lamps");
@@ -7739,7 +7788,7 @@ namespace BunnyMod.Content
 							hasGenericRoamers = true;
 
 						if (GC.customLevel)
-							hasGenericRoamers = __instance.customLevel.levelFeatures.Contains("Hobo");
+							hasGenericRoamers = __instance.customLevel.levelFeatures.Contains(vAgent.SlumDweller);
 
 						if (hasGenericRoamers && GC.levelFeeling != vLevelFeeling.Riot && GC.levelFeeling != vLevelFeeling.Lockdown && GC.levelFeeling != vLevelFeeling.WarZone)
 						{
@@ -7790,145 +7839,340 @@ namespace BunnyMod.Content
 									{
 										if (GC.levelTheme == 0)
 										{
-											if (hasPoliceBoxes)
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(5))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(5))
+													roamerAgent = "Doctor";
+
+												else if (GC.percentChance(10))
+													roamerAgent = GC.Choose<string>(vAgent.DrugDealer, vAgent.Crepe, vAgent.Blahd, vAgent.Thief) ;
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
 											{
 												if (GC.percentChance(10))
 													roamerAgent = "Firefighter";
 												else
-													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster");
+													roamerAgent = "Hobo";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
 											}
+											else
+											{
+												if (hasPoliceBoxes)
+												{
+													if (GC.percentChance(10))
+														roamerAgent = "Firefighter";
+													else
+														roamerAgent = GC.Choose<string>("Hobo", "UpperCruster");
+												}
 
-											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
-												roamerAgent = "Thief";
-											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
-												roamerAgent = "Thief";
-											else if (GC.percentChance(10))
-												roamerAgent = "Thief";
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 										}
 										else if (GC.levelTheme == 1)
 										{
-											if (GC.percentChance(10))
-												roamerAgent = "Firefighter";
-											else if (hasPoliceBoxes)
-												roamerAgent = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												roamerAgent = GC.Choose<string> (vAgent.SlumDweller, vAgent.SlumDweller, vAgent.Worker);
+
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
+											{
+												if (GC.percentChance(10))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 											else
-												roamerAgent = GC.Choose<string>("Hobo", "Worker");
+											{
+												if (GC.percentChance(10))
+													roamerAgent = "Firefighter";
+												else if (hasPoliceBoxes)
+													roamerAgent = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
+												else
+													roamerAgent = GC.Choose<string>("Hobo", "Worker");
 
-											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
-												roamerAgent = "Thief";
-											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
-												roamerAgent = "Thief";
-											else if (GC.percentChance(10))
-												roamerAgent = "Thief";
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 										}
 										else if (GC.levelTheme == 2)
 										{
-											if (hasPoliceBoxes)
-												GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster");
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												roamerAgent = GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), vAgent.SlumDweller);
+
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(5))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
+											{
+												roamerAgent = GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster");
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 											else
-												roamerAgent = GC.rnd.RandomSelect("ParkAgent", "Agents");
+											{
+												if (hasPoliceBoxes)
+													GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster");
+												else
+													roamerAgent = GC.rnd.RandomSelect("ParkAgent", "Agents");
 
-											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
-												roamerAgent = "Thief";
-											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
-												roamerAgent = "Thief";
-											else if (GC.percentChance(10))
-												roamerAgent = "Thief";
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 										}
 										else if (GC.levelTheme == 3)
 										{
-											if (GC.percentChance(8))
-												roamerAgent = "Firefighter";
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												roamerAgent = GC.Choose<string>("Hobo", "Hobo", "UpperCruster", "UpperCruster");
+
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(5))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
+											{
+												if (GC.percentChance(8))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", "UpperCruster");
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
+											}
 											else
-												roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", "UpperCruster");
+											{
+												if (GC.percentChance(8))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", "UpperCruster");
 
-											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
-												roamerAgent = "Thief";
-											else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
-												roamerAgent = "Thief";
-											else if (GC.percentChance(10))
-												roamerAgent = "Thief";
+												if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
+													roamerAgent = "Thief";
+												else if (GC.challenges.Contains(cChallenge.SwarmWelcome) && GC.percentChance(3))
+													roamerAgent = "Thief";
+												else if (GC.percentChance(10))
+													roamerAgent = "Thief";
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
-
-											if (GC.percentChance(3))
-												roamerAgent = "Vampire";
+											}
 										}
 										else if (GC.levelTheme == 4)
 										{
-											if (GC.percentChance(8))
-												roamerAgent = "Firefighter";
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												roamerAgent = GC.Choose<string>("UpperCruster", vAgent.SlumDweller);
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
+											{
+												if (GC.percentChance(8))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster");
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
+											}
 											else
-												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
+											{
+												if (GC.percentChance(8))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
 
-											if (GC.percentChance(3))
-												roamerAgent = "Vampire";
+												if (GC.percentChance(3))
+													roamerAgent = "Vampire";
+											}
 										}
 										else if (GC.levelTheme == 5)
 										{
-											if (GC.percentChance(10))
-												roamerAgent = "Firefighter";
+											if (GC.challenges.Contains(cChallenge.AnCapistan))
+											{
+												roamerAgent = vAgent.UpperCruster;
+
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
+
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
+											else if (GC.challenges.Contains(cChallenge.PoliceState))
+											{
+												if (GC.percentChance(10))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster");
+
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 											else
-												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster");
+											{
+												if (GC.percentChance(10))
+													roamerAgent = "Firefighter";
+												else
+													roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster");
 
-											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
-												roamerAgent = "Zombie";
+												if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
+													roamerAgent = "Zombie";
 
-											if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
-												roamerAgent = "Cannibal";
+												if (GC.challenges.Contains("CannibalsDontAttack") && GC.percentChance(10))
+													roamerAgent = "Cannibal";
 
-											if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
-												roamerAgent = "Doctor";
+												if (GC.challenges.Contains("DoctorsMoreImportant") && GC.percentChance(10))
+													roamerAgent = "Doctor";
+											}
 										}
 									}
 
 									Agent spawnedAgent = GC.spawnerMain.SpawnAgent(trySpot, null, roamerAgent);
 									spawnedAgent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 
-									if (roamerAgent == "UpperCruster")
+									if (roamerAgent == vAgent.UpperCruster)
 									{
 										if (GC.percentChance(20))
 										{
@@ -7945,7 +8189,7 @@ namespace BunnyMod.Content
 
 											if (trySpot != Vector2.zero && num80 < 300)
 											{
-												roamerAgent = "Slave";
+												roamerAgent = vAgent.Slave;
 												Agent agent15 = GC.spawnerMain.SpawnAgent(trySpot, null, roamerAgent);
 												agent15.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 												agent15.relationships.SetRelInitial(spawnedAgent, "Submissive");
@@ -7962,7 +8206,7 @@ namespace BunnyMod.Content
 											}
 										}
 									}
-									else if (roamerAgent == "Thief" && GC.percentChance(50))
+									else if (roamerAgent == vAgent.Thief && GC.percentChance(50))
 										spawnedAgent.losCheckAtIntervals = true;
 								}
 
@@ -8092,6 +8336,9 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasCops = __instance.customLevel.levelFeatures.Contains("Cop");
 
+						if (GC.challenges.Contains(cChallenge.AnCapistan))
+							hasCops = false;
+
 						if (hasCops)
 						{
 							Debug.Log("Loading Cops");
@@ -8101,31 +8348,42 @@ namespace BunnyMod.Content
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
 							{
-								Vector2 vector31 = Vector2.zero;
+								Vector2 spot = Vector2.zero;
 								int num83 = 0;
 
 								do
 								{
-									vector31 = GC.tileInfo.FindRandLocationGeneral(0.32f);
+									spot = GC.tileInfo.FindRandLocationGeneral(0.32f);
 									num83++;
 								}
-								while ((vector31 == Vector2.zero || Vector2.Distance(vector31, GC.playerAgent.tr.position) < 20f) && num83 < 300);
+								while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 20f) && num83 < 300);
 
-								if (vector31 != Vector2.zero && num83 < 300)
+								if (spot != Vector2.zero && num83 < 300)
 								{
-									string text6 = "Cop";
+									string agentName = vAgent.Cop;
 
 									if (GC.levelTheme == 4 || GC.levelTheme == 5 || GC.challenges.Contains(vChallenge.SupercopLand) || GC.challenges.Contains(cChallenge.PoliceState))
-										text6 = "Cop2";
+										agentName = vAgent.SuperCop;
 
 									if (__instance.replaceCopWithGangbanger)
-										text6 = "Gangbanger";
+										agentName = "Gangbanger";
 
-									Agent agent18 = GC.spawnerMain.SpawnAgent(vector31, null, text6);
-									agent18.movement.RotateToAngleTransform((float)Random.Range(0, 360));
+									Agent agent = GC.spawnerMain.SpawnAgent(spot, null, agentName);
+									agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
 
-									if ((text6 == "Cop" || text6 == "Cop2") && GC.levelFeeling == "Lockdown")
-										agent18.oma.modProtectsProperty = 1;
+									if ((agentName == "Cop" || agentName == "Cop2") && GC.levelFeeling == "Lockdown")
+										agent.oma.modProtectsProperty = 1;
+
+									if (GC.challenges.Contains(cChallenge.PoliceState))
+									{
+										foreach (Agent otherAgent in GC.agentList)
+											if (!vAgent.LawEnforcement.Contains(otherAgent.agentName))
+											{
+												agent.relationships.SetRelInitial(otherAgent, vRelationship.Annoyed);
+
+												agent.relationships.SetStrikes(otherAgent, 2);
+											}
+									}
 
 									if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 									{
@@ -8148,6 +8406,9 @@ namespace BunnyMod.Content
 							extraCops = true;
 							GC.sessionData.nextLevelExtraCops = false;
 						}
+
+						if (GC.challenges.Contains(cChallenge.AnCapistan))
+							extraCops = false;
 
 						if (extraCops)
 						{
@@ -8214,6 +8475,9 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasCopBots = __instance.customLevel.levelFeatures.Contains(vAgent.CopBot);
 
+						if (GC.challenges.Contains(cChallenge.AnCapistan))
+							hasCops = false;
+
 						if (hasCopBots)
 						{
 							Debug.Log("Loading CopBots");
@@ -8273,11 +8537,14 @@ namespace BunnyMod.Content
 						#region Zombies
 						bool hasZombies = false;
 
-						if (GC.challenges.Contains("ZombieMutator"))
+						if (GC.challenges.Contains(vChallenge.ZombieMutator))
 							hasZombies = true;
 
 						if (GC.customLevel)
 							hasZombies = __instance.customLevel.levelFeatures.Contains("Zombie");
+
+						if (GC.challenges.Contains(cChallenge.PoliceState))
+							hasZombies = false;
 
 						if (hasZombies)
 						{
@@ -8349,6 +8616,9 @@ namespace BunnyMod.Content
 
 						if (GC.challenges.Contains(cChallenge.PoliceState))
 							hasGangbangers = false;
+
+						if (GC.challenges.Contains(cChallenge.AnCapistan))
+							hasGangbangers = true;
 
 						if (hasGangbangers && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" && GC.levelFeeling != "Riot")
 						{
@@ -8456,8 +8726,11 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasMafia = __instance.customLevel.levelFeatures.Contains("Mafia");
 
-						if (GC.challenges.Contains(cChallenge.MobTown))
+						if (GC.challenges.Contains(cChallenge.MobTown) || GC.challenges.Contains(cChallenge.AnCapistan))
 							hasMafia = true;
+
+						if (GC.challenges.Contains(cChallenge.PoliceState))
+							hasMafia = false;
 
 						if (hasMafia && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
 						{

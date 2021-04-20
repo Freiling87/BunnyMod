@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using UnityEngine;
 using RogueLibsCore;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
-using BunnyMod.Content;
+using UnityEngine;
 
 namespace BunnyMod.Content
 {
@@ -130,6 +127,7 @@ namespace BunnyMod.Content
     {
         public const string
             ACityForAnts = "ACityForAnts",
+            AnCapistan = "AnCapistan",
             ArcologyEcology = "ArcologyEcology",
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",
@@ -164,6 +162,12 @@ namespace BunnyMod.Content
             cChallenge.SunkenCity,
             cChallenge.TransitExperiment
         };
+        public static List<string> Criminals = new List<string>()
+        {
+            cChallenge.HoodlumsWonderland,
+            cChallenge.MobTown,
+            cChallenge.YoungMenInTheNeighborhood,
+        };
         public static List<string> Leashes = new List<string>()
         {
             cChallenge.RoaminOrgy,
@@ -175,6 +179,11 @@ namespace BunnyMod.Content
             cChallenge.Claustropolis,
             cChallenge.Megalopolis,
             cChallenge.Ultrapolis
+        };
+        public static List<string> Overhauls = new List<string>()
+        {
+            cChallenge.AnCapistan,
+            cChallenge.PoliceState
         };
         public static List<string> Population = new List<string>()
         {
@@ -310,6 +319,13 @@ namespace BunnyMod.Content
             Worker = "Worker",
             Wrestler = "Wrestler",
             Zombie = "Zombie";
+
+        public static List<string> LawEnforcement = new List<string>()
+        {
+            vAgent.Cop,
+            vAgent.CopBot,
+            vAgent.SuperCop,
+        };
     }
     public static class vAgentGoal // Vanilla Agent Goals
 	{
@@ -903,12 +919,34 @@ namespace BunnyMod.Content
             TVStation = "TVStation",
             Zoo = "Zoo";
 
-        public static List<string> PoliceState = new List<string>()
+        public static List<string> AnCapistanAlwaysAllowed = new List<string>()
+        {
+            vChunkType.DrugDen,
+            vChunkType.GatedCommunity,
+            vChunkType.Prison,
+            vChunkType.Shack,
+            vChunkType.SlaveShop,
+        };
+        public static List<string> AnCapistanProhibited = new List<string>()
+        {
+            vChunkType.ConfiscationCenter,
+            vChunkType.CityPark,
+            vChunkType.DeportationCenter,
+            vChunkType.PoliceOutpost,
+            vChunkType.PoliceStation,
+        };
+        public static List<string> PoliceStateAlwaysAllowed = new List<string>()
         {
             vChunkType.ConfiscationCenter,
             vChunkType.DeportationCenter,
+            vChunkType.MilitaryOutpost,
             vChunkType.PoliceOutpost,
-            vChunkType.PoliceStation
+            vChunkType.PoliceStation,
+            vChunkType.Prison,
+        };
+        public static List<string> PoliceStateProhibited = new List<string>()
+        {
+            vChunkType.DrugDen,
         };
     }
     public static class vColor // Vanilla Colors
@@ -1415,6 +1453,17 @@ namespace BunnyMod.Content
             TimeLimitQuestsGiveMoreTime = "TimeLimitQuestsGiveMoreTime",
             ZombieMutator = "ZombieMutator",
             ZombiesWelcome = "ZombiesWelcome";
+
+        public static List<string> LawEnforcement = new List<string>()
+        {
+            vChallenge.NoCops,
+            vChallenge.SupercopLand,
+        };
+        public static List<string> Zombies = new List<string>()
+        {
+            vChallenge.ZombieMutator,
+            vChallenge.ZombiesWelcome,
+        };
     }
     public static class vObject // Vanilla Objects
 	{

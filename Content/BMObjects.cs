@@ -43,7 +43,15 @@ namespace BunnyMod.Content
             Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
             Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
 
-            // Objects
+
+
+            // Alarm Button
+            // DetermineButtons
+            // DoLockDown
+            // EndLockdown
+            // Interact
+            // PressedButton
+            // SpawnEnforcer
 
             // Bathtub
             Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
@@ -55,6 +63,16 @@ namespace BunnyMod.Content
             Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
             Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
             Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
+
+            // Elevator
+            // DetermineButtons
+            // Interact
+            // PressedButton
+
+            // Fire Hydrant
+            // DetermineButtons
+            // Interact
+            // PressedButton
 
             // Flaming Barrel
             Postfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
@@ -111,6 +129,11 @@ namespace BunnyMod.Content
 
             // Television
             //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
+
+            // Toilet
+            // DetermineButtons
+            // Interact
+            // PressedButton
 
             // Window
             Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
@@ -566,6 +589,14 @@ namespace BunnyMod.Content
         }
         #endregion
 
+        #region Alarm Button
+        // DetermineButtons
+        // DoLockDown
+        // EndLockdown
+        // Interact
+        // PressedButton
+        // SpawnEnforcer
+        #endregion
         #region Bathtub
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
@@ -957,6 +988,17 @@ namespace BunnyMod.Content
 
             return false;
         }
+        #endregion
+        #region Elevator
+        // DetermineButtons
+        // Interact
+        // PressedButton
+        #endregion
+        #region Fire Hydrant
+        // Fire Hydrant
+        // DetermineButtons
+        // Interact
+        // PressedButton
         #endregion
         #region FlamingBarrel
         public static void FlamingBarrel_GrilledFud(FlamingBarrel __instance) // Non-patch
@@ -1479,9 +1521,12 @@ namespace BunnyMod.Content
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
-        #endregion
-        #region SlotMachine
-        public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
+		#endregion
+		#region SecurityCam
+        // If PoliceState, alert if any Guilty detected
+		#endregion
+		#region SlotMachine
+		public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
             determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -1803,6 +1848,11 @@ namespace BunnyMod.Content
         public static void Television_SetVars(Television __instance) // Postfix
         {
         }
+        #endregion
+        #region Toilet
+        // DetermineButtons
+        // Interact
+        // PressedButton
         #endregion
         #region Window
         public static void Window_DetermineButtons(Window __instance) // Postfix

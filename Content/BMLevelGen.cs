@@ -33,9 +33,9 @@ namespace BunnyMod.Content
 			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks", new Type[0] { });
-			Prefix(typeof(LoadLevel), "FillMapChunks2", GetType(), "LoadLevel_FillMapChunks2", new Type[0] { });
-			Prefix(typeof(LoadLevel), "LoadStuff2", GetType(), "LoadLevel_LoadStuff2", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillMapChunks2", GetType(), "LoadLevel_FillMapChunks2_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "LoadStuff2", GetType(), "LoadLevel_LoadStuff2_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
@@ -234,6 +234,100 @@ namespace BunnyMod.Content
 
 			return vanilla;
 		}
+		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
+		{
+			BMLog("LoadLevel_CanUseChunk");
+
+			List<Agent> spawnedAgentList = new List<Agent>();
+			//playerAgent.gangStalking = Agent.gangCount;
+			Vector2 pos = Vector2.zero;
+
+			numberToSpawn = (int)((float)numberToSpawn * __instance.levelSizeModifier);
+
+			for (int i = 0; i < numberToSpawn; i++)
+			{
+				if (i % splitIntoGroupSize == 0)
+					Agent.gangCount++; // Splits spawn into groups
+
+				Vector2 vector = Vector2.zero;
+				int attempts = 0;
+
+				if (i == 0)
+				{
+					do
+					{
+						vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
+						attempts++;
+					}
+					while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
+
+					pos = vector;
+				}
+				else
+					vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
+
+				if (vector != Vector2.zero && attempts < 300)
+				{
+					Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
+					agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
+					agent.gang = Agent.gangCount;
+					agent.modLeashes = 0;
+
+					if (agentType == vAgent.Ghost)
+						agent.alwaysRun = true;
+
+					agent.wontFlee = true;
+					agent.agentActive = true;
+					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
+					//agent.oma.mustBeGuilty = true;
+					spawnedAgentList.Add(agent);
+
+					if (spawnedAgentList.Count > 1)
+						for (int j = 0; j < spawnedAgentList.Count; j++)
+							if (spawnedAgentList[j] != agent)
+							{
+								agent.relationships.SetRelInitial(spawnedAgentList[j], "Aligned");
+								spawnedAgentList[j].relationships.SetRelInitial(agent, "Aligned");
+							}
+
+					if (aligned)
+					{
+						agent.relationships.SetRel(playerAgent, "Aligned");
+						playerAgent.relationships.SetRel(agent, "Aligned");
+					}
+					else
+					{
+						agent.relationships.SetRel(playerAgent, "Hateful");
+						playerAgent.relationships.SetRel(agent, "Hateful");
+						agent.relationships.SetRelHate(playerAgent, 5);
+						playerAgent.relationships.SetRelHate(agent, 5);
+					}
+
+					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
+						invItem.ItemSetup(false);
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
+					}
+					else if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
+						invItem.ItemSetup(false);
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.HardHat;
+					}
+
+					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
+				}
+			}
+		}
 		#endregion
 
 		#region BasicSpawn
@@ -242,6 +336,8 @@ namespace BunnyMod.Content
 		#region LoadLevel
 		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, bool __result) // Prefix
 		{
+			BMLog("LoadLevel_CanUseChunk");
+
 			Chunk chunk = null;
 			string type;
 
@@ -254,9 +350,12 @@ namespace BunnyMod.Content
 			}
 			
 			int chunkTypeLimitCounter = 0;
-			
+
 			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
+			{
+				__result = false;
 				return false;
+			}
 			
 			if (GC.basicSpawns)
 				using (List<ChunkData>.Enumerator enumerator = __instance.usedChunksThisLevelBasic.GetEnumerator())
@@ -266,9 +365,12 @@ namespace BunnyMod.Content
 
 						if (type == chunkData.description && checkSessionData)
 							chunkTypeLimitCounter++;
-						
+
 						if (type != "Generic" && type != "Lake" && myChunkBasic == chunkData)
+						{
+							__result = false;
 							return false;
+						}
 					}
 
 			foreach (GameObject gameObject in __instance.usedChunksThisLevel)
@@ -277,24 +379,31 @@ namespace BunnyMod.Content
 
 				if (type == component.description && checkSessionData)
 					chunkTypeLimitCounter++;
-				
+
 				if (type != "Generic" && type != "Lake" && chunk == component)
+				{
+					__result = false;
 					return false;
+				}
 			}
 
 			if (GC.challenges.Contains(cChallenge.PoliceState))
 			{
 				if (vChunkType.PoliceStateAlwaysAllowed.Contains(type))
-					return true;
+					__result = true;
 				if (vChunkType.PoliceStateProhibited.Contains(type))
-					return false;
+					__result = false;
+
+				return false;
 			}
 			else if (GC.challenges.Contains(cChallenge.AnCapistan))
 			{
 				if (vChunkType.AnCapistanAlwaysAllowed.Contains(type))
-					return true;
+					__result = true;
 				if (vChunkType.AnCapistanProhibited.Contains(type))
-					return false;
+					__result = false;
+
+				return false;
 			}
 
 			if (GC.levelTheme == 0)
@@ -305,16 +414,28 @@ namespace BunnyMod.Content
 						return false;
 					
 					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
+					{
+						__result = false;
 						return false;
+					}
 					
 					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Lab"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop"))
+					{
+						__result = false;
 						return false;
+					}
 				}
 			}
 			else if (GC.levelTheme == 1)
@@ -322,32 +443,56 @@ namespace BunnyMod.Content
 				if (type != "Generic")
 				{
 					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Hideout" || type == "Factory" || type == "Lab"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop" || type == "FireStation"))
+					{
+						__result = false;
 						return false;
+					}
 				}
 			}
 			else if (GC.levelTheme == 2)
 			{
 				if (type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Cave" || type == "Cabin" || type == "Farm" || type == "Greenhouse"))
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "MilitaryOutpost")
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "HedgeMaze" || type == "Hideout" || type == "Graveyard"))
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkShape >= 0 && chunkShape <= 4)
 				{
 					bool flag = false;
@@ -357,7 +502,10 @@ namespace BunnyMod.Content
 							flag = true;
 					
 					if (flag && type != "Generic" && type != "Lake")
+					{
+						__result = false;
 						return false;
+					}
 				}
 
 				if (chunkShape == 5 || chunkShape == 6)
@@ -367,49 +515,78 @@ namespace BunnyMod.Content
 						string a = GC.rnd.RandomSelect("Level3ChunkHuge", "RandomScenarios");
 				
 						if (type == "Hideout" && a == "NotHideout")
+						{
+							__result = false;
 							return false;
-						
+						}
+
 						if (type != "Hideout" && a == "Hideout")
+						{
+							__result = false;
 							return false;
+						}
 					}
 
-					return type == "Hideout" || type == "Graveyard" || type == "MilitaryOutpost" || type == "Cabin" || type == "Greenhouse" || type == "Cave" || type == "Farm" || type == "HedgeMaze";
+					__result = type == "Hideout" || type == "Graveyard" || type == "MilitaryOutpost" || type == "Cabin" || type == "Greenhouse" || type == "Cave" || type == "Farm" || type == "HedgeMaze";
+					{
+						__result = false;
+						return false;
+					}
 				}
 
 				if (chunkShape == 1 || chunkShape == 2 || chunkShape == 3)
-					return true;
-				
-				if (!(type == "Generic") && !(type == "Lake") && !(type == "Hideout") && !(type == "MilitaryOutpost") && !(type == "Cabin") && !(type == "Greenhouse") && !(type == "Cave") && !(type == "Farm") && !(type == "HedgeMaze") && !(type == "Shop") && !(type == "Bathroom") && !(type == "Graveyard"))
+				{
+					__result = true;
 					return false;
+				}
+
+				if (!(type == "Generic") && !(type == "Lake") && !(type == "Hideout") && !(type == "MilitaryOutpost") && !(type == "Cabin") && !(type == "Greenhouse") && !(type == "Cave") && !(type == "Farm") && !(type == "HedgeMaze") && !(type == "Shop") && !(type == "Bathroom") && !(type == "Graveyard"))
+				{
+					__result = false;
+					return false;
+				}
 				
 				if (type == "Lake")
 				{
-					bool flag2 = false;
+					bool canLakeSpawn = false;
 				
 					for (int j = 0; j < __instance.levelChunks.Count; j++)
 						if ((__instance.levelChunks[j].description == "Lake" || __instance.levelChunks[j].description == "Island") && Vector2.Distance(__instance.levelChunks[j].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
-							flag2 = true;
+							canLakeSpawn = true;
 					
-					return !flag2;
+					__result = !canLakeSpawn;
 				}
 
-				return true;
+				__result = true;
+				return false;
 			}
 			else if (GC.levelTheme == 3)
 			{
 				if (type != "Generic")
 				{
 					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Hospital" || type == "Bank" || type == "TVStation" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
+					{
+						__result = false;
 						return false;
+					}
 					
 					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "Temp")
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Bar" || type == "Casino" || type == "Hotel"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "PoliceStation" || type == "Shop" || type == "SlaveShop" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "IceRink" || type == "MovieTheater" || type == "Church" || type == "CityPark" || type == "Mall" || type == "FireStation"))
+					{
+						__result = false;
 						return false;
+					}
 				}
 			}
 			else if (GC.levelTheme == 4)
@@ -417,37 +594,63 @@ namespace BunnyMod.Content
 				if (type != "Generic")
 				{
 					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Farm" || type == "Shack" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Bar" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "DanceClub" || type == "Hotel" || type == "Hideout" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (5 * LevelSizeMod(30)) && type == "HouseUptown")
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "PoliceOutpost")
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "MusicHall" || type == "GatedCommunity" || type == "PrivateClub" || type == "Bathroom"))
+					{
+						__result = false;
 						return false;
-					
+					}
+
 					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Graveyard" || type == "Hideout" || type == "Shop" || type == "SlaveShop" || type == "IceRink" || type == "TVStation" || type == "Church" || type == "CityPark" || type == "Mall" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "DeportationCenter" || type == "PoliceStation" || type == "ConfiscationCenter" || type == "Pit" || type == "FireStation"))
+					{
+						__result = false;
 						return false;
+					}
 				}
 			}
 			else if (GC.levelTheme == 5 && type != "Generic")
 			{
 				if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "Hotel" || type == "Hideout" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "Bathroom" || type == "SlaveShop" || type == "TVStation" || type == "CityPark" || type == "Hideout" || type == "IceRink" || type == "Mall" || type == "Mansion" || type == "PoliceStation" || type == "Graveyard")
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "HouseUptown")
+				{
+					__result = false;
 					return false;
-				
+				}
+
 				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Shop" || type == "Church" || type == "Bathhouse" || type == "Zoo" || type == "PoliceStation" || type == "Pit" || type == "FireStation" || type == "DanceClub" || type == "Bar" || type == "MusicHall" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse" || type == "PoliceOutpost" || type == "Hospital" || type == "Shop" || type == "PrivateClub" || type == "Bathroom"))
+				{
+					__result = false;
 					return false;
+				}
 			}
 
 			return false;
 		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
+			BMLog("LoadLevel_CreateInitialMap");
+
 			__instance.levelSizeMax = 30;
 			__instance.levelSizeAxis = 10;
 
@@ -1407,6 +1610,8 @@ namespace BunnyMod.Content
 		}
 		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2) // Prefix
 		{
+			BMLog("LoadLevel_FillFloors_Prefix");
+
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
 			__result = LoadLevel_FillFloors_Replacement(__instance, ___tilemapFloors2);
 
@@ -1414,6 +1619,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Replacement
 		{
+			BMLog("LoadLevel_FillFloors_Replacement");
+
 			float maxChunkTime = 0.02f;
 			float realtimeSinceStartup = Time.realtimeSinceStartup;
 			int triesCount = 0;
@@ -1478,6 +1685,8 @@ namespace BunnyMod.Content
 		}
 		public static bool LoadLevel_FillMapChunks_Prefix (LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref List<GameObject> ___chunkList, ref List<ChunkData> ___chunkListBasic, ref List<ChunkData> ___chunkListBasicBackup) // Prefix
 		{
+			BMLog("LoadLevel_FillMapChunks_Prefix");
+
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
 			__result = LoadLevel_FillMapChunks_Replacement(__instance, ___tilemapFloors2, ___tilemapWalls, ___chunkList, ___chunkListBasic, ___chunkListBasicBackup);
 
@@ -1485,6 +1694,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List<ChunkData> ___chunkListBasicBackup) // Replacement
 		{
+			BMLog("LoadLevel_FillMapChunks_Replacement");
+
 			float maxChunkTime = 0.02f;
 			float realtimeSinceStartup = Time.realtimeSinceStartup;
 			int triesCount = 0;
@@ -1633,6 +1844,8 @@ namespace BunnyMod.Content
 		}
 		public static bool LoadLevel_FillMapChunks2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasic, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
+			BMLog("LoadLevel_FillMapChunks2_Prefix");
+
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
 			__result = LoadLevel_FillMapChunks2_Replacement(__instance, ___chunkList, ___chunkListBasic, ___chunkListBasicBackup);
 
@@ -1640,6 +1853,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_FillMapChunks2_Replacement(LoadLevel __instance, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List <ChunkData> ___chunkListBasicBackup) // Replacement
 		{
+			BMLog("LoadLevel_FillMapChunks2_Replacement");
+
 			int longChunks = 0;
 			int hugeChunks = 0;
 			int longTries = 0;
@@ -3398,6 +3613,8 @@ namespace BunnyMod.Content
 		}
 		public static bool LoadLevel_LoadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
+			BMLog("LoadLevel_LoadStuff2_Prefix");
+
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
 			__result = LoadLevel_LoadStuff2_Replacement(__instance, ___chunkListBasic, ___tilemapFloors, ___tilemapFloors2, ___tilemapWalls, ___placedKey1, ___placedKey2, ___placedKey3, ___chunkList, ___chunkListBasicBackup);
 
@@ -3405,6 +3622,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_LoadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
+			BMLog("LoadLevel_LoadStuff2_Replacement");
+
 			Debug.Log("LoadStuff2");
 			__instance.startedLoadStuff2 = true;
 
@@ -4879,6 +5098,8 @@ namespace BunnyMod.Content
 		}
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Replacement
 		{
+			BMLog("LoadLevel_SetupMore3_3_Prefix");
+
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
 			__result = LoadLevel_SetupMore3_3_Prefix_Replacement(__instance, ___tilemapFloors4, ___minimap);
 
@@ -4886,6 +5107,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_SetupMore3_3_Prefix_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors4, Minimap ___minimap) // Non-Patch
 		{
+			BMLog("LoadLevel_SetupMore3_3_Prefix_Replacement");
+
 			Random.InitState(__instance.randomSeedNum);
 			float maxChunkTime = 0.02f;
 			float chunkStartTime = Time.realtimeSinceStartup;
@@ -8991,6 +9214,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
 		{
+			BMLog("LoadLevel_SetupMore3_3_Postfix");
+
 			while (__result.MoveNext())
 				yield return __result.Current;
 
@@ -9003,127 +9228,40 @@ namespace BunnyMod.Content
 				if (agent.isPlayer > 0)
 				{
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
+						SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
 
 					if (level >= 10)
 					{
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
+							SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
 						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
-							LoadLevel_SetupMore3_3_SpawnHitSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
+							SpawnRoamerSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
 					}
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
+						SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
+						SpawnRoamerSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
 					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						LoadLevel_SetupMore3_3_SpawnHitSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
-				}
-			}
-		}
-		public static void LoadLevel_SetupMore3_3_SpawnHitSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
-		{
-			List<Agent> spawnedAgentList = new List<Agent>();
-			//playerAgent.gangStalking = Agent.gangCount;
-			Vector2 pos = Vector2.zero;
-
-			numberToSpawn = (int)((float)numberToSpawn * __instance.levelSizeModifier);
-
-			for (int i = 0; i < numberToSpawn; i++)
-			{
-				if (i % splitIntoGroupSize == 0)
-					Agent.gangCount++; // Splits spawn into groups
-
-				Vector2 vector = Vector2.zero;
-				int attempts = 0;
-
-				if (i == 0)
-				{
-					do
-					{
-						vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
-						attempts++;
-					}
-					while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
-
-					pos = vector;
-				}
-				else
-					vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
-
-				if (vector != Vector2.zero && attempts < 300)
-				{
-					Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
-					agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
-					agent.gang = Agent.gangCount;
-					agent.modLeashes = 0;
-
-					if (agentType == vAgent.Ghost)
-						agent.alwaysRun = true;
-
-					agent.wontFlee = true;
-					agent.agentActive = true;
-					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-					//agent.oma.mustBeGuilty = true;
-					spawnedAgentList.Add(agent);
-
-					if (spawnedAgentList.Count > 1)
-						for (int j = 0; j < spawnedAgentList.Count; j++)
-							if (spawnedAgentList[j] != agent)
-							{
-								agent.relationships.SetRelInitial(spawnedAgentList[j], "Aligned");
-								spawnedAgentList[j].relationships.SetRelInitial(agent, "Aligned");
-							}
-
-					if (aligned)
-					{
-						agent.relationships.SetRel(playerAgent, "Aligned");
-						playerAgent.relationships.SetRel(agent, "Aligned");
-					}
-					else
-					{
-						agent.relationships.SetRel(playerAgent, "Hateful");
-						playerAgent.relationships.SetRel(agent, "Hateful");
-						agent.relationships.SetRelHate(playerAgent, 5);
-						playerAgent.relationships.SetRelHate(agent, 5);
-					}
-
-					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
-					{
-						InvItem invItem = new InvItem();
-						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
-						invItem.ItemSetup(false);
-						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
-						agent.inventory.equippedWeapon = invItem;
-
-						agent.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
-					}
-					else if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
-					{
-						InvItem invItem = new InvItem();
-						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
-						invItem.ItemSetup(false);
-						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
-						agent.inventory.equippedWeapon = invItem;
-
-						agent.inventory.startingHeadPiece = vArmorHead.HardHat;
-					}
-
-					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
+						SpawnRoamerSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
 				}
 			}
 		}
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
+			BMLog("LoadLevel_SetupMore5_2");
+
 			BMAbilities.baseTimeScale = GameController.gameController.selectedTimeScale;
 		}
 		#endregion
 		#region RandomWalls
 		public static bool RandomWalls_fillWalls() // Replacement
 		{
-			string wallType = GetWallTypeFromMutator();
+			string wallType = null;
+
+			if (IsWallModActive())
+				wallType = GetWallTypeFromMutator();
 
 			if (wallType == null)
 				return true;

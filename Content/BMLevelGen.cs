@@ -242,30 +242,194 @@ namespace BunnyMod.Content
 		#region LoadLevel
 		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, bool __result) // Prefix
 		{
-			// TODO: Do a full replacement here. There are too many edge cases to just do a simple prefix.
+			Chunk chunk = null;
+			string description;
 
-			if (GC.challenges.Contains(cChallenge.PoliceState))
+			if (GC.basicSpawns)
+				description = myChunkBasic.description;
+			else
 			{
-				string description;
+				chunk = myChunkGo.GetComponent<Chunk>();
+				description = chunk.description;
+			}
+			
+			int num = 0;
+			
+			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
+				return false;
+			
+			if (GC.basicSpawns)
+				using (List<ChunkData>.Enumerator enumerator = __instance.usedChunksThisLevelBasic.GetEnumerator())
+					while (enumerator.MoveNext())
+					{
+						ChunkData chunkData = enumerator.Current;
 
-				if (GC.basicSpawns)
-				{
-					description = myChunkBasic.description;
-				}
-				else
-				{
-					Chunk chunk = myChunkGo.GetComponent<Chunk>();
-					description = chunk.description;
-				}
+						if (description == chunkData.description && checkSessionData)
+							num++;
+						
+						if (description != "Generic" && description != "Lake" && myChunkBasic == chunkData)
+							return false;
+					}
 
-				if (vChunkType.PoliceState.Contains(description))
-				{
-					__result = true;
+			foreach (GameObject gameObject in __instance.usedChunksThisLevel)
+			{
+				Chunk component = gameObject.GetComponent<Chunk>();
+
+				if (description == component.description && checkSessionData)
+					num++;
+				
+				if (description != "Generic" && description != "Lake" && chunk == component)
 					return false;
-				}
 			}
 
-			return true;
+			if (GC.levelTheme == 0)
+			{
+				if (description != "Generic")
+				{
+					if (GC.sessionDataBig.curLevelEndless == 1 && description == "PoliceStation")
+						return false;
+					
+					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "FireStation" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+						return false;
+					
+					if (num >= 3 && (description == "Apartments" || description == "DrugDen" || description == "House" || description == "OfficeBuilding" || description == "Shack"))
+						return false;
+					
+					if (num >= 2 && (description == "Armory" || description == "Bar" || description == "Casino" || description == "Lab"))
+						return false;
+					
+					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hideout" || description == "Hospital" || description == "PoliceStation" || description == "Prison" || description == "Shop" || description == "SlaveShop"))
+						return false;
+				}
+			}
+			else if (GC.levelTheme == 1)
+			{
+				if (description != "Generic")
+				{
+					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+						return false;
+					
+					if (num >= 3 && (description == "Apartments" || description == "DrugDen" || description == "House" || description == "OfficeBuilding" || description == "Shack"))
+						return false;
+					
+					if (num >= 2 && (description == "Armory" || description == "Bar" || description == "Casino" || description == "Hideout" || description == "Factory" || description == "Lab"))
+						return false;
+					
+					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hospital" || description == "PoliceStation" || description == "Prison" || description == "Shop" || description == "SlaveShop" || description == "FireStation"))
+						return false;
+				}
+			}
+			else if (GC.levelTheme == 2)
+			{
+				if (description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "Hotel" || description == "IceRink" || description == "Mall" || description == "MovieTheater" || description == "TVStation" || description == "CityPark" || description == "Church" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "FireStation" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+					return false;
+				
+				if (num >= 3 && (description == "Cave" || description == "Cabin" || description == "Farm" || description == "Greenhouse"))
+					return false;
+				
+				if (num >= 2 && description == "MilitaryOutpost")
+					return false;
+				
+				if (num >= 1 && (description == "HedgeMaze" || description == "Hideout" || description == "Graveyard"))
+					return false;
+				
+				if (chunkShape >= 0 && chunkShape <= 4)
+				{
+					bool flag = false;
+				
+					for (int i = 0; i < __instance.levelChunks.Count; i++)
+						if (__instance.levelChunks[i].description != "Generic" && __instance.levelChunks[i].description != "Lake" && Vector2.Distance(__instance.levelChunks[i].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
+							flag = true;
+					
+					if (flag && description != "Generic" && description != "Lake")
+						return false;
+				}
+
+				if (chunkShape == 5 || chunkShape == 6)
+				{
+					if (chunkShape == 6)
+					{
+						string a = GC.rnd.RandomSelect("Level3ChunkHuge", "RandomScenarios");
+				
+						if (description == "Hideout" && a == "NotHideout")
+							return false;
+						
+						if (description != "Hideout" && a == "Hideout")
+							return false;
+					}
+
+					return description == "Hideout" || description == "Graveyard" || description == "MilitaryOutpost" || description == "Cabin" || description == "Greenhouse" || description == "Cave" || description == "Farm" || description == "HedgeMaze";
+				}
+
+				if (chunkShape == 1 || chunkShape == 2 || chunkShape == 3)
+					return true;
+				
+				if (!(description == "Generic") && !(description == "Lake") && !(description == "Hideout") && !(description == "MilitaryOutpost") && !(description == "Cabin") && !(description == "Greenhouse") && !(description == "Cave") && !(description == "Farm") && !(description == "HedgeMaze") && !(description == "Shop") && !(description == "Bathroom") && !(description == "Graveyard"))
+					return false;
+				
+				if (description == "Lake")
+				{
+					bool flag2 = false;
+				
+					for (int j = 0; j < __instance.levelChunks.Count; j++)
+						if ((__instance.levelChunks[j].description == "Lake" || __instance.levelChunks[j].description == "Island") && Vector2.Distance(__instance.levelChunks[j].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
+							flag2 = true;
+					
+					return !flag2;
+				}
+
+				return true;
+			}
+			else if (GC.levelTheme == 3)
+			{
+				if (description != "Generic")
+				{
+					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Shack" || description == "Lab" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Hospital" || description == "Bank" || description == "TVStation" || description == "GatedCommunity" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "PrivateClub" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "PoliceOutpost" || description == "HouseUptown" || description == "Pit" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+						return false;
+					
+					if (num >= 3 && description == "Temp")
+						return false;
+					
+					if (num >= 2 && (description == "Bar" || description == "Casino" || description == "Hotel"))
+						return false;
+					
+					if (num >= 1 && (description == "Bank" || description == "Bathroom" || description == "Graveyard" || description == "Hideout" || description == "PoliceStation" || description == "Shop" || description == "SlaveShop" || description == "Arena" || description == "DanceClub" || description == "MusicHall" || description == "Arcade" || description == "IceRink" || description == "MovieTheater" || description == "Church" || description == "CityPark" || description == "Mall" || description == "FireStation"))
+						return false;
+				}
+			}
+			else if (GC.levelTheme == 4)
+			{
+				if (description != "Generic")
+				{
+					if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Farm" || description == "Shack" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Casino" || description == "Bar" || description == "Arcade" || description == "MovieTheater" || description == "Arena" || description == "DanceClub" || description == "Hotel" || description == "Hideout" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse")
+						return false;
+					
+					if (num >= 5 && description == "HouseUptown")
+						return false;
+					
+					if (num >= 3 && description == "PoliceOutpost")
+						return false;
+					
+					if (num >= 2 && (description == "MusicHall" || description == "GatedCommunity" || description == "PrivateClub" || description == "Bathroom"))
+						return false;
+					
+					if (num >= 1 && !__instance.squareMap && (description == "Bank" || description == "Graveyard" || description == "Hideout" || description == "Shop" || description == "SlaveShop" || description == "IceRink" || description == "TVStation" || description == "Church" || description == "CityPark" || description == "Mall" || description == "Mansion" || description == "Bathhouse" || description == "Zoo" || description == "DeportationCenter" || description == "PoliceStation" || description == "ConfiscationCenter" || description == "Pit" || description == "FireStation"))
+						return false;
+				}
+			}
+			else if (GC.levelTheme == 5 && description != "Generic")
+			{
+				if (description == "Island" || description == "Lake" || description == "Cabin" || description == "HedgeMaze" || description == "MilitaryOutpost" || description == "Cave" || description == "Greenhouse" || description == "Farm" || description == "Shack" || description == "Lab" || description == "Prison" || description == "Armory" || description == "Apartments" || description == "OfficeBuilding" || description == "DrugDen" || description == "House" || description == "Casino" || description == "Arcade" || description == "MovieTheater" || description == "Arena" || description == "Hotel" || description == "Hideout" || description == "ConfiscationCenter" || description == "DeportationCenter" || description == "Bathroom" || description == "SlaveShop" || description == "TVStation" || description == "CityPark" || description == "Hideout" || description == "IceRink" || description == "Mall" || description == "Mansion" || description == "PoliceStation" || description == "Graveyard")
+					return false;
+				
+				if (num >= 2 && description == "HouseUptown")
+					return false;
+				
+				if (num >= 1 && !__instance.squareMap && (description == "Bank" || description == "Shop" || description == "Church" || description == "Bathhouse" || description == "Zoo" || description == "PoliceStation" || description == "Pit" || description == "FireStation" || description == "DanceClub" || description == "Bar" || description == "MusicHall" || description == "PodiumPark" || description == "MayorOffice" || description == "MayorHouse" || description == "PoliceOutpost" || description == "Hospital" || description == "Shop" || description == "PrivateClub" || description == "Bathroom"))
+					return false;
+			}
+
+			return false;
 		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
@@ -3805,11 +3969,11 @@ namespace BunnyMod.Content
 			Random.InitState(__instance.randomSeedNum);
 			GC.findFloorName();
 			Debug.Log("RANDOM NUMBER 1.4: " + Random.Range(0, 1000));
-			
-			//for (int num10 = 0; num10 < __instance.levelSizeAxis; num10++)
-			//	for (int num11 = 0; num11 < __instance.levelSizeAxis; num11++)
-			//		int chunkID = __instance.mapChunkArray[num10, num11].chunkID;
-			
+
+			for (int num10 = 0; num10 < __instance.levelSizeAxis; num10++)
+				for (int num11 = 0; num11 < __instance.levelSizeAxis; num11++)
+					_ = __instance.mapChunkArray[num10, num11].chunkID;
+
 			Debug.Log("RANDOM NUMBER 1.5: " + Random.Range(0, 1000));
 			
 			if (GC.basicSpawns)
@@ -3854,11 +4018,10 @@ namespace BunnyMod.Content
 				}
 			}
 
-			// Will not compile
-			//if (__instance.LevelContainsMayor())
-			//	for (int num12 = 0; num12 < GC.sessionData.bigQuestsCompleted.Count; num12++)
-			//		GC.sessionData.bigQuestsCompleted[num12] == "Gangbanger";
-			
+			if (__instance.LevelContainsMayor())
+				for (int num12 = 0; num12 < GC.sessionData.bigQuestsCompleted.Count; num12++)
+					_ = GC.sessionData.bigQuestsCompleted[num12] == "Gangbanger";
+
 			Random.InitState(__instance.randomSeedNum);
 			Debug.Log("RANDOM NUMBER 2: " + Random.Range(0, 1000));
 			int wallSpawners = 0;
@@ -3911,7 +4074,7 @@ namespace BunnyMod.Content
 					}
 
 					myObjectVar = null;
-					//entry2 = default(KeyValuePair<string, ObjectVar>);
+					//entry2 = default(KeyValuePair<string, ObjectVar>); // TODO
 				}
 
 				Dictionary<string, ObjectVar>.Enumerator enumerator4 = default(Dictionary<string, ObjectVar>.Enumerator);

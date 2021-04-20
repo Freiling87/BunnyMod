@@ -31,7 +31,7 @@ namespace BunnyMod.Content
 			#region Features
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Features: Police State"),
-				new CustomNameInfo(""));
+				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
 			PoliceState.Available = true;
 			PoliceState.Conflicting.AddRange(new string[] { vChallenge.SupercopLand, vChallenge.NoCops });
 			PoliceState.IsActive = false;

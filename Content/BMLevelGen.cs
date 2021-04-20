@@ -1470,36 +1470,35 @@ namespace BunnyMod.Content
 			float maxChunkTime = 0.02f;
 			float realtimeSinceStartup = Time.realtimeSinceStartup;
 			Random.InitState(__instance.randomSeedNum);
+
 			while (!__instance.allChunksFilled)
 			{
 				int num = triesCount;
 				triesCount = num + 1;
-				if (triesCount > 50)
-				{
-					bool useOnlyChunkPackChunks = GC.sessionDataBig.useOnlyChunkPackChunks;
-				}
+			
 				__instance.allChunksFilled = true;
+				
 				for (int i = 0; i < __instance.levelSizeAxis; i++)
-				{
 					for (int j = 0; j < __instance.levelSizeAxis; j++)
 					{
 						MapChunk mapChunk = __instance.mapChunkArray[i, j];
+
 						if (mapChunk.chunkID != 0 && !mapChunk.filled && (!GC.customLevel || GC.customRandomLevel || mapChunk.chunkMainTile))
-						{
 							__instance.allChunksFilled = false;
-						}
 					}
-				}
+
 				if (!__instance.allChunksFilled)
 				{
 					int num2 = Random.Range(0, __instance.levelSizeAxis);
 					int num3 = Random.Range(0, __instance.levelSizeAxis);
+
 					if (!__instance.mapChunkArray[num2, num3].filled)
 					{
 						MapChunk mapChunk2 = __instance.mapChunkArray[num2, num3];
 						MapChunk mapChunk3 = null;
 						MapChunk mapChunk4 = null;
 						MapChunk mapChunk5 = null;
+
 						if (mapChunk2.chunkID != 0 && !mapChunk2.filled && (!GC.customLevel || GC.customRandomLevel || mapChunk2.chunkMainTile))
 						{
 							mapChunk2.filled = true;
@@ -1520,26 +1519,22 @@ namespace BunnyMod.Content
 							int num12 = 0;
 							int num13 = 0;
 							int num14 = 0;
+
 							if (mapChunk2.customLevelChunk || mapChunk2.randomTile)
 							{
 								if (mapChunk2.chunkShape == 5 || mapChunk2.chunkShape == 6)
 								{
 									num13 = 1;
+
 									if (mapChunk2.chunkShape == 5)
 									{
 										if (mapChunk2.chunkRotate == 0)
-										{
 											num14 = 1;
-										}
 										else if (mapChunk2.chunkRotate == 1)
-										{
 											num14 = 2;
-										}
 									}
 									else if (mapChunk2.chunkShape == 6)
-									{
 										num14 = 4;
-									}
 								}
 							}
 							else if (mapChunk2.special == "" && mapChunk2.functionType == "")
@@ -1554,56 +1549,35 @@ namespace BunnyMod.Content
 								else if ((longChunks == 0 || (GC.levelTheme == 3 && longChunks < 2) || (GC.levelTheme == 4 && longChunks < 4) || (GC.levelTheme == 5 && longChunks < 2)) && longTries < 50)
 								{
 									num13 = 1;
-									num14 = GC.Choose<int>(0, 1, new int[]
-									{
-								2,
-								3
-									});
+									num14 = GC.Choose<int>(0, 1, 2, 3);
 									num = longTries;
 									longTries = num + 1;
 								}
 								else if (longChunks >= 3 && hugeChunks >= 2)
-								{
 									num13 = 0;
-								}
 								else
 								{
-									num13 = GC.Choose<int>(0, 0, new int[]
-									{
-								0,
-								1
-									});
+									num13 = GC.Choose<int>(0, 0, 0, 1);
+
 									if (longChunks < 3 && hugeChunks < 2)
-									{
-										num14 = GC.Choose<int>(0, 1, new int[]
-										{
-									2,
-									3,
-									4
-										});
-									}
+										num14 = GC.Choose<int>(0, 1, 2, 3, 4);
 									else if (longChunks < 3 && hugeChunks >= 2)
-									{
-										num14 = GC.Choose<int>(0, 1, new int[]
-										{
-									2,
-									3
-										});
-									}
+										num14 = GC.Choose<int>(0, 1, 2, 3);
 									else if (longChunks >= 3 && hugeChunks < 2)
-									{
 										num14 = 4;
-									}
 								}
 							}
+
 							float num15 = 0f;
 							float num16 = 0f;
 							bool flag = false;
+
 							if (num13 == 1 && ((num2 > 0 && num3 > 0 && num2 < __instance.levelSizeAxis - 1 && num3 < __instance.levelSizeAxis - 1 && mapChunk2.special == "") || mapChunk2.customLevelChunk || mapChunk2.randomTile))
 							{
 								if (num14 == 0)
 								{
 									mapChunk3 = __instance.mapChunkArray[num2, num3 + 1];
+
 									if ((mapChunk2.exitS && !mapChunk3.filled && mapChunk3.special == "" && mapChunk3.functionType == "" && mapChunk2.sector == mapChunk3.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
 									{
 										num7 = num2;
@@ -1612,6 +1586,7 @@ namespace BunnyMod.Content
 										__instance.SetMultiChunkID(mapChunk3.chunkID, mapChunk2.chunkID);
 										mapChunk3.chunkID = mapChunk2.chunkID;
 										num4 = 5;
+
 										if (mapChunk2.customLevelChunk)
 										{
 											text = mapChunk2.chunkDirX;
@@ -1624,9 +1599,11 @@ namespace BunnyMod.Content
 											text2 = GC.Choose<string>("Normal", "Reverse");
 											num5 = 0;
 										}
+
 										num6 = 1;
 										num15 = 0f;
 										num16 = -__instance.halfChunkSize;
+
 										if (GC.levelShape == 0)
 										{
 											mapChunk3.exitN = true;
@@ -1634,6 +1611,7 @@ namespace BunnyMod.Content
 											mapChunk3.exitE = true;
 											mapChunk3.exitW = true;
 										}
+
 										mapChunk2.blockedS = true;
 										mapChunk3.blockedN = true;
 										num = longChunks;
@@ -1644,6 +1622,7 @@ namespace BunnyMod.Content
 								else if (num14 == 1)
 								{
 									mapChunk3 = __instance.mapChunkArray[num2, num3 - 1];
+
 									if ((mapChunk2.exitN && !mapChunk3.filled && mapChunk3.special == "" && mapChunk3.functionType == "" && mapChunk2.sector == mapChunk3.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
 									{
 										num7 = num2;
@@ -1652,6 +1631,7 @@ namespace BunnyMod.Content
 										__instance.SetMultiChunkID(mapChunk3.chunkID, mapChunk2.chunkID);
 										mapChunk3.chunkID = mapChunk2.chunkID;
 										num4 = 5;
+
 										if (mapChunk2.customLevelChunk)
 										{
 											text = mapChunk2.chunkDirX;
@@ -1664,9 +1644,11 @@ namespace BunnyMod.Content
 											text2 = GC.Choose<string>("Normal", "Reverse");
 											num5 = 0;
 										}
+
 										num6 = 1;
 										num15 = 0f;
 										num16 = __instance.halfChunkSize;
+
 										if (GC.levelShape == 0)
 										{
 											mapChunk3.exitN = true;
@@ -1674,6 +1656,7 @@ namespace BunnyMod.Content
 											mapChunk3.exitE = true;
 											mapChunk3.exitW = true;
 										}
+
 										mapChunk2.blockedN = true;
 										mapChunk3.blockedS = true;
 										num = longChunks;
@@ -1684,6 +1667,7 @@ namespace BunnyMod.Content
 								else if (num14 == 2)
 								{
 									mapChunk3 = __instance.mapChunkArray[num2 + 1, num3];
+
 									if ((mapChunk2.exitE && !mapChunk3.filled && mapChunk3.special == "" && mapChunk3.functionType == "" && mapChunk2.sector == mapChunk3.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
 									{
 										num7 = num2 + 1;
@@ -1692,6 +1676,7 @@ namespace BunnyMod.Content
 										__instance.SetMultiChunkID(mapChunk3.chunkID, mapChunk2.chunkID);
 										mapChunk3.chunkID = mapChunk2.chunkID;
 										num4 = 5;
+
 										if (mapChunk2.customLevelChunk)
 										{
 											text = mapChunk2.chunkDirX;
@@ -1704,9 +1689,11 @@ namespace BunnyMod.Content
 											text2 = GC.Choose<string>("Normal", "Reverse");
 											num5 = 1;
 										}
+
 										num6 = 1;
 										num15 = __instance.halfChunkSize;
 										num16 = 0f;
+
 										if (GC.levelShape == 0)
 										{
 											mapChunk3.exitN = true;
@@ -1714,6 +1701,7 @@ namespace BunnyMod.Content
 											mapChunk3.exitE = true;
 											mapChunk3.exitW = true;
 										}
+
 										mapChunk2.blockedE = true;
 										mapChunk3.blockedW = true;
 										num = longChunks;
@@ -1724,6 +1712,7 @@ namespace BunnyMod.Content
 								else if (num14 == 3)
 								{
 									mapChunk3 = __instance.mapChunkArray[num2 - 1, num3];
+
 									if ((mapChunk2.exitW && !mapChunk3.filled && mapChunk3.special == "" && mapChunk3.functionType == "" && mapChunk2.sector == mapChunk3.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
 									{
 										num7 = num2 - 1;
@@ -1732,6 +1721,7 @@ namespace BunnyMod.Content
 										__instance.SetMultiChunkID(mapChunk3.chunkID, mapChunk2.chunkID);
 										mapChunk3.chunkID = mapChunk2.chunkID;
 										num4 = 5;
+
 										if (mapChunk2.customLevelChunk)
 										{
 											text = mapChunk2.chunkDirX;
@@ -1744,9 +1734,11 @@ namespace BunnyMod.Content
 											text2 = GC.Choose<string>("Normal", "Reverse");
 											num5 = 1;
 										}
+
 										num6 = 1;
 										num15 = -__instance.halfChunkSize;
 										num16 = 0f;
+
 										if (GC.levelShape == 0)
 										{
 											mapChunk3.exitN = true;
@@ -1754,6 +1746,7 @@ namespace BunnyMod.Content
 											mapChunk3.exitE = true;
 											mapChunk3.exitW = true;
 										}
+
 										mapChunk2.blockedW = true;
 										mapChunk3.blockedE = true;
 										num = longChunks;
@@ -1775,7 +1768,15 @@ namespace BunnyMod.Content
 										mapChunk4 = __instance.mapChunkArray[num2, num3 + 1];
 										mapChunk5 = __instance.mapChunkArray[num2 + 1, num3 + 1];
 									}
-									if ((mapChunk2.exitS && !mapChunk3.filled && mapChunk3.special == "" && mapChunk3.functionType == "" && mapChunk2.sector == mapChunk3.sector && !mapChunk4.filled && mapChunk4.special == "" && mapChunk4.functionType == "" && mapChunk2.sector == mapChunk4.sector && !mapChunk5.filled && mapChunk5.special == "" && mapChunk5.functionType == "" && mapChunk2.sector == mapChunk5.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
+									if ((mapChunk2.exitS && !mapChunk3.filled && mapChunk3.special == "" && 
+										mapChunk3.functionType == "" && 
+										mapChunk2.sector == mapChunk3.sector && 
+										!mapChunk4.filled && mapChunk4.special == "" && 
+										mapChunk4.functionType == "" && 
+										mapChunk2.sector == mapChunk4.sector && 
+										!mapChunk5.filled && mapChunk5.special == "" && 
+										mapChunk5.functionType == "" && 
+										mapChunk2.sector == mapChunk5.sector) || mapChunk2.customLevelChunk || mapChunk2.randomTile)
 									{
 										if (mapChunk2.customLevelChunk || mapChunk2.randomTile)
 										{
@@ -1795,6 +1796,7 @@ namespace BunnyMod.Content
 											num11 = num2 + 1;
 											num12 = num3 + 1;
 										}
+
 										__instance.SetMultiChunkID(mapChunk3.chunkID, mapChunk2.chunkID);
 										__instance.SetMultiChunkID(mapChunk4.chunkID, mapChunk2.chunkID);
 										__instance.SetMultiChunkID(mapChunk5.chunkID, mapChunk2.chunkID);
@@ -1805,6 +1807,7 @@ namespace BunnyMod.Content
 										mapChunk5.filled = true;
 										mapChunk5.chunkID = mapChunk2.chunkID;
 										num4 = 6;
+
 										if (mapChunk2.customLevelChunk)
 										{
 											text = mapChunk2.chunkDirX;
@@ -1817,16 +1820,15 @@ namespace BunnyMod.Content
 											text2 = GC.Choose<string>("Normal", "Reverse");
 											num5 = GC.Choose<int>(0, 1);
 										}
+
 										num6 = 1;
 										num15 = __instance.halfChunkSize;
+
 										if (mapChunk2.customLevelChunk || mapChunk2.randomTile)
-										{
 											num16 = __instance.halfChunkSize;
-										}
 										else
-										{
 											num16 = -__instance.halfChunkSize;
-										}
+										
 										if (GC.levelShape == 0)
 										{
 											mapChunk3.exitN = true;
@@ -1853,6 +1855,7 @@ namespace BunnyMod.Content
 											mapChunk5.exitN = true;
 											mapChunk5.exitW = true;
 										}
+
 										mapChunk2.blockedS = true;
 										mapChunk2.blockedE = true;
 										mapChunk3.blockedS = true;
@@ -1866,10 +1869,9 @@ namespace BunnyMod.Content
 										flag = true;
 									}
 								}
+
 								if (num6 == 0)
-								{
 									num13 = 0;
-								}
 								else if (GC.levelShape == 0)
 								{
 									mapChunk2.exitN = true;
@@ -1878,10 +1880,9 @@ namespace BunnyMod.Content
 									mapChunk2.exitW = true;
 								}
 							}
+
 							if (!flag && num13 != 0)
-							{
 								mapChunk2.filled = false;
-							}
 							else
 							{
 								if (num13 == 0)
@@ -1903,25 +1904,15 @@ namespace BunnyMod.Content
 									else if (!exitN && exitS && exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 1;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Normal";
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitN = true;
@@ -1932,25 +1923,15 @@ namespace BunnyMod.Content
 									else if (exitN && !exitS && exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 1;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Reverse";
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitS = true;
@@ -1961,26 +1942,16 @@ namespace BunnyMod.Content
 									else if (exitN && exitS && !exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 1;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Reverse";
 										num5 = 1;
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitE = true;
@@ -1991,26 +1962,16 @@ namespace BunnyMod.Content
 									else if (exitN && exitS && exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 1;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
+
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Normal";
 										num5 = 1;
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitW = true;
@@ -2021,23 +1982,16 @@ namespace BunnyMod.Content
 									else if (!exitN && !exitS && exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 2;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
 											num4 = 0;
-										}
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Normal";
 										num5 = 1;
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitN = true;
@@ -2049,25 +2003,15 @@ namespace BunnyMod.Content
 									else if (exitN && exitS && !exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 2;
-										}
 										else if (__instance.squareMap)
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										1
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 1);
 										else
-										{
-											num4 = GC.Choose<int>(0, 0, new int[]
-											{
-										2
-											});
-										}
+											num4 = GC.Choose<int>(0, 0, 2);
+
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = GC.Choose<string>("Normal", "Reverse");
+
 										if (num4 == 0)
 										{
 											mapChunk2.exitE = true;
@@ -2078,23 +2022,15 @@ namespace BunnyMod.Content
 									else if (!exitN && exitS && exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 3;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(0, 1, new int[]
-											{
-										3,
-										3
-											});
-										}
+											num4 = GC.Choose<int>(0, 1, 3, 3);
+										
 										text = "Normal";
 										text2 = "Normal";
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitN = true;
@@ -2112,23 +2048,15 @@ namespace BunnyMod.Content
 									else if (!exitN && exitS && !exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 3;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(0, 1, new int[]
-											{
-										3,
-										3
-											});
-										}
+											num4 = GC.Choose<int>(0, 1, 3, 3);
+										
 										text = "Reverse";
 										text2 = "Normal";
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitN = true;
@@ -2146,23 +2074,15 @@ namespace BunnyMod.Content
 									else if (exitN && !exitS && exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 3;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(0, 1, new int[]
-											{
-										3,
-										3
-											});
-										}
+											num4 = GC.Choose<int>(0, 1, 3, 3);
+
 										text = "Normal";
 										text2 = "Reverse";
+
 										if (num4 == 0)
 										{
 											mapChunk2.exitS = true;
@@ -2180,23 +2100,15 @@ namespace BunnyMod.Content
 									else if (exitN && !exitS && !exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 3;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(0, 1, new int[]
-											{
-										3,
-										3
-											});
-										}
+											num4 = GC.Choose<int>(0, 1, 3, 3);
+										
 										text = "Reverse";
 										text2 = "Reverse";
+										
 										if (num4 == 0)
 										{
 											mapChunk2.exitS = true;
@@ -2214,25 +2126,15 @@ namespace BunnyMod.Content
 									else if (!exitN && exitS && !exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 4;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(1, 2, new int[]
-											{
-										2,
-										3,
-										4,
-										4
-											});
-										}
+											num4 = GC.Choose<int>(1, 2, 2, 3, 4, 4);
+
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Normal";
+
 										if (num4 == 1)
 										{
 											mapChunk2.exitE = true;
@@ -2246,37 +2148,23 @@ namespace BunnyMod.Content
 										else if (num4 == 3)
 										{
 											if (text == "Normal")
-											{
 												mapChunk2.exitE = true;
-											}
 											else if (text == "Reverse")
-											{
 												mapChunk2.exitW = true;
-											}
 										}
 									}
 									else if (exitN && !exitS && !exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 4;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(1, 2, new int[]
-											{
-										2,
-										3,
-										4,
-										4
-											});
-										}
+											num4 = GC.Choose<int>(1, 2, 2, 3, 4, 4);
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Reverse";
+										
 										if (num4 == 1)
 										{
 											mapChunk2.exitE = true;
@@ -2290,38 +2178,24 @@ namespace BunnyMod.Content
 										else if (num4 == 3)
 										{
 											if (text == "Normal")
-											{
 												mapChunk2.exitE = true;
-											}
 											else if (text == "Reverse")
-											{
 												mapChunk2.exitW = true;
-											}
 										}
 									}
 									else if (!exitN && !exitS && exitE && !exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 4;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(1, 2, new int[]
-											{
-										2,
-										3,
-										4,
-										4
-											});
-										}
+											num4 = GC.Choose<int>(1, 2, 2, 3, 4, 4);
+
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Normal";
 										num5 = 1;
+										
 										if (num4 == 1)
 										{
 											mapChunk2.exitN = true;
@@ -2335,38 +2209,24 @@ namespace BunnyMod.Content
 										else if (num4 == 3)
 										{
 											if (text2 == "Normal")
-											{
 												mapChunk2.exitS = true;
-											}
 											else if (text2 == "Reverse")
-											{
 												mapChunk2.exitN = true;
-											}
 										}
 									}
 									else if (!exitN && !exitS && !exitE && exitW)
 									{
 										if (GC.levelShape == 2)
-										{
 											num4 = 4;
-										}
 										else if (__instance.squareMap)
-										{
 											num4 = 0;
-										}
 										else
-										{
-											num4 = GC.Choose<int>(1, 2, new int[]
-											{
-										2,
-										3,
-										4,
-										4
-											});
-										}
+											num4 = GC.Choose<int>(1, 2, 2, 3, 4, 4);
+										
 										text = GC.Choose<string>("Normal", "Reverse");
 										text2 = "Reverse";
 										num5 = 1;
+
 										if (num4 == 1)
 										{
 											mapChunk2.exitN = true;
@@ -2380,26 +2240,20 @@ namespace BunnyMod.Content
 										else if (num4 == 3)
 										{
 											if (text2 == "Normal")
-											{
 												mapChunk2.exitS = true;
-											}
 											else if (text2 == "Reverse")
-											{
 												mapChunk2.exitN = true;
-											}
 										}
 									}
 								}
+
 								if (mapChunk2.special == "LevelStart")
 								{
 									if (__instance.LevelContainsMayor())
-									{
 										num4 = 21;
-									}
 									else
-									{
 										num4 = 10;
-									}
+									
 									mapChunk2.exitN = true;
 									mapChunk2.exitS = false;
 									mapChunk2.exitE = false;
@@ -2485,29 +2339,22 @@ namespace BunnyMod.Content
 								if (GC.levelTheme == 2)
 								{
 									if (num4 >= 1 && num4 <= 4)
-									{
 										num4 = 0;
-									}
 								}
 								else if (GC.levelTheme == 3)
 								{
 									if (num3 < 9)
 									{
 										if (__instance.mapChunkArray[num2, num3 + 1].special.Contains("Canal") && __instance.mapChunkArray[num2, num3].special == "")
-										{
 											num4 = 0;
-										}
 									}
 									else if (num3 > 0 && __instance.mapChunkArray[num2, num3 - 1].special.Contains("Canal") && __instance.mapChunkArray[num2, num3].special == "")
-									{
 										num4 = 0;
-									}
+								
 									if (num2 < 9)
 									{
 										if (__instance.mapChunkArray[num2 + 1, num3].special.Contains("Canal") && __instance.mapChunkArray[num2, num3].special == "")
-										{
 											num4 = 0;
-										}
 									}
 									else if (num2 > 0 && __instance.mapChunkArray[num2 - 1, num3].special.Contains("Canal") && __instance.mapChunkArray[num2, num3].special == "")
 									{
@@ -2517,20 +2364,17 @@ namespace BunnyMod.Content
 								else if (GC.levelTheme == 4)
 								{
 									if (num4 >= 1 && num4 <= 4)
-									{
 										num4 = 0;
-									}
 								}
 								else if (GC.levelTheme == 5 && num4 >= 1 && num4 <= 4)
-								{
 									num4 = 0;
-								}
+								
 								GameObject gameObject = null;
 								ChunkData chunkData = null;
+								
 								if (GC.basicSpawns)
-								{
 									chunkData = ___chunkListBasic[0];
-								}
+								
 								bool flag2 = false;
 								bool flag3 = false;
 								Vector3 vector = new Vector2(__instance.chunkSize * (float)num2 - __instance.halfTileSize + __instance.halfChunkSize + num15, -__instance.chunkSize * (float)num3 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize + num16);
@@ -2540,37 +2384,37 @@ namespace BunnyMod.Content
 								bool flag6 = false;
 								bool flag7 = false;
 								bool flag8 = false;
+
 								while (!flag2)
 								{
 									List<ChunkData> list = ___chunkListBasic;
+
 									if (num17 > 50 && GC.sessionDataBig.useOnlyChunkPackChunks)
-									{
 										list = ___chunkListBasicBackup;
-									}
+									
 									if (mapChunk2.customLevelChunk)
 									{
 										bool flag9 = false;
+									
 										foreach (ChunkData chunkData2 in list)
-										{
 											if (chunkData2.chunkName == mapChunk2.chunkName)
 											{
 												chunkData = chunkData2;
 												flag9 = true;
+										
 												break;
 											}
-										}
+										
 										if (!flag9)
-										{
 											foreach (ChunkData chunkData3 in __instance.customLevel.chunkList)
-											{
 												if (chunkData3.chunkName == mapChunk2.chunkName)
 												{
 													chunkData = chunkData3;
 													flag9 = true;
+
 													break;
 												}
-											}
-										}
+										
 										flag2 = true;
 									}
 									else if (GC.customLevel && !GC.customRandomLevel && !mapChunk2.customLevelChunk && !mapChunk2.randomTile)
@@ -2583,19 +2427,18 @@ namespace BunnyMod.Content
 										int num18 = Random.Range(0, list.Count);
 										ChunkData chunkData4 = list[num18];
 										bool flag10 = false;
+
 										if (GC.levelTheme == 4)
 										{
 											if (!__instance.placedDeportationCenter && !flag4 && !flag10)
 											{
 												flag4 = true;
 												List<ChunkData> list2 = new List<ChunkData>();
+										
 												for (int k = 0; k < list.Count; k++)
-												{
 													if (list[k].description == "DeportationCenter" && num4 == list[k].shape)
-													{
 														list2.Add(list[k]);
-													}
-												}
+												
 												if (list2.Count > 0)
 												{
 													chunkData4 = list2[Random.Range(0, list2.Count)];
@@ -2606,13 +2449,11 @@ namespace BunnyMod.Content
 											{
 												flag5 = true;
 												List<ChunkData> list3 = new List<ChunkData>();
+
 												for (int l = 0; l < list.Count; l++)
-												{
 													if (list[l].description == "ConfiscationCenter" && num4 == list[l].shape)
-													{
 														list3.Add(list[l]);
-													}
-												}
+												
 												if (list3.Count > 0)
 												{
 													chunkData4 = list3[Random.Range(0, list3.Count)];
@@ -2626,53 +2467,50 @@ namespace BunnyMod.Content
 											{
 												flag6 = true;
 												List<ChunkData> list4 = new List<ChunkData>();
+
 												for (int m = 0; m < list.Count; m++)
-												{
 													if (list[m].description == "PodiumPark" && num4 == list[m].shape)
 													{
 														list4.Add(list[m]);
 														text = "Normal";
 														text2 = "Normal";
+
 														if (num4 == 0 || num4 == 6)
-														{
 															num5 = 0;
-														}
 													}
-												}
+												
 												if (list4.Count > 0)
 												{
 													chunkData4 = list4[Random.Range(0, list4.Count)];
 													flag10 = true;
 												}
 											}
+
 											if (!__instance.placedMayorOffice && __instance.LevelContainsMayor() && !flag7 && !flag10)
 											{
 												flag7 = true;
 												List<ChunkData> list5 = new List<ChunkData>();
+
 												for (int n = 0; n < list.Count; n++)
-												{
 													if (list[n].description == "MayorOffice" && num4 == list[n].shape)
-													{
 														list5.Add(list[n]);
-													}
-												}
+												
 												if (list5.Count > 0)
 												{
 													chunkData4 = list5[Random.Range(0, list5.Count)];
 													flag10 = true;
 												}
 											}
+
 											if (!__instance.placedMayorHouse && __instance.LevelContainsMayor() && !flag8 && !flag10)
 											{
 												flag8 = true;
 												List<ChunkData> list6 = new List<ChunkData>();
+
 												for (int num19 = 0; num19 < list.Count; num19++)
-												{
 													if (list[num19].description == "MayorHouse" && num4 == list[num19].shape)
-													{
 														list6.Add(list[num19]);
-													}
-												}
+												
 												if (list6.Count > 0)
 												{
 													chunkData4 = list6[Random.Range(0, list6.Count)];
@@ -2680,66 +2518,51 @@ namespace BunnyMod.Content
 												}
 											}
 										}
+										
 										if (flag10)
-										{
 											flag2 = true;
-										}
 										else if (chunkData4 == null)
-										{
 											flag2 = false;
-										}
 										else if (num17 < 500 && chunkData4.shape == num4 && __instance.CanUseChunk(null, chunkData4, true, num18, num4, vector) && chunkData4.functionType == mapChunk2.functionType)
-										{
 											flag2 = true;
-										}
 										else if (num17 >= 500 && chunkData4.shape == num4 && __instance.CanUseChunk(null, chunkData4, false, num18, num4, vector) && chunkData4.functionType == mapChunk2.functionType)
-										{
 											flag2 = true;
-										}
+										
 										if (flag2)
 										{
 											chunkData = chunkData4;
+										
 											if (!GC.sessionData.usedChunks.Contains(num18))
-											{
 												GC.sessionData.usedChunks.Add(num18);
-											}
+											
 											__instance.usedChunksThisLevelBasic.Add(chunkData);
 										}
+
 										num17++;
 									}
 									else
 									{
 										int num20 = Random.Range(0, ___chunkList.Count);
 										GameObject gameObject2 = ___chunkList[num20];
+
 										if (GC.levelTheme == 4)
 										{
 											if (num4 == 0 && !__instance.placedDeportationCenter)
 											{
 												for (int num21 = 0; num21 < ___chunkList.Count; num21++)
-												{
 													if (___chunkList[num21].GetComponent<Chunk>().description == "DeportationCenter")
-													{
 														gameObject2 = ___chunkList[num21];
-													}
-												}
 											}
 											else if (num4 == 0 && !__instance.placedConfiscationCenter)
-											{
 												for (int num22 = 0; num22 < ___chunkList.Count; num22++)
-												{
 													if (___chunkList[num22].GetComponent<Chunk>().description == "ConfiscationCenter")
-													{
 														gameObject2 = ___chunkList[num22];
-													}
-												}
-											}
 										}
 										else if (GC.levelTheme == 5)
 										{
 											if (num4 == 0 && !__instance.placedPodiumPark && __instance.LevelContainsMayor())
 											{
 												for (int num23 = 0; num23 < ___chunkList.Count; num23++)
-												{
 													if (___chunkList[num23].GetComponent<Chunk>().description == "PodiumPark")
 													{
 														gameObject2 = ___chunkList[num23];
@@ -2747,58 +2570,47 @@ namespace BunnyMod.Content
 														text2 = "Normal";
 														num5 = 0;
 													}
-												}
 											}
 											else if (num4 == 6 && !__instance.placedMayorOffice && __instance.LevelContainsMayor())
 											{
 												for (int num24 = 0; num24 < ___chunkList.Count; num24++)
-												{
 													if (___chunkList[num24].GetComponent<Chunk>().description == "MayorOffice")
-													{
 														gameObject2 = ___chunkList[num24];
-													}
-												}
 											}
 											else if (num4 == 6 && !__instance.placedMayorHouse && __instance.LevelContainsMayor())
-											{
 												for (int num25 = 0; num25 < ___chunkList.Count; num25++)
-												{
 													if (___chunkList[num25].GetComponent<Chunk>().description == "MayorHouse")
-													{
 														gameObject2 = ___chunkList[num25];
-													}
-												}
-											}
 										}
+
 										Chunk component = gameObject2.GetComponent<Chunk>();
+
 										if (gameObject2 == null)
-										{
 											flag2 = false;
-										}
 										else if (num17 < 500 && component.shape == num4 && __instance.CanUseChunk(gameObject2.gameObject, null, true, num20, num4, vector) && component.functionType == mapChunk2.functionType)
-										{
 											flag2 = true;
-										}
 										else if (num17 >= 500 && component.shape == num4 && __instance.CanUseChunk(gameObject2.gameObject, null, false, num20, num4, vector) && component.functionType == mapChunk2.functionType)
-										{
 											flag2 = true;
-										}
+										
 										if (flag2)
 										{
 											gameObject = gameObject2;
+										
 											if (!GC.sessionData.usedChunks.Contains(num20))
-											{
 												GC.sessionData.usedChunks.Add(num20);
-											}
+											
 											__instance.usedChunksThisLevel.Add(gameObject);
 										}
+
 										num17++;
 									}
 								}
+
 								if (!flag3)
 								{
 									GameObject gameObject3 = null;
 									Chunk chunk;
+
 									if (GC.basicSpawns)
 									{
 										gameObject3 = Object.Instantiate<GameObject>(GC.readChunks.chunkPrefab, __instance.transform.position, __instance.transform.rotation);
@@ -2808,21 +2620,21 @@ namespace BunnyMod.Content
 										component2.description = chunkData.description;
 										component2.functionType = chunkData.functionType;
 										component2.spawnerList = chunkData.spawnerList;
+
 										try
 										{
 											component2.userCreated = chunkData.userCreated;
 										}
-										catch
-										{
-										}
+										catch { }
+
 										try
 										{
 											component2.customCharacterList = chunkData.customCharacterList;
 										}
-										catch
-										{
-										}
+										catch { }
+										
 										chunk = component2;
+
 										for (int num26 = 0; num26 < component2.spawnerList.Count; num26++)
 										{
 											SpawnerBasic spawnerBasic = new SpawnerBasic();
@@ -2843,38 +2655,33 @@ namespace BunnyMod.Content
 										chunk = gameObject.GetComponent<Chunk>();
 										gameObject3 = Object.Instantiate<GameObject>(gameObject, __instance.transform.position, __instance.transform.rotation);
 									}
+
 									Vector3 position = gameObject3.transform.position;
-									Vector2 v = new Vector2(position.x + __instance.chunkSize * (float)num2 - __instance.halfTileSize + __instance.halfChunkSize, position.y - __instance.chunkSize * (float)num3 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
-									Vector2 v2 = new Vector2(position.x + __instance.chunkSize * (float)num7 - __instance.halfTileSize + __instance.halfChunkSize, position.y - __instance.chunkSize * (float)num8 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
-									Vector2 v3 = new Vector2(position.x + __instance.chunkSize * (float)num9 - __instance.halfTileSize + __instance.halfChunkSize, position.y - __instance.chunkSize * (float)num10 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
-									Vector2 v4 = new Vector2(position.x + __instance.chunkSize * (float)num11 - __instance.halfTileSize + __instance.halfChunkSize, position.y - __instance.chunkSize * (float)num12 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
+									Vector2 v = new Vector2(
+										position.x + __instance.chunkSize * (float)num2 - __instance.halfTileSize + __instance.halfChunkSize, 
+										position.y - __instance.chunkSize * (float)num3 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
+									Vector2 v2 = new Vector2(
+										position.x + __instance.chunkSize * (float)num7 - __instance.halfTileSize + __instance.halfChunkSize, 
+										position.y - __instance.chunkSize * (float)num8 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
+									Vector2 v3 = new Vector2(
+										position.x + __instance.chunkSize * (float)num9 - __instance.halfTileSize + __instance.halfChunkSize, 
+										position.y - __instance.chunkSize * (float)num10 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
+									Vector2 v4 = new Vector2(
+										position.x + __instance.chunkSize * (float)num11 - __instance.halfTileSize + __instance.halfChunkSize, 
+										position.y - __instance.chunkSize * (float)num12 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize);
 									gameObject3.transform.position = vector;
-									gameObject3.name = string.Concat(new object[]
-									{
-								gameObject3.name,
-								".",
-								num2,
-								".",
-								num3,
-								" (",
-								mapChunk2.chunkID,
-								") ",
-								mapChunk2.special,
-								" | ",
-								chunk.functionType,
-								" | ",
-								chunk.description
-									});
+									gameObject3.name = string.Concat(new object[] { gameObject3.name, ".", num2, ".", num3, " (", mapChunk2.chunkID, ") ", mapChunk2.special, " | ", chunk.functionType, " | ", chunk.description });
 									gameObject3.transform.SetParent(GC.chunksNest.transform);
 									gameObject3.transform.localScale = new Vector3(0.01f, 0.01f, 1f);
+
 									foreach (object obj in gameObject3.transform)
 									{
 										Transform transform = (Transform)obj;
+
 										if (transform.GetComponent<Scenario>())
-										{
 											transform.gameObject.SetActive(true);
-										}
 									}
+
 									Chunk component3 = gameObject3.GetComponent<Chunk>();
 									Transform transform2 = gameObject3.transform;
 									Vector3 position2 = transform2.position;
@@ -2884,10 +2691,10 @@ namespace BunnyMod.Content
 									component3.chunkX = num2;
 									component3.chunkY = num3;
 									component3.chunkPos = gameObject3.transform.position;
+
 									if (GC.customLevel)
-									{
 										component3.specificQuest = mapChunk2.specificQuest;
-									}
+									
 									if (num13 == 0)
 									{
 										component3.chunkLeash1 = Object.Instantiate<GameObject>(GC.chunkLeashPrefab, position2, Quaternion.identity, transform2);
@@ -2908,24 +2715,29 @@ namespace BunnyMod.Content
 										component3.chunkLeash4 = Object.Instantiate<GameObject>(GC.chunkLeashPrefab, new Vector2(position2.x - __instance.halfChunkSize, position2.y - __instance.halfChunkSize), Quaternion.identity, transform2);
 										component3.chunkSize = "Huge";
 									}
+									
 									if (num5 == 1)
 									{
 										gameObject3.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
 										component3.chunkRotate = num5;
 									}
+						
 									if (text == "Reverse")
 									{
 										gameObject3.transform.localScale = new Vector3(-0.01f, 0.01f, 1f);
 										component3.chunkDirX = text;
 									}
+									
 									if (text2 == "Reverse")
 									{
 										gameObject3.transform.localScale = new Vector3(gameObject3.transform.localScale.x, -0.01f, 1f);
 										component3.chunkDirY = text2;
 									}
+									
 									if (GC.levelShape == 2)
 									{
 										bool flag11 = num13 != 0 || GC.percentChance(30);
+
 										if (flag11)
 										{
 											if (!mapChunk2.exitN)
@@ -2939,6 +2751,7 @@ namespace BunnyMod.Content
 												gameObject5.transform.position = new Vector2(gameObject5.transform.position.x, gameObject5.transform.position.y + 4.8f);
 												__instance.mapChunkArray[num2, num3].doorN = true;
 											}
+										
 											if (num13 != 0)
 											{
 												if (!mapChunk3.exitN)
@@ -2952,6 +2765,7 @@ namespace BunnyMod.Content
 													gameObject7.transform.position = new Vector2(gameObject7.transform.position.x, gameObject7.transform.position.y + 4.8f);
 													__instance.mapChunkArray[num7, num8].doorN = true;
 												}
+
 												if (num14 == 4)
 												{
 													if (!mapChunk4.exitN)
@@ -2965,6 +2779,7 @@ namespace BunnyMod.Content
 														gameObject9.transform.position = new Vector2(gameObject9.transform.position.x, gameObject9.transform.position.y + 4.8f);
 														__instance.mapChunkArray[num9, num10].doorN = true;
 													}
+
 													if (!mapChunk5.exitN)
 													{
 														GameObject gameObject10 = __instance.CreateSingleWall("WallHorizontal", gameObject3, v4);
@@ -2979,7 +2794,9 @@ namespace BunnyMod.Content
 												}
 											}
 										}
+
 										flag11 = (num13 != 0 || GC.percentChance(30));
+
 										if (flag11)
 										{
 											if (!mapChunk2.exitS)
@@ -2993,6 +2810,7 @@ namespace BunnyMod.Content
 												gameObject13.transform.position = new Vector2(gameObject13.transform.position.x, gameObject13.transform.position.y - 4.8f);
 												__instance.mapChunkArray[num2, num3].doorS = true;
 											}
+
 											if (num13 != 0)
 											{
 												if (!mapChunk3.exitS)
@@ -3006,6 +2824,7 @@ namespace BunnyMod.Content
 													gameObject15.transform.position = new Vector2(gameObject15.transform.position.x, gameObject15.transform.position.y - 4.8f);
 													__instance.mapChunkArray[num7, num8].doorS = true;
 												}
+
 												if (num14 == 4)
 												{
 													if (!mapChunk4.exitS)
@@ -3033,7 +2852,9 @@ namespace BunnyMod.Content
 												}
 											}
 										}
+
 										flag11 = (num13 != 0 || GC.percentChance(30));
+
 										if (flag11)
 										{
 											if (!mapChunk2.exitE)
@@ -3047,6 +2868,7 @@ namespace BunnyMod.Content
 												gameObject21.transform.position = new Vector2(gameObject21.transform.position.x + 4.8f, gameObject21.transform.position.y);
 												__instance.mapChunkArray[num2, num3].doorE = true;
 											}
+
 											if (num13 != 0)
 											{
 												if (!mapChunk3.exitE)
@@ -3060,6 +2882,7 @@ namespace BunnyMod.Content
 													gameObject23.transform.position = new Vector2(gameObject23.transform.position.x + 4.8f, gameObject23.transform.position.y);
 													__instance.mapChunkArray[num7, num8].doorE = true;
 												}
+
 												if (num14 == 4)
 												{
 													if (!mapChunk4.exitE)
@@ -3073,6 +2896,7 @@ namespace BunnyMod.Content
 														gameObject25.transform.position = new Vector2(gameObject25.transform.position.x + 4.8f, gameObject25.transform.position.y);
 														__instance.mapChunkArray[num9, num10].doorE = true;
 													}
+
 													if (!mapChunk5.exitE)
 													{
 														GameObject gameObject26 = __instance.CreateSingleWall("WallVertical", gameObject3, v4);
@@ -3087,7 +2911,9 @@ namespace BunnyMod.Content
 												}
 											}
 										}
+
 										flag11 = (num13 != 0 || GC.percentChance(30));
+
 										if (flag11)
 										{
 											if (!mapChunk2.exitW)
@@ -3101,6 +2927,7 @@ namespace BunnyMod.Content
 												gameObject29.transform.position = new Vector2(gameObject29.transform.position.x - 4.8f, gameObject29.transform.position.y);
 												__instance.mapChunkArray[num2, num3].doorW = true;
 											}
+
 											if (num13 != 0)
 											{
 												if (!mapChunk3.exitW)
@@ -3114,6 +2941,7 @@ namespace BunnyMod.Content
 													gameObject31.transform.position = new Vector2(gameObject31.transform.position.x - 4.8f, gameObject31.transform.position.y);
 													__instance.mapChunkArray[num7, num8].doorW = true;
 												}
+
 												if (num14 == 4)
 												{
 													if (!mapChunk4.exitW)
@@ -3127,6 +2955,7 @@ namespace BunnyMod.Content
 														gameObject33.transform.position = new Vector2(gameObject33.transform.position.x - 4.8f, gameObject33.transform.position.y);
 														__instance.mapChunkArray[num9, num10].doorW = true;
 													}
+
 													if (!mapChunk5.exitW)
 													{
 														GameObject gameObject34 = __instance.CreateSingleWall("WallVertical", gameObject3, v4);
@@ -3142,23 +2971,23 @@ namespace BunnyMod.Content
 											}
 										}
 									}
+
 									component3.chunkLeash1Tr = component3.chunkLeash1.transform.position;
+
 									if (component3.chunkLeash2 != null)
-									{
 										component3.chunkLeash2Tr = component3.chunkLeash2.transform.position;
-									}
+									
 									if (component3.chunkLeash3 != null)
-									{
 										component3.chunkLeash3Tr = component3.chunkLeash3.transform.position;
-									}
+									
 									if (component3.chunkLeash4 != null)
-									{
 										component3.chunkLeash4Tr = component3.chunkLeash4.transform.position;
-									}
+									
 									component3.chunkEdgeN = component3.chunkPos.y;
 									component3.chunkEdgeS = component3.chunkPos.y;
 									component3.chunkEdgeE = component3.chunkPos.x;
 									component3.chunkEdgeW = component3.chunkPos.x;
+									
 									if (component3.shape < 5)
 									{
 										component3.chunkEdgeN += 5.12f;
@@ -3187,77 +3016,58 @@ namespace BunnyMod.Content
 										component3.chunkEdgeE += 10.24f;
 										component3.chunkEdgeW -= 10.24f;
 									}
+
 									if (GC.levelTheme == 4)
 									{
 										if (component3.description == "DeportationCenter")
-										{
 											__instance.placedDeportationCenter = true;
-										}
 										else if (component3.description == "ConfiscationCenter")
-										{
 											__instance.placedConfiscationCenter = true;
-										}
 									}
 									else if (GC.levelTheme == 5)
 									{
 										if (component3.description == "PodiumPark")
-										{
 											__instance.placedPodiumPark = true;
-										}
 										else if (component3.description == "MayorOffice")
-										{
 											__instance.placedMayorOffice = true;
-										}
 										else if (component3.description == "MayorHouse")
-										{
 											__instance.placedMayorHouse = true;
-										}
 									}
+
 									if (questsAdded < maxQuests && component3.description != "Generic" && component3.description != "Graveyard" && component3.description != "Bathroom")
 									{
 										int num27 = 0;
+
 										if (GC.debugMode && GC.sessionDataBig.curLevelEndless <= 3 && GC.levelTheme > 0)
-										{
 											num27 = GC.levelTheme * 3;
-										}
+										
 										int num29;
+										
 										if (GC.serverPlayer)
 										{
 											int num28 = GC.sessionDataBig.curLevelEndless;
+										
 											if (GC.customLevel && __instance.customLevel.levelDifficulty != 0)
-											{
 												num28 = __instance.customLevel.levelDifficulty;
-											}
+											
 											num29 = num28 + num27 + __instance.FindExtraPlayers();
+											
 											if (num29 > 10)
-											{
 												num29 = 10;
-											}
+											
 											__instance.clientDifficulty = num29;
 										}
 										else
-										{
 											num29 = __instance.clientDifficulty;
-										}
-										string text3 = GC.rnd.RandomSelect(string.Concat(new object[]
-										{
-									"ScenarioDifficultyLevel",
-									num29,
-									"Quest_",
-									questsAdded + 1
-										}), "Scenarios");
+
+										string text3 = GC.rnd.RandomSelect(string.Concat(new object[] { "ScenarioDifficultyLevel", num29, "Quest_", questsAdded + 1 }), "Scenarios");
+
 										if (text3 == "ScenarioDifficulty1")
-										{
 											component3.difficultyLevel = 1;
-										}
 										else if (text3 == "ScenarioDifficulty2")
-										{
 											component3.difficultyLevel = 2;
-										}
 										else if (text3 == "ScenarioDifficulty3")
-										{
 											component3.difficultyLevel = 3;
-										}
 										else if (text3 == "ScenarioDifficulty4")
 										{
 											component3.difficultyLevel = 3;
@@ -3268,15 +3078,17 @@ namespace BunnyMod.Content
 											component3.difficultyLevel = 3;
 											text3 = "ScenarioDifficulty3";
 										}
+										
 										bool flag12 = false;
+										
 										foreach (object obj2 in gameObject3.transform)
 										{
 											Transform transform3 = (Transform)obj2;
+										
 											if (transform3.name == text3 && transform3.childCount > 0)
-											{
 												flag12 = true;
-											}
 										}
+
 										if (flag12)
 										{
 											if (component3.shape == 6 && GC.percentChance(80) && !component3.quested)
@@ -3304,16 +3116,21 @@ namespace BunnyMod.Content
 						}
 					}
 				}
+
 				if (Time.realtimeSinceStartup - realtimeSinceStartup > maxChunkTime)
 				{
 					yield return null;
+				
 					realtimeSinceStartup = Time.realtimeSinceStartup;
 				}
+
 				Random.InitState(__instance.randomSeedNum + triesCount);
 			}
+
 			if (GC.holeLevel)
 			{
 				GameObject holeChunk = GC.chunkLoad.holeChunk;
+
 				for (int num30 = 0; num30 < __instance.levelSizeAxis; num30++)
 				{
 					for (int num31 = 0; num31 < __instance.levelSizeAxis; num31++)
@@ -3329,97 +3146,69 @@ namespace BunnyMod.Content
 							gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkS = false;
 							gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkE = false;
 							gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkW = false;
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 + 1, num31].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkE = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 - 1, num31].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkW = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30, num31 + 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkS = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30, num31 - 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkN = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 + 1, num31 - 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkNE = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 - 1, num31 - 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkNW = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 + 1, num31 + 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkSE = true;
-								}
 							}
-							catch
-							{
-							}
+							catch { }
+
 							try
 							{
 								if (__instance.mapChunkArray[num30 - 1, num31 + 1].chunkID != 0)
-								{
 									gameObject36.transform.Find("Border").GetComponent<SpawnerWall>().chunkSW = true;
-								}
 							}
-							catch
-							{
-							}
-							gameObject36.name = string.Concat(new object[]
-							{
-						num30,
-						", ",
-						num31,
-						" - "
-							});
+							catch { }
+
+							gameObject36.name = string.Concat(new object[] { num30, ", ", num31, " - " });
 						}
 					}
 				}
 			}
+
 			if (__instance.doReturnToLevelEditor)
 			{
 				__instance.StopAllCoroutines();

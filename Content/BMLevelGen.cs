@@ -338,6 +338,7 @@ namespace BunnyMod.Content
 		{
 			BMLog("LoadLevel_CanUseChunk");
 
+			#region Generic
 			Chunk chunk = null;
 			string description;
 
@@ -386,40 +387,28 @@ namespace BunnyMod.Content
 				}
 			}
 
+			#endregion
+			#region Levels
 			if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Slums &&description != "Generic")
-				{
-					if (!(sameChunkTypeCount >= 3) && GC.challenges.Contains(cChallenge.PoliceState) && vChunkType.PoliceStateAlwaysAllowed.Contains(description))
-					{
-						__result = true;
-						return false;
-					}
+			{
+				if ((GC.sessionDataBig.curLevelEndless == 1 && description == vChunkType.PoliceStation) ||
+					vChunkType.SlumsProhibited.Contains(description) ||
+					(sameChunkTypeCount >= 3 && vChunkType.SlumsLimitedTo3.Contains(description)) ||
+					(sameChunkTypeCount >= 2 && vChunkType.SlumsLimitedTo2.Contains(description)) ||
+					(sameChunkTypeCount >= 1 && vChunkType.SlumsLimitedTo1.Contains(description)))
+					__result = false;
 
-					if ((GC.sessionDataBig.curLevelEndless == 1 && description == vChunkType.PoliceStation) ||
-						vChunkType.SlumsProhibited.Contains(description) ||
-						(sameChunkTypeCount >= 3 && vChunkType.SlumsLimitedTo3.Contains(description)) ||
-						(sameChunkTypeCount >= 2 && vChunkType.SlumsLimitedTo2.Contains(description)) ||
-						(sameChunkTypeCount >= 1 && vChunkType.SlumsLimitedTo1.Contains(description)))
-					{
-						__result = false; 
-						return false;
-					}
-				}
+				return false;
+			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Industrial && description != "Generic")
 			{
-				if (!(sameChunkTypeCount >= 3) && GC.challenges.Contains(cChallenge.PoliceState) && vChunkType.PoliceStateAlwaysAllowed.Contains(description))
-				{
-					__result = true;
-					return false;
-				}
-
 				if (vChunkType.IndustrialProhibited.Contains(description) ||
 						(sameChunkTypeCount >= 3 && vChunkType.IndustrialLimitedTo3.Contains(description)) ||
 						(sameChunkTypeCount >= 2 && vChunkType.IndustrialLimitedTo2.Contains(description)) ||
 						(sameChunkTypeCount >= 1 && vChunkType.IndustrialLimitedTo1.Contains(description)))
-				{
 					__result = false; 
-					return false;
-				}
+
+				return false;
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Park)
 			{
@@ -517,10 +506,9 @@ namespace BunnyMod.Content
 					(sameChunkTypeCount >= 3 && description == "Temp") ||
 					(sameChunkTypeCount >= 2 && vChunkType.DowntownLimitedTo2.Contains(description)) ||
 					(sameChunkTypeCount >= 1 && vChunkType.DowntownLimitedTo1.Contains(description)))
-				{
 					__result = false; 
-					return false;
-				}
+
+				return false;
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Uptown && description != "Generic")
 			{
@@ -529,10 +517,9 @@ namespace BunnyMod.Content
 					(sameChunkTypeCount >= 3 && vChunkType.UptownLimitedTo3.Contains(description)) ||
 					(sameChunkTypeCount >= 2 && vChunkType.UptownLimitedTo2.Contains(description)) ||
 					(sameChunkTypeCount >= 1 && !__instance.squareMap && vChunkType.UptownLimitedTo1.Contains(description)))
-				{
 					__result = false; 
-					return false;
-				}
+
+				return false;
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.MayorVillage && description != "Generic")
 			{
@@ -544,6 +531,7 @@ namespace BunnyMod.Content
 					return false;
 				}
 			}
+			#endregion
 
 			__result = true; 
 			return false;

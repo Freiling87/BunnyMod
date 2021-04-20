@@ -922,13 +922,16 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region AnCapistan
-		public static List<string> AnCapistanAlwaysAllowed = new List<string>()
+		public static List<string> AnCapistanLimitedTo2 = new List<string>()
         {
-            vChunkType.DrugDen,
             vChunkType.GatedCommunity,
             vChunkType.Prison,
-            vChunkType.Shack,
             vChunkType.SlaveShop,
+        };
+        public static List<string> AnCapistanUnlimited = new List<string>()
+        {
+            vChunkType.DrugDen,
+            vChunkType.Shack,
         };
         public static List<string> AnCapistanProhibited = new List<string>()
         {
@@ -1195,7 +1198,7 @@ namespace BunnyMod.Content
         };
         #endregion
         #region Police State
-        public static List<string> PoliceStateAlwaysAllowed = new List<string>()
+        public static List<string> PoliceStateLimitedTo1 = new List<string>()
         {
             vChunkType.ConfiscationCenter,
             vChunkType.DeportationCenter,
@@ -1204,8 +1207,14 @@ namespace BunnyMod.Content
             vChunkType.PoliceStation,
             vChunkType.Prison,
         };
+        public static List<string> PoliceStateLimitedTo2 = new List<string>()
+        {
+            vChunkType.PoliceOutpost,
+            vChunkType.PoliceStation,
+        };
         public static List<string> PoliceStateProhibited = new List<string>()
         {
+            vChunkType.CityPark,
             vChunkType.DrugDen,
         };
 		#endregion

@@ -1259,28 +1259,8 @@ namespace BunnyMod.Content
 
 							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
-								if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures))
-								{
-									switch (BMChallenges.GetActiveChallengeFromList(cChallenge.FloorsAndFeatures))
-									{
-										case cChallenge.ArcologyEcology:
-											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
-											break;
-
-										case cChallenge.SunkenCity:
-											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Water, "RandomFloorsWalls"));
-
-											break;
-										case cChallenge.TransitExperiment:
-											tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Ice, "RandomFloorsWalls"));
-
-											break;
-									}
-								}
-								else if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
-								{
-
-								}
+								if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+									tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 								else
 								{
 									if (GC.levelTheme == 0)

@@ -5883,154 +5883,155 @@ namespace BunnyMod.Content
 					{
 						Debug.Log("Loading Public Security Cams");
 
-						int bigTries = (int)(15 * __instance.levelSizeModifier);
+						int bigTries = (int)((float)Random.Range(6, 12) * __instance.levelSizeModifier);
 						List<int> spawnedInChunks = new List<int>();
-						int numObjectsIterator;
+						int num2;
 
-						for (int numObjects = 0; numObjects < bigTries; numObjects = numObjectsIterator + 1)
+						for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
 						{
-							Vector2 candidateSpot = Vector2.zero;
-							int attempts = 0;
+							Vector2 vector7 = Vector2.zero;
+							int num22 = 0;
 
 							do
 							{
-								candidateSpot = GC.tileInfo.FindRandLocationNearWall(0.64f);
+								vector7 = GC.tileInfo.FindRandLocationNearWall(0.64f);
 
-								if (candidateSpot != Vector2.zero)
+								if (vector7 != Vector2.zero)
 								{
-									TileData spotTileData = GC.tileInfo.GetTileData(candidateSpot);
+									TileData tileData4 = GC.tileInfo.GetTileData(vector7);
 
-									if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y)).owner == 0)
-										candidateSpot = Vector2.zero;
+									if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y + 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).owner == 0)
+										vector7 = Vector2.zero;
 
-									if (!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y), "Wall"))
-										candidateSpot = Vector2.zero;
+									if (!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y + 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y - 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x + 0.64f, vector7.y), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x - 0.64f, vector7.y), "Wall"))
+										vector7 = Vector2.zero;
 
-									if (GC.tileInfo.IsOverlapping(candidateSpot, "ObjectRealSprite", 0.64f))
-										candidateSpot = Vector2.zero;
+									if (GC.tileInfo.IsOverlapping(vector7, "ObjectRealSprite", 0.64f))
+										vector7 = Vector2.zero;
 
-									if (spawnedInChunks.Contains(spotTileData.chunkID))
-										candidateSpot = Vector2.zero;
+									if (spawnedInChunks.Contains(tileData4.chunkID))
+										vector7 = Vector2.zero;
 
-									if (GC.tileInfo.DestroyIfBetweenWalls(candidateSpot))
-										candidateSpot = Vector2.zero;
+									if (GC.tileInfo.DestroyIfBetweenWalls(vector7))
+										vector7 = Vector2.zero;
 								}
 
-								attempts++;
+								num22++;
 							}
-							while ((candidateSpot == Vector2.zero || Vector2.Distance(candidateSpot, GC.playerAgent.tr.position) < 5f) && attempts < 100);
+							while ((vector7 == Vector2.zero || Vector2.Distance(vector7, GC.playerAgent.tr.position) < 5f) && num22 < 100);
 
-							if (candidateSpot != Vector2.zero)
+							if (vector7 != Vector2.zero)
 							{
-								GC.spawnerMain.spawnObjectReal(candidateSpot, null, vObject.SecurityCam).ShiftTowardWalls();
-								TileData tileData5 = GC.tileInfo.GetTileData(candidateSpot);
+								GC.spawnerMain.spawnObjectReal(vector7, null, vObject.SecurityCam).ShiftTowardWalls();
+								TileData tileData5 = GC.tileInfo.GetTileData(vector7);
 								spawnedInChunks.Add(tileData5.chunkID);
+								bool flag8 = true;
 								Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
 
-								if (numObjects < bigTries - 1 && GC.percentChance(25))
+								if (numObjects < bigTries - 1 && GC.percentChance(25) && flag8)
 								{
-									string adjoiningWall = "";
+									string a2 = "";
 									Vector2 zero4 = Vector2.zero;
 									Vector2 zero5 = Vector2.zero;
 
-									if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y + 0.64f)).wallMaterial != wallMaterialType.None)
+									if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y + 0.64f)).wallMaterial != wallMaterialType.None)
 									{
-										zero4 = new Vector2(candidateSpot.x + 1.28f, candidateSpot.y);
-										zero5 = new Vector2(candidateSpot.x - 1.28f, candidateSpot.y);
-										adjoiningWall = "N";
+										zero4 = new Vector2(vector7.x + 1.28f, vector7.y);
+										zero5 = new Vector2(vector7.x - 1.28f, vector7.y);
+										a2 = "N";
 									}
-									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x, candidateSpot.y - 0.64f)).wallMaterial != wallMaterialType.None)
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).wallMaterial != wallMaterialType.None)
 									{
-										zero4 = new Vector2(candidateSpot.x + 1.28f, candidateSpot.y);
-										zero5 = new Vector2(candidateSpot.x - 1.28f, candidateSpot.y);
-										adjoiningWall = "S";
+										zero4 = new Vector2(vector7.x + 1.28f, vector7.y);
+										zero5 = new Vector2(vector7.x - 1.28f, vector7.y);
+										a2 = "S";
 									}
-									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x + 0.64f, candidateSpot.y)).wallMaterial != wallMaterialType.None)
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).wallMaterial != wallMaterialType.None)
 									{
-										zero4 = new Vector2(candidateSpot.x, candidateSpot.y + 1.28f);
-										zero5 = new Vector2(candidateSpot.x, candidateSpot.y - 1.28f);
-										adjoiningWall = "E";
+										zero4 = new Vector2(vector7.x, vector7.y + 1.28f);
+										zero5 = new Vector2(vector7.x, vector7.y - 1.28f);
+										a2 = "E";
 									}
-									else if (GC.tileInfo.GetTileData(new Vector2(candidateSpot.x - 0.64f, candidateSpot.y)).wallMaterial != wallMaterialType.None)
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).wallMaterial != wallMaterialType.None)
 									{
-										zero4 = new Vector2(candidateSpot.x, candidateSpot.y + 1.28f);
-										zero5 = new Vector2(candidateSpot.x, candidateSpot.y - 1.28f);
-										adjoiningWall = "W";
+										zero4 = new Vector2(vector7.x, vector7.y + 1.28f);
+										zero5 = new Vector2(vector7.x, vector7.y - 1.28f);
+										a2 = "W";
 									}
 
 									GC.tileInfo.GetTileData(zero4);
-									bool allClear = true;
+									bool flag9 = true;
 
-									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W"))
-										allClear = false;
+									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W"))
+										flag9 = false;
 
 									if (GC.tileInfo.IsOverlapping(zero4, "Anything"))
-										allClear = false;
+										flag9 = false;
 
 									if (GC.tileInfo.IsOverlapping(zero4, "ObjectRealSprite", 0.64f))
-										allClear = false;
+										flag9 = false;
 
-									if (allClear && zero4 != Vector2.zero)
+									if (flag9 && zero4 != Vector2.zero)
 									{
 										GC.spawnerMain.spawnObjectReal(zero4, null, vObject.SecurityCam).ShiftTowardWalls();
-										numObjectsIterator = numObjects;
-										numObjects = numObjectsIterator + 1;
+										num2 = numObjects;
+										numObjects = num2 + 1;
 									}
 									else
 									{
 										GC.tileInfo.GetTileData(zero5);
-										allClear = true;
+										flag9 = true;
 
-										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && adjoiningWall == "W"))
-											allClear = false;
+										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W"))
+											flag9 = false;
 
 										if (GC.tileInfo.IsOverlapping(zero5, "Anything"))
-											allClear = false;
+											flag9 = false;
 
 										if (GC.tileInfo.IsOverlapping(zero5, "ObjectRealSprite", 0.64f))
-											allClear = false;
+											flag9 = false;
 
-										if (allClear && zero5 != Vector2.zero)
+										if (flag9 && zero5 != Vector2.zero)
 										{
 											GC.spawnerMain.spawnObjectReal(zero5, null, vObject.SecurityCam).ShiftTowardWalls();
-											numObjectsIterator = numObjects;
-											numObjects = numObjectsIterator + 1;
+											num2 = numObjects;
+											numObjects = num2 + 1;
 										}
 									}
 								}
@@ -6043,7 +6044,7 @@ namespace BunnyMod.Content
 							}
 
 							Random.InitState(__instance.randomSeedNum + numObjects);
-							numObjectsIterator = numObjects;
+							num2 = numObjects;
 						}
 
 						spawnedInChunks = null;

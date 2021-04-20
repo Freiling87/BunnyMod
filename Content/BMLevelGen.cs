@@ -15,6 +15,8 @@ using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using Light2D;
 using UnityEngine;
+using System.Runtime;
+using System.Runtime.CompilerServices;
 
 namespace BunnyMod.Content
 {
@@ -5028,7 +5030,7 @@ namespace BunnyMod.Content
 
 								if (lakeType == "Water")
 								{
-									Water water = GC.spawnerMain.SpawnWater(null, vector2, v, __instance.transform.rotation, true, null); // base.transform.rotation
+									Water water = GC.spawnerMain.SpawnWater(null, vector2, v, __instance.transform.rotation, true, null); // __instance.transform.rotation
 									water.lakeNTile = GC.tileInfo.lakeNTile;
 									water.lakeSTile = GC.tileInfo.lakeSTile;
 									water.lakeETile = GC.tileInfo.lakeETile;
@@ -6296,29 +6298,43 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
-					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Custom
+					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Underdark Manholes; Vanilla below
 					{
-						BMLog("Loading Underdark Manholes");
+						Debug.Log("Loading Underdark Manholes");
+						int bigTries = (int)((float)Random.Range(8, 12) * __instance.levelSizeModifier);
+						int bigTryCounter;
 
-						int manholeCount = (int)((float)Random.Range(30, 40) * __instance.levelSizeModifier);
-
-						for (int i = 0; i < manholeCount; i++)
+						for (int i = 0; i < bigTries; i = bigTryCounter + 1)
 						{
 							Vector2 spot = Vector2.zero;
 							int spotsTried = 0;
 
 							do
 							{
-								spot = GC.tileInfo.FindRandLocationGeneral(0.64f);
+								spot = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int j = 0; j < GC.objectRealList.Count; j++)
+									if (GC.objectRealList[j].objectName == vObject.Manhole && Vector2.Distance(GC.objectRealList[j].tr.position, spot) < 14f)
+										spot = Vector2.zero;
+
+								if (spot != Vector2.zero)
+								{
+									if (GC.tileInfo.WaterNearby(spot))
+										spot = Vector2.zero;
+
+									if (GC.tileInfo.IceNearby(spot))
+										spot = Vector2.zero;
+
+									if (GC.tileInfo.BridgeNearby(spot))
+										spot = Vector2.zero;
+								}
+
 								spotsTried++;
 							}
-							while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 5f) && spotsTried < 300);
+							while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 5f) && spotsTried < 100);
 
-							if (spot != Vector2.zero && IsNextToLake(spot))
-								spot = Vector2.zero;
-
-							if (spot != Vector2.zero)
-								GC.spawnerMain.spawnObjectReal(spot, null, "Manhole");
+							if (spot != Vector2.zero && Vector2.Distance(spot, GC.playerAgent.tr.position) >= 5f)
+								GC.spawnerMain.spawnObjectReal(spot, null, vObject.Manhole);
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -6327,7 +6343,71 @@ namespace BunnyMod.Content
 							}
 
 							Random.InitState(__instance.randomSeedNum + i);
+							bigTryCounter = i;
 						}
+
+						int numObjects = (int)((float)Random.Range(2, 4) * __instance.levelSizeModifier);
+						List<Manhole> manholeList = new List<Manhole>();
+
+						for (int i = 0; i < GC.objectRealList.Count; i++)
+							if (GC.objectRealList[i].objectName == vObject.Manhole)
+								manholeList.Add((Manhole)GC.objectRealList[i]);
+
+						BMLog("UDManhole List count: " + manholeList.Count());
+
+						if (manholeList.Count > 0)
+							for (int i = 0; i < numObjects; i = bigTryCounter + 1)
+							{
+								int attemptsToAddHiddenAgentToManhole = 0;
+								Manhole manhole;
+								bool NoHiddenAgentMatch;
+
+								//Hidden Agent Placement
+								do
+								{
+									Random.InitState(__instance.randomSeedNum + i + ++randomCount);
+									manhole = manholeList[Random.Range(0, manholeList.Count)];
+									NoHiddenAgentMatch = true;
+
+									for (int j = 0; j < GC.agentList.Count; j++)
+										if (GC.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, GC.agentList[j].tr.position) < 10f)
+										{
+											attemptsToAddHiddenAgentToManhole++;
+											NoHiddenAgentMatch = false;
+										}
+
+									attemptsToAddHiddenAgentToManhole++;
+								}
+								while (attemptsToAddHiddenAgentToManhole < 50 && !NoHiddenAgentMatch);
+
+								if (NoHiddenAgentMatch)
+								{
+									string text3 = GC.Choose<string>("Thief", "Thief", new string[]
+									{
+										"Thief",
+										"Cannibal"
+									});
+
+									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
+									{
+										Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
+										agent2.SetDefaultGoal("Idle");
+										agent2.statusEffects.BecomeHidden(manhole);
+										agent2.oma.mustBeGuilty = true;
+									}
+								}
+
+								if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+								{
+									yield return null;
+									chunkStartTime = Time.realtimeSinceStartup;
+								}
+
+								Random.InitState(__instance.randomSeedNum + i);
+								bigTryCounter = i;
+							}
+
+						manholeList = null;
 					} // Custom
 					else if (hasManholes) // Vanilla
 					{
@@ -8869,19 +8949,487 @@ namespace BunnyMod.Content
 
 		#endregion
 		#region SpawnerFloor
-		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance) // Prefix
+		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
 		{
-			//if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) && floorName == vFloor.Normal)
-			//{
-			//	BMLog("SpawnerFloor_spawn:");
-			//	BMLog("\tfloorName = '" + floorName + "'");
+			if (GC.levelTheme == 2 && floorName == "FlamePit")
+				floorName = "Hole";
 
-			//	floorName = GetFloorTileFromMutator();
-			//}
+			Renderer component = __instance.transform.gameObject.GetComponent<Renderer>();
+			float x = component.bounds.min.x;
+			float x2 = component.bounds.max.x;
+			float y = component.bounds.min.y;
+			float y2 = component.bounds.max.y;
+			int num = 0;
+			int num2 = 0;
+			List<TileData> list = new List<TileData>();
+			List<GameObject> list2 = new List<GameObject>();
+			List<Vector2> list3 = new List<Vector2>();
 
-			floorName = vFloor.Grass;
+			if (floorName == "Water" && GC.loadLevel.WaterToIce())
+				floorName = "Ice";
 
-			return true;
+			for (float num3 = x + 0.32f; num3 < x2; num3 += 0.64f)
+			{
+				for (float num4 = y + 0.32f; num4 < y2; num4 += 0.64f)
+				{
+					int num5 = 0;
+					num3 = Mathf.Round(num3 * 100f) / 100f;
+					num4 = Mathf.Round(num4 * 100f) / 100f;
+					___tilemapFloors.GetTileAtPosition(new Vector2(num3, num4), out num, out num2);
+
+					if (num > 159 || num2 > 159)
+					{
+						Debug.LogError(__instance + " (Floor) out of bounds in " + __instance.transform.parent.GetComponent<Chunk>());
+						__instance.spawned = true;
+						Object.Destroy(__instance.gameObject);
+						return false;
+					}
+
+					floorMaterialType floorMaterialType = floorMaterialType.None;
+
+					switch (floorName)
+					{
+						case vFloor.ArenaFloor:
+							num5 = 712;
+							__instance.tileInfo.tileArray[num, num2].arenaFloor = true;
+							break;
+						case vFloor.ArmoryFloor:
+							num5 = 172;
+							floorMaterialType = floorMaterialType.ArmoryFloor;
+							break;
+						case vFloor.BankFloor:
+							if (GC.levelTheme == 5)
+								num5 = 1356;
+							else
+								num5 = 172;
+
+							floorMaterialType = floorMaterialType.BankFloor;
+							break;
+						case vFloor.Bathhouse:
+							num5 = 824;
+							floorMaterialType = floorMaterialType.Bathhouse;
+							break;
+						case vFloor.BathroomTile:
+							num5 = 46;
+							floorMaterialType = floorMaterialType.BathroomTile;
+							break;
+						case vFloor.BrickIndoor:
+							num5 = 1376;
+							floorMaterialType = floorMaterialType.BrickIndoor;
+							break;
+						case vFloor.Bridge_Unused:
+							floorMaterialType = floorMaterialType.Bridge;
+							__instance.tileInfo.tileArray[num, num2].bridge = true;
+							break;
+						case vFloor.Canal:
+							if (!GC.canalHoles)
+							{
+								num5 = 1004;
+								__instance.tileInfo.tileArray[num, num2].water = true;
+								__instance.floorLayer = 0;
+								floorMaterialType = floorMaterialType.Canal;
+							}
+							else
+							{
+								num5 = 1144;
+								TileData tileData = __instance.tileInfo.tileArray[num, num2];
+								tileData.hole = true;
+								___tilemapFloors.SetTile(num, num2, 0, 1);
+								tileData.floorMaterialOffset = num5;
+								tileData.floorMaterial = floorMaterialType.Hole;
+								__instance.floorLayer = 0;
+							}
+							break;
+						case vFloor.CasinoFloor:
+							num5 = 152;
+							floorMaterialType = floorMaterialType.CasinoFloor;
+							break;
+						case vFloor.CaveFloor:
+							num5 = 736;
+							floorMaterialType = floorMaterialType.CaveFloor;
+							break;
+						case vFloor.Checkerboard:
+							num5 = 66;
+							floorMaterialType = floorMaterialType.Checkerboard;
+							break;
+						case vFloor.Checkerboard2:
+							num5 = 1356;
+							floorMaterialType = floorMaterialType.Checkerboard2;
+							break;
+						case vFloor.CleanTiles:
+							num5 = 1064;
+							floorMaterialType = floorMaterialType.CleanTiles;
+							break;
+						case vFloor.CleanTilesRaised:
+							num5 = 1104;
+							floorMaterialType = floorMaterialType.CleanTilesRaised;
+							break;
+						case vFloor.ClearFloor:
+							floorMaterialType = floorMaterialType.ClearFloor;
+							break;
+						case vFloor.ClearFloor2:
+							floorMaterialType = floorMaterialType.ClearFloor;
+							break;
+						case vFloor.ConveyorBelt:
+							if (GC.levelTheme != 1 && GC.levelTheme != 2 && (GC.levelTheme < 3 || !(__instance.transform.parent.GetComponent<Chunk>().description == "Mall")) && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+							{
+								Object.Destroy(__instance.gameObject);
+
+								return false;
+							}
+
+							num5 = 628;
+							__instance.tileInfo.tileArray[num, num2].conveyorBelt = true;
+							list.Add(__instance.tileInfo.tileArray[num, num2]);
+							list2.Add(Object.Instantiate<GameObject>(GC.spawnerMain.conveyorBeltImagePrefab, new Vector2((float)num * 0.64f, (float)num2 * 0.64f), Quaternion.Euler(0f, 0f, 0f)));
+							__instance.floorLayer = 2;
+							floorMaterialType = floorMaterialType.ConveyorBelt;
+							break;
+						case vFloor.DanceFloor:
+							num5 = 844;
+							floorMaterialType = floorMaterialType.DanceFloor;
+							break;
+						case vFloor.DanceFloorRaised:
+							num5 = 1124;
+							floorMaterialType = floorMaterialType.DanceFloorRaised;
+							break;
+						case vFloor.DirtFloor:
+							num5 = 756;
+							floorMaterialType = floorMaterialType.DirtFloor;
+							break;
+						case vFloor.DirtyTiles:
+							num5 = 1084;
+							floorMaterialType = floorMaterialType.DirtyTiles;
+							break;
+						case vFloor.DrugDenFloor:
+							num5 = 496;
+							floorMaterialType = floorMaterialType.DrugDenFloor;
+							break;
+						case vFloor.ElectronicPlates:
+							num5 = 1184;
+							floorMaterialType = floorMaterialType.ElectronicPlates;
+							break;
+						case vFloor.Facility:
+							num5 = 1224;
+							floorMaterialType = floorMaterialType.Facility;
+							break;
+						case vFloor.FactoryFloor:
+							num5 = 476;
+							floorMaterialType = floorMaterialType.FactoryFloor;
+							break;
+						case vFloor.FlamePit:
+							if (GC.levelTheme != 1 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+							{
+								Object.Destroy(__instance.gameObject);
+
+								return false;
+							}
+
+							if (GC.serverPlayer)
+								GC.spawnerMain.spawnObjectReal(new Vector2((float)num * 0.64f, (float)num2 * 0.64f), null, "FlameGrate").extraVar = 1;
+
+							__instance.floorLayer = -1;
+							__instance.tileInfo.tileArray[num, num2].dangerousToWalk = true;
+							floorMaterialType = floorMaterialType.FlamePit;
+							break;
+						case vFloor.Grass:
+							if (GC.levelTheme == 3)
+								num5 = 1416;
+							else if (GC.levelTheme == 5)
+								num5 = 1396;
+							else
+								num5 = 1044;
+
+							floorMaterialType = floorMaterialType.CityParkFloor;
+							break;
+						case vFloor.GreyTile_Unused:
+							num5 = 13;
+							floorMaterialType = floorMaterialType.GreyTile;
+							break;
+						case vFloor.Gym:
+							num5 = 864;
+							floorMaterialType = floorMaterialType.Gym;
+							break;
+						case vFloor.HideoutFloor:
+							if (GC.levelTheme == 1)
+								num5 = 476;
+							else
+								num5 = 172;
+							
+							floorMaterialType = floorMaterialType.HideoutFloor;
+							break;
+						case vFloor.Hole:
+							if (GC.levelTheme != 1 && GC.levelTheme != 2 && GC.levelTheme != 4 && GC.levelTheme != 5 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+							{
+								Object.Destroy(__instance.gameObject);
+								return false;
+							}
+
+							num5 = 192;
+							__instance.tileInfo.tileArray[num, num2].hole = true;
+							__instance.floorLayer = 2;
+							floorMaterialType = floorMaterialType.Hole;
+							break;
+						case vFloor.HospitalFloor:
+							num5 = 436;
+							floorMaterialType = floorMaterialType.HospitalFloor;
+							break;
+						case vFloor.Ice:
+							num5 = 712;
+							__instance.tileInfo.tileArray[num, num2].ice = true;
+							__instance.tileInfo.tileArray[num, num2].organic = true;
+							__instance.floorLayer = 2;
+							floorMaterialType = floorMaterialType.Ice;
+							break;
+						case vFloor.IceRink:
+							num5 = 984;
+							__instance.tileInfo.tileArray[num, num2].ice = true;
+							floorMaterialType = floorMaterialType.IceRink;
+							break;
+						case vFloor.Mall:
+							num5 = 884;
+							floorMaterialType = floorMaterialType.Mall;
+							break;
+						case vFloor.MetalFloor:
+							num5 = 86;
+							floorMaterialType = floorMaterialType.MetalFloor;
+							break;
+						case vFloor.MetalPlates:
+							num5 = 1244;
+							floorMaterialType = floorMaterialType.MetalPlates;
+							break;
+						case vFloor.Muted:
+							num5 = 1264;
+							floorMaterialType = floorMaterialType.Muted;
+							break;
+						case vFloor.Normal:
+							if (GC.levelTheme == 3 || GC.levelTheme == 5)
+								num5 = 924;
+							else if (GC.levelTheme == 4)
+								num5 = 1184;
+							else
+								num5 = 110;
+
+							floorMaterialType = floorMaterialType.Normal;
+							break;
+						case vFloor.OfficeFloor:
+							num5 = 456;
+							floorMaterialType = floorMaterialType.OfficeFloor;
+							break;
+						case vFloor.PoliceStationFloor:
+							num5 = 172;
+							floorMaterialType = floorMaterialType.PoliceStationFloor;
+							break;
+						case vFloor.Pool:
+							num5 = 1024;
+							__instance.tileInfo.tileArray[num, num2].water = true;
+							__instance.floorLayer = 2;
+							floorMaterialType = floorMaterialType.Pool;
+							list3.Add(new Vector2((float)num, (float)num2));
+							break;
+						case vFloor.Posh:
+							num5 = 904;
+							floorMaterialType = floorMaterialType.Posh;
+							break;
+						case vFloor.PrisonFloor:
+							num5 = 536;
+							floorMaterialType = floorMaterialType.PrisonFloor;
+							break;
+						case vFloor.RugBlue:
+							num5 = 252;
+							floorMaterialType = floorMaterialType.BlueRug;
+							break;
+						case vFloor.RugDarkBlue:
+							num5 = 272;
+							floorMaterialType = floorMaterialType.DarkBlueRug;
+							break;
+						case vFloor.RugGreen:
+							num5 = 212;
+							floorMaterialType = floorMaterialType.GreenRug;
+							break;
+						case vFloor.RugPurple:
+							num5 = 556;
+							floorMaterialType = floorMaterialType.PurpleRug;
+							break;
+						case vFloor.RugRed:
+							num5 = 232;
+							floorMaterialType = floorMaterialType.RedRug;
+							break;
+						case vFloor.SmallTiles:
+							num5 = 1164;
+							floorMaterialType = floorMaterialType.SmallTiles;
+							break;
+						case vFloor.SolidPlates:
+							num5 = 1204;
+							floorMaterialType = floorMaterialType.SolidPlates;
+							break;
+						case vFloor.Water:
+							num5 = 688;
+							__instance.tileInfo.tileArray[num, num2].water = true;
+							__instance.tileInfo.tileArray[num, num2].organic = true;
+							__instance.floorLayer = 2;
+							floorMaterialType = floorMaterialType.Water;
+							list3.Add(new Vector2((float)num, (float)num2));
+							break;
+						case vFloor.WoodClean:
+							num5 = 924;
+							floorMaterialType = floorMaterialType.WoodClean;
+							break;
+						case vFloor.WoodSlats:
+							num5 = 944;
+							floorMaterialType = floorMaterialType.WoodSlats;
+							break;
+						default:
+							if (floorName != null)
+								if (floorName.Length == 0)
+								{
+									num5 = 0;
+									floorMaterialType = floorMaterialType.None;
+								}
+
+							break;
+					}
+					
+					if (floorName == vFloor.ClearFloor || floorName == vFloor.ArenaFloor)
+					{
+						if (__instance.ownedByID != 55)
+							__instance.ownedByID = 88;
+						
+						__instance.SetExtraFloorParams(num, num2, floorMaterialType);
+					}
+					else if (floorName == vFloor.ClearFloor2)
+						__instance.SetExtraFloorParams(num, num2, floorMaterialType);
+					else if (!(floorName == vFloor.Bridge_Unused))
+					{
+						if (__instance.floorLayer == 0)
+						{
+							___tilemapFloors.SetTile(num, num2, 0, 1);
+							__instance.tileInfo.tileArray[num, num2].floorMaterialOffset = num5;
+							__instance.SetExtraFloorParams(num, num2, floorMaterialType);
+						}
+						else if (__instance.floorLayer == 1)
+						{
+							___tilemapFloors3.SetTile(num, num2, 0, 1);
+							__instance.tileInfo.tileArray[num, num2].floorMaterialOffset3 = num5;
+							__instance.tileInfo.tileArray[num, num2].floorMaterial3 = floorMaterialType;
+
+							if (__instance.tileInfo.tileArray[num, num2].prison == 0)
+								__instance.tileInfo.tileArray[num, num2].prison = __instance.prison;
+						}
+						else if (__instance.floorLayer == 2)
+						{
+							___tilemapFloors4.SetTile(num, num2, 0, 1);
+							__instance.tileInfo.tileArray[num, num2].floorMaterialOffset4 = num5;
+							__instance.tileInfo.tileArray[num, num2].floorMaterial4 = floorMaterialType;
+						
+							if (__instance.tileInfo.tileArray[num, num2].prison == 0)
+								__instance.tileInfo.tileArray[num, num2].prison = __instance.prison;
+						}
+					}
+				}
+			}
+
+			__instance.spawned = true;
+
+			if (floorName == "Hole" || (floorName == "Canal" && GC.canalHoles))
+				GC.spawnerMain.StartCoroutine(GC.spawnerMain.SpawnHoleLate(null, __instance.transform.position, __instance.transform.localScale, __instance.transform.rotation, true, false));
+			else if (floorName == vFloor.Water || floorName == vFloor.Canal || floorName == vFloor.Pool)
+			{
+				Chunk component2 = __instance.transform.parent.GetComponent<Chunk>();
+
+				if (component2 == null)
+					component2 = __instance.transform.parent.transform.parent.GetComponent<Chunk>();
+				
+				Water water = GC.spawnerMain.SpawnWater(null, __instance.transform.position, __instance.transform.localScale, __instance.transform.rotation, true, component2);
+				
+				for (int i = 0; i < list3.Count; i++)
+				{
+					__instance.tileInfo.tileArray[(int)list3[i].x, (int)list3[i].y].waterReal = water;
+					__instance.tileInfo.tileArray[(int)list3[i].x, (int)list3[i].y].waterRealID = water.UID;
+				}
+			}
+			else if (!(floorName == vFloor.Ice) && !(floorName == vFloor.Bridge_Unused) && !(floorName == vFloor.Grass))
+			{
+				if (floorName == vFloor.ConveyorBelt)
+				{
+					Chunk component3 = __instance.transform.parent.GetComponent<Chunk>();
+
+					if (component3 == null)
+						component3 = __instance.transform.parent.transform.parent.GetComponent<Chunk>();
+					
+					string a = __instance.direction;
+					string text;
+
+					if (!(new string[] { "E", "N", "S", "W" }.Contains(a)))
+						text = "S";
+					else
+						text = a;
+
+					if (component3.chunkDirX == "Reverse" && !__instance.skipRotations)
+					{
+						if (text == "E")
+							text = "W";
+						if (text == "W")
+							text = "E";
+					}
+
+					if (component3.chunkDirY == "Reverse" && !__instance.skipRotations)
+					{
+						if (text == "N")
+							text = "S";
+						if (text == "S")
+							text = "N";
+					}
+
+					if (component3.chunkRotate == 1 && !__instance.skipRotations)
+					{
+						if (text == "E")
+							text = "N";
+						else if (text == "N")
+							text = "w";
+						else if (text == "S")
+							text = "E";
+						else if (text == "W")
+							text = "S";
+					}
+
+					GameObject gameObject = GC.spawnerMain.SpawnConveyorBelt(null, __instance.transform.position, __instance.transform.localScale, __instance.transform.rotation, text, true, component3).gameObject;
+					ConveyorBelt component4 = gameObject.GetComponent<ConveyorBelt>();
+
+					for (int j = 0; j < list.Count; j++)
+					{
+						list[j].direction = text;
+						list2[j].transform.SetParent(gameObject.transform);
+						component4.imageList.Add(list2[j]);
+					}
+				}
+				else
+				{
+					if (__instance.ownerID != 0 && __instance.ownedByID == 0)
+						__instance.ownedByID = __instance.ownerID;
+					else if (__instance.ownedByID == 0)
+						__instance.ownedByID = 1;
+					
+					if (__instance.ownedByID != 0)
+					{
+						Vector3 position = new Vector3(__instance.transform.position.x, __instance.transform.position.y, -0.7f);
+						GameObject gameObject2 = Object.Instantiate<GameObject>(GC.spawnerMain.ownerPropertyColliderPrefab, position, Quaternion.Euler(0f, 0f, 0f));
+						BoxCollider2D component5 = gameObject2.GetComponent<BoxCollider2D>();
+					
+						if (__instance.transform.rotation.z > 0f)
+							component5.size = new Vector2(__instance.transform.localScale.y * 0.64f, __instance.transform.localScale.x * 0.64f);
+						else
+							component5.size = new Vector2(__instance.transform.localScale.x * 0.64f, __instance.transform.localScale.y * 0.64f);
+						
+						gameObject2.transform.SetParent(GC.floorPenaltiesNest.transform);
+						GC.ownerPropertyList.Add(gameObject2);
+					}
+				}
+			}
+
+			Object.Destroy(__instance.gameObject);
+
+			return false;
 		}
 		#endregion
 		#region SpawnerObject

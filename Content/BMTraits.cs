@@ -699,7 +699,7 @@ namespace BunnyMod.Content
 		}
         public static bool IsPlayerTraitActive(string trait)
 		{
-            foreach (Agent agent in GC.playerAgentList)
+            foreach (Agent agent in GC.agentList)
                 if (agent.isPlayer != 0 && agent.statusEffects.hasTrait(trait))
                     return true;
                     

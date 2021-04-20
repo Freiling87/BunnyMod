@@ -61,23 +61,6 @@ namespace BunnyMod.Content
 			TransitExperiment.IsActive = false;
 
 			#endregion
-			#region Leashes
-
-			CustomMutator RoaminOrgy = RogueLibs.CreateCustomMutator(cChallenge.RoaminOrgy, true,
-				new CustomNameInfo("000: Leashes: Roamin' Orgy"),
-				new CustomNameInfo("The citizens of the City achieve ecstatic connection with the divine through indulgence in... roaming from their residences and places of business.\n\nNPCs won't tether to their original chunks. Isn't that incredbily hedonistic?"));
-			RoaminOrgy.Available = true;
-			RoaminOrgy.Conflicting.AddRange(cChallenge.Leashes);
-			RoaminOrgy.IsActive = false;
-
-			CustomMutator HomeSickAndTired = RogueLibs.CreateCustomMutator(cChallenge.HomesickAndTired, true,
-				new CustomNameInfo("000: Leashes: Homesick & Tired"),
-				new CustomNameInfo("Do you think these NPCs don't have better things to do than chase you all around the level for your bullshit? Just get out of the chunk, and that's enough for them. Surely you'll have learned your lesson."));
-			HomeSickAndTired.Available = true;
-			HomeSickAndTired.Conflicting.AddRange(cChallenge.Leashes);
-			HomeSickAndTired.IsActive = false;
-
-			#endregion
 			#region Map Size
 
 			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,

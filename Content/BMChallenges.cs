@@ -33,7 +33,7 @@ namespace BunnyMod.Content
 				new CustomNameInfo("000: Features: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
 			PoliceState.Available = true;
-			PoliceState.Conflicting.AddRange(new string[] { vChallenge.SupercopLand, vChallenge.NoCops });
+			PoliceState.Conflicting.AddRange(new string[] { vChallenge.SupercopLand, vChallenge.NoCops, cChallenge.YoungMenInTheNeighborhood, cChallenge.HoodlumsWonderland, cChallenge.MobTown });
 			PoliceState.IsActive = false;
 
 			#endregion

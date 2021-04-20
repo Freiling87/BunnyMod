@@ -1261,21 +1261,18 @@ namespace BunnyMod.Content
 							{
 								if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
 									tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
-								else
-								{
-									if (GC.levelTheme == 0)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
-									else if (GC.levelTheme == 1)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
-									else if (GC.levelTheme == 2)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
-									else if (GC.levelTheme == 3)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
-									else if (GC.levelTheme == 4)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
-									else if (GC.levelTheme == 5)
-										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
-								}
+								else if (GC.levelTheme == 0)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
+								else if (GC.levelTheme == 1)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
+								else if (GC.levelTheme == 2)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
+								else if (GC.levelTheme == 3)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
+								else if (GC.levelTheme == 4)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
+								else if (GC.levelTheme == 5)
+									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
 							}
 							else
 								tile = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
@@ -1337,18 +1334,20 @@ namespace BunnyMod.Content
 
 								if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
-									if (GC.levelTheme == 0)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesMain", "RandomFloorsWalls"));
+									if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+										tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
+									else if (GC.levelTheme == 0)
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
 									else if (GC.levelTheme == 1)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesIndustrial", "RandomFloorsWalls"));
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
 									else if (GC.levelTheme == 2)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesOutdoor", "RandomFloorsWalls"));
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
 									else if (GC.levelTheme == 3)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesDowntown", "RandomFloorsWalls"));
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
 									else if (GC.levelTheme == 4)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesWealthy", "RandomFloorsWalls"));
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
 									else if (GC.levelTheme == 5)
-										tile = int.Parse(GC.rnd.RandomSelect("FloorTilesMayor", "RandomFloorsWalls"));
+										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
 								}
 								else
 									tile = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
@@ -1409,18 +1408,20 @@ namespace BunnyMod.Content
 
 									if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
-										if (GC.levelTheme == 0)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesMain", "RandomFloorsWalls"));
+										if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
+										else if (GC.levelTheme == 0)
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 1)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesIndustrial", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 2)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesOutdoor", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 3)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesDowntown", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 4)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesWealthy", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 5)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesMayor", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
 									}
 									else
 										tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
@@ -2336,6 +2337,7 @@ namespace BunnyMod.Content
 									text2 = "Normal";
 									num5 = 0;
 								}
+
 								if (GC.levelTheme == 2)
 								{
 									if (num4 >= 1 && num4 <= 4)
@@ -2379,7 +2381,6 @@ namespace BunnyMod.Content
 								bool flag3 = false;
 								Vector3 vector = new Vector2(__instance.chunkSize * (float)num2 - __instance.halfTileSize + __instance.halfChunkSize + num15, -__instance.chunkSize * (float)num3 + 102.4f + __instance.halfTileSize - __instance.halfChunkSize - __instance.tileSize + num16);
 								int num17 = 0;
-								bool flag4 = false;
 								bool flag5 = false;
 								bool flag6 = false;
 								bool flag7 = false;
@@ -2428,15 +2429,14 @@ namespace BunnyMod.Content
 										ChunkData chunkData4 = list[num18];
 										bool flag10 = false;
 
-										if (GC.levelTheme == 4)
+										if (GC.levelTheme == 4 || GC.challenges.Contains(cChallenge.PoliceState))
 										{
-											if (!__instance.placedDeportationCenter && !flag4 && !flag10)
+											if (!__instance.placedDeportationCenter && !flag10)
 											{
-												flag4 = true;
 												List<ChunkData> list2 = new List<ChunkData>();
 										
 												for (int k = 0; k < list.Count; k++)
-													if (list[k].description == "DeportationCenter" && num4 == list[k].shape)
+													if (list[k].description == vChunkType.DeportationCenter && num4 == list[k].shape)
 														list2.Add(list[k]);
 												
 												if (list2.Count > 0)
@@ -2451,7 +2451,7 @@ namespace BunnyMod.Content
 												List<ChunkData> list3 = new List<ChunkData>();
 
 												for (int l = 0; l < list.Count; l++)
-													if (list[l].description == "ConfiscationCenter" && num4 == list[l].shape)
+													if (list[l].description == vChunkType.ConfiscationCenter && num4 == list[l].shape)
 														list3.Add(list[l]);
 												
 												if (list3.Count > 0)
@@ -2469,7 +2469,7 @@ namespace BunnyMod.Content
 												List<ChunkData> list4 = new List<ChunkData>();
 
 												for (int m = 0; m < list.Count; m++)
-													if (list[m].description == "PodiumPark" && num4 == list[m].shape)
+													if (list[m].description == vChunkType.PodiumPark && num4 == list[m].shape)
 													{
 														list4.Add(list[m]);
 														text = "Normal";
@@ -2492,7 +2492,7 @@ namespace BunnyMod.Content
 												List<ChunkData> list5 = new List<ChunkData>();
 
 												for (int n = 0; n < list.Count; n++)
-													if (list[n].description == "MayorOffice" && num4 == list[n].shape)
+													if (list[n].description == vChunkType.MayorOffice && num4 == list[n].shape)
 														list5.Add(list[n]);
 												
 												if (list5.Count > 0)
@@ -2508,7 +2508,7 @@ namespace BunnyMod.Content
 												List<ChunkData> list6 = new List<ChunkData>();
 
 												for (int num19 = 0; num19 < list.Count; num19++)
-													if (list[num19].description == "MayorHouse" && num4 == list[num19].shape)
+													if (list[num19].description == vChunkType.MayorHouse && num4 == list[num19].shape)
 														list6.Add(list[num19]);
 												
 												if (list6.Count > 0)
@@ -2545,17 +2545,17 @@ namespace BunnyMod.Content
 										int num20 = Random.Range(0, ___chunkList.Count);
 										GameObject gameObject2 = ___chunkList[num20];
 
-										if (GC.levelTheme == 4)
+										if (GC.levelTheme == 4 || GC.challenges.Contains(cChallenge.PoliceState))
 										{
 											if (num4 == 0 && !__instance.placedDeportationCenter)
 											{
 												for (int num21 = 0; num21 < ___chunkList.Count; num21++)
-													if (___chunkList[num21].GetComponent<Chunk>().description == "DeportationCenter")
+													if (___chunkList[num21].GetComponent<Chunk>().description == vChunkType.DeportationCenter)
 														gameObject2 = ___chunkList[num21];
 											}
 											else if (num4 == 0 && !__instance.placedConfiscationCenter)
 												for (int num22 = 0; num22 < ___chunkList.Count; num22++)
-													if (___chunkList[num22].GetComponent<Chunk>().description == "ConfiscationCenter")
+													if (___chunkList[num22].GetComponent<Chunk>().description == vChunkType.ConfiscationCenter)
 														gameObject2 = ___chunkList[num22];
 										}
 										else if (GC.levelTheme == 5)
@@ -2563,7 +2563,7 @@ namespace BunnyMod.Content
 											if (num4 == 0 && !__instance.placedPodiumPark && __instance.LevelContainsMayor())
 											{
 												for (int num23 = 0; num23 < ___chunkList.Count; num23++)
-													if (___chunkList[num23].GetComponent<Chunk>().description == "PodiumPark")
+													if (___chunkList[num23].GetComponent<Chunk>().description == vChunkType.PodiumPark)
 													{
 														gameObject2 = ___chunkList[num23];
 														text = "Normal";
@@ -2574,12 +2574,12 @@ namespace BunnyMod.Content
 											else if (num4 == 6 && !__instance.placedMayorOffice && __instance.LevelContainsMayor())
 											{
 												for (int num24 = 0; num24 < ___chunkList.Count; num24++)
-													if (___chunkList[num24].GetComponent<Chunk>().description == "MayorOffice")
+													if (___chunkList[num24].GetComponent<Chunk>().description == vChunkType.MayorOffice)
 														gameObject2 = ___chunkList[num24];
 											}
 											else if (num4 == 6 && !__instance.placedMayorHouse && __instance.LevelContainsMayor())
 												for (int num25 = 0; num25 < ___chunkList.Count; num25++)
-													if (___chunkList[num25].GetComponent<Chunk>().description == "MayorHouse")
+													if (___chunkList[num25].GetComponent<Chunk>().description == vChunkType.MayorHouse)
 														gameObject2 = ___chunkList[num25];
 										}
 
@@ -3017,20 +3017,20 @@ namespace BunnyMod.Content
 										component3.chunkEdgeW -= 10.24f;
 									}
 
-									if (GC.levelTheme == 4)
+									if (GC.levelTheme == 4 || GC.challenges.Contains(cChallenge.PoliceState))
 									{
-										if (component3.description == "DeportationCenter")
+										if (component3.description == vChunkType.DeportationCenter)
 											__instance.placedDeportationCenter = true;
-										else if (component3.description == "ConfiscationCenter")
+										else if (component3.description == vChunkType.ConfiscationCenter)
 											__instance.placedConfiscationCenter = true;
 									}
 									else if (GC.levelTheme == 5)
 									{
-										if (component3.description == "PodiumPark")
+										if (component3.description == vChunkType.PodiumPark)
 											__instance.placedPodiumPark = true;
-										else if (component3.description == "MayorOffice")
+										else if (component3.description == vChunkType.MayorOffice)
 											__instance.placedMayorOffice = true;
-										else if (component3.description == "MayorHouse")
+										else if (component3.description == vChunkType.MayorHouse)
 											__instance.placedMayorHouse = true;
 									}
 
@@ -4568,18 +4568,21 @@ namespace BunnyMod.Content
 										{
 											int tile = 0;
 
-											if (GC.levelTheme == 0)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesMain", "RandomFloorsWalls"));
+
+											if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+												tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
+											else if (GC.levelTheme == 0)
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
 											else if (GC.levelTheme == 1)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesIndustrial", "RandomFloorsWalls"));
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
 											else if (GC.levelTheme == 2)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesOutdoor", "RandomFloorsWalls"));
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
 											else if (GC.levelTheme == 3)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesDowntown", "RandomFloorsWalls"));
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
 											else if (GC.levelTheme == 4)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesWealthy", "RandomFloorsWalls"));
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
 											else if (GC.levelTheme == 5)
-												tile = int.Parse(GC.rnd.RandomSelect("FloorTilesMayor", "RandomFloorsWalls"));
+												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
 											
 											TileData tileData2 = __instance.tileInfo.tileArray[num54, num55 - 1];
 											___tilemapWalls.ClearTile(num54, num55 - 1, 0);
@@ -4609,18 +4612,21 @@ namespace BunnyMod.Content
 									{
 										int tile2 = 0;
 
-										if (GC.levelTheme == 0)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesMain", "RandomFloorsWalls"));
+
+										if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
+										else if (GC.levelTheme == 0)
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 1)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesIndustrial", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Industrial, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 2)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesOutdoor", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Park, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 3)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesDowntown", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Downtown, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 4)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesWealthy", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Uptown, "RandomFloorsWalls"));
 										else if (GC.levelTheme == 5)
-											tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesMayor", "RandomFloorsWalls"));
+											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.MayorVillage, "RandomFloorsWalls"));
 										
 										TileData tileData4 = __instance.tileInfo.tileArray[num54, num55 - 1];
 										___tilemapWalls.ClearTile(num54, num55 - 1, 0);
@@ -4638,7 +4644,8 @@ namespace BunnyMod.Content
 						}
 			}
 
-			if ((GC.levelTheme == 4 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && GC.staticChunk == "" && GC.serverPlayer && GC.levelType == "Normal")
+			if ((GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 4 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && 
+					GC.staticChunk == "" && GC.serverPlayer && GC.levelType == "Normal")
 			{
 				GC.tileInfo.PlaceLockdownWalls();
 				__instance.hasLockdownWalls = true;
@@ -5836,20 +5843,17 @@ namespace BunnyMod.Content
 					#region PoliceBoxes
 					bool hasPoliceBoxes = false;
 
-					if (GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
 						hasPoliceBoxes = true;
 
 					if (GC.customLevel)
 						hasPoliceBoxes = __instance.customLevel.levelFeatures.Contains("PoliceBox");
 
-					if (GC.challenges.Contains(cChallenge.PoliceState))
-						hasPoliceBoxes = true;
-
 					if (hasPoliceBoxes)
 					{
 						Debug.Log("Loading Police Boxes");
 
-						if (GC.levelTheme == 4)
+						if (GC.levelTheme == 4 || GC.challenges.Contains(cChallenge.PoliceState))
 						{
 							int num2;
 
@@ -5950,14 +5954,11 @@ namespace BunnyMod.Content
 					#region AlarmButtons
 					bool hasAlarmButtons = false;
 
-					if (GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
 						hasAlarmButtons = true;
 
 					if (GC.customLevel)
 						hasAlarmButtons = __instance.customLevel.levelFeatures.Contains("AlarmButton");
-
-					if (GC.challenges.Contains(cChallenge.PoliceState))
-						hasAlarmButtons = true;
 
 					if (hasAlarmButtons)
 					{
@@ -7631,7 +7632,7 @@ namespace BunnyMod.Content
 												if (GC.percentChance(10))
 													roamerAgent = "Firefighter";
 												else
-													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster", new string[0]);
+													roamerAgent = GC.Choose<string>("Hobo", "UpperCruster");
 											}
 
 											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
@@ -7657,7 +7658,7 @@ namespace BunnyMod.Content
 											else if (hasPoliceBoxes)
 												roamerAgent = GC.Choose<string>("Hobo", "Worker", "UpperCruster");
 											else
-												roamerAgent = GC.Choose<string>("Hobo", "Worker", new string[0]);
+												roamerAgent = GC.Choose<string>("Hobo", "Worker");
 
 											if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong) && GC.percentChance(1))
 												roamerAgent = "Thief";
@@ -7678,7 +7679,7 @@ namespace BunnyMod.Content
 										else if (GC.levelTheme == 2)
 										{
 											if (hasPoliceBoxes)
-												GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster", new string[0]);
+												GC.Choose<string>(GC.rnd.RandomSelect("ParkAgent", "Agents"), "UpperCruster");
 											else
 												roamerAgent = GC.rnd.RandomSelect("ParkAgent", "Agents");
 
@@ -7748,7 +7749,7 @@ namespace BunnyMod.Content
 											if (GC.percentChance(10))
 												roamerAgent = "Firefighter";
 											else
-												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster", new string[0]);
+												roamerAgent = GC.Choose<string>("UpperCruster", "UpperCruster");
 
 											if (GC.challenges.Contains("ZombiesWelcome") && GC.percentChance(10))
 												roamerAgent = "Zombie";
@@ -7922,14 +7923,11 @@ namespace BunnyMod.Content
 						if ((GC.sessionDataBig.curLevel >= 2 || GC.levelTheme != 0) && GC.levelTheme != 2 && !GC.challenges.Contains("NoCops"))
 							hasCops = true;
 
-						if ((GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5) && !GC.challenges.Contains("NoCops") && GC.debugMode)
+						if (GC.challenges.Contains(cChallenge.PoliceState) || (GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5) && !GC.challenges.Contains("NoCops") && GC.debugMode)
 							hasCops = true;
 
 						if (GC.customLevel)
 							hasCops = __instance.customLevel.levelFeatures.Contains("Cop");
-
-						if (GC.challenges.Contains(cChallenge.PoliceState))
-							hasCops = true;
 
 						if (hasCops)
 						{
@@ -8047,14 +8045,11 @@ namespace BunnyMod.Content
 						#region Cop Bots
 						bool hasCopBots = false;
 
-						if (GC.levelTheme == 4 && !GC.challenges.Contains(vChallenge.NoCops))
+						if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 4 && !GC.challenges.Contains(vChallenge.NoCops))
 							hasCopBots = true;
 
 						if (GC.customLevel)
 							hasCopBots = __instance.customLevel.levelFeatures.Contains(vAgent.CopBot);
-
-						if (GC.challenges.Contains(cChallenge.PoliceState))
-							hasCopBots = true;
 
 						if (hasCopBots)
 						{
@@ -8188,6 +8183,9 @@ namespace BunnyMod.Content
 
 						if (GC.challenges.Contains(cChallenge.YoungMenInTheNeighborhood))
 							hasGangbangers = true;
+
+						if (GC.challenges.Contains(cChallenge.PoliceState))
+							hasGangbangers = false;
 
 						if (hasGangbangers && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" && GC.levelFeeling != "Riot")
 						{

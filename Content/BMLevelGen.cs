@@ -2686,29 +2686,43 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasManholes = __instance.customLevel.levelFeatures.Contains("Manhole");
 
-					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Custom
+					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Underdark Manholes; Vanilla below
 					{
-						BMLog("Loading Underdark Manholes");
+						Debug.Log("Loading Underdark Manholes");
+						int bigTries = (int)((float)Random.Range(8, 12) * __instance.levelSizeModifier);
+						int bigTryCounter;
 
-						int manholeCount = (int)((float)Random.Range(30, 40) * __instance.levelSizeModifier);
-
-						for (int i = 0; i < manholeCount; i++)
+						for (int i = 0; i < bigTries; i = bigTryCounter + 1)
 						{
 							Vector2 spot = Vector2.zero;
 							int spotsTried = 0;
 
 							do
 							{
-								spot = GC.tileInfo.FindRandLocationGeneral(0.64f);
+								spot = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int j = 0; j < GC.objectRealList.Count; j++)
+									if (GC.objectRealList[j].objectName == vObject.Manhole && Vector2.Distance(GC.objectRealList[j].tr.position, spot) < 14f)
+										spot = Vector2.zero;
+
+								if (spot != Vector2.zero)
+								{
+									if (GC.tileInfo.WaterNearby(spot))
+										spot = Vector2.zero;
+
+									if (GC.tileInfo.IceNearby(spot))
+										spot = Vector2.zero;
+
+									if (GC.tileInfo.BridgeNearby(spot))
+										spot = Vector2.zero;
+								}
+
 								spotsTried++;
 							}
-							while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 5f) && spotsTried < 300);
+							while ((spot == Vector2.zero || Vector2.Distance(spot, GC.playerAgent.tr.position) < 5f) && spotsTried < 100);
 
-							if (spot != Vector2.zero && IsNextToLake(spot))
-								spot = Vector2.zero;
-
-							if (spot != Vector2.zero)
-								GC.spawnerMain.spawnObjectReal(spot, null, "Manhole");
+							if (spot != Vector2.zero && Vector2.Distance(spot, GC.playerAgent.tr.position) >= 5f)
+								GC.spawnerMain.spawnObjectReal(spot, null, vObject.Manhole);
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -2717,7 +2731,71 @@ namespace BunnyMod.Content
 							}
 
 							Random.InitState(__instance.randomSeedNum + i);
+							bigTryCounter = i;
 						}
+
+						int numObjects = (int)((float)Random.Range(2, 4) * __instance.levelSizeModifier);
+						List<Manhole> manholeList = new List<Manhole>();
+
+						for (int i = 0; i < GC.objectRealList.Count; i++)
+							if (GC.objectRealList[i].objectName == vObject.Manhole)
+								manholeList.Add((Manhole)GC.objectRealList[i]);
+
+						BMLog("UDManhole List count: " + manholeList.Count());
+
+						if (manholeList.Count > 0)
+							for (int i = 0; i < numObjects; i = bigTryCounter + 1)
+							{
+								int attemptsToAddHiddenAgentToManhole = 0;
+								Manhole manhole;
+								bool NoHiddenAgentMatch;
+
+								//Hidden Agent Placement
+								do
+								{
+									Random.InitState(__instance.randomSeedNum + i + ++randomCount);
+									manhole = manholeList[Random.Range(0, manholeList.Count)];
+									NoHiddenAgentMatch = true;
+
+									for (int j = 0; j < GC.agentList.Count; j++)
+										if (GC.agentList[j].oma.hidden && Vector2.Distance(manhole.tr.position, GC.agentList[j].tr.position) < 10f)
+										{
+											attemptsToAddHiddenAgentToManhole++;
+											NoHiddenAgentMatch = false;
+										}
+
+									attemptsToAddHiddenAgentToManhole++;
+								}
+								while (attemptsToAddHiddenAgentToManhole < 50 && !NoHiddenAgentMatch);
+
+								if (NoHiddenAgentMatch)
+								{
+									string text3 = GC.Choose<string>("Thief", "Thief", new string[]
+									{
+										"Thief",
+										"Cannibal"
+									});
+
+									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
+									{
+										Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
+										agent2.SetDefaultGoal("Idle");
+										agent2.statusEffects.BecomeHidden(manhole);
+										agent2.oma.mustBeGuilty = true;
+									}
+								}
+
+								if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+								{
+									yield return null;
+									chunkStartTime = Time.realtimeSinceStartup;
+								}
+
+								Random.InitState(__instance.randomSeedNum + i);
+								bigTryCounter = i;
+							}
+
+						manholeList = null;
 					} // Custom
 					else if (hasManholes) // Vanilla
 					{

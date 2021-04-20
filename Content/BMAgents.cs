@@ -50,13 +50,13 @@ namespace BunnyMod.Content
 				__instance.AddDesire("Technology");
 				__instance.AddDesire("Weapons");
 
-				if (BMTraits.IsPlayerTraitActive("Reinforcements"))
+				if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
 				{
 					__instance.inventory.startingHeadPiece = "HardHat";
 					__instance.inventory.AddItemPlayerStart("Pistol", 0);
 					__instance.inventory.AddItemPlayerStart("Knife", 100);
 				}
-				if (BMTraits.IsPlayerTraitActive("Reinforcements_2"))
+				if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
 				{
 					__instance.inventory.startingHeadPiece = "SoldierHelmet";
 					__instance.inventory.AddItemPlayerStart("MachineGun", 0);

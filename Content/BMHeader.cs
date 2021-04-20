@@ -865,8 +865,9 @@ namespace BunnyMod.Content
             ZombieSpitFire = "ZombieSpitFire";
 	}
     public static class vChunkType // Vanilla Chunks
-	{
-        public const string
+    {
+		#region All Chunk Types
+		public const string
             Apartments = "Apartments",
             Arcade = "Arcade",
             Arena = "Arena",
@@ -918,8 +919,10 @@ namespace BunnyMod.Content
             SlaveShop = "SlaveShop",
             TVStation = "TVStation",
             Zoo = "Zoo";
+		#endregion
 
-        public static List<string> AnCapistanAlwaysAllowed = new List<string>()
+		#region AnCapistan
+		public static List<string> AnCapistanAlwaysAllowed = new List<string>()
         {
             vChunkType.DrugDen,
             vChunkType.GatedCommunity,
@@ -935,6 +938,263 @@ namespace BunnyMod.Content
             vChunkType.PoliceOutpost,
             vChunkType.PoliceStation,
         };
+        #endregion
+        #region Downtown
+        public static List<string> DowntownLimitedTo1 = new List<string>()
+        {
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            // vChunkType.Bank, // [sic], but prohibited
+            vChunkType.Bathroom,
+            vChunkType.Church,
+            vChunkType.CityPark,
+            vChunkType.DanceClub,
+            vChunkType.FireStation,
+            vChunkType.Graveyard,
+            vChunkType.Hideout,
+            vChunkType.IceRink,
+            vChunkType.Mall,
+            vChunkType.MovieTheater,
+            vChunkType.MusicHall,
+            vChunkType.PoliceStation,
+            vChunkType.Shop,
+            vChunkType.SlaveShop,
+        };
+        public static List<string> DowntownLimitedTo2 = new List<string>()
+        {
+            vChunkType.Bar,
+            vChunkType.Casino,
+            vChunkType.Hotel,
+        };
+        public static List<string> DowntownProhibited = new List<string>()
+        {
+            vChunkType.Apartments,
+            vChunkType.Armory,
+            vChunkType.Bank,
+            vChunkType.Bathhouse,
+            vChunkType.Cabin,
+            vChunkType.Cave,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DeportationCenter,
+            vChunkType.DrugDen,
+            vChunkType.Farm,
+            vChunkType.GatedCommunity,
+            vChunkType.Greenhouse,
+            vChunkType.HedgeMaze,
+            vChunkType.Hospital,
+            vChunkType.House,
+            vChunkType.HouseUptown,
+            vChunkType.Lab,
+            vChunkType.Mansion,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MilitaryOutpost,
+            vChunkType.OfficeBuilding,
+            vChunkType.Pit,
+            vChunkType.PodiumPark,
+            vChunkType.PoliceOutpost,
+            vChunkType.Prison,
+            vChunkType.PrivateClub,
+            vChunkType.Shack,
+            vChunkType.TVStation,
+            vChunkType.Zoo,
+        };
+        public static List<string> DowntownUnlimited = new List<string>()
+        {
+            vChunkType.Generic,
+            vChunkType.None,
+        };
+        #endregion
+        #region Industrial
+        public static List<string> IndustrialLimitedTo1 = new List<string>()
+        {
+            vChunkType.Bank,
+            vChunkType.Bathroom,
+            vChunkType.FireStation,
+            vChunkType.Graveyard,
+            vChunkType.Hospital,
+            vChunkType.PoliceStation,
+            vChunkType.Prison,
+            vChunkType.Shop,
+            vChunkType.SlaveShop,
+        };
+        public static List<string> IndustrialLimitedTo2 = new List<string>()
+        {
+            vChunkType.Armory,
+            vChunkType.Bar,
+            vChunkType.Casino,
+            vChunkType.Hideout,
+            "Factory",
+            vChunkType.Lab,
+        };
+        public static List<string> IndustrialLimitedTo3 = new List<string>()
+        {
+            vChunkType.Apartments,
+            vChunkType.DrugDen,
+            vChunkType.House,
+            vChunkType.OfficeBuilding,
+            vChunkType.Shack,
+        };
+        public static List<string> IndustrialProhibited = new List<string>()
+        {
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            vChunkType.Bathhouse,
+            vChunkType.Cabin,
+            vChunkType.Cave,
+            vChunkType.Church,
+            vChunkType.CityPark,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DanceClub,
+            vChunkType.DeportationCenter,
+            vChunkType.Farm,
+            vChunkType.GatedCommunity,
+            vChunkType.Greenhouse,
+            vChunkType.HedgeMaze,
+            vChunkType.Hotel,
+            vChunkType.HouseUptown,
+            vChunkType.IceRink,
+            vChunkType.Mall,
+            vChunkType.Mansion,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MilitaryOutpost,
+            vChunkType.MovieTheater,
+            vChunkType.MusicHall,
+            vChunkType.Pit,
+            vChunkType.PodiumPark,
+            vChunkType.PoliceOutpost,
+            vChunkType.PrivateClub,
+            vChunkType.TVStation,
+            vChunkType.Zoo,
+        };
+        public static List<string> IndustrialUnlimited = new List<string>()
+        {
+            vChunkType.Generic,
+            vChunkType.None,    
+        };
+        #endregion
+        #region Mayor's Village
+        public static List<string> MayorVillageLimitedTo1 = new List<string>()
+        {
+            vChunkType.Bank,
+            vChunkType.Bar,
+            vChunkType.Bathhouse,
+            // vChunkType.Bathroom, // [sic]; also included in prohibited
+            vChunkType.Church,
+            vChunkType.DanceClub,
+            vChunkType.FireStation,
+            vChunkType.Hospital,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MusicHall,
+            vChunkType.Pit,
+            vChunkType.PodiumPark,
+            vChunkType.PoliceOutpost,
+            // vChunkType.PoliceStation, // [sic]; also included in prohibited
+            vChunkType.PrivateClub,
+            vChunkType.Shop,
+            vChunkType.SlaveShop,
+            vChunkType.Zoo,
+        };
+        public static List<string> MayorVillageLimitedTo2 = new List<string>()
+        {
+            vChunkType.HouseUptown,
+        };
+        public static List<string> MayorVillageProhibited = new List<string>()
+        {
+            vChunkType.Apartments,
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            vChunkType.Armory,
+            vChunkType.Bathroom,
+            vChunkType.Cabin,
+            vChunkType.Casino,
+            vChunkType.Cave,
+            vChunkType.CityPark,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DeportationCenter,
+            vChunkType.DrugDen,
+            vChunkType.Farm,
+            vChunkType.Graveyard,
+            vChunkType.Greenhouse,
+            vChunkType.HedgeMaze,
+            vChunkType.Hideout,
+            vChunkType.Hotel,
+            vChunkType.House,
+            vChunkType.IceRink,
+            vChunkType.Lab,
+            vChunkType.Mall,
+            vChunkType.Mansion,
+            vChunkType.MilitaryOutpost,
+            vChunkType.MovieTheater,
+            vChunkType.OfficeBuilding,
+            vChunkType.PoliceStation,
+            vChunkType.Prison,
+            vChunkType.Shack,
+            vChunkType.TVStation,
+        };
+        public static List<string> MayorVillageUnlimited = new List<string>()
+        {
+            vChunkType.GatedCommunity,
+            vChunkType.Generic,
+            vChunkType.None,
+        };
+        #endregion
+        #region Park
+        public static List<string> ParkLimitedTo1 = new List<string>()
+        {
+            vChunkType.Graveyard,
+            vChunkType.HedgeMaze,
+            vChunkType.Hideout,
+        };
+        public static List<string> ParkLimitedTo2 = new List<string>()
+        {
+            vChunkType.MilitaryOutpost,
+        };
+        public static List<string> ParkLimitedTo3 = new List<string>()
+        {
+            vChunkType.Cabin,
+            vChunkType.Cave,
+            vChunkType.Farm,
+            vChunkType.Greenhouse,
+        };
+        public static List<string> ParkProhibited = new List<string>()
+        {
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            vChunkType.Bathhouse,
+            vChunkType.Church,
+            vChunkType.CityPark,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DanceClub,
+            vChunkType.DeportationCenter,
+            vChunkType.FireStation,
+            vChunkType.GatedCommunity,
+            vChunkType.Hotel,
+            vChunkType.HouseUptown,
+            vChunkType.IceRink,
+            vChunkType.Mall,
+            vChunkType.Mansion,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MovieTheater,
+            vChunkType.MusicHall,
+            vChunkType.Pit,
+            vChunkType.PodiumPark,
+            vChunkType.PoliceOutpost,
+            vChunkType.PrivateClub,
+            vChunkType.TVStation,
+            vChunkType.Zoo,
+        };
+        public static List<string> ParkUnlimited = new List<string>()
+        {
+            vChunkType.Bathroom,
+            vChunkType.Generic,
+            vChunkType.Shop,
+        };
+        #endregion
+        #region Police State
         public static List<string> PoliceStateAlwaysAllowed = new List<string>()
         {
             vChunkType.ConfiscationCenter,
@@ -948,8 +1208,149 @@ namespace BunnyMod.Content
         {
             vChunkType.DrugDen,
         };
+		#endregion
+		#region Slums
+        public static List<string> SlumsLimitedTo1 = new List<string>()
+        {
+            vChunkType.Bank,
+            vChunkType.Bathroom,
+            vChunkType.Graveyard,
+            vChunkType.Hideout,
+            vChunkType.Hospital,
+            vChunkType.PoliceStation,
+            vChunkType.Prison,
+            vChunkType.Shop,
+            vChunkType.SlaveShop
+        };
+        public static List<string> SlumsLimitedTo2 = new List<string>()
+        {
+            vChunkType.Armory,
+            vChunkType.Bar,
+            vChunkType.Casino,
+            vChunkType.Lab,
+        };
+        public static List<string> SlumsLimitedTo3 = new List<string>()
+        {
+            vChunkType.Apartments,
+            vChunkType.DrugDen,
+            vChunkType.House,
+            vChunkType.OfficeBuilding,
+            vChunkType.Shack,
+        };
+        public static List<string> SlumsProhibited = new List<string>()
+        {
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            vChunkType.Bathhouse,
+            vChunkType.Cabin,
+            vChunkType.Cave,
+            vChunkType.Church,
+            vChunkType.CityPark,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DanceClub,
+            vChunkType.DeportationCenter,
+            vChunkType.Farm,
+            vChunkType.FireStation,
+            vChunkType.GatedCommunity,
+            vChunkType.Greenhouse,
+            vChunkType.HedgeMaze,
+            vChunkType.Hotel,
+            vChunkType.HouseUptown,
+            vChunkType.IceRink,
+            vChunkType.Mall,
+            vChunkType.Mansion,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MilitaryOutpost,
+            vChunkType.MovieTheater,
+            vChunkType.MusicHall,
+            vChunkType.Pit,
+            vChunkType.PodiumPark,
+            vChunkType.PoliceOutpost,
+            vChunkType.PrivateClub,
+            vChunkType.TVStation,
+            vChunkType.Zoo,
+        };
+        public static List<string> SlumsUnlimited = new List<string>()
+        {
+            vChunkType.Generic,
+            vChunkType.None,
+        };
+        #endregion
+        #region Uptown
+        public static List<string> UptownLimitedTo1 = new List<string>()
+        {
+            vChunkType.Bank,
+            vChunkType.Bathhouse,
+            vChunkType.Church,
+            vChunkType.CityPark,
+            vChunkType.ConfiscationCenter,
+            vChunkType.DeportationCenter,
+            vChunkType.FireStation,
+            vChunkType.Graveyard,
+            //vChunkType.Hideout, // [sic]
+            vChunkType.IceRink,
+            vChunkType.Mall,
+            vChunkType.Mansion,
+            vChunkType.Pit,
+            vChunkType.PoliceStation,
+            vChunkType.Shop,
+            vChunkType.SlaveShop,
+            vChunkType.TVStation,
+            vChunkType.Zoo,
+        };
+        public static List<string> UptownLimitedTo2 = new List<string>()
+        {
+            vChunkType.Bathroom,
+            vChunkType.GatedCommunity,
+            vChunkType.MusicHall,
+            vChunkType.PrivateClub,
+        };
+        public static List<string> UptownLimitedTo3 = new List<string>()
+        {
+            vChunkType.PoliceOutpost,
+        };
+        public static List<string> UptownLimitedTo5 = new List<string>()
+        {
+            vChunkType.HouseUptown,
+        };
+        public static List<string> UptownProhibited = new List<string>()
+        {
+            vChunkType.Apartments,
+            vChunkType.Arcade,
+            vChunkType.Arena,
+            vChunkType.Armory,
+            vChunkType.Bar,
+            vChunkType.Cabin,
+            vChunkType.Casino,
+            vChunkType.Cave,
+            vChunkType.DanceClub,
+            vChunkType.DrugDen,
+            vChunkType.Farm,
+            vChunkType.HedgeMaze,
+            vChunkType.Hideout,
+            vChunkType.Hotel,
+            vChunkType.House,
+            vChunkType.MayorHouse,
+            vChunkType.MayorOffice,
+            vChunkType.MilitaryOutpost,
+            vChunkType.MovieTheater,
+            vChunkType.OfficeBuilding,
+            vChunkType.PodiumPark,
+            vChunkType.Prison,
+            vChunkType.Shack,
+        };
+        public static List<string> UptownUnlimited = new List<string>()
+        {
+            vChunkType.Generic,
+            vChunkType.Greenhouse,
+            vChunkType.Hospital,
+            vChunkType.Lab,
+            vChunkType.None,
+        };
+        #endregion
     }
-    public static class vColor // Vanilla Colors
+	public static class vColor // Vanilla Colors
 	{
         public const string
             AlienSkin = "AlienSkin",

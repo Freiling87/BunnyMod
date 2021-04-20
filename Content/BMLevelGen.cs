@@ -339,36 +339,35 @@ namespace BunnyMod.Content
 			BMLog("LoadLevel_CanUseChunk");
 
 			Chunk chunk = null;
-			string type;
+			string description;
 
 			if (GC.basicSpawns)
-				type = myChunkBasic.description;
+				description = myChunkBasic.description;
 			else
 			{
 				chunk = myChunkGo.GetComponent<Chunk>();
-				type = chunk.description;
+				description = chunk.description;
 			}
 			
-			int chunkTypeLimitCounter = 0;
-
+			int sameChunkTypeCount = 0;
+			
 			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
 			{
-				__result = false;
+				__result = false; 
 				return false;
 			}
-			
+
 			if (GC.basicSpawns)
 				using (List<ChunkData>.Enumerator enumerator = __instance.usedChunksThisLevelBasic.GetEnumerator())
 					while (enumerator.MoveNext())
 					{
 						ChunkData chunkData = enumerator.Current;
 
-						if (type == chunkData.description && checkSessionData)
-							chunkTypeLimitCounter++;
-
-						if (type != "Generic" && type != "Lake" && myChunkBasic == chunkData)
+						if (description == chunkData.description && checkSessionData)
+							sameChunkTypeCount++;
+						if (description != "Generic" && description != "Lake" && myChunkBasic == chunkData)
 						{
-							__result = false;
+							__result = false; 
 							return false;
 						}
 					}
@@ -377,133 +376,73 @@ namespace BunnyMod.Content
 			{
 				Chunk component = gameObject.GetComponent<Chunk>();
 
-				if (type == component.description && checkSessionData)
-					chunkTypeLimitCounter++;
+				if (description == component.description && checkSessionData)
+					sameChunkTypeCount++;
 
-				if (type != "Generic" && type != "Lake" && chunk == component)
+				if (description != "Generic" && description != "Lake" && chunk == component)
 				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
 			}
 
-			if (GC.challenges.Contains(cChallenge.PoliceState))
+			if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Slums &&description != "Generic")
+				{
+					if (!(sameChunkTypeCount >= 3) && GC.challenges.Contains(cChallenge.PoliceState) && vChunkType.PoliceStateAlwaysAllowed.Contains(description))
+					{
+						__result = true;
+						return false;
+					}
+
+					if ((GC.sessionDataBig.curLevelEndless == 1 && description == vChunkType.PoliceStation) ||
+						vChunkType.SlumsProhibited.Contains(description) ||
+						(sameChunkTypeCount >= 3 && vChunkType.SlumsLimitedTo3.Contains(description)) ||
+						(sameChunkTypeCount >= 2 && vChunkType.SlumsLimitedTo2.Contains(description)) ||
+						(sameChunkTypeCount >= 1 && vChunkType.SlumsLimitedTo1.Contains(description)))
+					{
+						__result = false; 
+						return false;
+					}
+				}
+			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Industrial && description != "Generic")
 			{
-				if (vChunkType.PoliceStateAlwaysAllowed.Contains(type))
+				if (!(sameChunkTypeCount >= 3) && GC.challenges.Contains(cChallenge.PoliceState) && vChunkType.PoliceStateAlwaysAllowed.Contains(description))
+				{
 					__result = true;
-				if (vChunkType.PoliceStateProhibited.Contains(type))
-					__result = false;
-
-				return false;
-			}
-			else if (GC.challenges.Contains(cChallenge.AnCapistan))
-			{
-				if (vChunkType.AnCapistanAlwaysAllowed.Contains(type))
-					__result = true;
-				if (vChunkType.AnCapistanProhibited.Contains(type))
-					__result = false;
-
-				return false;
-			}
-
-			if (GC.levelTheme == 0)
-			{
-				if (type != "Generic")
-				{
-					if (GC.sessionDataBig.curLevelEndless == 1 && type == "PoliceStation")
-						return false;
-					
-					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
-					{
-						__result = false;
-						return false;
-					}
-					
-					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Lab"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop"))
-					{
-						__result = false;
-						return false;
-					}
-				}
-			}
-			else if (GC.levelTheme == 1)
-			{
-				if (type != "Generic")
-				{
-					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Apartments" || type == "DrugDen" || type == "House" || type == "OfficeBuilding" || type == "Shack"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Armory" || type == "Bar" || type == "Casino" || type == "Hideout" || type == "Factory" || type == "Lab"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hospital" || type == "PoliceStation" || type == "Prison" || type == "Shop" || type == "SlaveShop" || type == "FireStation"))
-					{
-						__result = false;
-						return false;
-					}
-				}
-			}
-			else if (GC.levelTheme == 2)
-			{
-				if (type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "Hotel" || type == "IceRink" || type == "Mall" || type == "MovieTheater" || type == "TVStation" || type == "CityPark" || type == "Church" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "FireStation" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
-				{
-					__result = false;
 					return false;
 				}
 
-				if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && (type == "Cave" || type == "Cabin" || type == "Farm" || type == "Greenhouse"))
+				if (vChunkType.IndustrialProhibited.Contains(description) ||
+						(sameChunkTypeCount >= 3 && vChunkType.IndustrialLimitedTo3.Contains(description)) ||
+						(sameChunkTypeCount >= 2 && vChunkType.IndustrialLimitedTo2.Contains(description)) ||
+						(sameChunkTypeCount >= 1 && vChunkType.IndustrialLimitedTo1.Contains(description)))
 				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
-
-				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "MilitaryOutpost")
+			}
+			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Park)
+			{
+				if (vChunkType.ParkProhibited.Contains(description) ||
+					(sameChunkTypeCount >= 3 && vChunkType.ParkLimitedTo3.Contains(description)) ||
+					(sameChunkTypeCount >= 2 && vChunkType.ParkLimitedTo2.Contains(description)) ||
+					(sameChunkTypeCount >= 1 && vChunkType.ParkLimitedTo1.Contains(description)))
 				{
-					__result = false;
-					return false;
-				}
-
-				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "HedgeMaze" || type == "Hideout" || type == "Graveyard"))
-				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
 
 				if (chunkShape >= 0 && chunkShape <= 4)
 				{
 					bool flag = false;
-				
+
 					for (int i = 0; i < __instance.levelChunks.Count; i++)
 						if (__instance.levelChunks[i].description != "Generic" && __instance.levelChunks[i].description != "Lake" && Vector2.Distance(__instance.levelChunks[i].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
 							flag = true;
 					
-					if (flag && type != "Generic" && type != "Lake")
+					if (flag && description != "Generic" && description != "Lake")
 					{
-						__result = false;
+						__result = false; 
 						return false;
 					}
 				}
@@ -513,138 +452,100 @@ namespace BunnyMod.Content
 					if (chunkShape == 6)
 					{
 						string a = GC.rnd.RandomSelect("Level3ChunkHuge", "RandomScenarios");
-				
-						if (type == "Hideout" && a == "NotHideout")
-						{
-							__result = false;
-							return false;
-						}
 
-						if (type != "Hideout" && a == "Hideout")
+						if ((description == "Hideout" && a == "NotHideout") ||
+							(description != "Hideout" && a == "Hideout"))
 						{
-							__result = false;
+							__result = false; 
 							return false;
 						}
 					}
 
-					__result = type == "Hideout" || type == "Graveyard" || type == "MilitaryOutpost" || type == "Cabin" || type == "Greenhouse" || type == "Cave" || type == "Farm" || type == "HedgeMaze";
-					{
-						__result = false;
-						return false;
-					}
+					__result = (
+						description == "Hideout" || 
+						description == "Graveyard" || 
+						description == "MilitaryOutpost" || 
+						description == "Cabin" || 
+						description == "Greenhouse" || 
+						description == "Cave" || 
+						description == "Farm" || 
+						description == "HedgeMaze");
+					return false;
 				}
 
 				if (chunkShape == 1 || chunkShape == 2 || chunkShape == 3)
 				{
-					__result = true;
+					__result = true; 
 					return false;
 				}
 
-				if (!(type == "Generic") && !(type == "Lake") && !(type == "Hideout") && !(type == "MilitaryOutpost") && !(type == "Cabin") && !(type == "Greenhouse") && !(type == "Cave") && !(type == "Farm") && !(type == "HedgeMaze") && !(type == "Shop") && !(type == "Bathroom") && !(type == "Graveyard"))
+				if (!(description == "Generic") && 
+					!(description == "Lake") && 
+					!(description == "Hideout") && 
+					!(description == "MilitaryOutpost") && 
+					!(description == "Cabin") && 
+					!(description == "Greenhouse") && 
+					!(description == "Cave") && 
+					!(description == "Farm") && 
+					!(description == "HedgeMaze") && 
+					!(description == "Shop") && 
+					!(description == "Bathroom") && 
+					!(description == "Graveyard"))
 				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
-				
-				if (type == "Lake")
+
+				if (description == "Lake")
 				{
-					bool canLakeSpawn = false;
-				
+					bool flag2 = false;
+
 					for (int j = 0; j < __instance.levelChunks.Count; j++)
 						if ((__instance.levelChunks[j].description == "Lake" || __instance.levelChunks[j].description == "Island") && Vector2.Distance(__instance.levelChunks[j].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
-							canLakeSpawn = true;
-					
-					__result = !canLakeSpawn;
+							flag2 = true;
+
+					__result = !flag2;
+					return false;
 				}
 
-				__result = true;
+				__result = true; 
 				return false;
 			}
-			else if (GC.levelTheme == 3)
+			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Downtown && description != "Generic")
 			{
-				if (type != "Generic")
+				if (vChunkType.DowntownProhibited.Contains(description) ||
+					(sameChunkTypeCount >= 3 && description == "Temp") ||
+					(sameChunkTypeCount >= 2 && vChunkType.DowntownLimitedTo2.Contains(description)) ||
+					(sameChunkTypeCount >= 1 && vChunkType.DowntownLimitedTo1.Contains(description)))
 				{
-					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Hospital" || type == "Bank" || type == "TVStation" || type == "GatedCommunity" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "PrivateClub" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "PoliceOutpost" || type == "HouseUptown" || type == "Pit" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
-					{
-						__result = false;
-						return false;
-					}
-					
-					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "Temp")
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "Bar" || type == "Casino" || type == "Hotel"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && (type == "Bank" || type == "Bathroom" || type == "Graveyard" || type == "Hideout" || type == "PoliceStation" || type == "Shop" || type == "SlaveShop" || type == "Arena" || type == "DanceClub" || type == "MusicHall" || type == "Arcade" || type == "IceRink" || type == "MovieTheater" || type == "Church" || type == "CityPark" || type == "Mall" || type == "FireStation"))
-					{
-						__result = false;
-						return false;
-					}
-				}
-			}
-			else if (GC.levelTheme == 4)
-			{
-				if (type != "Generic")
-				{
-					if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Farm" || type == "Shack" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Bar" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "DanceClub" || type == "Hotel" || type == "Hideout" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse")
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (5 * LevelSizeMod(30)) && type == "HouseUptown")
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (3 * LevelSizeMod(30)) && type == "PoliceOutpost")
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && (type == "MusicHall" || type == "GatedCommunity" || type == "PrivateClub" || type == "Bathroom"))
-					{
-						__result = false;
-						return false;
-					}
-
-					if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Graveyard" || type == "Hideout" || type == "Shop" || type == "SlaveShop" || type == "IceRink" || type == "TVStation" || type == "Church" || type == "CityPark" || type == "Mall" || type == "Mansion" || type == "Bathhouse" || type == "Zoo" || type == "DeportationCenter" || type == "PoliceStation" || type == "ConfiscationCenter" || type == "Pit" || type == "FireStation"))
-					{
-						__result = false;
-						return false;
-					}
-				}
-			}
-			else if (GC.levelTheme == 5 && type != "Generic")
-			{
-				if (type == "Island" || type == "Lake" || type == "Cabin" || type == "HedgeMaze" || type == "MilitaryOutpost" || type == "Cave" || type == "Greenhouse" || type == "Farm" || type == "Shack" || type == "Lab" || type == "Prison" || type == "Armory" || type == "Apartments" || type == "OfficeBuilding" || type == "DrugDen" || type == "House" || type == "Casino" || type == "Arcade" || type == "MovieTheater" || type == "Arena" || type == "Hotel" || type == "Hideout" || type == "ConfiscationCenter" || type == "DeportationCenter" || type == "Bathroom" || type == "SlaveShop" || type == "TVStation" || type == "CityPark" || type == "Hideout" || type == "IceRink" || type == "Mall" || type == "Mansion" || type == "PoliceStation" || type == "Graveyard")
-				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
-
-				if (chunkTypeLimitCounter >= (2 * LevelSizeMod(30)) && type == "HouseUptown")
+			}
+			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Uptown && description != "Generic")
+			{
+				if (vChunkType.UptownProhibited.Contains(description) ||
+					(sameChunkTypeCount >= 5 && vChunkType.UptownLimitedTo5.Contains(description)) ||
+					(sameChunkTypeCount >= 3 && vChunkType.UptownLimitedTo3.Contains(description)) ||
+					(sameChunkTypeCount >= 2 && vChunkType.UptownLimitedTo2.Contains(description)) ||
+					(sameChunkTypeCount >= 1 && !__instance.squareMap && vChunkType.UptownLimitedTo1.Contains(description)))
 				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
-
-				if (chunkTypeLimitCounter >= (1 * LevelSizeMod(30)) && !__instance.squareMap && (type == "Bank" || type == "Shop" || type == "Church" || type == "Bathhouse" || type == "Zoo" || type == "PoliceStation" || type == "Pit" || type == "FireStation" || type == "DanceClub" || type == "Bar" || type == "MusicHall" || type == "PodiumPark" || type == "MayorOffice" || type == "MayorHouse" || type == "PoliceOutpost" || type == "Hospital" || type == "Shop" || type == "PrivateClub" || type == "Bathroom"))
+			}
+			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.MayorVillage && description != "Generic")
+			{
+				if (vChunkType.MayorVillageProhibited.Contains(description) ||
+					(sameChunkTypeCount >= 2 && vChunkType.MayorVillageLimitedTo2.Contains(description)) ||
+					(sameChunkTypeCount >= 1 && vChunkType.MayorVillageLimitedTo1.Contains(description)))
 				{
-					__result = false;
+					__result = false; 
 					return false;
 				}
 			}
 
+			__result = true; 
 			return false;
 		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement

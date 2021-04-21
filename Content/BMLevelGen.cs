@@ -30,7 +30,7 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			// LoadLevel
-			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
+			//Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
@@ -122,13 +122,13 @@ namespace BunnyMod.Content
 				// Wall & Floor Mods
 
 				case cChallenge.CityOfSteel:
-					return vFloor.MetalFloor;
+					return vFloor.MetalPlates;
 
 				case cChallenge.GreenLiving:
 					return vFloor.Grass;
 
 				case cChallenge.Panoptikopolis:
-					return vFloor.CleanTiles;
+					return vFloor.CleanTilesRaised;
 
 				case cChallenge.ShantyTown:
 					return vFloor.DirtFloor;
@@ -167,7 +167,7 @@ namespace BunnyMod.Content
 					return vFloorTileGroup.Uptown;
 
 				case cChallenge.ShantyTown:
-					return vFloorTileGroup.UnknownPossiblyGeneric;
+					return vFloorTileGroup.Slums;
 
 				case cChallenge.SpelunkyDory:
 					return vFloorTileGroup.Industrial;

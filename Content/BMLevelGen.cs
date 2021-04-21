@@ -106,13 +106,13 @@ namespace BunnyMod.Content
 				// Wall & Floor Mods
 
 				case cChallenge.CityOfSteel:
-					return vFloor.MetalFloor;
+					return vFloor.MetalPlates;
 
 				case cChallenge.GreenLiving:
 					return vFloor.Grass;
 
 				case cChallenge.Panoptikopolis:
-					return vFloor.CleanTiles;
+					return vFloor.CleanTilesRaised;
 
 				case cChallenge.ShantyTown:
 					return vFloor.DirtFloor;
@@ -151,7 +151,7 @@ namespace BunnyMod.Content
 					return vFloorTileGroup.Uptown;
 
 				case cChallenge.ShantyTown:
-					return vFloorTileGroup.UnknownPossiblyGeneric;
+					return vFloorTileGroup.Slums;
 
 				case cChallenge.SpelunkyDory:
 					return vFloorTileGroup.Industrial;

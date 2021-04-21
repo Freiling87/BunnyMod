@@ -308,6 +308,7 @@ namespace BunnyMod.Content
 						InvItem invItem = new InvItem();
 						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
 						invItem.ItemSetup(false);
+						invItem.invItemCount = invItem.rewardCount;
 						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
 						agent.inventory.equippedWeapon = invItem;
 
@@ -318,6 +319,7 @@ namespace BunnyMod.Content
 						InvItem invItem = new InvItem();
 						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
 						invItem.ItemSetup(false);
+						invItem.invItemCount = invItem.rewardCount;
 						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
 						agent.inventory.equippedWeapon = invItem;
 

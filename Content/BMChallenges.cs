@@ -36,13 +36,14 @@ namespace BunnyMod.Content
 			AnCapistan.Available = true;
 			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
 			AnCapistan.Conflicting.AddRange(vChallenge.LawEnforcement);
-			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns });
+			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
 			AnCapistan.IsActive = false;
 
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
 			PoliceState.Available = true;
+			PoliceState.Conflicting.Add(cChallenge.ArcologyEcology);
 			PoliceState.Conflicting.AddRange(cChallenge.Criminals);
 			PoliceState.Conflicting.AddRange(vChallenge.LawEnforcement);
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);

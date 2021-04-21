@@ -730,6 +730,10 @@ namespace BunnyMod.Content
         }
         public static int ToolCost(Agent agent, int baseCost)
         {
+            BMLog("ToolCost:");
+            BMLog("\tagent = " + agent.name);
+            BMLog("\tbaseCost = " + baseCost);
+
             if (agent.statusEffects.hasTrait(cTrait.TamperTantrum))
                 return (baseCost / 2);
 
@@ -837,6 +841,11 @@ namespace BunnyMod.Content
         }
         public static bool InvDatabase_SubtractFromItemCount_c(int slotNum, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
+            BMLog("InvDatabase_SubtractFromItemCount_c:");
+            BMLog("\tslotNum = " + slotNum);
+            BMLog("\tamount = " + amount);
+            BMLog("\ttoolbarMove = " + toolbarMove);
+
             if (BMHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
@@ -847,7 +856,12 @@ namespace BunnyMod.Content
             return true;
 		}
         public static bool InvDatabase_SubtractFromItemCount_d(InvItem invItem, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
-		{
+        {
+            BMLog("InvDatabase_SubtractFromItemCount_d:");
+            BMLog("\tInvItem = " + invItem.invItemName);
+            BMLog("\tamount = " + amount);
+            BMLog("\ttoolbarMove = " + toolbarMove);
+
             if (BMHeader.tools.Contains(invItem.invItemName))
             {
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))

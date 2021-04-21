@@ -600,7 +600,7 @@ namespace BunnyMod.Content
             #region Stealth
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait(cTrait.StealthBastardDeluxe, true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
-                new CustomNameInfo("You can also through broken windows without taking a scratch. You can also hide in Bathtubs, Plants, Pool Tables, and Big Tables. [Bug: If you get stuck between it and the wall, you might clip through the wall]"));
+                new CustomNameInfo("- Move through broken windows without taking a scratch.\n- Open and close doors silently.\n- Hide in Bathtubs, Plants, Pool Tables, and Big Tables.\n\n[Bug: If you get stuck between it and the wall, you might clip through the wall]"));
             StealthBastardDeluxe.Available = true;
             StealthBastardDeluxe.AvailableInCharacterCreation = true;
             StealthBastardDeluxe.CanRemove = false;

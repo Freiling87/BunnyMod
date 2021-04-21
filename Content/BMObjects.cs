@@ -879,12 +879,7 @@ namespace BunnyMod.Content
         }
         public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
 		{
-            bool agentMindControlled = false;
-
-            if (myAgent != null && myAgent.oma.mindControlled)
-                agentMindControlled = true;
-            
-            if (__instance.gc.serverPlayer || __instance.gc.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == __instance.gc.playerAgent || agentMindControlled)))
+            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
             {
                 if (__instance.open && !__instance.destroyed)
                 {
@@ -893,23 +888,18 @@ namespace BunnyMod.Content
                     if (myAgent != null)
                     {
                         if (myAgent.isPlayer > 0 && myAgent.localPlayer)
-                            __instance.gc.audioHandler.Play(__instance, "DoorClose");
+                            GC.audioHandler.Play(__instance, "DoorClose");
                         else
                         {
-                            bool flag2 = false;
-                         
                             if (myAgent.oma.mindControlled && myAgent.mindControlAgent != null && myAgent.mindControlAgent.localPlayer)
-                                flag2 = true;
-                         
-                            if (flag2)
-                                __instance.gc.audioHandler.Play(__instance, "DoorClose");
+                                GC.audioHandler.Play(__instance, "DoorClose");
                             else
-                                __instance.gc.audioHandler.Play(__instance, "DoorCloseAI");
+                                GC.audioHandler.Play(__instance, "DoorCloseAI");
                         }
                     }
                     else
-                        __instance.gc.audioHandler.Play(__instance, "DoorClose");
-                    
+                        GC.audioHandler.Play(__instance, "DoorClose");
+
                     if (__instance.prisonDoor > 0 && __instance.locked)
                     {
                         __instance.graphUpdateScene.setTag = 5;
@@ -921,13 +911,9 @@ namespace BunnyMod.Content
                         __instance.graphUpdateScene.Apply();
                     }
 
-                    __instance.gc.tileInfo.DirtyWalls();
-
-                    //__instance.StartCoroutine(__instance.CloseDoorAnim());
-
-                    MethodInfo CloseDoorAnim = AccessTools.DeclaredMethod(typeof(Door), "CloseDoorAnim");
-                    CloseDoorAnim.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
+                    GC.tileInfo.DirtyWalls();
+                    __instance.StartCoroutine(Door_CloseDoorAnim(__instance));
+                    
                     if (__instance.objectShadow != null)
                         __instance.objectShadow.gameObject.SetActive(true);
                     
@@ -939,18 +925,17 @@ namespace BunnyMod.Content
                     __instance.meleeCanPass = false;
                     __instance.lowInteractionPriority = false;
                     __instance.doorCooldown = 0.25f;
-                    
-                    if (!myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
-                        if (myAgent != null && myAgent.isPlayer > 0 && __instance.gc.serverPlayer && !__instance.outsideDoor)
-                            __instance.gc.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
+
+                    if (myAgent != null && myAgent.isPlayer > 0 && GC.serverPlayer && !__instance.outsideDoor && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+                        GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
                     
                     if (__instance.locked)
                     {
                         if (__instance.prisonObject > 0 && !__instance.prisonWallDown)
-                            for (int i = 0; i < __instance.gc.agentList.Count; i++)
+                            for (int i = 0; i < GC.agentList.Count; i++)
                             {
-                                Agent agent = __instance.gc.agentList[i];
-                                TileData tileData = __instance.gc.tileInfo.GetTileData(agent.tr.position);
+                                Agent agent = GC.agentList[i];
+                                TileData tileData = GC.tileInfo.GetTileData(agent.tr.position);
 
                                 if (tileData.chunkID == __instance.startingChunk && tileData.prison == __instance.prisonObject && tileData.prison > 0)
                                     agent.prisoner = __instance.prisonObject;
@@ -974,7 +959,7 @@ namespace BunnyMod.Content
                         __instance.graphUpdateScene.Apply();
                     }
 
-                    __instance.gc.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, false);
+                    GC.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, false);
 
                     try
                     {
@@ -986,31 +971,31 @@ namespace BunnyMod.Content
                     }
                     catch { }
                     
-                    __instance.gc.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.Door;
+                    GC.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.Door;
                     
-                    if (__instance.gc.multiplayerMode && !__instance.gc.clientControlling)
+                    if (GC.multiplayerMode && !GC.clientControlling)
                     {
-                        if (!__instance.gc.serverPlayer)
+                        if (!GC.serverPlayer)
                         {
                             if (myAgent != null)
                             {
                                 if (myAgent.oma.mindControlled)
-                                    __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorMindControl", myAgent.objectNetID);
+                                    GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorMindControl", myAgent.objectNetID);
                                 else
                                     myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
                             }
                             else
-                                __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+                                GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
                         }
                         else if (myAgent != null)
                             myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorClient");
                         else
-                            __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorClient");
+                            GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoorClient");
                     }
 
-                    for (int j = 0; j < __instance.gc.playerAgentList.Count; j++)
+                    for (int j = 0; j < GC.playerAgentList.Count; j++)
                     {
-                        Agent agent2 = __instance.gc.playerAgentList[j];
+                        Agent agent2 = GC.playerAgentList[j];
                     
                         if (agent2.localPlayer && agent2.interactionHelper.gameObject.activeSelf)
                             agent2.interactionHelper.StartCoroutine(agent2.interactionHelper.RefreshMe());
@@ -1024,13 +1009,21 @@ namespace BunnyMod.Content
                 if (myAgent != null)
                     myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
                 else
-                    __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
-             
+                    GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
+                
                 __instance.StopInteraction();
             }
 
             return false;
-		}
+        }
+        public static IEnumerator Door_CloseDoorAnim(Door __instance) // Non-Patch
+        {
+            __instance.objectHitbox.GetComponent<MeshRenderer>().enabled = true;
+
+            yield return new WaitForSeconds(0.02f);
+
+            yield break;
+        }
         public static void Door_DetermineButtons(Door __instance) // Postfix
         {
             if (__instance.buttons.Any())
@@ -1038,12 +1031,7 @@ namespace BunnyMod.Content
         }
         public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
 		{
-            bool agentMindControlled = false;
-
-            if (myAgent != null && myAgent.oma.mindControlled)
-                agentMindControlled = true;
-            
-            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || agentMindControlled)))
+            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
             {
                 if (__instance.hasDetonator)
                 {
@@ -1072,12 +1060,7 @@ namespace BunnyMod.Content
                             GC.audioHandler.Play(__instance, "DoorOpen");
                         else
                         {
-                            bool flag2 = false;
-                         
                             if (myAgent.oma.mindControlled && myAgent.mindControlAgent != null && myAgent.mindControlAgent.localPlayer)
-                                flag2 = true;
-                            
-                            if (flag2)
                                 GC.audioHandler.Play(__instance, "DoorOpen");
                             else
                                 GC.audioHandler.Play(__instance, "DoorOpenAI");
@@ -1094,11 +1077,7 @@ namespace BunnyMod.Content
                     
                     GC.tileInfo.DirtyWalls();
                     GC.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, true);
-
-                    //__instance.StartCoroutine(__instance.OpenDoorAnim());
-
-                    MethodInfo openDoorAnim = AccessTools.DeclaredMethod(typeof(Door), "OpenDoorAnim");
-                    openDoorAnim.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                    __instance.StartCoroutine(Door_OpenDoorAnim(__instance));
 
                     if (__instance.objectShadow != null)
                         __instance.objectShadow.gameObject.SetActive(false);
@@ -1112,8 +1091,8 @@ namespace BunnyMod.Content
                     __instance.meleeCanPass = true;
                     __instance.lowInteractionPriority = true;
                     __instance.doorCooldown = 0.25f;
-                    
-                    if (GC.serverPlayer && ! myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+
+                    if (GC.serverPlayer && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                         GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
                     
                     bool flag3 = false;
@@ -1124,7 +1103,7 @@ namespace BunnyMod.Content
                     if (myAgent != null && !remote && !__instance.boughtKeyInChunk)
                     {
                         GC.OwnCheck(myAgent, __instance.go, "Door", 0);
-                    
+
                         if (__instance.prisonObject > 0 || __instance.doorType == "DoorNoEntry")
                         {
                             if (__instance.interactingAgent != null)
@@ -1145,7 +1124,7 @@ namespace BunnyMod.Content
                         __instance.graphUpdateScene.setTag = 8;
                         __instance.graphUpdateScene.Apply();
                     }
-                    
+
                     if (__instance.prisonObject > 0)
                     {
                         if (!__instance.prisonWallDown)
@@ -1156,7 +1135,7 @@ namespace BunnyMod.Content
                         if (__instance.locked && __instance.extraVar != 10)
                             __instance.Unlock();
                     }
-                    
+
                     if (GC.levelType == "Tutorial" && __instance.interactingAgent == GC.playerAgent && __instance.wasLocked)
                     {
                         if (__instance.interactingAgent.inventory.HasItem("Key") && !___usedTutorialKey && (GC.tutorial.tutorialPart == "UseKeyOnDoor" || GC.tutorial.tutorialPart == "LoseHealth" || GC.tutorial.tutorialPart == "TranquilizeTarget"))
@@ -1173,7 +1152,6 @@ namespace BunnyMod.Content
                     {
                         if (__instance.lightObstacle == null)
                             __instance.lightObstacle = __instance.tr.Find("LightObstacle").gameObject;
-
                         if (__instance.hasLightObstacle && __instance.lightObstacle.activeSelf)
                             __instance.lightObstacle.SetActive(false);
                     }
@@ -1181,7 +1159,7 @@ namespace BunnyMod.Content
 
                     GC.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.None;
                     __instance.StopInteraction();
-                    
+
                     if (__instance.fire != null && !__instance.fire.destroying)
                     {
                         __instance.fire.timeLeft = 0f;
@@ -1216,6 +1194,7 @@ namespace BunnyMod.Content
                     }
 
                     if (GC.levelType == "HomeBase")
+                    {
                         if (__instance.extraVar == 30)
                         {
                             for (int j = 0; j < GC.agentList.Count; j++)
@@ -1228,12 +1207,12 @@ namespace BunnyMod.Content
                         }
                         else if (__instance.extraVar == 31 && !GC.cinematics.playedResistanceLeaderIntro && GC.justFinishedTutorial)
                             GC.cinematics.ResistanceLeaderIntro();
+                    }
                 }
-
                 for (int k = 0; k < GC.playerAgentList.Count; k++)
                 {
                     Agent agent = GC.playerAgentList[k];
-                 
+                    
                     if (agent.localPlayer && agent.interactionHelper.gameObject.activeSelf)
                         agent.interactionHelper.StartCoroutine(agent.interactionHelper.RefreshMe());
                 }
@@ -1249,6 +1228,14 @@ namespace BunnyMod.Content
             __instance.StopInteraction();
 
             return false;
+        }
+        public static IEnumerator Door_OpenDoorAnim(Door __instance) // Non-Patch
+		{
+            __instance.objectHitbox.GetComponent<MeshRenderer>().enabled = false;
+
+            yield return new WaitForSeconds(0.02f);
+
+            yield break;
         }
         #endregion
         #region Elevator

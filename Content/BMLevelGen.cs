@@ -319,7 +319,7 @@ namespace BunnyMod.Content
 		#region LoadLevel
 		public void LoadLevel_00()
 		{
-			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
+			//Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });

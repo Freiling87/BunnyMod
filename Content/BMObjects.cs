@@ -25,6 +25,7 @@ namespace BunnyMod.Content
 
             ObjectReal_00();
             PlayfieldObject_00();
+            Relationships_00();
             StatusEffects_00();
 
             AlarmButton_00();
@@ -545,6 +546,17 @@ namespace BunnyMod.Content
             else
                 return false;
         }
+		#endregion
+		#region Relationships
+        public void Relationships_00()
+		{
+            Prefix(typeof(Relationships), "OwnCheck", GetType(), "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
+		}
+        public static bool OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
+		{
+            // TODO: PoliceState sets all Objects NoStrikesIfDestroyed to false
+            return true;
+		}
         #endregion
         #region StatusEffects
         public void StatusEffects_00()

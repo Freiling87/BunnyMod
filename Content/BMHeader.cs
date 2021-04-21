@@ -157,17 +157,17 @@ namespace BunnyMod.Content
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 
+        public static List<string> AddCriminals = new List<string>()
+        {
+            cChallenge.HoodlumsWonderland,
+            cChallenge.MobTown,
+            cChallenge.YoungMenInTheNeighborhood,
+        };
         public static List<string> FloorsAndFeatures = new List<string>()
         {
             cChallenge.ArcologyEcology,
             cChallenge.SunkenCity,
             cChallenge.TransitExperiment
-        };
-        public static List<string> Criminals = new List<string>()
-        {
-            cChallenge.HoodlumsWonderland,
-            cChallenge.MobTown,
-            cChallenge.YoungMenInTheNeighborhood,
         };
         public static List<string> Leashes = new List<string>()
         {
@@ -184,6 +184,7 @@ namespace BunnyMod.Content
         public static List<string> Overhauls = new List<string>()
         {
             cChallenge.AnCapistan,
+            cChallenge.MACITS,
             cChallenge.PoliceState
         };
         public static List<string> Population = new List<string>()
@@ -1874,11 +1875,19 @@ namespace BunnyMod.Content
             TimeLimitQuestsGiveMoreTime = "TimeLimitQuestsGiveMoreTime",
             ZombieMutator = "ZombieMutator",
             ZombiesWelcome = "ZombiesWelcome";
-
-        public static List<string> LawEnforcement = new List<string>()
+        public static List<string> AddsLawEnforcement = new List<string>()
+        {
+            vChallenge.SupercopLand,
+        };
+        public static List<string> AddsNonhumans = new List<string>()
+        {
+            vChallenge.CoolWithCannibals,
+            vChallenge.ZombieMutator,
+            vChallenge.ZombiesWelcome,
+        };
+        public static List<string> RemovesLawEnforcement = new List<string>()
         {
             vChallenge.NoCops,
-            vChallenge.SupercopLand,
         };
         public static List<string> Zombies = new List<string>()
         {

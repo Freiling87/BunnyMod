@@ -34,8 +34,8 @@ namespace BunnyMod.Content
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
 				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
 			AnCapistan.Available = true;
+			AnCapistan.Conflicting.AddRange(vChallenge.AddsLawEnforcement);
 			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
-			AnCapistan.Conflicting.AddRange(vChallenge.LawEnforcement);
 			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
 			AnCapistan.IsActive = false;
 
@@ -43,18 +43,20 @@ namespace BunnyMod.Content
 				new CustomNameInfo("000: Overhaul: Mostly Automated Comfortable Inclusive Terrestrial Socialism"),
 				new CustomNameInfo("The Revolution is complete! No more living in privation to feed the fat capitalist pigs! Now all that's left is to have another Revolution and fuck it all up!"));
 			MACITS.Available = true;
+			MACITS.Conflicting.AddRange(cChallenge.AddCriminals);
 			MACITS.Conflicting.AddRange(cChallenge.Overhauls);
-			MACITS.Conflicting.AddRange(cChallenge.Criminals);
-			MACITS.Conflicting.AddRange(vChallenge.LawEnforcement);
+			MACITS.Conflicting.AddRange(vChallenge.RemovesLawEnforcement);
+			MACITS.Conflicting.Add(vChallenge.MixedUpLevels);
 			MACITS.IsActive = false;
 
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
 			PoliceState.Available = true;
-			PoliceState.Conflicting.Add(cChallenge.ArcologyEcology);
-			PoliceState.Conflicting.AddRange(cChallenge.Criminals);
-			PoliceState.Conflicting.AddRange(vChallenge.LawEnforcement);
+			PoliceState.Conflicting.AddRange(cChallenge.AddCriminals);
+			PoliceState.Conflicting.AddRange(vChallenge.AddsNonhumans);
+			PoliceState.Conflicting.AddRange(cChallenge.Overhauls);
+			PoliceState.Conflicting.AddRange(vChallenge.RemovesLawEnforcement);
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
 			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
 			PoliceState.IsActive = false;

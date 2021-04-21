@@ -27,9 +27,17 @@ namespace BunnyMod.Content
 			if (__instance.agentName == vAgent.ResistanceLeader)
 			{
 				if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
+				{
+					__instance.SetStrength(3);
+					__instance.SetEndurance(2);
 					__instance.inventory.startingHeadPiece = vArmorHead.HardHat;
+				}
 				else if (BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
+				{
+					__instance.SetStrength(3);
+					__instance.SetEndurance(3);
 					__instance.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
+				}
 			}
 			else if (__instance.agentName == cAgent.ResistanceSoldier)
 			{

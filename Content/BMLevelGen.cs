@@ -29,25 +29,10 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			// LoadLevel
-			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
-			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
-			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "FillMapChunks2", GetType(), "LoadLevel_FillMapChunks2_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "LoadStuff2", GetType(), "LoadLevel_LoadStuff2_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
-			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
-			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
-
-			// RandomWalls
-			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
-
-			// SpawnerFloor
-			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
-
-			// SpawnerObject
-			Prefix(typeof(SpawnerObject), "spawn", GetType(), "SpawnerObject_spawn", new Type[1] { typeof(string) });
+			LoadLevel_00();
+			RandomWalls_00();
+			SpawnerFloor_00();
+			SpawnerObject_00();
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -63,7 +48,6 @@ namespace BunnyMod.Content
 				
 			return vanilla;
 		}
-
 		public static bool IsNextToLake(Vector2 spot) =>
 			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
 			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
@@ -236,7 +220,7 @@ namespace BunnyMod.Content
 		}
 		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
 		{
-			BMLog("LoadLevel_CanUseChunk");
+			BMLog("LoadLevel_SpawnRoamerSquad");
 
 			List<Agent> spawnedAgentList = new List<Agent>();
 			//playerAgent.gangStalking = Agent.gangCount;
@@ -332,17 +316,30 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
-		#region BasicSpawn
-
-		#endregion
 		#region LoadLevel
-		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, bool __result) // Prefix
+		public void LoadLevel_00()
 		{
-			BMLog("LoadLevel_CanUseChunk");
+			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
+			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "FillMapChunks2", GetType(), "LoadLevel_FillMapChunks2_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "LoadStuff2", GetType(), "LoadLevel_LoadStuff2_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
+			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
+			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
+		}
+		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, ref bool __result) // Prefix
+		{
+			BMLog("LoadLevel_CanUseChunk:");
+			int bmlogIterator = 1;
+			BMLog(bmlogIterator++.ToString());
 
 			#region Generic
 			Chunk chunk = null;
 			string description;
+
+			BMLog(bmlogIterator++.ToString());
 
 			if (GC.basicSpawns)
 				description = myChunkBasic.description;
@@ -351,7 +348,9 @@ namespace BunnyMod.Content
 				chunk = myChunkGo.GetComponent<Chunk>();
 				description = chunk.description;
 			}
-			
+
+			BMLog(bmlogIterator++.ToString());
+
 			int sameChunkTypeCount = 0;
 			
 			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
@@ -359,6 +358,8 @@ namespace BunnyMod.Content
 				__result = false; 
 				return false;
 			}
+
+			BMLog(bmlogIterator++.ToString());
 
 			if (GC.basicSpawns)
 				using (List<ChunkData>.Enumerator enumerator = __instance.usedChunksThisLevelBasic.GetEnumerator())
@@ -375,6 +376,8 @@ namespace BunnyMod.Content
 						}
 					}
 
+			BMLog(bmlogIterator++.ToString());
+
 			foreach (GameObject gameObject in __instance.usedChunksThisLevel)
 			{
 				Chunk component = gameObject.GetComponent<Chunk>();
@@ -389,10 +392,14 @@ namespace BunnyMod.Content
 				}
 			}
 
+			BMLog(bmlogIterator++.ToString());
+
 			#endregion
 			#region Levels
 			if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Slums &&description != "Generic")
 			{
+				BMLog("\tLevelTheme "+ GC.levelTheme +": '" + description + "'");
+
 				if ((GC.sessionDataBig.curLevelEndless == 1 && description == vChunkType.PoliceStation) ||
 					vChunkType.SlumsProhibited.Contains(description) ||
 					(sameChunkTypeCount >= 3 && vChunkType.SlumsLimitedTo3.Contains(description)) ||
@@ -404,6 +411,8 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Industrial && description != "Generic")
 			{
+				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
+
 				if (vChunkType.IndustrialProhibited.Contains(description) ||
 						(sameChunkTypeCount >= 3 && vChunkType.IndustrialLimitedTo3.Contains(description)) ||
 						(sameChunkTypeCount >= 2 && vChunkType.IndustrialLimitedTo2.Contains(description)) ||
@@ -414,6 +423,8 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Park)
 			{
+				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
+
 				if (vChunkType.ParkProhibited.Contains(description) ||
 					(sameChunkTypeCount >= 3 && vChunkType.ParkLimitedTo3.Contains(description)) ||
 					(sameChunkTypeCount >= 2 && vChunkType.ParkLimitedTo2.Contains(description)) ||
@@ -504,6 +515,8 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Downtown && description != "Generic")
 			{
+				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
+
 				if (vChunkType.DowntownProhibited.Contains(description) ||
 					(sameChunkTypeCount >= 3 && description == "Temp") ||
 					(sameChunkTypeCount >= 2 && vChunkType.DowntownLimitedTo2.Contains(description)) ||
@@ -514,6 +527,8 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Uptown && description != "Generic")
 			{
+				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
+
 				if (vChunkType.UptownProhibited.Contains(description) ||
 					(sameChunkTypeCount >= 5 && vChunkType.UptownLimitedTo5.Contains(description)) ||
 					(sameChunkTypeCount >= 3 && vChunkType.UptownLimitedTo3.Contains(description)) ||
@@ -525,6 +540,8 @@ namespace BunnyMod.Content
 			}
 			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.MayorVillage && description != "Generic")
 			{
+				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
+
 				if (vChunkType.MayorVillageProhibited.Contains(description) ||
 					(sameChunkTypeCount >= 2 && vChunkType.MayorVillageLimitedTo2.Contains(description)) ||
 					(sameChunkTypeCount >= 1 && vChunkType.MayorVillageLimitedTo1.Contains(description)))
@@ -9146,6 +9163,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region RandomWalls
+		public void RandomWalls_00()
+		{
+			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+		}
 		public static bool RandomWalls_fillWalls() // Replacement
 		{
 			string wallType = null;
@@ -9176,10 +9197,11 @@ namespace BunnyMod.Content
 			return false;
 		}
 		#endregion
-		#region SpawnerBasic
-
-		#endregion
 		#region SpawnerFloor
+		public void SpawnerFloor_00()
+		{
+			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
+		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
 		{
 			if (GC.levelTheme == 2 && floorName == "FlamePit")
@@ -9664,6 +9686,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region SpawnerObject
+		public void SpawnerObject_00()
+		{
+			Prefix(typeof(SpawnerObject), "spawn", GetType(), "SpawnerObject_spawn", new Type[1] { typeof(string) });
+		}
 		public static bool SpawnerObject_spawn(string objectRealName) // Prefix
 		{
 			BMLog("SpawnerObject_spawn:");

@@ -244,7 +244,7 @@ namespace BunnyMod.Content
         {
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating");
+            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0]);
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             if (__instance is FlamingBarrel)
@@ -291,7 +291,7 @@ namespace BunnyMod.Content
         {
             BMHeader.ConsoleMessage.LogMessage("ObjectReal_Interact: " + __instance.name);
 
-            MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact");
+            MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
             interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
             if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
@@ -1508,7 +1508,7 @@ namespace BunnyMod.Content
         }
         public static bool Manhole_Start(Manhole __instance) // Replacement
 		{
-            MethodInfo start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start");
+            MethodInfo start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
             start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             if (GC.levelTheme != 3 && !GC.challenges.Contains(vChallenge.MixedUpLevels) && GC.levelFeeling != vLevelFeeling.WarZone && !BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen) && GC.serverPlayer)
@@ -1662,7 +1662,7 @@ namespace BunnyMod.Content
 
         //          Agent agent = __instance.interactingAgent;
 
-        //          MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
+        //          MethodInfo DetermineButtons_Base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0]{});
         //          DetermineButtons_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
         //          if (Refrigerator_Variables[__instance].wasHacked)
@@ -1887,7 +1887,7 @@ namespace BunnyMod.Content
         }
         public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
-            MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
+            MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
             determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             if (__instance.interactingAgent.interactionHelper.interactingFar)
@@ -1987,7 +1987,7 @@ namespace BunnyMod.Content
         }
         public static bool SlotMachine_PressedButton(string buttonText, int buttonPrice, SlotMachine __instance) // Replacement
         {
-            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton");
+            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
             if (buttonText == "Play1")
@@ -2086,7 +2086,7 @@ namespace BunnyMod.Content
         {
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject");
+            MethodInfo damagedObject = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
             damagedObject.GetMethodWithoutOverrides<Action<PlayfieldObject, float>>(__instance).Invoke(damagerObject, damageAmount);
 
             if (damageAmount >= 15f && !__instance.startedFlashing)
@@ -2249,8 +2249,8 @@ namespace BunnyMod.Content
 		{
             if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe) && agent.statusEffects.hasTrait(vTrait.Diminutive))
 			{
-                MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact");
-                interact_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+                interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
                 __instance.ShowObjectButtons();
                 

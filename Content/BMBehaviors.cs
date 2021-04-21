@@ -22,17 +22,9 @@ namespace BunnyMod.Content
 		{
 			Initialize_Names();
 
-			// AgentInteractions
-			//Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
-			//Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
-			//Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
-			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
-
-			// LoadLevel
-			//Prefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
-
-			// PlayfieldObject
-			//Postfix(typeof(PlayfieldObject), "determineMoneyCost", GetType(), "PlayfieldObject_determineMoneyCost", new Type[2] { typeof(int), typeof(string) }); // Uncapitalized in source
+			AgentInteractions_00();
+			LoadLevel_00();
+			PlayfieldObject_00();
 		}
 		public void FixedUpdate()
 		{
@@ -194,6 +186,13 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region AgentInteractions
+		public void AgentInteractions_00()
+		{
+			//Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			//Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
+			//Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
+			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
+		}
 		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
 		{
 			BMLog("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
@@ -287,6 +286,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region LoadLevel
+		public void LoadLevel_00()
+		{
+			//Prefix(typeof(LoadLevel), "SetupMore4", GetType(), "LoadLevel_SetupMore4", new Type[0] { });
+		}
 		public static void LoadLevel_SetupMore4(LoadLevel __instance) // Prefix
 		{
 			BMLog("LoadLevel.SetupMore4");
@@ -321,6 +324,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region PlayfieldObject
+		public void PlayfieldObject_00()
+		{
+			//Postfix(typeof(PlayfieldObject), "determineMoneyCost", GetType(), "PlayfieldObject_determineMoneyCost", new Type[2] { typeof(int), typeof(string) }); // Uncapitalized in source
+		}
 		public static void PlayfieldObject_determineMoneyCost(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result) // Postfix // Uncapitalized in source
 		{                               // ↑ [sic]
 			BMLog("PlayfieldObject_determineMoneyCost: transactionType = " + transactionType +"; PFO = " + __instance.name);

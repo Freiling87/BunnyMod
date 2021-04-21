@@ -20,18 +20,17 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			// ExitPoint
-			Prefix(typeof(ExitPoint), "DetermineIfCanExit", GetType(), "ExitPoint_DetermineIfCanExit", new Type[0] { });
-
-            // Quests
-            Prefix(typeof(Quests), "GetLevelExitChallengeItem", GetType(), "Quests_GetLevelExitChallengeItem", new Type[0] { });
-
-			// SkillPoints
-			Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
+            ExitPoint_00();
+            Quests_00();
+            SkillPoints_00();
 		}
 
 		#region ExitPoint
-		public static bool ExitPoint_DetermineIfCanExit(ref bool __result, ExitPoint __instance) // Prefix
+        public void ExitPoint_00()
+        {
+            Prefix(typeof(ExitPoint), "DetermineIfCanExit", GetType(), "ExitPoint_DetermineIfCanExit", new Type[0] { });
+        }
+        public static bool ExitPoint_DetermineIfCanExit(ref bool __result, ExitPoint __instance) // Prefix
 		{
 			if (GC.challenges.Contains(cChallenge.RushinRevolution))
 			{
@@ -41,8 +40,13 @@ namespace BunnyMod.Content
 
 			return true;
 		}
-		#endregion
-		#region Quests
+        #endregion
+        #region Quests
+        public void Quests_00()
+        {
+            Prefix(typeof(Quests), "GetLevelExitChallengeItem", GetType(), "Quests_GetLevelExitChallengeItem", new Type[0] { });
+
+        }
         public static bool Quests_GetLevelExitChallengeItem(Quests __instance, ref InvItem __result) // Prefix
 		{
             bool flag = false;
@@ -73,9 +77,13 @@ namespace BunnyMod.Content
 
             return true;
         }
-		#endregion
-		#region SkillPoints
-		public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
+        #endregion
+        #region SkillPoints
+        public void SkillPoints_00()
+        {
+            Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
+        }
+        public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance, ref Agent ___agent) // Prefix
         {
             BMLog("SkillPoints_AddPointsLate");
 

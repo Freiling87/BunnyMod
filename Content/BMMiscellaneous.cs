@@ -19,17 +19,16 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			// InvInterface
-			//Prefix(typeof(InvInterface), "RealAwake", GetType(), "InvInterface_RealAwake", new Type[0] { });
-
-			// RandomOther
-			//Postfix(typeof(RandomOther), "fillOther", GetType(), "RandomOther_fillOther", new Type[0] { });
-
-			// RandomSelection
-			Prefix(typeof(RandomSelection), "RandomSelect", GetType(), "RandomSelection_RandomSelect", new Type[2] { typeof(string), typeof(string) });
+			InvInterface_00();
+			RandomOther_00();
+			RandomSelection_00();
 		}
 
 		#region InvInterface
+		public void InvInterface_00()
+		{
+			//Prefix(typeof(InvInterface), "RealAwake", GetType(), "InvInterface_RealAwake", new Type[0] { });
+		}
 		public static bool InvInterface_RealAwake(InvInterface __instance, ref bool ___isRealAwake, ref int ___slotXPos, ref int ___slotYPos) // Replacement
 		{
 			___isRealAwake = true;
@@ -646,6 +645,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region RandomOther
+		public void RandomOther_00()
+		{
+			//Postfix(typeof(RandomOther), "fillOther", GetType(), "RandomOther_fillOther", new Type[0] { });
+		}
 		public static void RandomOther_fillOther(ref RandomSelection ___component, ref RandomList ___rList) // Postfix
 		{
 			BMLog("RandomOther_fillOther");
@@ -671,6 +674,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region RandomSelection
+		public void RandomSelection_00()
+		{
+			Prefix(typeof(RandomSelection), "RandomSelect", GetType(), "RandomSelection_RandomSelect", new Type[2] { typeof(string), typeof(string) });
+		}
 		public static bool RandomSelection_RandomSelect(string rName, string rCategory, ref string __result) // Prefix
 		{
 			if (rName.StartsWith("FireSpewerSpawnChance") && BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable))

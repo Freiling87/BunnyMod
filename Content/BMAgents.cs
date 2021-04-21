@@ -17,11 +17,14 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			// Agent
-			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
+			Agent_00();
 		}
 
 		#region Agent
+		public void Agent_00()
+		{
+			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
+		}
 		public static void Agent_SetupAgentStats(string transformationType, Agent __instance) // Postfix
 		{
 			if (__instance.agentName == vAgent.ResistanceLeader)

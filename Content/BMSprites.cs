@@ -19,11 +19,9 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			//CharacterCreation
-			Postfix(typeof(CharacterCreation), "Awake", GetType(), "CharacterCreation_Awake", new Type[0] { });
-
-			// GameResources
-			Postfix(typeof(GameResources), "SetupDics", GetType(), "GameResources_SetupDics", new Type[0] { });
+			CharacterCreation_00();
+			CharacterSelect_00();
+			GameResources_00();
 		}
 		public void FixedUpdate()
 		{
@@ -36,6 +34,10 @@ namespace BunnyMod.Content
 		}
 
 		#region CharacterCreation
+		public void CharacterCreation_00()
+		{
+			Postfix(typeof(CharacterCreation), "Awake", GetType(), "CharacterCreation_Awake", new Type[0] { });
+		}
 		public static void CharacterCreation_Awake(CharacterCreation __instance) // Postfix
 		{
 			__instance.facialHairTypes.Add("TestFacialHair");
@@ -43,12 +45,20 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region CharacterSelect
+		public void CharacterSelect_00()
+		{
+
+		}
 		public static void CharacterSelect_FakeStart(CharacterSelect __instance) // Postfix
 		{
 			__instance.facialHairTypes.Add("TestFacialHair");
 		}
 		#endregion
 		#region GameResources
+		public void GameResources_00()
+		{
+			Postfix(typeof(GameResources), "SetupDics", GetType(), "GameResources_SetupDics", new Type[0] { });
+		}
 		public static void GameResources_SetupDics(GameResources __instance) // Postfix
 		{
 			__instance.facialHairDic.Add("TestFacialHair", __instance.facialHairList[10]);

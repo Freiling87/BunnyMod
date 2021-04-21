@@ -17,11 +17,8 @@ namespace BunnyMod.Content
 		{
 			InitializeAbilities();
 
-			// Agent
-			Postfix(typeof(Agent), "FindOperatingTime", GetType(), "Agent_FindOperatingTime", new Type[2] { typeof(PlayfieldObject), typeof(float) });
-
-			// StatusEffects
-			Postfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
+			Agent_00();
+			StatusEffects_00();
 		}
 		public static void InitializeAbilities()
 		{
@@ -1231,12 +1228,20 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region Agent
+		public void Agent_00()
+		{
+			Postfix(typeof(Agent), "FindOperatingTime", GetType(), "Agent_FindOperatingTime", new Type[2] { typeof(PlayfieldObject), typeof(float) });
+		}
 		public static void Agent_FindOperatingTime(PlayfieldObject operatingOnObject, float timeToUnlock, Agent __instance, ref float __result) // Postfix
 		{
 			__result *= GC.selectedTimeScale;
 		}
 		#endregion
 		#region StatusEffects
+		public void StatusEffects_00()
+		{
+			Postfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
+		}
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
 			if (__instance.agent.inventory.equippedSpecialAbility != null)

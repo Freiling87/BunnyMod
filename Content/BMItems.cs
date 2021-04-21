@@ -22,11 +22,8 @@ namespace BunnyMod.Content
 		{
             InitializeItems();
 
-            // ItemFunctions
-            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
-
-            // Melee
-            Postfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
+            ItemFunctions_00();
+            Melee_00();
         }
         public static void InitializeItems_Inactive()
 		{
@@ -38,7 +35,12 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region ItemFunctions
-		public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent) // Postfix
+        public void ItemFunctions_00()
+		{
+            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+
+        }
+        public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent) // Postfix
         {
             if (item.invItemName == "Beer")
             {
@@ -51,6 +53,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Melee
+        public void Melee_00()
+		{
+            Postfix(typeof(Melee), "Attack", GetType(), "Melee_Attack", new Type[1] { typeof(bool) });
+        }
         public static void Melee_Attack(bool specialAbility, Melee __instance) // Postfix
         {
             InvItem invItem = (specialAbility ? __instance.agent.inventory.equippedSpecialAbility : __instance.agent.inventory.equippedWeapon) ?? __instance.agent.inventory.fist;
@@ -80,10 +86,5 @@ namespace BunnyMod.Content
             }
         }
         #endregion
-        #region PlayfieldObject
-        public static void PlayfieldObject_FindDamage() // 
-        {
-        }//I think this is for Spear & Beer Can
-		#endregion
     }
 }

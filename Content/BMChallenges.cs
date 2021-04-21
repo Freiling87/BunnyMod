@@ -20,11 +20,8 @@ namespace BunnyMod.Content
 		{
 			InitializeMutators();
 
-			// Bullet
-			Postfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
-
-			// SpawnerMain
-			Prefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
+			Bullet_00();
+			SpawnerMain_00();
 		}
 		public static void InitializeMutators()
 		{
@@ -266,6 +263,10 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region Bullet
+		public void Bullet_00()
+		{
+			Postfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
+		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
 			if (GC.challenges.Contains(cChallenge.ScaryGuns))
@@ -276,6 +277,10 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region SpawnerMain
+		public void SpawnerMain_00()
+		{
+			Prefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
+		}
 		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
 		{
 			if (!GC.challenges.Contains(cChallenge.ScaryGuns)

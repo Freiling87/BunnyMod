@@ -7453,25 +7453,25 @@ namespace BunnyMod.Content
 						string ambience = "";
 						string description = chunk.description;
 
-						else 
-							switch(description)
-							{
-								case vChunkType.Casino:
-									ambience = vAmbience.Casino; // This was left out of vanilla.
-									break;
-								case vChunkType.Cave:
-									ambience = vAmbience.Cave;
-									break;
-								case vChunkType.CityPark:
-									ambience = vAmbience.Park;
-									break;
-								case vChunkType.Bathhouse:
-									ambience = vAmbience.BathHouse;
-									break;
-								case vChunkType.Graveyard:
-									ambience = vAmbience.Graveyard;
-									break;
-							}
+						 
+						switch(description)
+						{
+							case vChunkType.Casino:
+								ambience = vAmbience.Casino; // This was left out of vanilla.
+								break;
+							case vChunkType.Cave:
+								ambience = vAmbience.Cave;
+								break;
+							case vChunkType.CityPark:
+								ambience = vAmbience.Park;
+								break;
+							case vChunkType.Bathhouse:
+								ambience = vAmbience.BathHouse;
+								break;
+							case vChunkType.Graveyard:
+								ambience = vAmbience.Graveyard;
+								break;
+						}
 
 						if (ambience != "")
 						{

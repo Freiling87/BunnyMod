@@ -22,122 +22,32 @@ namespace BunnyMod.Content
         {
             Initialize_Names();
 
-            // ObjectReal
-            Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
-            Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
-            Postfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons", new Type[0]);
-            Prefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating", new Type[0]);
-            Prefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
-            Prefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[1] { typeof(PlayfieldObject) });
-            Postfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-            Prefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate", new Type[0]);
-            Prefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[2] { typeof(string), typeof(int) });
-            Postfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start", new Type[0]);
+            ObjectReal_00();
+            PlayfieldObject_00();
+            StatusEffects_00();
 
-            // PlayfieldObject
-            //this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) }); 
-            Prefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating", new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
-            Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
-
-            // StatusEffects
-            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
-            Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
-
-
-
-            // Alarm Button
-            // DetermineButtons
-            // DoLockDown
-            // EndLockdown
-            // Interact
-            // PressedButton
-            // SpawnEnforcer
-
-            // Bathtub
-            Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
-            
-            // Crate
-            Postfix(typeof(Crate), "DetermineButtons", GetType(), "Crate_DetermineButtons", new Type[0] { });
-
-            // Door
-            Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
-            Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
-            Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
-
-            // Elevator
-            // DetermineButtons
-            // Interact
-            // PressedButton
-
-            // Fire Hydrant
-            // DetermineButtons
-            // Interact
-            // PressedButton
-
-            // Flaming Barrel
-            Postfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
-
-            // Generator
-            Postfix(typeof(Generator), "DetermineButtons", GetType(), "Generator_DetermineButtons", new Type[0] { });
-
-            // Generator (Overclocked)
-            Postfix(typeof(Generator2), "DetermineButtons", GetType(), "Generator2_DetermineButtons", new Type[0] { });
-
-            // Hole
-            Prefix(typeof(Hole), "EnterRange", GetType(), "Hole_EnterRange", new Type[1] { typeof(GameObject) });
-
-            // Laser Emitter
-            Postfix(typeof(LaserEmitter), "DetermineButtons", GetType(), "LaserEmitter_DetermineButtons", new Type[0] { });
-
-            // Manhole
-            Postfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
-            Prefix(typeof(Manhole), "Start", GetType(), "Manhole_Start", new Type[0] { });
-
-            // Plant
-            Postfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
-
-            // Police Box
-            Postfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PoliceBox_DetermineButtons", new Type[0] { });
-
-            // Pool Table
-            Postfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars", new Type[0] { });
-
-			//// Refrigerator
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
-			//BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
-
-			//// Slot Machine
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
-			//BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
-
-            // Satellite Dish
-			Postfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
-
-            // Stove
-            Prefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
-            Prefix(typeof(Stove), "DestroyMe3", GetType(), "Stove_DestroyMe3", new Type[0] { });
-            Postfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars", new Type[0] { });
-            Postfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars", new Type[0] { });
-
-            // Table (Big)
-            Postfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars", new Type[0] { });
-
-            // Television
-            //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
-
-            // Toilet
-            // DetermineButtons
-            // Interact
-            // PressedButton
-
-            // Window
-            Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
-            Prefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
+            AlarmButton_00();
+            BathTub_00();
+            Crate_00();
+            Door_00();
+            Elevator_00();
+            FireHydrant_00();
+            FlamingBarrel_00();
+            Generator_00();
+            Generator2_00();
+            Hole_00();
+            LaserEmitter_00();
+            Manhole_00();
+            Plant_00();
+            PoliceBox_00();
+            PoolTable_00();
+            Refrigerator_00();
+            SlotMachine_00();
+            Stove_00();
+            TableBig_00();
+            Television_00();
+            Toilet_00();
+            Window_00();
         }
         public void FixedUpdate()
         {
@@ -230,6 +140,19 @@ namespace BunnyMod.Content
         #endregion
 
         #region ObjectReal
+        public void ObjectReal_00()
+		{
+            Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
+            Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
+            Postfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons", new Type[0]);
+            Prefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating", new Type[0]);
+            Prefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
+            Prefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[1] { typeof(PlayfieldObject) });
+            Postfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+            Prefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate", new Type[0]);
+            Prefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[2] { typeof(string), typeof(int) });
+            Postfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start", new Type[0]);
+        }
         public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
         {
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
@@ -545,6 +468,12 @@ namespace BunnyMod.Content
         }
         #endregion
         #region PlayfieldObject
+        public void PlayfieldObject_00()
+		{
+            //this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) }); 
+            Prefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating", new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
+            Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
+        }
         public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType, PlayfieldObject __instance) // Prefix
         {
             try
@@ -577,6 +506,11 @@ namespace BunnyMod.Content
         }
         #endregion
         #region StatusEffects
+        public void StatusEffects_00()
+		{
+            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+            Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
+        }
         public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
         {
             if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
@@ -590,14 +524,332 @@ namespace BunnyMod.Content
         #endregion
 
         #region Alarm Button
-        // DetermineButtons
-        // DoLockDown
-        // EndLockdown
-        // Interact
-        // PressedButton
-        // SpawnEnforcer
+        public void AlarmButton_00()
+		{
+            Prefix(typeof(AlarmButton), "DetermineButtons", GetType(), "AlarmButton_DetermineButtons", new Type[0] { });
+		}
+        public static bool AlarmButton_DetermineButtons(AlarmButton __instance) // Replacement
+		{
+            BMLog("AlarmButton_DetermineButtons");
+
+            MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[0] { });
+            determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                if (!__instance.hacked)
+                    __instance.buttons.Add("AllAccessAlarmButton");
+
+                if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+                    __instance.buttons.Add("HackExplode");
+            }
+
+            if (GC.challenges.Contains(cChallenge.PoliceState) && !__instance.hacked)
+			{
+                if (!__instance.hacked)
+                {
+                    __instance.buttons.Add("AlarmButtonPoliceState");
+                    __instance.buttonPrices.Add(25);
+                }
+                else
+                    __instance.buttons.Add("AlarmButtonPoliceState");
+            }
+
+            return false;
+        }
+        public static bool AlarmButton_DoLockdown(bool closePanicRoomDoors, AlarmButton __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.PoliceState))
+            {
+                if (AlarmButton.lockdownTimerCooldown > 0f)
+                    return false;
+                
+                if (__instance.gc.serverPlayer)
+                {
+                    if (__instance.gc.lockdown)
+                        AlarmButton.lockdownTimer = 7.5f;
+                    else
+                    {
+                        AlarmButton.lockdownTimer = 7.5f;
+                        AlarmButton.lockdownTimerBig = 40f;
+
+                        if (!__instance.noLockdown)
+                            __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "DoLockdown");
+                        
+                        __instance.endLockDownGoing = true;
+                        __instance.keepGoing = true;
+                        __instance.firstTick = true;
+                        __instance.mustKeepGoing = false;
+                        __instance.InvokeRepeating("EndLockdownCoroutine", 0.01f, 0.1f);
+                        
+                        if (!__instance.noLockdown)
+                            for (int i = 0; i < __instance.gc.agentList.Count; i++)
+                                if (__instance.gc.agentList[i].pathing == 1)
+                                {
+                                    __instance.gc.agentList[i].pathfindingAI.rePath = true;
+                                    __instance.gc.tileInfo.DoWandererRepath();
+                                }
+                    }
+                }
+
+                if (!__instance.noLockdown && __instance.gc.levelFeeling != "WarZone" && __instance.gc.levelFeeling != "Ooze" && __instance.gc.levelFeeling != "Riot" && __instance.gc.levelFeeling != "Zombies" && !__instance.gc.challenges.Contains("ZombieMutator") && !__instance.gc.lockdown)
+                {
+                    __instance.gc.audioHandler.Play(__instance.gc.playerAgent, "LockdownWallUp");
+
+                    for (int j = 0; j < __instance.gc.lockdownWallList.Count; j++)
+                        __instance.gc.lockdownWallList[j].SetWallUpAnim();
+                }
+
+                if (__instance.gc.serverPlayer && closePanicRoomDoors)
+                {
+                    int prison = __instance.gc.tileInfo.GetTileData(__instance.tr.position).prison;
+
+                    for (int k = 0; k < __instance.gc.objectRealList.Count; k++)
+                    {
+                        ObjectReal objectReal = __instance.gc.objectRealList[k];
+
+                        if (objectReal.startingChunk == __instance.startingChunk && objectReal.objectName == "Door" && prison != 0 && prison == __instance.gc.tileInfo.GetTileData(objectReal.tr.position).prison)
+                        {
+                            bool flag = true;
+
+                            for (int l = 0; l < __instance.gc.agentList.Count; l++)
+                            {
+                                Agent agent = __instance.gc.agentList[l];
+
+                                if (agent.curTileData.prison == prison && agent.curTileData.chunkID == __instance.startingChunk && (agent.ownerID != __instance.owner || agent.startingChunk != __instance.startingChunk) && !agent.upperCrusty)
+                                    flag = false;
+                            }
+
+                            if (flag)
+                                ((Door)objectReal).CloseDoor(null);
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+        public static bool AlarmButton_EndLockdown(AlarmButton __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.PoliceState))
+            {
+                if (AlarmButton.lockdownTimerCooldown <= 0f)
+                    __instance.StartCoroutine(AlarmButton_LockdownCooldown(__instance));
+                
+                if (__instance.gc.levelTheme == 4 || __instance.gc.loadLevel.hasLockdownWalls)
+                {
+                    if (__instance.gc.serverPlayer)
+                        __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "EndLockdown");
+                    
+                    if (!__instance.noLockdown)
+                        for (int i = 0; i < __instance.gc.agentList.Count; i++)
+                            if (__instance.gc.agentList[i].pathing == 1)
+                            {
+                                __instance.gc.agentList[i].pathfindingAI.rePath = true;
+                                __instance.gc.tileInfo.DoWandererRepath();
+                            }
+                    
+                    if (__instance.gc.lockdown)
+                        __instance.gc.audioHandler.Play(__instance.gc.playerAgent, "LockdownWallDown");
+                    
+                    for (int j = 0; j < __instance.gc.lockdownWallList.Count; j++)
+                    {
+                        LockdownWall lockdownWall = __instance.gc.lockdownWallList[j];
+                    
+                        if (lockdownWall.objectCollider.enabled)
+                            lockdownWall.SetWallDownAnim();
+                    }
+
+                    for (int k = 0; k < __instance.gc.objectRealListWithDestroyed.Count; k++)
+                    {
+                        ObjectReal objectReal = __instance.gc.objectRealListWithDestroyed[k];
+                    
+                        if (objectReal.objectName == "AlarmButton" && objectReal != null)
+                        {
+                            int prison = __instance.gc.tileInfo.GetTileData(objectReal.tr.position).prison;
+                        
+                            for (int l = 0; l < __instance.gc.objectRealList.Count; l++)
+                            {
+                                ObjectReal objectReal2 = __instance.gc.objectRealList[l];
+                            
+                                if (objectReal2.startingChunk == objectReal.startingChunk && objectReal2.objectName == "Door" && prison != 0 && prison == __instance.gc.tileInfo.GetTileData(objectReal2.tr.position).prison)
+                                    ((Door)objectReal2).OpenDoor(null);
+                            }
+                        }
+                    }
+
+                    __instance.StartCoroutine(AlarmButton_JustEndedLockdown(__instance));
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+        public static bool AlarmButton_Interact(Agent agent, AlarmButton __instance) // Replacement
+		{
+            BMLog("AlarmButton_Interact");
+
+			MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+			interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
+
+			__instance.lastHitByAgent = __instance.interactingAgent;
+
+            if (!__instance.isBroken())
+            {
+                if (GC.challenges.Contains(cChallenge.PoliceState))
+                {
+                    __instance.ShowObjectButtons();
+
+                    return false;
+                }
+                else
+                {
+                    if (agent.upperCrusty || __instance.hacked)
+                        __instance.ToggleSwitch(__instance.interactingAgent, null);
+                    else
+                        __instance.Say("CantUseAlarmButton"); // base
+                }
+            }
+
+            __instance.StopInteraction();
+
+            return false;
+        }
+        public static IEnumerator AlarmButton_JustEndedLockdown(AlarmButton __instance) // Prefix
+		{
+            GC.justEndedLockdown = true;
+
+            yield return new WaitForSeconds(0.4f);
+
+            GC.justEndedLockdown = false;
+
+            yield break;
+        }
+        public static IEnumerator AlarmButton_LockdownCooldown(AlarmButton __instance) // Non-Patch
+		{
+            AlarmButton.lockdownTimerCooldown = 5f;
+
+            while (AlarmButton.lockdownTimerCooldown > 0f)
+            {
+                AlarmButton.lockdownTimerCooldown -= 0.1f;
+
+                if (!GC.loadComplete)
+                    AlarmButton.lockdownTimerCooldown = 0f;
+
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            AlarmButton.lockdownTimerCooldown = 0f;
+
+            yield break;
+        }
+        public static bool AlarmButton_PressedButton(string buttonText, int buttonPrice, AlarmButton __instance) // Replacement
+		{
+            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[2] { typeof(string), typeof(int) });
+            pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+            if (buttonText == "AllAccessAlarmButton")
+            {
+                if ((!__instance.interactingAgent.oma.superSpecialAbility || !(__instance.interactingAgent.agentName == "Hacker")) && !__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+                    __instance.hackable = false;
+
+                __instance.hacked = true;
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "AllAccess");
+            }
+            else if (buttonText == "AlarmButtonPoliceState")
+			{
+                if (__instance.moneySuccess(buttonPrice))
+                    __instance.ToggleSwitch(__instance.interactingAgent, null);
+                else
+                    __instance.interactingAgent.Say("I can't afford this. I should have worked harder!");
+            }
+
+            __instance.StopInteraction();
+
+            return false;
+        }
+        public static IEnumerator AlarmButton_SetSwitchOn(AlarmButton __instance) // Non-Patch
+		{
+            __instance.switchOn = true;
+
+            yield return new WaitForSeconds(0.5f);
+
+            __instance.switchOn = false;
+
+            yield break;
+        }
+        public static bool AlarmButton_ToggleSwitch(Agent causerAgent, Agent criminal, AlarmButton __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.PoliceState))
+			{
+                if (GC.serverPlayer)
+                {
+                    if (causerAgent.isPlayer != 0)
+                    {
+                        if (causerAgent.hasProtector)
+                        {
+                            __instance.Say("AlarmAlreadyActive");
+                            __instance.StopInteraction();
+                        }
+                        else if (causerAgent.spawnedSupercops >= 3 && !GC.challenges.Contains("NoLimits") && !GC.challenges.Contains(cChallenge.PoliceState))
+                        {
+                            __instance.Say("AlarmLimitReached");
+                            __instance.StopInteraction();
+                        }
+                        else
+                        {
+                            GC.audioHandler.Play(__instance, "AlarmButton");
+                            __instance.SpawnEnforcer(causerAgent, criminal);
+                        }
+                    }
+                    else if (!__instance.switchOn)
+                    {
+                        if (!__instance.switchOn)
+                            __instance.StartCoroutine(AlarmButton_SetSwitchOn(__instance));
+                        
+                        if (!__instance.destroyed || __instance.destroying)
+                            GC.audioHandler.Play(__instance, "AlarmButton");
+                        
+                        if (__instance.functional)
+                        {
+                            __instance.StartCoroutine(AlarmButton_WaitToBecomeActive(__instance));
+                            __instance.SpawnEnforcer(causerAgent, criminal);
+                        }
+                        
+                        if (!__instance.destroying)
+                            causerAgent.usedAlarmButton = true;
+                    }
+
+                    __instance.DoLockdown(true);
+
+                    return false;
+                }
+                else
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "ToggleSwitch");
+
+                return false;
+			}
+
+            return true;
+		}
+        public static IEnumerator AlarmButton_WaitToBecomeActive(AlarmButton __instance) // Non-Patch
+		{
+            for (; ; )
+                yield return null;
+
+            yield break;
+        }
         #endregion
         #region Bathtub
+        public void BathTub_00()
+		{
+            Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
+        }
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
@@ -608,6 +860,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Crate
+        public void Crate_00()
+		{
+            Postfix(typeof(Crate), "DetermineButtons", GetType(), "Crate_DetermineButtons", new Type[0] { });
+        }
         public static void Crate_DetermineButtons(Crate __instance) // Postfix
         {
             if (__instance.buttons.Any())
@@ -615,6 +871,12 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Door
+        public void Door_00()
+		{
+            Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
+            Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
+        }
         public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
 		{
             bool agentMindControlled = false;
@@ -990,17 +1252,29 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Elevator
+        public void Elevator_00()
+		{
+
+		}
         // DetermineButtons
         // Interact
         // PressedButton
         #endregion
         #region Fire Hydrant
+        public void FireHydrant_00()
+		{
+
+		}
         // Fire Hydrant
         // DetermineButtons
         // Interact
         // PressedButton
         #endregion
         #region FlamingBarrel
+        public void FlamingBarrel_00()
+		{
+            Postfix(typeof(FlamingBarrel), "SetVars", GetType(), "FlamingBarrel_SetVars", new Type[0] { });
+        }
         public static void FlamingBarrel_GrilledFud(FlamingBarrel __instance) // Non-patch
         {
             InvItem rawFud = __instance.interactingAgent.inventory.FindItem("Fud");
@@ -1044,6 +1318,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Generator 
+        public void Generator_00()
+		{
+            Postfix(typeof(Generator), "DetermineButtons", GetType(), "Generator_DetermineButtons", new Type[0] { });
+        }
         public static void Generator_DetermineButtons(Generator __instance) // Postfix
         {
             if (__instance.buttons.Any())
@@ -1051,14 +1329,22 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Generator2
+        public void Generator2_00()
+        {
+            Postfix(typeof(Generator2), "DetermineButtons", GetType(), "Generator2_DetermineButtons", new Type[0] { });
+        }
         public static void Generator2_DetermineButtons(Generator2 __instance) // Postfix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
-		#endregion
-		#region Hole
-		public static bool Hole_EnterRange(GameObject myObject, Hole __instance) // Prefix
+        #endregion
+        #region Hole
+        public void Hole_00()
+        {
+            Prefix(typeof(Hole), "EnterRange", GetType(), "Hole_EnterRange", new Type[1] { typeof(GameObject) });
+        }
+        public static bool Hole_EnterRange(GameObject myObject, Hole __instance) // Prefix
 		{
             if (GC.loadComplete)
                 if (myObject.CompareTag("Agent"))
@@ -1075,15 +1361,24 @@ namespace BunnyMod.Content
 
             return true;
 		}
-		#endregion
-		#region LaserEmitter
-		public static void LaserEmitter_DetermineButtons(LaserEmitter __instance) // Postfix
+        #endregion
+        #region LaserEmitter
+        public void LaserEmitter_00()
+        {
+            Postfix(typeof(LaserEmitter), "DetermineButtons", GetType(), "LaserEmitter_DetermineButtons", new Type[0] { });
+        }
+        public static void LaserEmitter_DetermineButtons(LaserEmitter __instance) // Postfix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
         #endregion
         #region Manhole
+        public void Manhole_00()
+        {
+            Postfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
+            Prefix(typeof(Manhole), "Start", GetType(), "Manhole_Start", new Type[0] { });
+        }
         public static void Manhole_FlushYourself(Agent agent) // Non-Patch
         {
             List<ObjectReal> exits = new List<ObjectReal>();
@@ -1243,6 +1538,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Plant
+        public void Plant_00()
+        {
+            Postfix(typeof(Plant), "SetVars", GetType(), "Plant_SetVars", new Type[0] { });
+        }
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
@@ -1251,6 +1550,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region PoliceBox
+        public void PoliceBox_00()
+        {
+            Postfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PoliceBox_DetermineButtons", new Type[0] { });
+        }
         public static void PoliceBox_DetermineButtons(PoliceBox __instance) // Postfix
         {
             if (__instance.buttons.Any())
@@ -1258,6 +1561,10 @@ namespace BunnyMod.Content
         }
         #endregion
         #region PoolTable
+        public void PoolTable_00()
+        {
+            Postfix(typeof(PoolTable), "SetVars", GetType(), "PoolTable_SetVars", new Type[0] { });
+        }
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
@@ -1266,6 +1573,15 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Refrigerator
+        public void Refrigerator_00()
+        {
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "DetermineButtons", GetType(), "Refrigerator_DetermineButtons");
+            //BunnyHeader.MainInstance.PatchPostfix(typeof(Refrigerator), "FinishedOperating", GetType(), "Refrigerator_FinishedOperating");
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "Interact", GetType(), "Refrigerator_Interact", new Type[1] { typeof(Agent) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "InteractFar", GetType(), "Refrigerator_InteractFar", new Type[1] { typeof(Agent) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "ObjectAction", GetType(), "Refrigerator_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(Refrigerator), "PressedButton", GetType(), "Refrigerator_PressedButton", new Type[1] { typeof(string) });
+        }
         //      public static IEnumerator Refrigerator_AboutToRun(Refrigerator __instance) // Non-Patch
         //      {
         //          BunnyHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
@@ -1516,17 +1832,31 @@ namespace BunnyMod.Content
         //      public static Dictionary<Refrigerator, Refrigerator_Remora> Refrigerator_Variables = new Dictionary<Refrigerator, Refrigerator_Remora>();
         #endregion
         #region SatelliteDish
+        public void SatelliteDish_00()
+        {
+            Postfix(typeof(SatelliteDish), "DetermineButtons", GetType(), "SatelliteDish_DetermineButtons", new Type[0] { });
+        }
         public static void SatelliteDish_DetermineButtons(SatelliteDish __instance) // PostFix
         {
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
-		#endregion
-		#region SecurityCam
+        #endregion
+        #region SecurityCam
+        public void SecurityCam_00()
+        {
+
+        }
         // If PoliceState, alert if any Guilty detected
-		#endregion
-		#region SlotMachine
-		public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
+        #endregion
+        #region SlotMachine
+        public void SlotMachine_00()
+        {
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
+            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+        }
+        public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons");
             determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -1654,6 +1984,13 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Stove
+        public void Stove_00()
+        {
+            Prefix(typeof(Stove), "DamagedObject", GetType(), "Stove_DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
+            Prefix(typeof(Stove), "DestroyMe3", GetType(), "Stove_DestroyMe3", new Type[0] { });
+            Postfix(typeof(Stove), "RevertAllVars", GetType(), "Stove_RevertAllVars", new Type[0] { });
+            Postfix(typeof(Stove), "SetVars", GetType(), "Stove_SetVars", new Type[0] { });
+        }
         public static IEnumerator Stove_AboutToExplode(Stove __instance) // Non-Patch
         {
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": Stove_AboutToExplode");
@@ -1835,9 +2172,14 @@ namespace BunnyMod.Content
             __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "UseWrenchToDetonate");
         }
         public static Dictionary<Stove, Stove_Remora> Stove_Variables = new Dictionary<Stove, Stove_Remora>();
-		#endregion
-		#region TableBig
-		public static void TableBig_SetVars(TableBig __instance) // Postfix
+        #endregion
+        #region TableBig
+        public void TableBig_00()
+        {
+            Postfix(typeof(TableBig), "SetVars", GetType(), "TableBig_SetVars", new Type[0] { });
+
+        }
+        public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
                 __instance.interactable = true;
@@ -1845,16 +2187,29 @@ namespace BunnyMod.Content
         }
         #endregion
         #region Television
+        public void Television_00()
+        {
+            //BunnyHeader.MainInstance.PatchPostfix(typeof(Television), "SetVars", GetType(), "Television_SetVars");
+        }
         public static void Television_SetVars(Television __instance) // Postfix
         {
         }
         #endregion
         #region Toilet
+        public void Toilet_00()
+        {
+
+        }
         // DetermineButtons
         // Interact
         // PressedButton
         #endregion
         #region Window
+        public void Window_00()
+        {
+            Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
+        }
         public static void Window_DetermineButtons(Window __instance) // Postfix
         {
             if (__instance.buttons.Any())

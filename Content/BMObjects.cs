@@ -1393,18 +1393,61 @@ namespace BunnyMod.Content
             }
         }
         public static Dictionary<Elevator, Elevator_Remora> Elevator_Variables = new Dictionary<Elevator, Elevator_Remora>();
-        // Interact
-        // PressedButton
         #endregion
         #region Fire Hydrant
         public void FireHydrant_00()
 		{
-
+            Prefix(typeof(FireHydrant), "DetermineButtons", GetType(), "FireHydrant_DetermineButtons", new Type[0] { });
+            Prefix(typeof(FireHydrant), "PressedButton", GetType(), "FireHydrant_PressedButton", new Type[2] { typeof(string), typeof(int) });
 		}
-        // Fire Hydrant
-        // DetermineButtons
-        // Interact
-        // PressedButton
+        public static bool FireHydrant_DetermineButtons(FireHydrant __instance) // Prefix
+        {
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+            {
+                MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+                determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                if (__instance.interactingAgent.statusEffects.hasSpecialAbility("WaterCannon"))
+                {
+
+                    __instance.buttons.Add("RefillWaterCannon");
+                    __instance.buttonPrices.Add(10);
+
+                    return false;
+                }
+
+                __instance.interactingAgent.SayDialogue("CantUseFireHydrant");
+
+                return false;
+            }
+
+            return true;
+        }
+        public static bool FireHydrant_PressedButton(string buttonText, int buttonPrice, FireHydrant __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+                MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+                pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+                if (buttonText == "RefillWaterCannon")
+                {
+                    if (__instance.moneySuccess(buttonPrice))
+                    {
+                        __instance.RefillWaterCannon();
+                        __instance.StopInteraction();
+                    }
+
+                    return false;
+                }
+
+                __instance.StopInteraction();
+
+                return false;
+			}
+
+            return true;
+		}
         #endregion
         #region FlamingBarrel
         public void FlamingBarrel_00()

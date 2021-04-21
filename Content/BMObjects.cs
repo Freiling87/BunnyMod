@@ -2239,11 +2239,67 @@ namespace BunnyMod.Content
         #region Toilet
         public void Toilet_00()
         {
-
+            Prefix(typeof(Toilet), "DetermineButtons", GetType(), "Toilet_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Toilet), "PressedButton", GetType(), "Toilet_PressedButton", new Type[2] { typeof(string), typeof(int) });
         }
-		// DetermineButtons
-		// Interact
-		// PressedButton
+        public static bool Toilet_DetermineButtons(Toilet __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+                MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+                determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                bool toiletWorking = false;
+
+                if (GC.levelType != "HomeBase")
+                {
+                    if ((__instance.interactingAgent.statusEffects.hasTrait("Diminutive") || __instance.interactingAgent.statusEffects.hasStatusEffect("Shrunk")) && !__instance.interactingAgent.statusEffects.hasStatusEffect("Giant"))
+                    {
+                        __instance.buttons.Add("FlushYourself");
+                        __instance.buttonPrices.Add(10);
+
+                        toiletWorking = true;
+                    }
+
+                    if (__instance.hasPurgeStatusEffects())
+                    {
+                        __instance.buttons.Add("PurgeStatusEffects");
+                        __instance.buttonPrices.Add(10);
+
+                        toiletWorking = true;
+                    }
+                }
+                
+                if (!toiletWorking)
+                    __instance.interactingAgent.SayDialogue("ToiletWontGo");
+
+                return false;
+			}
+
+            return true;
+		}
+        public static bool Toilet_PressedButton(string buttonText, int buttonPrice, Toilet __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+                MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+                pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+                if (buttonText == "FlushYourself" && __instance.moneySuccess(buttonPrice))
+                    __instance.FlushYourself();
+                else if (buttonText == "PurgeStatusEffects" && __instance.moneySuccess(buttonPrice))
+                    __instance.PurgeStatusEffects();
+                else
+				{
+                    __instance.interactingAgent.Say("I'm too poor (and therefore too lazy and unworthy) for this privilege!");
+                    __instance.StopInteraction();
+                }
+
+                return false;
+			}
+
+            return true;
+		}
 		#endregion
 		#region Trash Can
         public void TrashCan_00()

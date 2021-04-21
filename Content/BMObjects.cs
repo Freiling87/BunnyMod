@@ -18,7 +18,7 @@ namespace BunnyMod.Content
         public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
         public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
-        #region Generic
+        #region Main
         public void Awake()
         {
             Initialize_Names();
@@ -245,7 +245,7 @@ namespace BunnyMod.Content
         {
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
-            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0]);
+            MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             if (__instance is FlamingBarrel)
@@ -493,7 +493,13 @@ namespace BunnyMod.Content
         {
             //BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Start");
 
-            if (__instance is Stove stove)
+            if (__instance is Elevator elevator)
+			{
+                Elevator_Remora remora = new Elevator_Remora();
+                Elevator_Variables[elevator] = remora;
+                remora.elevatorHost = elevator;
+			}
+            else if (__instance is Stove stove)
             {
                 Stove_Remora remora = new Stove_Remora();
                 Stove_Variables[stove] = remora;
@@ -1295,9 +1301,98 @@ namespace BunnyMod.Content
         #region Elevator
         public void Elevator_00()
 		{
-
+            Prefix(typeof(Elevator), "DetermineButtons", GetType(), "Elevator_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Elevator), "PressedButton", GetType(), "Elevator_Pressedbutton", new Type[1] { typeof(string) });
 		}
-        // DetermineButtons
+        public static bool Elevator_DetermineButtons(Elevator __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+                MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+                determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                if (Elevator_Variables[__instance].ticketPurchased)
+                    __instance.buttons.Add("ElevatorGoUp");
+				else
+                {
+                    __instance.buttons.Add("Elevator_PurchaseTicket");
+                    __instance.buttonPrices.Add(50);
+                }
+
+                return false;
+			}
+
+            return true;
+		}
+        public static bool Elevator_PressedButton(string buttonText, Elevator __instance, ref bool ___showingSecondButtonSet) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
+			{
+                MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[1] { typeof(string) });
+                pressedButton_base.GetMethodWithoutOverrides<Action<string>>(__instance).Invoke(buttonText);
+
+                if (buttonText == "StartTutorial")
+                {
+                    GC.challenges.Clear();
+                    GC.SetDailyRunText();
+                    GC.sessionDataBig.coopMode = false;
+                    GC.sessionDataBig.fourPlayerMode = false;
+                    GC.sessionDataBig.threePlayer = false;
+                    GC.sessionDataBig.newCharacter = "Hobo";
+                    GC.loadLevel.RestartGame(101);
+
+                    return false;
+                }
+                else if (buttonText == "Elevator_PurchaseTicket")
+                    Elevator_PurchaseTicket(__instance);
+
+                if (!(buttonText == "ElevatorGoUp"))
+                {
+                    __instance.StopInteraction();
+
+                    return false;
+                }
+
+                Agent interactingAgent = __instance.interactingAgent;
+
+                if (__instance.BigQuestRunning(interactingAgent) && !___showingSecondButtonSet)
+                {
+                    ___showingSecondButtonSet = true;
+                    __instance.RefreshButtons();
+                    __instance.SetObjectNameDisplay(interactingAgent);
+
+                    return false;
+                }
+
+                __instance.StopInteraction();
+                GC.exitPoint.TryToExit(interactingAgent);
+                interactingAgent.mainGUI.invInterface.justPressedInteract = false;
+
+                return false;
+			}
+
+            return true;
+		}
+        public static void Elevator_PurchaseTicket(Elevator __instance)
+		{
+            if (__instance.moneySuccess(50))
+            {
+                Elevator_Variables[__instance].ticketPurchased = true;
+                //__instance.PlayAnim("MachineOperate", __instance.interactingAgent);
+                GC.audioHandler.Play(__instance.interactingAgent, vAudioClip.ATMDeposit);
+                __instance.Say("PAYMENT ACCEPTED - Thank you for using Evilator Co.!");
+            }
+            else
+			{
+                __instance.Say("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day.");
+
+                MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
+                stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                return;
+            }
+        }
+        public static Dictionary<Elevator, Elevator_Remora> Elevator_Variables = new Dictionary<Elevator, Elevator_Remora>();
         // Interact
         // PressedButton
         #endregion
@@ -2409,7 +2504,15 @@ namespace BunnyMod.Content
 		#endregion
 	}
 	#region Remorae
-	public class Stove_Remora
+    public class Elevator_Remora
+	{
+        public static GameController GC => GameController.gameController;
+
+        public Elevator elevatorHost;
+
+        public bool ticketPurchased = false;
+    }
+    public class Stove_Remora
     {
         public static GameController GC => GameController.gameController;
 

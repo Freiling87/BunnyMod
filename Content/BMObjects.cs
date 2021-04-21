@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
@@ -47,7 +48,8 @@ namespace BunnyMod.Content
             TableBig_00();
             Television_00();
             Toilet_00();
-            TrashCan_00();
+			TrashCan_00();
+            VendorCart_00();
             Window_00();
         }
         public void FixedUpdate()
@@ -88,7 +90,6 @@ namespace BunnyMod.Content
             CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "Interface", new CustomNameInfo("Bet $100"));
         }
         #endregion
-
         #region Custom
         public static void CorrectButtonCosts(ObjectReal objectReal)
         {
@@ -139,7 +140,6 @@ namespace BunnyMod.Content
             }
         }
 		#endregion
-
 		#region Generic
 		#region ObjectReal
 		public void ObjectReal_00()
@@ -206,11 +206,11 @@ namespace BunnyMod.Content
                 }
             }
             else if (__instance is Manhole)
-			{
+            {
                 Manhole manhole = (Manhole)__instance;
 
                 if (!manhole.opened && agent.inventory.HasItem("Crowbar"))
-				{
+                {
                     __instance.buttons.Add("UseCrowbar");
                     __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMTraits.ToolCost(agent, 15));
                 }
@@ -233,10 +233,12 @@ namespace BunnyMod.Content
                 }
             }
             else if (__instance is TrashCan)
-			{
+            {
                 __instance.buttons.Add("HideInTrashcan");
                 __instance.buttons.Add("OpenChest");
-			}
+            }
+            else if (__instance is VendorCart)
+                __instance.buttons.Add("VendorCart_Steal");
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
@@ -313,6 +315,8 @@ namespace BunnyMod.Content
 
                 __instance.ShowObjectButtons();
             }
+            else if (__instance is VendorCart)
+                __instance.ShowObjectButtons();
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
 
@@ -348,12 +352,12 @@ namespace BunnyMod.Content
             BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
             if (__instance is Manhole)
-			{
+            {
                 if (myAction == "FlushYourself")
                     Manhole_FlushYourself((Manhole)__instance);
                 else if (myAction == "UseCrowbar")
                     Manhole_UseCrowbar((Manhole)__instance);
-			}
+            }
             else if (__instance is Stove)
             {
                 if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
@@ -361,6 +365,13 @@ namespace BunnyMod.Content
 
                 ___noMoreObjectActions = false;
             }
+            else if (__instance is VendorCart)
+                if (myAction == "VendorCart_Steal")
+				{
+                    VendorCart_Steal((VendorCart)__instance);
+
+                    ___noMoreObjectActions = true;
+                }
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
@@ -456,6 +467,25 @@ namespace BunnyMod.Content
                     GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
                 }
             }
+            else if (buttonText == "VendorCart_Steal")
+			{
+                if (!__instance.interactingAgent.inventory.hasEmptySlot())
+                {
+                    __instance.interactingAgent.inventory.PlayerFullResponse(__instance.interactingAgent);
+                    __instance.StopInteraction();
+
+                    return false;
+                }
+
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, false, "Tampering"));
+
+                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers))
+                {
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
+                    GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 1);
+                }
+            }
+
             return false;
         }
         public static void ObjectReal_Start(ObjectReal __instance) // Postfix
@@ -534,7 +564,7 @@ namespace BunnyMod.Content
         }
 		#endregion
 		#endregion
-
+		#region Objects
 		#region Alarm Button
 		public void AlarmButton_00()
 		{
@@ -2231,7 +2261,25 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region VendorCart
+        public void VendorCart_00()
+		{
+            Postfix(typeof(VendorCart), "SetVars", GetType(), "VendorCart_SetVars", new Type[0] { });
+		}
+        public static void VendorCart_SetVars(VendorCart __instance) // Postfix
+		{
+            __instance.interactable = true;
+		}
+        public static void VendorCart_Steal(VendorCart __instance) // Non-Patch
+		{
+            InvItem invItem = __instance.objectInvDatabase.InvItemList[0];
 
+            invItem.ItemSetup(true);
+            invItem.invItemCount = invItem.rewardCount;
+            invItem.ShowPickingUpText(__instance.interactingAgent);
+            __instance.interactingAgent.inventory.AddItem(invItem);
+            __instance.objectInvDatabase.DestroyAllItems();
+            __instance.StopInteraction();
+		}
 		#endregion
 		#region Window
 		public void Window_00()
@@ -2289,6 +2337,7 @@ namespace BunnyMod.Content
 
             return false;
         }
+		#endregion
 		#endregion
 	}
 	#region Remorae

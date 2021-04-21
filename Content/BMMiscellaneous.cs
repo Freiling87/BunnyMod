@@ -673,9 +673,10 @@ namespace BunnyMod.Content
 		#region RandomSelection
 		public static bool RandomSelection_RandomSelect(string rName, string rCategory, ref string __result) // Prefix
 		{
-			if (rName.StartsWith("FireSpewerSpawnChance") && GC.challenges.Contains(cChallenge.GreenLiving))
+			if (rName.StartsWith("FireSpewerSpawnChance") && BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable))
 			{
 				__result = "No";
+
 				return false;
 			}
 

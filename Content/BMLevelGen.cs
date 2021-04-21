@@ -7452,7 +7452,6 @@ namespace BunnyMod.Content
 						Chunk chunk = __instance.levelChunks[num65];
 						string ambience = "";
 						string description = chunk.description;
-
 						 
 						switch(description)
 						{

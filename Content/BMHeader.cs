@@ -126,8 +126,8 @@ namespace BunnyMod.Content
     public static class cChallenge // Custom Mutators
     {
         public const string
-            ACityForAnts = "ACityForAnts",
-            AnCapistan = "AnCapistan",
+            ACityForAnts = "ACityForAnts", 
+            AnCapistan = "AnCapistan", 
             ArcologyEcology = "ArcologyEcology",
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",

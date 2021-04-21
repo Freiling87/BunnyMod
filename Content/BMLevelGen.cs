@@ -5365,10 +5365,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasSlimeBarrels = __instance.customLevel.levelFeatures.Contains("SlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasSlimeBarrels = false;
-
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasSlimeBarrels = true;
 
 					if (hasSlimeBarrels)
@@ -5422,10 +5421,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasOilSpills = __instance.customLevel.levelFeatures.Contains("OilSpill");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasOilSpills = false;
-
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasOilSpills = true;
 
 					if (hasOilSpills && GC.serverPlayer)
@@ -5704,10 +5702,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasTrashCans = __instance.customLevel.levelFeatures.Contains("TrashCan");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasTrashCans = true;
-
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasTrashCans = false;
 
 					if (hasTrashCans)
@@ -6149,10 +6146,12 @@ namespace BunnyMod.Content
 					#region PoliceBoxes
 					bool hasPoliceBoxes = false;
 
-					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
+					if (GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)))
 						hasPoliceBoxes = true;
 
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
+						hasPoliceBoxes = true;
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasPoliceBoxes = false;
 
 					if (GC.customLevel)
@@ -6266,7 +6265,9 @@ namespace BunnyMod.Content
 					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes)
 						hasAlarmButtons = true;
 
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
+						hasAlarmButtons = true;
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasAlarmButtons = false;
 
 					if (GC.customLevel)
@@ -6673,10 +6674,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasExplodingSlimeBarrels = __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasExplodingSlimeBarrels = false;
-
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasExplodingSlimeBarrels = true;
 
 					if (hasExplodingSlimeBarrels || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
@@ -6722,10 +6722,9 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						hasFlamingBarrels = __instance.customLevel.levelFeatures.Contains("FlamingBarrel");
 
-					if (GC.challenges.Contains(cChallenge.TransitExperiment) || GC.challenges.Contains(cChallenge.PoliceState))
+					if (GC.challenges.Contains(cChallenge.TransitExperiment) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasFlamingBarrels = false;
-
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasFlamingBarrels = true;
 
 					if (hasFlamingBarrels)
@@ -7454,8 +7453,6 @@ namespace BunnyMod.Content
 						string ambience = "";
 						string description = chunk.description;
 
-						if (GC.challenges.Contains(cChallenge.ArcologyEcology))
-							ambience = vAmbience.Park;
 						else 
 							switch(description)
 							{
@@ -7478,7 +7475,9 @@ namespace BunnyMod.Content
 
 						if (ambience != "")
 						{
-							if (chunk.shape == 6)
+							if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+								ambience = vAmbience.Park;
+							else if (chunk.shape == 6)
 							{
 								Vector2 v2 = new Vector2(
 									(chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f, 

@@ -39,6 +39,15 @@ namespace BunnyMod.Content
 			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
 			AnCapistan.IsActive = false;
 
+			CustomMutator MACITS = RogueLibs.CreateCustomMutator(cChallenge.MACITS, true,
+				new CustomNameInfo("000: Overhaul: Mostly Automated Comfortable Inclusive Terrestrial Socialism"),
+				new CustomNameInfo("The Revolution is complete! No more living in privation to feed the fat capitalist pigs! Now all that's left is to have another Revolution and fuck it all up!"));
+			MACITS.Available = true;
+			MACITS.Conflicting.AddRange(cChallenge.Overhauls);
+			MACITS.Conflicting.AddRange(cChallenge.Criminals);
+			MACITS.Conflicting.AddRange(vChallenge.LawEnforcement);
+			MACITS.IsActive = false;
+
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));

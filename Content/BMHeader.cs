@@ -137,6 +137,7 @@ namespace BunnyMod.Content
             HomesickAndTired = "HomesickandTired",
             HoodlumsWonderland = "HoodlumsWonderland",
             LetMeSeeThatThrong = "LetMeSeeThatThrong",
+            MACITS = "MACITS",
             Megalopolis = "Megalopolis",
             MobTown = "MobTown",
             Null = "",

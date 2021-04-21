@@ -586,22 +586,22 @@ namespace BunnyMod.Content
                     __instance.buttons.Add("HackExplode");
             }
 
-            if (GC.challenges.Contains(cChallenge.PoliceState) && !__instance.hacked)
+            if (GC.challenges.Contains(cChallenge.AnCapistan) && !__instance.hacked)
 			{
                 if (!__instance.hacked)
                 {
-                    __instance.buttons.Add("AlarmButtonPoliceState");
+                    __instance.buttons.Add("AlarmButtonAncapistan");
                     __instance.buttonPrices.Add(25);
                 }
                 else
-                    __instance.buttons.Add("AlarmButtonPoliceState");
+                    __instance.buttons.Add("AlarmButtonAncapistan");
             }
 
             return false;
         }
         public static bool AlarmButton_DoLockdown(bool closePanicRoomDoors, AlarmButton __instance) // Prefix
 		{
-            if (GC.challenges.Contains(cChallenge.PoliceState))
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
             {
                 if (AlarmButton.lockdownTimerCooldown > 0f)
                     return false;
@@ -675,7 +675,7 @@ namespace BunnyMod.Content
         }
         public static bool AlarmButton_EndLockdown(AlarmButton __instance) // Prefix
 		{
-            if (GC.challenges.Contains(cChallenge.PoliceState))
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
             {
                 if (AlarmButton.lockdownTimerCooldown <= 0f)
                     __instance.StartCoroutine(AlarmButton_LockdownCooldown(__instance));
@@ -741,7 +741,7 @@ namespace BunnyMod.Content
 
             if (!__instance.isBroken())
             {
-                if (GC.challenges.Contains(cChallenge.PoliceState))
+                if (GC.challenges.Contains(cChallenge.AnCapistan))
                 {
                     __instance.ShowObjectButtons();
 
@@ -803,7 +803,7 @@ namespace BunnyMod.Content
                 if (!__instance.gc.serverPlayer)
                     __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "AllAccess");
             }
-            else if (buttonText == "AlarmButtonPoliceState")
+            else if (buttonText == "AlarmButtonAncapistan")
 			{
                 if (__instance.moneySuccess(buttonPrice))
                     __instance.ToggleSwitch(__instance.interactingAgent, null);
@@ -827,7 +827,7 @@ namespace BunnyMod.Content
         }
         public static bool AlarmButton_ToggleSwitch(Agent causerAgent, Agent criminal, AlarmButton __instance) // Prefix
 		{
-            if (GC.challenges.Contains(cChallenge.PoliceState))
+            if (GC.challenges.Contains(cChallenge.AnCapistan))
 			{
                 if (GC.serverPlayer)
                 {
@@ -838,7 +838,7 @@ namespace BunnyMod.Content
                             __instance.Say("AlarmAlreadyActive");
                             __instance.StopInteraction();
                         }
-                        else if (causerAgent.spawnedSupercops >= 3 && !GC.challenges.Contains("NoLimits") && !GC.challenges.Contains(cChallenge.PoliceState))
+                        else if (causerAgent.spawnedSupercops >= 3 && !GC.challenges.Contains("NoLimits") && !GC.challenges.Contains(cChallenge.AnCapistan))
                         {
                             __instance.Say("AlarmLimitReached");
                             __instance.StopInteraction();

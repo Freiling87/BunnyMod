@@ -718,9 +718,9 @@ namespace BunnyMod.Content
             float zoomLevel = GC.cameraScript.zoomLevel;
 
             if (IsPlayerTraitActive("EagleEyes"))
-                zoomLevel = 0.60f;
+                zoomLevel = 0.75f;
             else if (IsPlayerTraitActive("EagleEyes_2"))
-                zoomLevel = 0.40f;
+                zoomLevel = 0.50f;
             else if (IsPlayerTraitActive("Myopic"))
                 zoomLevel = 1.50f;
             else if (IsPlayerTraitActive("Myopic_2"))

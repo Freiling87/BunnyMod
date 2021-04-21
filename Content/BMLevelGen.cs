@@ -7491,7 +7491,7 @@ namespace BunnyMod.Content
 
 						if (ambience != "")
 						{
-							if (GC.challenges.Contains(cChallenge.ArcologyEcology))
+							if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.GreenLiving))
 								ambience = vAmbience.Park;
 							else if (chunk.shape == 6)
 							{

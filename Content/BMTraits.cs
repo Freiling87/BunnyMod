@@ -40,44 +40,16 @@ namespace BunnyMod.Content
             Initialize_Names();
             Initialize_Traits();
 
-            // Agent
-            Prefix(typeof(Agent), "CanShakeDown", GetType(), "Agent_CanShakeDown", new Type[0] { });
-
-            // AgentInteractions
-            Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
-
-            // InvDatabase
-            Postfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
-            Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
-
-            // InvItem
-            Postfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
-            Prefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
-
-            // ItemFunctions
-            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
-            Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
-
-            // LoadLevel
-            Prefix(typeof(LoadLevel), "SetupRels", GetType(), "LoadLevel_SetupRels", new Type[0] { });
-
-            // PlayerControl
-            Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
-
-            // PlayfieldObject
-            Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
-
-            // Relationships
-            Postfix(typeof(Relationships), "SetupRelationshipOriginal", GetType(), "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
-
-            // StatusEffects
-            Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal)});
-            Postfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
+            Agent_00();
+            AgentInteractions_00();
+            InvDatabase_00();
+            InvItem_00();
+            ItemFunctions_00();
+            LoadLevel_00();
+            PlayerControl_00();
+            PlayfieldObject_00();
+            Relationships_00();
+            StatusEffects_00();
         }
         public static void Initialize_Names()
         {
@@ -745,6 +717,10 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region Agent
+        public void Agent_00()
+		{
+            Prefix(typeof(Agent), "CanShakeDown", GetType(), "Agent_CanShakeDown", new Type[0] { });
+        }
         public static bool Agent_CanShakeDown(ref bool __result) // Prefix
 		{
             BMLog("Agent_CanShakeDown");
@@ -759,16 +735,29 @@ namespace BunnyMod.Content
 		}
 		#endregion
 		#region AgentInteractions
-		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
+        public void AgentInteractions_00()
+		{
+            Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+        }
+        public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
             if (extraCost.EndsWith("-30"))
                 extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
             else if (extraCost.EndsWith("-20"))
                 extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
 		}
-		#endregion
-		#region InvDatabase
-		public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+        #endregion
+        #region InvDatabase
+        public void InvDatabase_00()
+        {
+            Postfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+            Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
+            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
+        }
+        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
 		{
             //TODO: Verify non-equipped items like Time Bomb.
             //TODO: Add Item.Categories for types above for mod compatibility
@@ -871,8 +860,13 @@ namespace BunnyMod.Content
             }
             return true;
         }
-		#endregion
-		#region InvItem
+        #endregion
+        #region InvItem
+        public void InvItem_00()
+        {
+            Postfix(typeof(InvItem), "SetupDetails", GetType(), "InvItem_SetupDetails", new Type[1] { typeof(bool) });
+            Prefix(typeof(InvItem), "UseItem", GetType(), "InvItem_UseItem", new Type[0] { });
+        }
         public static void InvItem_SetupDetails(bool notNew, InvItem __instance) // Postfix
         {
             string name = __instance.invItemName;
@@ -952,6 +946,11 @@ namespace BunnyMod.Content
         }
         #endregion
         #region ItemFunctions
+        public void ItemFunctions_00()
+        {
+            Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange", new Type[2] { typeof(InvItem), typeof(Agent) });
+            Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
+        }
         public static void ItemFunctions_DetermineHealthChange(InvItem item, Agent agent, ref int __result) // Postfix
 		{
             List<string> cats = item.Categories;
@@ -1017,21 +1016,33 @@ namespace BunnyMod.Content
 
             return false;
         }
-		#endregion
-		#region LoadLevel
+        #endregion
+        #region LoadLevel
+        public void LoadLevel_00()
+        {
+            Prefix(typeof(LoadLevel), "SetupRels", GetType(), "LoadLevel_SetupRels", new Type[0] { });
+        }
         public static void LoadLevel_SetupRels() // Prefix
 		{
             setPlayerInitialRelationshipTraitActive();
 		}
-		#endregion
-		#region PlayerControl
-		public static void PlayerControl_Update() // Postfix
+        #endregion
+        #region PlayerControl
+        public void PlayerControl_00()
+        {
+            Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
+        }
+        public static void PlayerControl_Update() // Postfix
 		{
             ResetCameras();
 		}
-		#endregion
-		#region PlayfieldObject
-		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
+        #endregion
+        #region PlayfieldObject
+        public void PlayfieldObject_00()
+        {
+            Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
+        }
+        public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
 		{
             Agent agent = __instance.playfieldObjectAgent;
 
@@ -1116,8 +1127,12 @@ namespace BunnyMod.Content
 
             __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);
         }
-		#endregion
-		#region Relationships
+        #endregion
+        #region Relationships
+        public void Relationships_00()
+        {
+            Postfix(typeof(Relationships), "SetupRelationshipOriginal", GetType(), "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
+        }
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
             // This method sets how agent feels about otherAgent
@@ -1182,8 +1197,14 @@ namespace BunnyMod.Content
                 }
             }
         }
-		#endregion
+        #endregion
         #region StatusEffects
+        public void StatusEffects_00()
+        {
+            Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+            Postfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
+        }
         public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
             Agent agent = __instance.agent;

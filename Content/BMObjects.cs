@@ -1445,7 +1445,7 @@ namespace BunnyMod.Content
 				{
 					ObjectReal objectReal = GC.objectRealList[i];
 
-					if (objectReal.objectName == "Manhole" && objectReal != __instance)
+					if (objectReal.objectName == vObject.Manhole && objectReal != __instance)
 					{
 						Manhole manhole = (Manhole)objectReal;
 
@@ -1463,12 +1463,12 @@ namespace BunnyMod.Content
 				ObjectReal destinationManhole = __instance;
 
 				if (list.Count > 0)
-					destinationManhole = list[UnityEngine.Random.Range(0, list.Count)];
+					destinationManhole = list[Random.Range(0, list.Count)];
 
 				Vector2 outHole = destinationManhole.tr.position;
-                Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized;
+                Vector2 offset = Random.insideUnitCircle.normalized;
 
-                GC.audioHandler.Play(__instance, "ToiletTeleportIn");
+                GC.audioHandler.Play(__instance, vAudioClip.ToiletTeleportIn);
 				agent.toiletTeleporting = true;
 				agent.Teleport(outHole + offset, true, false);
 			}
@@ -1506,7 +1506,7 @@ namespace BunnyMod.Content
 
             yield break;
         }
-        public static void Manhole_Start(Manhole __instance) // Replacement
+        public static bool Manhole_Start(Manhole __instance) // Replacement
 		{
             MethodInfo start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start");
             start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -1516,16 +1516,14 @@ namespace BunnyMod.Content
                 __instance.objectName = "Manhole";
                 __instance.RemoveMe();
 
-                return;
+                return false;
             }
 
             if (__instance.opened)
                 __instance.objectSprite.meshRenderer.enabled = false;
             
             if (GC.lightingType != "None")
-			{
                 __instance.StartCoroutine(Manhole_SetLightingLater(__instance));
-            }
 
             GC.tileInfo.GetTileData(__instance.tr.position).futureHole = true;
             
@@ -1533,11 +1531,13 @@ namespace BunnyMod.Content
             {
                 __instance.StartCoroutine(Manhole_HoleAppearAfterLoad(__instance));
             
-                return;
+                return false;
             }
 
             if (!GC.serverPlayer && __instance.normalHole)
                 __instance.objectRealRealName = GC.nameDB.GetName("Hole", "Object");
+
+            return false;
         }
         public static void Manhole_UseCrowbar(Manhole __instance) // Non-Patch
         {

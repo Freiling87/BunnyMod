@@ -1219,10 +1219,8 @@ namespace BunnyMod.Content
 		{
             Agent agent = __instance.agent;
 
-            if (IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0)
-			{
+            if (IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0 && hiddenInObject.objectName == vObject.Manhole)
                 agent.statusEffects.BecomeNotHidden();
-			}
 		}
         public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
 		{

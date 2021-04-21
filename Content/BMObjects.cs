@@ -47,6 +47,7 @@ namespace BunnyMod.Content
             TableBig_00();
             Television_00();
             Toilet_00();
+            TrashCan_00();
             Window_00();
         }
         public void FixedUpdate()
@@ -137,10 +138,11 @@ namespace BunnyMod.Content
                 }
             }
         }
-        #endregion
+		#endregion
 
-        #region ObjectReal
-        public void ObjectReal_00()
+		#region Generic
+		#region ObjectReal
+		public void ObjectReal_00()
 		{
             Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
@@ -230,6 +232,11 @@ namespace BunnyMod.Content
                         __instance.buttons.Add("GrillFud");
                 }
             }
+            else if (__instance is TrashCan)
+			{
+                __instance.buttons.Add("HideInTrashcan");
+                __instance.buttons.Add("OpenChest");
+			}
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
@@ -426,11 +433,15 @@ namespace BunnyMod.Content
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
             else if (buttonText == "HackExplode") // Vanilla
                 __instance.HackExplode(__instance.interactingAgent);
+            else if (buttonText == "HideInTrashcan")
+                TrashCan_Hide((TrashCan)__instance, __instance.interactingAgent);
             else if (buttonText == "LightBarbecue")
             {
                 __instance.StartFireInObject();
                 __instance.StopInteraction();
             }
+            else if (buttonText == "OpenChest")
+                __instance.ShowChest();
             else if (buttonText == "UseCrowbar")
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Crowbar"), 2f, true, "Unlocking"));
             else if (buttonText == "UseWrenchToDetonate")
@@ -521,10 +532,11 @@ namespace BunnyMod.Content
         {
             __instance.agent.agentCollider.enabled = true;
         }
-        #endregion
+		#endregion
+		#endregion
 
-        #region Alarm Button
-        public void AlarmButton_00()
+		#region Alarm Button
+		public void AlarmButton_00()
 		{
             Prefix(typeof(AlarmButton), "DetermineButtons", GetType(), "AlarmButton_DetermineButtons", new Type[0] { });
 		}
@@ -2187,12 +2199,42 @@ namespace BunnyMod.Content
         {
 
         }
-        // DetermineButtons
-        // Interact
-        // PressedButton
-        #endregion
-        #region Window
-        public void Window_00()
+		// DetermineButtons
+		// Interact
+		// PressedButton
+		#endregion
+		#region Trash Can
+        public void TrashCan_00()
+		{
+            Prefix(typeof(TrashCan), "Interact", GetType(), "TrashCan_Interact", new Type[1] { typeof(Agent) });
+		}
+        public static void TrashCan_Hide(TrashCan __instance, Agent agent) // Non-Patch
+		{
+            agent.SetInvisible(false);
+            agent.statusEffects.BecomeHidden(__instance);
+
+            __instance.StopInteraction();
+        }
+        public static bool TrashCan_Interact (Agent agent, TrashCan __instance) // Prefix
+		{
+            if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe) && agent.statusEffects.hasTrait(vTrait.Diminutive))
+			{
+                MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact");
+                interact_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                __instance.ShowObjectButtons();
+                
+                return false;
+			}
+
+            return true;
+		}
+		#endregion
+		#region VendorCart
+
+		#endregion
+		#region Window
+		public void Window_00()
         {
             Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
             Prefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });

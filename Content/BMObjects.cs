@@ -558,7 +558,7 @@ namespace BunnyMod.Content
 		{
             Prefix(typeof(Relationships), "OwnCheck", GetType(), "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
 		}
-        public static bool OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
+        public static bool Relationships_OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
 		{
             // TODO: PoliceState sets all Objects NoStrikesIfDestroyed to false
             return true;
@@ -1302,7 +1302,7 @@ namespace BunnyMod.Content
         public void Elevator_00()
 		{
             Prefix(typeof(Elevator), "DetermineButtons", GetType(), "Elevator_DetermineButtons", new Type[0] { });
-            Prefix(typeof(Elevator), "PressedButton", GetType(), "Elevator_Pressedbutton", new Type[1] { typeof(string) });
+            Prefix(typeof(Elevator), "PressedButton", GetType(), "Elevator_PressedButton", new Type[1] { typeof(string) });
 		}
         public static bool Elevator_DetermineButtons(Elevator __instance) // Prefix
 		{

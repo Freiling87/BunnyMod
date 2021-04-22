@@ -2436,7 +2436,7 @@ namespace BunnyMod.Content
             VocallyChallenged = "CantSpeakEnglish",
             WallWalloper = "MeleeDestroysWalls",
             WallsWorstNightmare = "MoreKnockingThroughWalls",
-            Wanted = "Wanted",
+            Wanted = "Naked",
             WerewolfAWereness = "WerewolfAwareness",
             WrongBuilding = "OwnersNotHostile",
             Zombiism = "Zombify";

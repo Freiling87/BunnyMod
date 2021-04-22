@@ -126,7 +126,8 @@ namespace BunnyMod.Content
             AfraidOfLoudNoises.AvailableInCharacterCreation = true;
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
-            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { cTrait.DrawNoBlood, vTrait.NearHarmless, vTrait.StubbyFingers, vTrait.SausageFingers });
+            AfraidOfLoudNoises.Conflicting.AddRange(new string[] { cTrait.DrawNoBlood });
+            AfraidOfLoudNoises.Conflicting.AddRange(vTrait.WeaponLimitations);
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -138,7 +139,8 @@ namespace BunnyMod.Content
             DrawNoBlood.AvailableInCharacterCreation = true;
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
-            DrawNoBlood.Conflicting.AddRange(new string[] { cTrait.AfraidOfLoudNoises, vTrait.NearHarmless, vTrait.Jugularious, vTrait.FleshFeast, vTrait.StubbyFingers, vTrait.SausageFingers });
+            DrawNoBlood.Conflicting.AddRange(new string[] { cTrait.AfraidOfLoudNoises, vTrait.Jugularious, vTrait.FleshFeast });
+            DrawNoBlood.Conflicting.AddRange(vTrait.WeaponLimitations);
             DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = true;
             DrawNoBlood.Upgrade = null;

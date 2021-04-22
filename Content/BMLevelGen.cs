@@ -6458,6 +6458,7 @@ namespace BunnyMod.Content
 
 						BMLog("UDManhole List count: " + manholeList.Count());
 
+						// Hidden Agent Placement
 						if (manholeList.Count > 0)
 							for (int i = 0; i < numObjects; i = bigTryCounter + 1)
 							{
@@ -6465,7 +6466,6 @@ namespace BunnyMod.Content
 								Manhole manhole;
 								bool NoHiddenAgentMatch;
 
-								//Hidden Agent Placement
 								do
 								{
 									Random.InitState(__instance.randomSeedNum + i + ++randomCount);
@@ -6485,19 +6485,12 @@ namespace BunnyMod.Content
 
 								if (NoHiddenAgentMatch)
 								{
-									string text3 = GC.Choose<string>("Thief", "Thief", new string[]
-									{
-										"Thief",
-										"Cannibal"
-									});
+									string text3 = vAgent.Thief;
 
-									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
-									{
-										Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
-										agent2.SetDefaultGoal("Idle");
-										agent2.statusEffects.BecomeHidden(manhole);
-										agent2.oma.mustBeGuilty = true;
-									}
+									Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
+									agent2.SetDefaultGoal("Idle");
+									agent2.statusEffects.BecomeHidden(manhole);
+									agent2.oma.mustBeGuilty = true;
 								}
 
 								if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)

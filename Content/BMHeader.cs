@@ -2344,6 +2344,14 @@ namespace BunnyMod.Content
             WerewolfAWereness = "WerewolfAwareness",
             WrongBuilding = "OwnersNotHostile",
             Zombiism = "Zombify";
+
+        public static List<string> WeaponLimitations = new List<string>()
+        {
+            vTrait.NearHarmless, 
+            vTrait.Pacifist, 
+            vTrait.StubbyFingers, 
+            vTrait.SausageFingers
+        };
     }
     public static class vWall // Vanilla Walls
 	{

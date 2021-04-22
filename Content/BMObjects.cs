@@ -527,11 +527,11 @@ namespace BunnyMod.Content
             try
             {
                 BMLog("PlayfieldObject_Operating " + __instance.name + ": ");
-                BMLog("    Agent = " + myAgent.name);
-                BMLog("    item = " + item.invItemName);
-                BMLog("    timeToUnlock = " + timeToUnlock);
-                BMLog("    makeNoise = " + makeNoise);
-                BMLog("    barType = " + barType);
+                BMLog("\tAgent = " + myAgent.name);
+                BMLog("\titem = " + item.invItemName);
+                BMLog("\ttimeToUnlock = " + timeToUnlock);
+                BMLog("\tmakeNoise = " + makeNoise);
+                BMLog("\tbarType = " + barType);
             }
             catch
             {

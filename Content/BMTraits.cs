@@ -1137,66 +1137,70 @@ namespace BunnyMod.Content
         }
         public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
-            // This method sets how agent feels about otherAgent
+            // This method sets how ___agent feels about otherAgent
 
-            if (isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
+            if (GC.levelType != vLevelType.HomeBase)
 			{
-                BMLog("Relationships_SetupRelationshipOriginal: ");
-                BMLog("\tAgent = " + ___agent.name);
-                BMLog("\totherAgent = " + otherAgent.name);
-                BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
-
-                if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
+                if (isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
                 {
-                    int roll = Random.Range(0, 100);
-                    string newRel = vRelationship.Neutral;
+                    BMLog("Relationships_SetupRelationshipOriginal: ");
+                    BMLog("\tAgent = " + ___agent.name);
+                    BMLog("\totherAgent = " + otherAgent.name);
+                    BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
 
-                    if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
-                        ___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
-                        newRel = vRelationship.Annoyed;
-                    else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
+                    if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
                     {
-                        if (roll <= 50)
+                        int roll = Random.Range(0, 100);
+                        string newRel = vRelationship.Neutral;
+
+                        if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
+                            ___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2))
                             newRel = vRelationship.Annoyed;
-                        else
-                            newRel = vRelationship.Friendly;
-                    }
-                    else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
-                    {
-                        if (roll <= 25)
-                            newRel = vRelationship.Hateful;
-                        else if (roll <= 50)
-                            newRel = vRelationship.Annoyed;
-                        else if (roll <= 67)
-                            newRel = vRelationship.Friendly;
-                        else if (roll <= 88)
-                            newRel = vRelationship.Loyal;
-                        else if (roll <= 100)
-                            newRel = vRelationship.Aligned;
-                    }
+                        else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
+                        {
+                            if (roll <= 50)
+                                newRel = vRelationship.Annoyed;
+                            else
+                                newRel = vRelationship.Friendly;
+                        }
+                        else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
+                        {
+                            if (roll <= 25)
+                                newRel = vRelationship.Hateful;
+                            else if (roll <= 50)
+                                newRel = vRelationship.Annoyed;
+                            else if (roll <= 67)
+                                newRel = vRelationship.Friendly;
+                            else if (roll <= 88)
+                                newRel = vRelationship.Loyal;
+                            else if (roll <= 100)
+                                newRel = vRelationship.Aligned;
+                        }
 
-                    roll = Random.Range(0, 100);
+                        roll = Random.Range(0, 100);
 
-                    if (___agent.statusEffects.hasTrait(cTrait.Domineering))
-                    {
-                        if (roll <= 5)
-                            newRel = vRelationship.Submissive;
-                    }
-                    else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
-                    {
-                        if (roll <= 10)
-                            newRel = vRelationship.Submissive;
-                    }
+                        if (___agent.statusEffects.hasTrait(cTrait.Domineering))
+                        {
+                            if (roll <= 5)
+                                newRel = vRelationship.Submissive;
+                        }
+                        else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
+                        {
+                            if (roll <= 10)
+                                newRel = vRelationship.Submissive;
+                        }
 
-                    if (newRel != vRelationship.Neutral)
-                    {
-                        __instance.SetRelInitial(otherAgent, newRel);
-                        otherAgent.relationships.SetRelInitial(___agent, newRel);
+                        if (newRel != vRelationship.Neutral)
+                        {
+                            __instance.SetRelInitial(otherAgent, newRel);
+                            otherAgent.relationships.SetRelInitial(___agent, newRel);
 
-                        if (newRel == vRelationship.Annoyed)
-                            otherAgent.relationships.SetStrikes(___agent, 2);
+                            if (newRel == vRelationship.Annoyed)
+                                otherAgent.relationships.SetStrikes(___agent, 2);
+                        }
                     }
                 }
+
             }
         }
         #endregion

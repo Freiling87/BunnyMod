@@ -56,19 +56,7 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Traits()
         {
-            #region Consumables
-            CustomTrait Carnivore = RogueLibs.CreateCustomTrait(cTrait.Carnivore, true,
-                new CustomNameInfo("Carnivore"),
-                new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
-            Carnivore.Available = true;
-            Carnivore.AvailableInCharacterCreation = true;
-            Carnivore.CanRemove = true;
-            Carnivore.CanSwap = false;
-            Carnivore.Conflicting.AddRange(new string[] { vTrait.BananaLover, vTrait.OilLessEssential, vTrait.OilReliant, cTrait.Vegetarian });
-            Carnivore.CostInCharacterCreation = -1;
-            Carnivore.IsActive = true;
-            Carnivore.Upgrade = null;
-
+            #region Drug Limitations
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,
                 new CustomNameInfo("DAREdevil"),
                 new CustomNameInfo("You have injected zero marijuanas. Crack is Whack. Smokers are Jokers. Needles are for... beetles."));
@@ -76,7 +64,8 @@ namespace BunnyMod.Content
             DAREdevil.AvailableInCharacterCreation = true;
             DAREdevil.CanRemove = true;
             DAREdevil.CanSwap = false;
-            DAREdevil.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.FriendOfBill, cTrait.Teetotaller});
+            DAREdevil.Conflicting.Add(vTrait.Addict);
+            DAREdevil.Conflicting.AddRange(cTrait.LimitDrugs);
             DAREdevil.CostInCharacterCreation = -3;
             DAREdevil.IsActive = true;
             DAREdevil.Upgrade = null;
@@ -88,7 +77,8 @@ namespace BunnyMod.Content
             FriendOfBill.AvailableInCharacterCreation = true;
             FriendOfBill.CanRemove = true;
             FriendOfBill.CanSwap = false;
-            FriendOfBill.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.DAREdevil, cTrait.Teetotaller});
+            FriendOfBill.Conflicting.Add(vTrait.Addict);
+            FriendOfBill.Conflicting.AddRange(cTrait.LimitDrugs);
             FriendOfBill.CostInCharacterCreation = -1;
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
@@ -100,10 +90,27 @@ namespace BunnyMod.Content
             Teetotaller.AvailableInCharacterCreation = true;
             Teetotaller.CanRemove = true;
             Teetotaller.CanSwap = false;
-            Teetotaller.Conflicting.AddRange(new string[] { vTrait.Addict, cTrait.DAREdevil, vTrait.Electronic, cTrait.FriendOfBill, vTrait.OilLessEssential, vTrait.OilReliant });
+            Teetotaller.Conflicting.Add(vTrait.Addict);
+            Teetotaller.Conflicting.AddRange(cTrait.LimitDrugs);
             Teetotaller.CostInCharacterCreation = -4;
             Teetotaller.IsActive = true;
             Teetotaller.Upgrade = null;
+            #endregion
+            #region Food Limitations
+            CustomTrait Carnivore = RogueLibs.CreateCustomTrait(cTrait.Carnivore, true,
+                new CustomNameInfo("Carnivore"),
+                new CustomNameInfo("'Meeeeeeat,' you grunt enthusiastically."));
+            Carnivore.Available = true;
+            Carnivore.AvailableInCharacterCreation = true;
+            Carnivore.CanRemove = true;
+            Carnivore.CanSwap = false;
+            Carnivore.Conflicting.Add(vTrait.BananaLover);
+            Carnivore.Conflicting.AddRange(cTrait.LimitFood);
+            Carnivore.Conflicting.AddRange(vTrait.LimitFood);
+            Carnivore.CostInCharacterCreation = -1;
+            Carnivore.IsActive = true;
+            Carnivore.Upgrade = null;
+
 
             CustomTrait Vegetarian = RogueLibs.CreateCustomTrait(cTrait.Vegetarian, true,
                 new CustomNameInfo("Vegetarian"),
@@ -112,7 +119,9 @@ namespace BunnyMod.Content
             Vegetarian.AvailableInCharacterCreation = true;
             Vegetarian.CanRemove = true;
             Vegetarian.CanSwap = true;
-            Vegetarian.Conflicting.AddRange(new string[] { vTrait.Jugularious, vTrait.StrictCannibal, cTrait.Carnivore, vTrait.Electronic, vTrait.FleshFeast, vTrait.OilLessEssential, vTrait.OilReliant, vTrait.Zombiism });
+            Vegetarian.Conflicting.Add(vTrait.Zombiism);
+            Vegetarian.Conflicting.AddRange(cTrait.LimitFood);
+            Vegetarian.Conflicting.AddRange(vTrait.LimitFood);
             Vegetarian.CostInCharacterCreation = -1;
             Vegetarian.IsActive = true;
             Vegetarian.Available = true;
@@ -127,7 +136,7 @@ namespace BunnyMod.Content
             AfraidOfLoudNoises.CanRemove = true;
             AfraidOfLoudNoises.CanSwap = true;
             AfraidOfLoudNoises.Conflicting.AddRange(new string[] { cTrait.DrawNoBlood });
-            AfraidOfLoudNoises.Conflicting.AddRange(vTrait.WeaponLimitations);
+            AfraidOfLoudNoises.Conflicting.AddRange(vTrait.LimitWeapons);
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -140,7 +149,7 @@ namespace BunnyMod.Content
             DrawNoBlood.CanRemove = true;
             DrawNoBlood.CanSwap = false;
             DrawNoBlood.Conflicting.AddRange(new string[] { cTrait.AfraidOfLoudNoises, vTrait.Jugularious, vTrait.FleshFeast });
-            DrawNoBlood.Conflicting.AddRange(vTrait.WeaponLimitations);
+            DrawNoBlood.Conflicting.AddRange(vTrait.LimitWeapons);
             DrawNoBlood.CostInCharacterCreation = -5;
             DrawNoBlood.IsActive = true;
             DrawNoBlood.Upgrade = null;
@@ -157,6 +166,58 @@ namespace BunnyMod.Content
             FatHead.IsActive = true;
             FatHead.Upgrade = null;
             #endregion
+            #region Experience Gain Rate
+            CustomTrait DimBulb = RogueLibs.CreateCustomTrait(cTrait.DimBulb, true,
+                new CustomNameInfo("000: Dim Bulb"),
+                new CustomNameInfo(""));
+            DimBulb.Available = true;
+            DimBulb.AvailableInCharacterCreation = true;
+            DimBulb.CanRemove = true;
+            DimBulb.CanSwap = false;
+			DimBulb.Conflicting.AddRange(cTrait.ExperienceRate);
+            DimBulb.Conflicting.AddRange(vTrait.ExperienceRate);
+            DimBulb.CostInCharacterCreation = -5;
+            DimBulb.IsActive = true;
+            DimBulb.Upgrade = null;
+
+            CustomTrait Moronic = RogueLibs.CreateCustomTrait(cTrait.Moronic, true,
+                new CustomNameInfo("000: Moronic"),
+                new CustomNameInfo(""));
+            Moronic.Available = true;
+            Moronic.AvailableInCharacterCreation = true;
+            Moronic.CanRemove = true;
+            Moronic.CanSwap = false;
+            Moronic.Conflicting.AddRange(cTrait.ExperienceRate);
+            Moronic.Conflicting.AddRange(vTrait.ExperienceRate);
+            Moronic.CostInCharacterCreation = -10;
+            Moronic.IsActive = true;
+            Moronic.Upgrade = null;
+
+            CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
+                new CustomNameInfo("000: Smooth-Brained"),
+                new CustomNameInfo(""));
+            SmoothBrained.Available = true;
+            SmoothBrained.AvailableInCharacterCreation = true;
+            SmoothBrained.CanRemove = true;
+            SmoothBrained.CanSwap = false;
+            SmoothBrained.Conflicting.AddRange(cTrait.ExperienceRate);
+            SmoothBrained.Conflicting.AddRange(vTrait.ExperienceRate);
+            SmoothBrained.CostInCharacterCreation = -20;
+            SmoothBrained.IsActive = true;
+            SmoothBrained.Upgrade = null;
+
+            CustomTrait VeryHardOnYourself = RogueLibs.CreateCustomTrait(cTrait.VeryHardOnYourself, true,
+                new CustomNameInfo("000: Very Hard-On Yourself"),
+                new CustomNameInfo("You were a rigid pianist for years: Any time you commited a boner or a cock-up, you would ejaculate in frustration. Your life was seemin' saturated, so you thought you'd come to the Resistance. They appreciate your perfectionism - the hardest job for you to swallow is a wrecked one.\n\nAny XP loss you incur is doubled.\n\nPenis"));
+            VeryHardOnYourself.Available = true;
+            VeryHardOnYourself.AvailableInCharacterCreation = true;
+            VeryHardOnYourself.CanRemove = true;
+            VeryHardOnYourself.CanSwap = false;
+            VeryHardOnYourself.Conflicting.AddRange(new string[] { }); // Intentionally non-conflicting
+            VeryHardOnYourself.CostInCharacterCreation = -2;
+            VeryHardOnYourself.IsActive = true;
+            VeryHardOnYourself.Upgrade = null;
+            #endregion
             #region Luck
             CustomTrait Charmed = RogueLibs.CreateCustomTrait(cTrait.Charmed, true,
                 new CustomNameInfo("Charmed & Dangerous"),
@@ -165,7 +226,7 @@ namespace BunnyMod.Content
             Charmed.AvailableInCharacterCreation = true;
             Charmed.CanRemove = false;
             Charmed.CanSwap = true;
-            Charmed.Conflicting.AddRange(new string[] { cTrait.Charmed_2, cTrait.Cursed, cTrait.Cursed_2 });
+            Charmed.Conflicting.AddRange(cTrait.Luck);
             Charmed.CostInCharacterCreation = 3;
             Charmed.IsActive = true;
             Charmed.Upgrade = cTrait.Charmed_2;
@@ -177,7 +238,7 @@ namespace BunnyMod.Content
             Charmed_2.AvailableInCharacterCreation = false;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
-            Charmed_2.Conflicting.AddRange(new string[] { cTrait.Charmed, cTrait.Cursed, cTrait.Cursed_2 });
+            Charmed_2.Conflicting.AddRange(cTrait.Luck);
             Charmed_2.CostInCharacterCreation = 6;
             Charmed_2.Upgrade = null;
 
@@ -188,7 +249,7 @@ namespace BunnyMod.Content
             Cursed.AvailableInCharacterCreation = true;
             Cursed.CanRemove = true;
             Cursed.CanSwap = false;
-            Cursed.Conflicting.AddRange(new string[] { cTrait.Charmed, cTrait.Charmed_2, cTrait.Cursed_2 });
+            Cursed.Conflicting.AddRange(cTrait.Luck);
             Cursed.CostInCharacterCreation = -2;
             Cursed.IsActive = true;
             Cursed.Upgrade = null;
@@ -200,7 +261,7 @@ namespace BunnyMod.Content
             Cursed_2.AvailableInCharacterCreation = true;
             Cursed_2.CanRemove = true;
             Cursed_2.CanSwap = false;
-            Cursed_2.Conflicting.AddRange(new string[] { cTrait.Cursed, cTrait.Charmed, cTrait.Charmed_2 });
+            Cursed_2.Conflicting.AddRange(cTrait.Luck);
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = true;
             Cursed_2.Upgrade = null;

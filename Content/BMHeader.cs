@@ -213,56 +213,144 @@ namespace BunnyMod.Content
             cChallenge.ShantyTown
         };
     }
-	public static class cTrait // Custom Traits
-	{
-		public const string
-			AfraidOfLoudNoises = "AfraidOfLoudNoises",
-			Archmage = "Archmage",
-			Carnivore = "Carnivore",
-			Charmed = "Charmed",
-			Charmed_2 = "Charmed_2",
-			Cursed = "Cursed",
-			Cursed_2 = "Cursed_2",
-			DAREdevil = "DAREdevil",
-			Domineering = "Domineering",
-			Domineering_2 = "Domineering_2",
-			DrawNoBlood = "DrawNoBlood",
-			EagleEyes = "EagleEyes",
-			EagleEyes_2 = "EagleEyes_2",
-			Fatass = "Fatass",
-			FatHead = "FatHead",
-			FocusedCasting = "FocusedCasting",
-			FocusedCasting_2 = "FocusedCasting_2",
-			FriendOfBill = "FriendOfBill",
-			GenerallyUnpleasant = "GenerallyUnpleasant",
-			GenerallyUnpleasant_2 = "GenerallyUnpleasant_2",
-			Haunted = "Haunted",
-			MagicTraining = "MagicTraining",
-			MagicTraining_2 = "MagicTraining_2",
-			ManaBattery = "ManaBattery",
-			ManaBattery_2 = "ManaBattery_2",
-			MobDebt = "MobDebt",
-			MobDebt_2 = "MobDebt_2",
-			MookMasher = "MookMasher",
-			Myopic = "Myopic",
-			Myopic2 = "Myopic_2",
-			Polarizing = "Polarizing",
-			Polarizing_2 = "Polarizing_2",
-			Priors = "Priors",
-			RATS = "RATS",
-			RATS_2 = "RATS_2",
-			Reinforcements = "Reinforcements",
-			Reinforcements_2 = "Reinforcements_2",
-			StealthBastardDeluxe = "StealthBastardDeluxe",
-			TamperTantrum = "TamperTantrum",
-			TamperTantrum_2 = "TamperTantrum_2",
-			Teetotaller = "Teetotaller",
-			UnderdarkCitizen = "UnderdarkCitizen",
-			Vegetarian = "Vegetarian",
-			VeiledThreats = "VeiledThreats",
-			Warlord = "Warlord",
-			WildCasting = "WildCasting",
-			WildCasting_2 = "WildCasting_2";
+    public static class cTrait // Custom Traits
+    {
+        public const string
+            AfraidOfLoudNoises = "AfraidOfLoudNoises",
+            Archmage = "Archmage",
+            Carnivore = "Carnivore",
+            Charmed = "Charmed",
+            Charmed_2 = "Charmed_2",
+            Cursed = "Cursed",
+            Cursed_2 = "Cursed_2",
+            DAREdevil = "DAREdevil",
+            DimBulb = "DimBulb",
+            Domineering = "Domineering",
+            Domineering_2 = "Domineering_2",
+            DrawNoBlood = "DrawNoBlood",
+            EagleEyes = "EagleEyes",
+            EagleEyes_2 = "EagleEyes_2",
+            Fatass = "Fatass",
+            FatHead = "FatHead",
+            FocusedCasting = "FocusedCasting",
+            FocusedCasting_2 = "FocusedCasting_2",
+            FriendOfBill = "FriendOfBill",
+            GenerallyUnpleasant = "GenerallyUnpleasant",
+            GenerallyUnpleasant_2 = "GenerallyUnpleasant_2",
+            Haunted = "Haunted",
+            MagicTraining = "MagicTraining",
+            MagicTraining_2 = "MagicTraining_2",
+            ManaBattery = "ManaBattery",
+            ManaBattery_2 = "ManaBattery_2",
+            MobDebt = "MobDebt",
+            MobDebt_2 = "MobDebt_2",
+            MookMasher = "MookMasher",
+            Moronic = "Moronic",
+            Myopic = "Myopic",
+            Myopic2 = "Myopic_2",
+            Polarizing = "Polarizing",
+            Polarizing_2 = "Polarizing_2",
+            Priors = "Priors",
+            RATS = "RATS",
+            RATS_2 = "RATS_2",
+            Reinforcements = "Reinforcements",
+            Reinforcements_2 = "Reinforcements_2",
+            SmoothBrained = "SmoothBrained",
+            StealthBastardDeluxe = "StealthBastardDeluxe",
+            TamperTantrum = "TamperTantrum",
+            TamperTantrum_2 = "TamperTantrum_2",
+            Teetotaller = "Teetotaller",
+            UnderdarkCitizen = "UnderdarkCitizen",
+            Vegetarian = "Vegetarian",
+            VeiledThreats = "VeiledThreats",
+            VeryHardOnYourself = "VeryHardOnYourself",
+            Warlord = "Warlord",
+            WildCasting = "WildCasting",
+            WildCasting_2 = "WildCasting_2";
+
+        public static List<string> ExperienceRate = new List<string>()
+        {
+            DimBulb,
+            Moronic,
+            SmoothBrained
+        };
+        public static List<string> LimitArmor = new List<string>()
+        {
+
+        };
+        public static List<string> LimitDrugs = new List<string>()
+        {
+            DAREdevil,
+            FriendOfBill,
+            Teetotaller,
+        };
+        public static List<string> LimitFood = new List<string>()
+        {
+            Carnivore,
+            Vegetarian
+        };
+        public static List<string> LimitHeadgear = new List<string>()
+        {
+            FatHead
+        };
+        public static List<string> LimitWeapons = new List<string>()
+        {
+            AfraidOfLoudNoises,
+            DrawNoBlood,
+        };
+        public static List<string> Luck = new List<string>()
+        {
+            Charmed,
+            Charmed_2,
+            Cursed,
+            Cursed_2,
+        };
+        public static List<string> MagicAll = new List<string>()
+        {
+            Archmage,
+            FocusedCasting,
+            FocusedCasting_2,
+            MagicTraining,
+            MagicTraining_2,
+            ManaBattery,
+            ManaBattery_2,
+            WildCasting,
+            WildCasting_2,
+        };
+        public static List<string> MagicStyle = new List<string>()
+        {
+            Archmage,
+            FocusedCasting,
+            FocusedCasting_2,
+            WildCasting,
+            WildCasting_2,
+        };
+        public static List<string> RelationshipInitial = new List<string>()
+        {
+            Domineering,
+            Domineering_2,
+            GenerallyUnpleasant,
+            GenerallyUnpleasant_2,
+            Polarizing,
+            Polarizing_2,
+            Priors,
+        };
+        public static List<string> Spawns = new List<string>()
+        {
+            Haunted,
+            MobDebt,
+            MobDebt_2,
+            MookMasher,
+            Reinforcements,
+            Reinforcements_2,
+        };
+        public static List<string> VisionRange = new List<string>()
+        {
+            EagleEyes,
+            EagleEyes_2,
+            Myopic,
+            Myopic2,
+        };
     }
     public static class cSpecialAbility // Custom Abilities
     {
@@ -270,6 +358,13 @@ namespace BunnyMod.Content
             ChronomanticDilation = "ChronomanticDilation",
             PyromanticJet = "PyromanticJet",
             TelemanticBlink = "TelemanticBlink";
+
+        public static List<string> MagicAbilities = new List<string>()
+        {
+            ChronomanticDilation,
+            PyromanticJet,
+            TelemanticBlink,
+        };
     }
 
     public static class vAgent // Vanilla Agent Classes
@@ -392,25 +487,6 @@ namespace BunnyMod.Content
             Park = "ParkAmbience",
             Television = "TVAmbience";
 	}
-    public static class vGoal // Vanilla Agent Goals
-    {
-        public const string
-            CuriousObject = "CuriousObject",
-            Dance = "Dance",
-            Guard = "Guard",
-            IceSkate = "IceSkate",
-            Idle = "Idle",
-            Joke = "Joke",
-            ListenToJokeNPC = "ListenToJokeNPC",
-            None = "None",
-            Patrol = "Patrol",
-            Sit = "Sit",
-            Sleep = "Sleep",
-            Swim = "Swim",
-            Wander = "Wander",
-            WanderFar = "WanderFar",
-            WanderInOwnedProperty = "WanderInOwnedProperty";
-    }
     public static class vArmor // Vanilla Armor
 	{
         public const string
@@ -865,7 +941,62 @@ namespace BunnyMod.Content
             WithdrawalStart = "WithdrawalStart",
             ZombieSpitCharge = "ZombieSpitCharge",
             ZombieSpitFire = "ZombieSpitFire";
-	}
+    }
+    public static class vChallenge // Vanilla Mutators
+    {
+        public const string
+            AssassinsEveryLevel = "AssassinsEveryLevel",
+            BigKnockbackForAll = "BigKnockbackForAll",
+            CoolWithCannibals = "CannibalsDontAttack",
+            DoctorsMoreImportant = "DoctorsMoreImportant",
+            EveryoneHatesYou = "EveryoneHatesYou",
+            ExplodingBodies = "ExplodingBodies",
+            FullHealth = "FullHealth",
+            GorillaTown = "GorillaTown",
+            HalfHealth = "HalfHealth",
+            HighCost = "HighCost",
+            InfiniteAmmo = "InfiniteAmmo",
+            InfiniteAmmoNormalWeapons = "InfiniteAmmoNormalWeapons",
+            InfiniteMeleeDurability = "InfiniteMeleeDurability",
+            LowHealth = "LowHealth",
+            ManyWerewolf = "ManyWerewolf",
+            MixedUpLevels = "MixedUpLevels",
+            MoneyRewards = "MoneyRewards",
+            NoCops = "NoCops",
+            NoCowards = "NoCowards",
+            NoGuns = "NoGuns",
+            NoLimits = "NoLimits",
+            NoMelee = "NoMelee",
+            RocketLaunchers = "RocketLaunchers",
+            RogueVision = "RogueVision",
+            SlowDown = "SlowDown",
+            SpeedUp = "SpeedUp",
+            SupercopLand = "SupercopsReplaceCops",
+            TimeLimit = "TimeLimit",
+            TimeLimit2 = "TimeLimit2",
+            TimeLimitQuestsGiveMoreTime = "TimeLimitQuestsGiveMoreTime",
+            ZombieMutator = "ZombieMutator",
+            ZombiesWelcome = "ZombiesWelcome";
+        public static List<string> AddsLawEnforcement = new List<string>()
+        {
+            vChallenge.SupercopLand,
+        };
+        public static List<string> AddsNonhumans = new List<string>()
+        {
+            vChallenge.CoolWithCannibals,
+            vChallenge.ZombieMutator,
+            vChallenge.ZombiesWelcome,
+        };
+        public static List<string> RemovesLawEnforcement = new List<string>()
+        {
+            vChallenge.NoCops,
+        };
+        public static List<string> Zombies = new List<string>()
+        {
+            vChallenge.ZombieMutator,
+            vChallenge.ZombiesWelcome,
+        };
+    }
     public static class vChunkType // Vanilla Chunks
     {
 		#region All Chunk Types
@@ -1525,7 +1656,26 @@ namespace BunnyMod.Content
             Uptown = "FloorTilesWealthy",
             Wall = "WallTiles",
             Water = "WaterTiles";
-	}
+    }
+    public static class vGoal // Vanilla Agent Goals
+    {
+        public const string
+            CuriousObject = "CuriousObject",
+            Dance = "Dance",
+            Guard = "Guard",
+            IceSkate = "IceSkate",
+            Idle = "Idle",
+            Joke = "Joke",
+            ListenToJokeNPC = "ListenToJokeNPC",
+            None = "None",
+            Patrol = "Patrol",
+            Sit = "Sit",
+            Sleep = "Sleep",
+            Swim = "Swim",
+            Wander = "Wander",
+            WanderFar = "WanderFar",
+            WanderInOwnedProperty = "WanderInOwnedProperty";
+    }
     public static class vHairType // Vanilla Hair
 	{
         public const string
@@ -1839,61 +1989,6 @@ namespace BunnyMod.Content
             Normal = "Normal",
             Null = "",
             Tutorial = "Tutorial";
-    }
-    public static class vChallenge // Vanilla Mutators
-	{
-        public const string
-            AssassinsEveryLevel = "AssassinsEveryLevel",
-            BigKnockbackForAll = "BigKnockbackForAll",
-            CoolWithCannibals = "CannibalsDontAttack",
-            DoctorsMoreImportant = "DoctorsMoreImportant",
-            EveryoneHatesYou = "EveryoneHatesYou",
-            ExplodingBodies = "ExplodingBodies",
-            FullHealth = "FullHealth",
-            GorillaTown = "GorillaTown",
-            HalfHealth = "HalfHealth",
-            HighCost = "HighCost",
-            InfiniteAmmo = "InfiniteAmmo",
-            InfiniteAmmoNormalWeapons = "InfiniteAmmoNormalWeapons",
-            InfiniteMeleeDurability = "InfiniteMeleeDurability",
-            LowHealth = "LowHealth",
-            ManyWerewolf = "ManyWerewolf",
-            MixedUpLevels = "MixedUpLevels",
-            MoneyRewards = "MoneyRewards",
-            NoCops = "NoCops",
-            NoCowards = "NoCowards",
-            NoGuns = "NoGuns",
-            NoLimits = "NoLimits",
-            NoMelee = "NoMelee",
-            RocketLaunchers = "RocketLaunchers",
-            RogueVision = "RogueVision",
-            SlowDown = "SlowDown",
-            SpeedUp = "SpeedUp",
-            SupercopLand = "SupercopsReplaceCops",
-            TimeLimit = "TimeLimit",
-            TimeLimit2 = "TimeLimit2",
-            TimeLimitQuestsGiveMoreTime = "TimeLimitQuestsGiveMoreTime",
-            ZombieMutator = "ZombieMutator",
-            ZombiesWelcome = "ZombiesWelcome";
-        public static List<string> AddsLawEnforcement = new List<string>()
-        {
-            vChallenge.SupercopLand,
-        };
-        public static List<string> AddsNonhumans = new List<string>()
-        {
-            vChallenge.CoolWithCannibals,
-            vChallenge.ZombieMutator,
-            vChallenge.ZombiesWelcome,
-        };
-        public static List<string> RemovesLawEnforcement = new List<string>()
-        {
-            vChallenge.NoCops,
-        };
-        public static List<string> Zombies = new List<string>()
-        {
-            vChallenge.ZombieMutator,
-            vChallenge.ZombiesWelcome,
-        };
     }
     public static class vObject // Vanilla Objects
 	{
@@ -2294,6 +2389,7 @@ namespace BunnyMod.Content
             SappyHealthy = "MoreHealthFromPowerSap",
             SausageFingers = "CantUseWeapons2",
             Savorer = "CannibalizeMoreHealth",
+            ScientistSlayer = "HatesScientist",
             ScorchingSavior = "FightsFires",
             ScumbagSlaughterer = "MechHateTrait",
             SecretVandalizer = "HitObjectsNoNoise",
@@ -2345,12 +2441,53 @@ namespace BunnyMod.Content
             WrongBuilding = "OwnersNotHostile",
             Zombiism = "Zombify";
 
-        public static List<string> WeaponLimitations = new List<string>()
+        public static List<string> EnhanceDrugs = new List<string>()
         {
-            vTrait.NearHarmless, 
-            vTrait.Pacifist, 
-            vTrait.StubbyFingers, 
-            vTrait.SausageFingers
+            Addict,
+        };
+        public static List<string> EnhanceFood = new List<string>()
+        {
+            BananaLover,
+        };
+        public static List<string> ExperienceRate = new List<string>()
+        {
+            Studious,
+            Studious2,
+        };
+        public static List<string> LimitDrugs = new List<string>()
+        {
+            OilReliant
+        };
+        public static List<string> LimitFood = new List<string>()
+        {
+            Electronic,
+            Jugularious,
+            OilReliant,
+            StrictCannibal,
+        };
+        public static List<string> LimitWeapons = new List<string>()
+        {
+            NearHarmless, 
+            Pacifist, 
+            StubbyFingers, 
+            SausageFingers
+        };
+        public static List<string> RelationshipInitialGeneral = new List<string>()
+        {
+            Charismatic,
+            RandomReverence,
+        };
+        public static List<string> RelationshipInitialSpecific = new List<string>()
+        {
+            BlahdBasher,
+            CoolwithCannibals,
+            ClassSolidarity,
+            CrepeCrusher,
+            FriendoftheCommonFolk,
+            FriendoftheFamily,
+            ScientistSlayer,
+            Specist,
+            TheLaw,
         };
     }
     public static class vWall // Vanilla Walls

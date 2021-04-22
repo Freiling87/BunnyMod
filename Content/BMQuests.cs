@@ -385,14 +385,26 @@ namespace BunnyMod.Content
 
             if (xpReward != 0)
             {
+                float xpModifier = 1.00f;
+
                 if (xpReward > 0)
                 {
                     if (___agent.statusEffects.hasTrait(vTrait.Studious))
-                        xpReward = (int)((float)xpReward * 1.3f);
-
-                    if (___agent.statusEffects.hasTrait(vTrait.Studious2))
-                        xpReward = (int)((float)xpReward * 1.5f);
+                        xpModifier = 1.30f;
+                    else if (___agent.statusEffects.hasTrait(vTrait.Studious2))
+                        xpModifier = 1.50f;
+                    else if (___agent.statusEffects.hasTrait(cTrait.DimBulb))
+                        xpModifier = 0.75f;
+                    else if (___agent.statusEffects.hasTrait(cTrait.Moronic))
+                        xpModifier = 0.50f;
+                    else if (___agent.statusEffects.hasTrait(cTrait.SmoothBrained))
+                        xpModifier = 0.00f;
                 }
+                else if (xpReward < 0)
+                    if (___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+                        xpModifier = 2.00f;
+
+                xpReward = (int)((float)xpReward * xpModifier);
 
                 float floorXpAcceleration = 0.075f;
                 int cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 16);

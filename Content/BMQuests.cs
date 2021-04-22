@@ -387,7 +387,9 @@ namespace BunnyMod.Content
             {
                 float xpModifier = 1.00f;
 
-                if (xpReward > 0)
+                if (___agent.statusEffects.hasTrait(cTrait.SmoothBrained))
+                    xpModifier = 0.00f;
+                else if (xpReward > 0)
                 {
                     if (___agent.statusEffects.hasTrait(vTrait.Studious))
                         xpModifier = 1.30f;
@@ -395,10 +397,8 @@ namespace BunnyMod.Content
                         xpModifier = 1.50f;
                     else if (___agent.statusEffects.hasTrait(cTrait.DimBulb))
                         xpModifier = 0.75f;
-                    else if (___agent.statusEffects.hasTrait(cTrait.Moronic))
+                    else if (___agent.statusEffects.hasTrait(cTrait.MoronTheMerrier))
                         xpModifier = 0.50f;
-                    else if (___agent.statusEffects.hasTrait(cTrait.SmoothBrained))
-                        xpModifier = 0.00f;
                 }
                 else if (xpReward < 0)
                     if (___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))

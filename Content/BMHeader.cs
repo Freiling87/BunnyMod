@@ -245,7 +245,7 @@ namespace BunnyMod.Content
             MobDebt = "MobDebt",
             MobDebt_2 = "MobDebt_2",
             MookMasher = "MookMasher",
-            Moronic = "Moronic",
+            MoronTheMerrier = "Moronic",
             Myopic = "Myopic",
             Myopic2 = "Myopic_2",
             Polarizing = "Polarizing",
@@ -271,7 +271,7 @@ namespace BunnyMod.Content
         public static List<string> ExperienceRate = new List<string>()
         {
             DimBulb,
-            Moronic,
+            MoronTheMerrier,
             SmoothBrained
         };
         public static List<string> LimitArmor = new List<string>()
@@ -305,7 +305,7 @@ namespace BunnyMod.Content
             Cursed,
             Cursed_2,
         };
-        public static List<string> MagicAll = new List<string>()
+        public static List<string> Magic = new List<string>()
         {
             Archmage,
             FocusedCasting,
@@ -317,7 +317,7 @@ namespace BunnyMod.Content
             WildCasting,
             WildCasting_2,
         };
-        public static List<string> MagicStyle = new List<string>()
+        public static List<string> MagicStyles = new List<string>()
         {
             Archmage,
             FocusedCasting,
@@ -359,7 +359,7 @@ namespace BunnyMod.Content
             PyromanticJet = "PyromanticJet",
             TelemanticBlink = "TelemanticBlink";
 
-        public static List<string> MagicAbilities = new List<string>()
+        public static List<string> Magic = new List<string>()
         {
             ChronomanticDilation,
             PyromanticJet,

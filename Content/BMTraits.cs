@@ -169,7 +169,7 @@ namespace BunnyMod.Content
             #region Experience Gain Rate
             CustomTrait DimBulb = RogueLibs.CreateCustomTrait(cTrait.DimBulb, true,
                 new CustomNameInfo("000: Dim Bulb"),
-                new CustomNameInfo(""));
+                new CustomNameInfo("You have more money than sense. And no, you're not exactly rich.\n\nXP gain set to 75%"));
             DimBulb.Available = true;
             DimBulb.AvailableInCharacterCreation = true;
             DimBulb.CanRemove = true;
@@ -180,22 +180,22 @@ namespace BunnyMod.Content
             DimBulb.IsActive = true;
             DimBulb.Upgrade = null;
 
-            CustomTrait Moronic = RogueLibs.CreateCustomTrait(cTrait.Moronic, true,
-                new CustomNameInfo("000: Moronic"),
-                new CustomNameInfo(""));
-            Moronic.Available = true;
-            Moronic.AvailableInCharacterCreation = true;
-            Moronic.CanRemove = true;
-            Moronic.CanSwap = false;
-            Moronic.Conflicting.AddRange(cTrait.ExperienceRate);
-            Moronic.Conflicting.AddRange(vTrait.ExperienceRate);
-            Moronic.CostInCharacterCreation = -10;
-            Moronic.IsActive = true;
-            Moronic.Upgrade = null;
+            CustomTrait MoronTheMerrier = RogueLibs.CreateCustomTrait(cTrait.MoronTheMerrier, true,
+                new CustomNameInfo("000: Moron the Merrier"),
+                new CustomNameInfo("Sometimes you feel lonely. But as they say, \"Two's company, three's a crowd.\" Except we're talking about your brain cells, you fucking idiot.\n\nXP gain set to 50%"));
+            MoronTheMerrier.Available = true;
+            MoronTheMerrier.AvailableInCharacterCreation = true;
+            MoronTheMerrier.CanRemove = true;
+            MoronTheMerrier.CanSwap = false;
+            MoronTheMerrier.Conflicting.AddRange(cTrait.ExperienceRate);
+            MoronTheMerrier.Conflicting.AddRange(vTrait.ExperienceRate);
+            MoronTheMerrier.CostInCharacterCreation = -10;
+            MoronTheMerrier.IsActive = true;
+            MoronTheMerrier.Upgrade = null;
 
             CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
                 new CustomNameInfo("000: Smooth-Brained"),
-                new CustomNameInfo(""));
+                new CustomNameInfo("You are not playing with a full set of brain cells. You are not the sharpest tool in the dumb-person storage shed. The lights are on, but someone is dumb, and it's you. Are you understanding any of this?\n\nXP gain set to 0%"));
             SmoothBrained.Available = true;
             SmoothBrained.AvailableInCharacterCreation = true;
             SmoothBrained.CanRemove = true;
@@ -213,7 +213,7 @@ namespace BunnyMod.Content
             VeryHardOnYourself.AvailableInCharacterCreation = true;
             VeryHardOnYourself.CanRemove = true;
             VeryHardOnYourself.CanSwap = false;
-            VeryHardOnYourself.Conflicting.AddRange(new string[] { }); // Intentionally non-conflicting
+            VeryHardOnYourself.Conflicting.AddRange(new string[] { cTrait.SmoothBrained });
             VeryHardOnYourself.CostInCharacterCreation = -2;
             VeryHardOnYourself.IsActive = true;
             VeryHardOnYourself.Upgrade = null;
@@ -274,11 +274,11 @@ namespace BunnyMod.Content
             Archmage.AvailableInCharacterCreation = true;
             Archmage.CanRemove = false;
             Archmage.CanSwap = false;
-            Archmage.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2, cTrait.MagicTraining, cTrait.MagicTraining_2, cTrait.ManaBattery, cTrait.ManaBattery_2, cTrait.WildCasting, cTrait.WildCasting_2 });
+            Archmage.Conflicting.AddRange(cTrait.Magic);
             Archmage.CostInCharacterCreation = 100;
             Archmage.IsActive = true;
-            Archmage.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
-            Archmage.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            Archmage.Recommendations.AddRange(cSpecialAbility.Magic);
+            Archmage.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             Archmage.Upgrade = null;
 
             CustomTrait FocusedCasting = RogueLibs.CreateCustomTrait(cTrait.FocusedCasting, true,
@@ -288,11 +288,11 @@ namespace BunnyMod.Content
             FocusedCasting.AvailableInCharacterCreation = true;
             FocusedCasting.CanRemove = false;
             FocusedCasting.CanSwap = false;
-            FocusedCasting.Conflicting.AddRange(new string[] { cTrait.WildCasting, cTrait.WildCasting_2 });
+            FocusedCasting.Conflicting.AddRange(cTrait.MagicStyles);
             FocusedCasting.CostInCharacterCreation = 3;
             FocusedCasting.IsActive = true;
-            FocusedCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
-            FocusedCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            FocusedCasting.Recommendations.AddRange(cSpecialAbility.Magic);
+            FocusedCasting.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             FocusedCasting.Upgrade = cTrait.FocusedCasting_2;
 
             CustomTrait FocusedCasting_2 = RogueLibs.CreateCustomTrait(cTrait.FocusedCasting_2, true,
@@ -302,7 +302,7 @@ namespace BunnyMod.Content
             FocusedCasting_2.AvailableInCharacterCreation = false;
             FocusedCasting_2.CanRemove = false;
             FocusedCasting_2.CanSwap = false;
-            FocusedCasting_2.Conflicting.AddRange(new string[] { cTrait.WildCasting, cTrait.WildCasting_2 });
+            FocusedCasting_2.Conflicting.AddRange(cTrait.MagicStyles);
             FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true;
             FocusedCasting_2.Upgrade = null;
@@ -315,9 +315,9 @@ namespace BunnyMod.Content
             MagicTraining.CostInCharacterCreation = 5;
             MagicTraining.CanRemove = false;
             MagicTraining.CanSwap = false;
-            MagicTraining.Conflicting.AddRange(new string[] { cTrait.MagicTraining_2 });
             MagicTraining.IsActive = true;
-            MagicTraining.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            MagicTraining.Recommendations.AddRange(cSpecialAbility.Magic);
+            MagicTraining.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             MagicTraining.Upgrade = cTrait.MagicTraining_2;
 
             CustomTrait MagicTraining_2 = RogueLibs.CreateCustomTrait(cTrait.MagicTraining_2, true,
@@ -328,9 +328,8 @@ namespace BunnyMod.Content
             MagicTraining_2.CostInCharacterCreation = 10;
             MagicTraining_2.CanRemove = false;
             MagicTraining_2.CanSwap = false;
-            MagicTraining_2.Conflicting.AddRange(new string[] { cTrait.MagicTraining });
             MagicTraining_2.IsActive = true;
-            MagicTraining_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            MagicTraining_2.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             MagicTraining_2.Upgrade = null;
 
             CustomTrait ManaBattery = RogueLibs.CreateCustomTrait(cTrait.ManaBattery, true,
@@ -343,7 +342,7 @@ namespace BunnyMod.Content
             ManaBattery.CanSwap = false;
             ManaBattery.Conflicting.AddRange(new string[] { });
             ManaBattery.IsActive = true;
-            ManaBattery.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            ManaBattery.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             ManaBattery.Upgrade = cTrait.ManaBattery_2;
 
             CustomTrait ManaBattery_2 = RogueLibs.CreateCustomTrait(cTrait.ManaBattery_2, true,
@@ -356,7 +355,7 @@ namespace BunnyMod.Content
             ManaBattery_2.CanSwap = false;
             ManaBattery_2.Conflicting.AddRange(new string[] { });
             ManaBattery_2.IsActive = true;
-            ManaBattery_2.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            ManaBattery_2.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             ManaBattery_2.Upgrade = null;
 
             CustomTrait WildCasting = RogueLibs.CreateCustomTrait(cTrait.WildCasting, true,
@@ -366,11 +365,11 @@ namespace BunnyMod.Content
             WildCasting.AvailableInCharacterCreation = true;
             WildCasting.CanRemove = false;
             WildCasting.CanSwap = false;
-            WildCasting.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2 });
+            WildCasting.Conflicting.AddRange(cTrait.MagicStyles);
             WildCasting.CostInCharacterCreation = 3;
             WildCasting.IsActive = true;
-            WildCasting.Recommendations.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
-            WildCasting.SpecialAbilities.AddRange(new string[] { "ChronomanticDilation", "PyromanticJet", "TelemanticBlink" });
+            WildCasting.Recommendations.AddRange(cSpecialAbility.Magic);
+            WildCasting.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             WildCasting.Upgrade = cTrait.WildCasting_2;
 
             CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
@@ -380,7 +379,7 @@ namespace BunnyMod.Content
             WildCasting_2.AvailableInCharacterCreation = false;
             WildCasting_2.CanRemove = false;
             WildCasting_2.CanSwap = false;
-            WildCasting_2.Conflicting.AddRange(new string[] { cTrait.FocusedCasting, cTrait.FocusedCasting_2});
+            WildCasting_2.Conflicting.AddRange(cTrait.MagicStyles);
             WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true;
             WildCasting_2.Upgrade = null;
@@ -396,7 +395,7 @@ namespace BunnyMod.Content
             RATS.Conflicting.AddRange(new string[] { cTrait.RATS_2 });
             RATS.CostInCharacterCreation = 3;
             RATS.IsActive = true;
-            RATS.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, "ChronomanticDilation", vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
+            RATS.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, cSpecialAbility.ChronomanticDilation, vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
             RATS.Upgrade = cTrait.RATS_2;
 
             CustomTrait RATS_2 = RogueLibs.CreateCustomTrait(cTrait.RATS_2, true,
@@ -409,7 +408,7 @@ namespace BunnyMod.Content
             RATS_2.Conflicting.AddRange(new string[] { cTrait.RATS });
             RATS_2.CostInCharacterCreation = 12;
             RATS_2.IsActive = true;
-            RATS_2.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, "ChronomanticDilation", vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
+            RATS_2.Recommendations.AddRange(new string[] { vTrait.Butterfingerer, cSpecialAbility.ChronomanticDilation, vTrait.IncreasedCritChance, vTrait.Kneecapper, vTrait.UnCrits });
             RATS_2.Upgrade = null;
 			#endregion
 			#region Miscellaneous
@@ -420,7 +419,7 @@ namespace BunnyMod.Content
 			EagleEyes.AvailableInCharacterCreation = true;
 			EagleEyes.CanRemove = false;
 			EagleEyes.CanSwap = true;
-            EagleEyes.Conflicting.AddRange(new string[] { cTrait.EagleEyes_2, cTrait.Myopic, cTrait.Myopic2});
+            EagleEyes.Conflicting.AddRange(cTrait.VisionRange);
 			EagleEyes.CostInCharacterCreation = 3;
 			EagleEyes.IsActive = true;
 			EagleEyes.Upgrade = cTrait.EagleEyes_2;
@@ -432,8 +431,8 @@ namespace BunnyMod.Content
 			EagleEyes_2.AvailableInCharacterCreation = true;
 			EagleEyes_2.CanRemove = false;
 			EagleEyes_2.CanSwap = false;
-            EagleEyes_2.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.Myopic, cTrait.Myopic2 });
-			EagleEyes_2.CostInCharacterCreation = 6;
+            EagleEyes_2.Conflicting.AddRange(cTrait.VisionRange);
+            EagleEyes_2.CostInCharacterCreation = 6;
 			EagleEyes_2.IsActive = true;
 			EagleEyes_2.Upgrade = null;
 
@@ -444,8 +443,8 @@ namespace BunnyMod.Content
 			Myopic.AvailableInCharacterCreation = true;
 			Myopic.CanRemove = true;
 			Myopic.CanSwap = true;
-            Myopic.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.EagleEyes_2, cTrait.Myopic2 });
-			Myopic.CostInCharacterCreation = -4;
+            Myopic.Conflicting.AddRange(cTrait.VisionRange);
+            Myopic.CostInCharacterCreation = -4;
 			Myopic.IsActive = true;
 			Myopic.Upgrade = null;
 
@@ -456,8 +455,8 @@ namespace BunnyMod.Content
 			Myopic_2.AvailableInCharacterCreation = true;
 			Myopic_2.CanRemove = true;
 			Myopic_2.CanSwap = true;
-            Myopic_2.Conflicting.AddRange(new string[] { cTrait.EagleEyes, cTrait.EagleEyes_2, cTrait.Myopic });
-			Myopic_2.CostInCharacterCreation = -8;
+            Myopic_2.Conflicting.AddRange(cTrait.VisionRange);
+            Myopic_2.CostInCharacterCreation = -8;
 			Myopic_2.IsActive = true;
 			Myopic_2.Upgrade = null;
             #endregion
@@ -469,7 +468,7 @@ namespace BunnyMod.Content
             Domineering.AvailableInCharacterCreation = true;
             Domineering.CanRemove = true;
             Domineering.CanSwap = false;
-            Domineering.Conflicting.AddRange(new string[] { cTrait.Domineering_2 });
+            Domineering.Conflicting.Add(cTrait.Domineering_2);
             Domineering.CostInCharacterCreation = 2;
             Domineering.IsActive = true;
             Domineering.Upgrade = cTrait.Domineering_2;
@@ -481,7 +480,7 @@ namespace BunnyMod.Content
             Domineering_2.AvailableInCharacterCreation = true;
             Domineering_2.CanRemove = true;
             Domineering_2.CanSwap = false;
-            Domineering_2.Conflicting.AddRange(new string[] { cTrait.Domineering });
+            Domineering_2.Conflicting.Add(cTrait.Domineering);
             Domineering_2.CostInCharacterCreation = 4;
             Domineering_2.IsActive = true;
             Domineering_2.Upgrade = null;
@@ -579,7 +578,6 @@ namespace BunnyMod.Content
             Haunted.AvailableInCharacterCreation = true;
             Haunted.CanRemove = true;
             Haunted.CanSwap = false;
-            Haunted.Conflicting.AddRange(new string[] { });
             Haunted.CostInCharacterCreation = -2;
             Haunted.IsActive = true;
             Haunted.Upgrade = null;
@@ -591,7 +589,6 @@ namespace BunnyMod.Content
             MobDebt.AvailableInCharacterCreation = true;
             MobDebt.CanRemove = true;
             MobDebt.CanSwap = false;
-            MobDebt.Conflicting.AddRange(new string[] { });
             MobDebt.CostInCharacterCreation = -10;
             MobDebt.IsActive = true;
             MobDebt.Upgrade = null;
@@ -603,7 +600,6 @@ namespace BunnyMod.Content
             MookMasher.AvailableInCharacterCreation = true;
             MookMasher.CanRemove = true;
             MookMasher.CanSwap = false;
-            MookMasher.Conflicting.AddRange(new string[] { });
             MookMasher.CostInCharacterCreation = -5;
             MookMasher.IsActive = true;
             MookMasher.Upgrade = null;
@@ -615,7 +611,7 @@ namespace BunnyMod.Content
             Reinforcements.AvailableInCharacterCreation = true;
             Reinforcements.CanRemove = false;
             Reinforcements.CanSwap = true;
-            Reinforcements.Conflicting.AddRange(new string[] { });
+            Reinforcements.Conflicting.AddRange(new string[] { cTrait.Reinforcements_2 });
             Reinforcements.CostInCharacterCreation = 5;
             Reinforcements.IsActive = true;
             Reinforcements.Upgrade = "Reinforcements_2";
@@ -627,7 +623,7 @@ namespace BunnyMod.Content
             Reinforcements_2.AvailableInCharacterCreation = true;
             Reinforcements_2.CanRemove = false;
             Reinforcements_2.CanSwap = true;
-            Reinforcements_2.Conflicting.AddRange(new string[] { });
+            Reinforcements_2.Conflicting.AddRange(new string[] { cTrait.Reinforcements });
             Reinforcements_2.CostInCharacterCreation = 10;
             Reinforcements_2.IsActive = true;
             Reinforcements_2.Upgrade = "Reinforcements_2";
@@ -640,7 +636,7 @@ namespace BunnyMod.Content
             StealthBastardDeluxe.AvailableInCharacterCreation = true;
             StealthBastardDeluxe.CanRemove = false;
             StealthBastardDeluxe.CanSwap = true;
-            StealthBastardDeluxe.Conflicting.AddRange(new string[] { vTrait.Loud });
+            StealthBastardDeluxe.Conflicting.AddRange(new string[] { vTrait.Loud, vTrait.Bulky });
             StealthBastardDeluxe.CostInCharacterCreation = 4;
             StealthBastardDeluxe.IsActive = true;
             StealthBastardDeluxe.Upgrade = null;
@@ -688,16 +684,6 @@ namespace BunnyMod.Content
         public static bool isPlayerInitialRelationshipTraitActive = false;
         public static List<T> ConcatTraitLists<T>(params IEnumerable<T>[] enums)
             => enums.SelectMany(e => e).ToList();
-        public static List<string> InitialRelationshipTraits = new List<string>()
-        {
-            cTrait.Domineering,
-            cTrait.Domineering_2,
-            cTrait.GenerallyUnpleasant,
-            cTrait.GenerallyUnpleasant_2,
-            cTrait.Polarizing,
-            cTrait.Polarizing_2,
-            cTrait.Priors
-        };
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
             BMLog("HealthCost");
@@ -721,10 +707,13 @@ namespace BunnyMod.Content
 		{
             foreach (Agent agent in GC.agentList)
                 if (agent.isPlayer != 0)
-                    foreach (string se in InitialRelationshipTraits)
+                    foreach (string se in cTrait.RelationshipInitial)
                         if (agent.statusEffects.hasTrait(se))
 						{
                             isPlayerInitialRelationshipTraitActive = true;
+
+                            BMLog("SetPlayerIRTActive" + isPlayerInitialRelationshipTraitActive);
+
                             return;
                         }
 
@@ -1200,6 +1189,12 @@ namespace BunnyMod.Content
 		{
             // This method sets how ___agent feels about otherAgent
 
+            if (otherAgent.agentName == vAgent.ResistanceLeader)
+            {
+                __instance.SetRelInitial(otherAgent, vRelationship.Aligned);
+                otherAgent.relationships.SetRelInitial(___agent, vRelationship.Aligned);
+            }
+
             if (GC.levelType != vLevelType.HomeBase)
 			{
                 if (isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
@@ -1251,6 +1246,7 @@ namespace BunnyMod.Content
                                 newRel = vRelationship.Submissive;
                         }
 
+
                         if (newRel != vRelationship.Neutral)
                         {
                             __instance.SetRelInitial(otherAgent, newRel);
@@ -1261,7 +1257,6 @@ namespace BunnyMod.Content
                         }
                     }
                 }
-
             }
         }
         #endregion

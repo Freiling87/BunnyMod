@@ -9225,8 +9225,13 @@ namespace BunnyMod.Content
 		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
 		{
-			if (GC.levelTheme == 2 && floorName == "FlamePit")
-				floorName = "Hole";
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+			{
+				floorName = GetFloorTileFromMutator();
+			}
+
+			if (GC.levelTheme == 2 && floorName == vFloor.FlamePit)
+				floorName = vFloor.Hole;
 
 			Renderer component = __instance.transform.gameObject.GetComponent<Renderer>();
 			float x = component.bounds.min.x;

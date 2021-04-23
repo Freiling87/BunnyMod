@@ -1279,10 +1279,16 @@ namespace BunnyMod.Content
 		}
         public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Postfix
 		{
+            BMLog("StatusEffects_BecomeHidden");
+            try { BMLog("\tObjectReal: " + hiddenInObject.name); }
+            catch { BMLog("\tObjectReal: null"); }
+            BMLog("\tAgent: " + __instance.agent.agentName);
+
             Agent agent = __instance.agent;
 
-            if (IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0 && hiddenInObject.objectName == vObject.Manhole)
-                agent.statusEffects.BecomeNotHidden();
+            if (!(hiddenInObject is null))
+                if (IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0 && hiddenInObject.objectName == vObject.Manhole)
+                    agent.statusEffects.BecomeNotHidden();
 		}
         public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
 		{

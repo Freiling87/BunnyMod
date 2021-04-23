@@ -29,10 +29,12 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			BasicFloor_00();
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
 			SpawnerObject_00();
+			TileInfo_00();
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -316,6 +318,21 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
+		#region BasicFloor
+		public void BasicFloor_00()
+		{
+			Prefix(typeof(BasicFloor), "Spawn", GetType(), "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
+		{
+			if (GC.challenges.Contains(cChallenge.TransitExperiment))
+				floorName = vFloor.Ice;
+			else if (GC.challenges.Contains(cChallenge.SunkenCity))
+				floorName = vFloor.Water;
+
+			return true;
+		}
+		#endregion
 		#region LoadLevel
 		public void LoadLevel_00()
 		{
@@ -1516,6 +1533,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+		// FillFloors
 		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2) // Prefix
 		{
 			BMLog("LoadLevel_FillFloors_Prefix");
@@ -1525,7 +1543,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Replacement
+		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Non-Patch
 		{
 			BMLog("LoadLevel_FillFloors_Replacement");
 
@@ -1591,6 +1609,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+		// FillMapChunks
 		public static bool LoadLevel_FillMapChunks_Prefix (LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref List<GameObject> ___chunkList, ref List<ChunkData> ___chunkListBasic, ref List<ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_FillMapChunks_Prefix");
@@ -1600,7 +1619,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List<ChunkData> ___chunkListBasicBackup) // Replacement
+		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List<ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_FillMapChunks_Replacement");
 
@@ -1750,6 +1769,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+		// FillMapChunks2
 		public static bool LoadLevel_FillMapChunks2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasic, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_FillMapChunks2_Prefix");
@@ -1759,7 +1779,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillMapChunks2_Replacement(LoadLevel __instance, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List <ChunkData> ___chunkListBasicBackup) // Replacement
+		public static IEnumerator LoadLevel_FillMapChunks2_Replacement(LoadLevel __instance, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List <ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_FillMapChunks2_Replacement");
 
@@ -3519,6 +3539,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+		// LoadStuff2
 		public static bool LoadLevel_LoadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_LoadStuff2_Prefix");
@@ -3528,7 +3549,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_LoadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Prefix
+		public static IEnumerator LoadLevel_LoadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_LoadStuff2_Replacement");
 
@@ -5004,7 +5025,8 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Replacement
+		// SetupMore3_3
+		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Prefix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Prefix");
 
@@ -9148,6 +9170,7 @@ namespace BunnyMod.Content
 				}
 			}
 		}
+
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore5_2");
@@ -9690,6 +9713,27 @@ namespace BunnyMod.Content
 
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
 				objectRealName = vObject.SecurityCam;
+
+			return true;
+		}
+		#endregion
+		#region TileInfo
+		public void TileInfo_00()
+		{
+			Prefix(typeof(TileInfo), "setFloor", GetType(), "TileInfo_setFloor", new Type[4] { typeof(int), typeof(int), typeof(int), typeof(int) });
+		}
+		public static bool TileInfo_setFloor(int x, int y, ref int tileNum, ref int layerNum, TileInfo __instance) // Prefix
+		{
+			if (GC.challenges.Contains(cChallenge.TransitExperiment))
+			{
+				foreach (TileData tile in __instance.curMyTileArray)
+					tile.ice = true;
+			}
+			else if (GC.challenges.Contains(cChallenge.SunkenCity))
+			{
+				foreach (TileData tile in __instance.curMyTileArray)
+					tile.water = true;
+			}
 
 			return true;
 		}

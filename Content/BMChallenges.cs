@@ -30,7 +30,7 @@ namespace BunnyMod.Content
 			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
 				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
-			AnCapistan.Available = true;
+			AnCapistan.Available = false;
 			AnCapistan.Conflicting.AddRange(vChallenge.AddsLawEnforcement);
 			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
 			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
@@ -39,7 +39,7 @@ namespace BunnyMod.Content
 			CustomMutator MACITS = RogueLibs.CreateCustomMutator(cChallenge.MACITS, true,
 				new CustomNameInfo("000: Overhaul: Mostly Automated Comfortable Inclusive Terrestrial Socialism"),
 				new CustomNameInfo("The Revolution is complete! No more living in privation to feed the fat capitalist pigs! Now all that's left is to have another Revolution and fuck it all up!"));
-			MACITS.Available = true;
+			MACITS.Available = false;
 			MACITS.Conflicting.AddRange(cChallenge.AddCriminals);
 			MACITS.Conflicting.AddRange(cChallenge.Overhauls);
 			MACITS.Conflicting.AddRange(vChallenge.RemovesLawEnforcement);
@@ -49,7 +49,7 @@ namespace BunnyMod.Content
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
-			PoliceState.Available = true;
+			PoliceState.Available = false;
 			PoliceState.Conflicting.AddRange(cChallenge.AddCriminals);
 			PoliceState.Conflicting.AddRange(vChallenge.AddsNonhumans);
 			PoliceState.Conflicting.AddRange(cChallenge.Overhauls);

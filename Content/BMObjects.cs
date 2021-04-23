@@ -275,6 +275,11 @@ namespace BunnyMod.Content
                     __instance.StopInteraction();
                 }
             }
+            else if (__instance is VendorCart)
+            {
+                VendorCart_Steal((VendorCart)__instance);
+                __instance.StopInteraction();
+            }
 
             if (!__instance.interactingAgent.interactionHelper.interactingFar)
             {

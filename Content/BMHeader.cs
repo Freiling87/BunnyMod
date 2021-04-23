@@ -33,9 +33,9 @@ namespace BunnyMod.Content
             new BMAgents().Awake();
 			new BMBehaviors().Awake();
             new BMCombat().Awake();
-			//new BMDisasters().Awake();
-			//new BMItems().Awake();
-			new BMLevelGen().Awake();
+            //new BMItems().Awake();
+            new BMLevelFeelings().Awake();
+            new BMLevelGen().Awake();
             new BMMiscellaneous().Awake();
 			new BMChallenges().Awake();
 			new BMObjects().Awake();

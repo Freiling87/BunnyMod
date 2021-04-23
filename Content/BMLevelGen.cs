@@ -34,6 +34,7 @@ namespace BunnyMod.Content
 			RandomWalls_00();
 			SpawnerFloor_00();
 			SpawnerObject_00();
+			SpawnerWall_00();
 			TileInfo_00();
 		}
 		#region Custom
@@ -100,7 +101,7 @@ namespace BunnyMod.Content
 					return vFloor.Grass;
 
 				case cChallenge.SunkenCity:
-					return vFloor.Pool;
+					return vFloor.Canal;
 
 				case cChallenge.TransitExperiment:
 					return vFloor.IceRink;
@@ -9723,6 +9724,24 @@ namespace BunnyMod.Content
 
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
 				objectRealName = vObject.SecurityCam;
+
+			return true;
+		}
+		#endregion
+		#region SpawnerWall
+		public void SpawnerWall_00()
+		{
+			Prefix(typeof(SpawnerWall), "spawn", GetType(), "SpawnerWall_spawn", new Type[1] { typeof(string) });
+		}
+		public static bool SpawnerWall_spawn(ref string wallName) // Prefix
+		{
+			BMLog("SpawnerWall_spawn:");
+			BMLog("\t" + wallName);
+
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+				wallName = GetWallTypeFromMutator();
+
+			BMLog("\t" + wallName);
 
 			return true;
 		}

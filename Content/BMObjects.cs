@@ -229,8 +229,16 @@ namespace BunnyMod.Content
                         __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMTraits.ToolCost(agent, 30));
                     }
 
-                    if (agent.inventory.HasItem("Fud"))
-                        __instance.buttons.Add("GrillFud");
+                    if (agent.inventory.HasItem(vItem.Fud))
+                    {
+                        if (GC.challenges.Contains(cChallenge.AnCapistan))
+						{
+                            __instance.buttons.Add("GrillFudPaid");
+                            __instance.buttonPrices.Add(5);
+                        }
+                        else
+                            __instance.buttons.Add("GrillFud");
+                    }
                 }
             }
             else if (__instance is TrashCan)
@@ -448,6 +456,8 @@ namespace BunnyMod.Content
                 Manhole_FlushYourself((Manhole)__instance);
             else if (buttonText == "GrillFud")
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+            else if (buttonText == "GrillFudPaid" && __instance.moneySuccess(5))
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
             else if (buttonText == "HackExplode") // Vanilla
                 __instance.HackExplode(__instance.interactingAgent);
             else if (buttonText == "HideInTrashcan")
@@ -474,7 +484,7 @@ namespace BunnyMod.Content
                 }
             }
             else if (buttonText == "VendorCart_Steal")
-			{
+            {
                 if (!__instance.interactingAgent.inventory.hasEmptySlot())
                 {
                     __instance.interactingAgent.inventory.PlayerFullResponse(__instance.interactingAgent);

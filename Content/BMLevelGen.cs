@@ -3556,6 +3556,11 @@ namespace BunnyMod.Content
 			Debug.Log("LoadStuff2");
 			__instance.startedLoadStuff2 = true;
 
+			if (GC.challenges.Contains(cChallenge.SkywayDistrict))
+				GC.canalHoles = true;
+			else
+				GC.canalHoles = false;
+
 			if (GC.loadPoolsScene)
 			{
 				while (GC.poolsScene == null)

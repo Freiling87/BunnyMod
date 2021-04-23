@@ -68,6 +68,12 @@ namespace BunnyMod.Content
 			ArcologyEcology.Conflicting.AddRange(cChallenge.FloorsAndFeatures);
 			ArcologyEcology.IsActive = false;
 
+			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
+				new CustomNameInfo("000: FloorTiles: Skyway District"),
+				new CustomNameInfo(""));
+			SkywayDistrict.Available = true;
+			SkywayDistrict.IsActive = false;
+
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
 				new CustomNameInfo("000: FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));

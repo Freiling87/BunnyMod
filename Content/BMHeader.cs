@@ -146,6 +146,7 @@ namespace BunnyMod.Content
             ScaryGuns = "ScaryGuns",
             ShantyTown = "ShantyTown",
             SingleMinded = "SingleMinded",
+            SkywayDistrict = "SkywayDistrict",
             SpelunkyDory = "SpelunkyDory",
             SwarmWelcome = "SwarmWelcome",
             SunkenCity = "SunkenCity",

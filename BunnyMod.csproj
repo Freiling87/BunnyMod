@@ -90,6 +90,7 @@
     <Compile Include="Content\BMAbilities.cs" />
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
+    <Compile Include="Content\BMCombat.cs" />
     <Compile Include="Content\BMDisasters.cs" />
     <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMMiscellaneous.cs" />

@@ -66,8 +66,8 @@ namespace BunnyMod.Content
 			ArcologyEcology.IsActive = false;
 
 			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
-				new CustomNameInfo("000: FloorTiles: Skyway District"),
-				new CustomNameInfo(""));
+				new CustomNameInfo("Skyway District"),
+				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be."));
 			SkywayDistrict.Available = true;
 			SkywayDistrict.IsActive = false;
 

@@ -168,7 +168,7 @@ namespace BunnyMod.Content
             #endregion
             #region Experience Gain Rate
             CustomTrait DimBulb = RogueLibs.CreateCustomTrait(cTrait.DimBulb, true,
-                new CustomNameInfo("000: Dim Bulb"),
+                new CustomNameInfo("Dim Bulb"),
                 new CustomNameInfo("You have more money than sense. And no, you're not exactly rich.\n\nXP gain set to 75%"));
             DimBulb.Available = true;
             DimBulb.AvailableInCharacterCreation = true;
@@ -182,7 +182,7 @@ namespace BunnyMod.Content
             DimBulb.Upgrade = null;
 
             CustomTrait MoronTheMerrier = RogueLibs.CreateCustomTrait(cTrait.MoronTheMerrier, true,
-                new CustomNameInfo("000: Moron the Merrier"),
+                new CustomNameInfo("Moron the Merrier"),
                 new CustomNameInfo("Sometimes you feel lonely. But as they say, \"Two's company, three's a crowd.\" Except we're talking about your brain cells, you fucking idiot.\n\nXP gain set to 50%"));
             MoronTheMerrier.Available = true;
             MoronTheMerrier.AvailableInCharacterCreation = true;
@@ -196,7 +196,7 @@ namespace BunnyMod.Content
             MoronTheMerrier.Upgrade = null;
 
             CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
-                new CustomNameInfo("000: Smooth-Brained"),
+                new CustomNameInfo("Smooth-Brained"),
                 new CustomNameInfo("You are not playing with a full set of brain cells. You are not the sharpest tool in the dumb-person storage shed. The lights are on, but someone is dumb, and it's you. Are you understanding any of this?\n\nXP gain set to 0%"));
             SmoothBrained.Available = true;
             SmoothBrained.AvailableInCharacterCreation = true;
@@ -210,14 +210,14 @@ namespace BunnyMod.Content
             SmoothBrained.Upgrade = null;
 
             CustomTrait VeryHardOnYourself = RogueLibs.CreateCustomTrait(cTrait.VeryHardOnYourself, true,
-                new CustomNameInfo("000: Very Hard-On Yourself"),
+                new CustomNameInfo("Very Hard-On Yourself"),
                 new CustomNameInfo("You were a rigid pianist for years: Any time you commited a boner or a cock-up, you would ejaculate in frustration. Your life was seemin' saturated, so you thought you'd come to the Resistance. They appreciate your perfectionism - the hardest job for you to swallow is a wrecked one.\n\nAny XP loss you incur is doubled.\n\nPenis"));
             VeryHardOnYourself.Available = true;
             VeryHardOnYourself.AvailableInCharacterCreation = true;
             VeryHardOnYourself.CanRemove = true;
             VeryHardOnYourself.CanSwap = false;
             VeryHardOnYourself.Conflicting.AddRange(new string[] { cTrait.SmoothBrained });
-            VeryHardOnYourself.CostInCharacterCreation = -2;
+            VeryHardOnYourself.CostInCharacterCreation = -1;
             VeryHardOnYourself.IsActive = true;
             VeryHardOnYourself.Upgrade = null;
             #endregion

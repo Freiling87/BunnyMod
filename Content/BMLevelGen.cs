@@ -29,10 +29,13 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			BasicFloor_00();
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
 			SpawnerObject_00();
+			SpawnerWall_00();
+			TileInfo_00();
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -98,7 +101,7 @@ namespace BunnyMod.Content
 					return vFloor.Grass;
 
 				case cChallenge.SunkenCity:
-					return vFloor.Pool;
+					return vFloor.Canal;
 
 				case cChallenge.TransitExperiment:
 					return vFloor.IceRink;
@@ -316,9 +319,25 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
+		#region BasicFloor
+		public void BasicFloor_00()
+		{
+			Prefix(typeof(BasicFloor), "Spawn", GetType(), "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
+		{
+			if (GC.challenges.Contains(cChallenge.TransitExperiment))
+				floorName = vFloor.Ice;
+			else if (GC.challenges.Contains(cChallenge.SunkenCity))
+				floorName = vFloor.Water;
+
+			return true;
+		}
+		#endregion
 		#region LoadLevel
 		public void LoadLevel_00()
 		{
+			Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
@@ -1289,6 +1308,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+		// FillFloors
 		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2) // Prefix
 		{
 			BMLog("LoadLevel_FillFloors_Prefix");
@@ -1298,7 +1318,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Replacement
+		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Non-Patch
 		{
 			BMLog("LoadLevel_FillFloors_Replacement");
 
@@ -1364,6 +1384,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+		// FillMapChunks
 		public static bool LoadLevel_FillMapChunks_Prefix (LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref List<GameObject> ___chunkList, ref List<ChunkData> ___chunkListBasic, ref List<ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_FillMapChunks_Prefix");
@@ -1373,7 +1394,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List<ChunkData> ___chunkListBasicBackup) // Replacement
+		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List<ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_FillMapChunks_Replacement");
 
@@ -1523,6 +1544,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+		// FillMapChunks2
 		public static bool LoadLevel_FillMapChunks2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasic, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_FillMapChunks2_Prefix");
@@ -1532,7 +1554,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_FillMapChunks2_Replacement(LoadLevel __instance, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List <ChunkData> ___chunkListBasicBackup) // Replacement
+		public static IEnumerator LoadLevel_FillMapChunks2_Replacement(LoadLevel __instance, List<GameObject> ___chunkList, List <ChunkData> ___chunkListBasic, List <ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_FillMapChunks2_Replacement");
 
@@ -3292,7 +3314,8 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
+		// LoadStuff2
+		public static bool LoadLevel_LoadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_LoadStuff2_Prefix");
 
@@ -3301,12 +3324,17 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_loadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Prefix
+		public static IEnumerator LoadLevel_LoadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Non-Patch
 		{
 			BMLog("LoadLevel_LoadStuff2_Replacement");
 
 			Debug.Log("LoadStuff2");
 			__instance.startedLoadStuff2 = true;
+
+			if (GC.challenges.Contains(cChallenge.SkywayDistrict))
+				GC.canalHoles = true;
+			else
+				GC.canalHoles = false;
 
 			if (GC.loadPoolsScene)
 			{
@@ -4777,7 +4805,8 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Replacement
+		// SetupMore3_3
+		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Prefix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Prefix");
 
@@ -8918,6 +8947,7 @@ namespace BunnyMod.Content
 				}
 			}
 		}
+
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore5_2");
@@ -8967,8 +8997,13 @@ namespace BunnyMod.Content
 		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
 		{
-			if (GC.levelTheme == 2 && floorName == "FlamePit")
-				floorName = "Hole";
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+			{
+				floorName = GetFloorTileFromMutator();
+			}
+
+			if (GC.levelTheme == 2 && floorName == vFloor.FlamePit)
+				floorName = vFloor.Hole;
 
 			Renderer component = __instance.transform.gameObject.GetComponent<Renderer>();
 			float x = component.bounds.min.x;
@@ -9460,6 +9495,45 @@ namespace BunnyMod.Content
 
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable) && objectRealName == vObject.FireSpewer)
 				objectRealName = vObject.SecurityCam;
+
+			return true;
+		}
+		#endregion
+		#region SpawnerWall
+		public void SpawnerWall_00()
+		{
+			Prefix(typeof(SpawnerWall), "spawn", GetType(), "SpawnerWall_spawn", new Type[1] { typeof(string) });
+		}
+		public static bool SpawnerWall_spawn(ref string wallName) // Prefix
+		{
+			BMLog("SpawnerWall_spawn:");
+			BMLog("\t" + wallName);
+
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+				wallName = GetWallTypeFromMutator();
+
+			BMLog("\t" + wallName);
+
+			return true;
+		}
+		#endregion
+		#region TileInfo
+		public void TileInfo_00()
+		{
+			Prefix(typeof(TileInfo), "setFloor", GetType(), "TileInfo_setFloor", new Type[4] { typeof(int), typeof(int), typeof(int), typeof(int) });
+		}
+		public static bool TileInfo_setFloor(int x, int y, ref int tileNum, ref int layerNum, TileInfo __instance) // Prefix
+		{
+			if (GC.challenges.Contains(cChallenge.TransitExperiment))
+			{
+				foreach (TileData tile in __instance.curMyTileArray)
+					tile.ice = true;
+			}
+			else if (GC.challenges.Contains(cChallenge.SunkenCity))
+			{
+				foreach (TileData tile in __instance.curMyTileArray)
+					tile.water = true;
+			}
 
 			return true;
 		}

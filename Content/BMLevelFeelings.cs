@@ -8,7 +8,7 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-	public class BMDisasters
+	public class BMLevelFeelings
 	{
 		public static GameController GC => GameController.gameController;
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -17,12 +17,10 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			InitializeDisasters();
-
-			// Patches here
+			InitializeLevelFeelings();
 		}
 
-		public static void InitializeDisasters()
+		public static void InitializeLevelFeelings()
 		{
 			
 		}

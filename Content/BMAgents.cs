@@ -18,6 +18,8 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			Agent_00();
+			Relationships_00();
+			StatusEffects_00();
 		}
 
 		#region Agent
@@ -83,6 +85,34 @@ namespace BunnyMod.Content
 				__instance.agentCategories.Add("Defense");
 				__instance.setInitialCategories = true;
 			}
+		}
+		#endregion
+		#region Relationships
+		public void Relationships_00()
+		{
+			Prefix(typeof(Relationships), "OwnCheck", GetType(), "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
+		}
+		public static bool Relationships_OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
+		{
+			// TODO: PoliceState sets all Objects NoStrikesIfDestroyed to false
+			return true;
+		}
+		#endregion
+		#region StatusEffects
+		public void StatusEffects_00()
+		{
+			Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+			Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
+		}
+		public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
+		{
+			if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
+				__instance.agent.agentCollider.enabled = false;
+			return;
+		}
+		public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
+		{
+			__instance.agent.agentCollider.enabled = true;
 		}
 		#endregion
 	}

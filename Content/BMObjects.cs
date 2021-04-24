@@ -25,8 +25,6 @@ namespace BunnyMod.Content
 
             ObjectReal_00();
             PlayfieldObject_00();
-            Relationships_00();
-            StatusEffects_00();
 
             AlarmButton_00();
             BathTub_00();
@@ -91,6 +89,7 @@ namespace BunnyMod.Content
             CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "Interface", new CustomNameInfo("Bet $100"));
         }
         #endregion
+
         #region Custom
         public static void CorrectButtonCosts(ObjectReal objectReal)
         {
@@ -141,6 +140,7 @@ namespace BunnyMod.Content
             }
         }
 		#endregion
+
 		#region Generic
 		#region ObjectReal
 		public void ObjectReal_00()
@@ -229,8 +229,16 @@ namespace BunnyMod.Content
                         __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMTraits.ToolCost(agent, 30));
                     }
 
-                    if (agent.inventory.HasItem("Fud"))
-                        __instance.buttons.Add("GrillFud");
+                    if (agent.inventory.HasItem(vItem.Fud))
+                    {
+                        if (GC.challenges.Contains(cChallenge.AnCapistan))
+						{
+                            __instance.buttons.Add("GrillFudPaid");
+                            __instance.buttonPrices.Add(5);
+                        }
+                        else
+                            __instance.buttons.Add("GrillFud");
+                    }
                 }
             }
             else if (__instance is TrashCan)
@@ -274,6 +282,11 @@ namespace BunnyMod.Content
                     Stove_GrilledFud((Stove)__instance);
                     __instance.StopInteraction();
                 }
+            }
+            else if (__instance is VendorCart)
+            {
+                VendorCart_Steal((VendorCart)__instance);
+                __instance.StopInteraction();
             }
 
             if (!__instance.interactingAgent.interactionHelper.interactingFar)
@@ -443,6 +456,8 @@ namespace BunnyMod.Content
                 Manhole_FlushYourself((Manhole)__instance);
             else if (buttonText == "GrillFud")
                 __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+            else if (buttonText == "GrillFudPaid" && __instance.moneySuccess(5))
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
             else if (buttonText == "HackExplode") // Vanilla
                 __instance.HackExplode(__instance.interactingAgent);
             else if (buttonText == "HideInTrashcan")
@@ -469,7 +484,7 @@ namespace BunnyMod.Content
                 }
             }
             else if (buttonText == "VendorCart_Steal")
-			{
+            {
                 if (!__instance.interactingAgent.inventory.hasEmptySlot())
                 {
                     __instance.interactingAgent.inventory.PlayerFullResponse(__instance.interactingAgent);
@@ -553,34 +568,7 @@ namespace BunnyMod.Content
                 return false;
         }
 		#endregion
-		#region Relationships
-        public void Relationships_00()
-		{
-            Prefix(typeof(Relationships), "OwnCheck", GetType(), "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
-		}
-        public static bool Relationships_OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
-		{
-            // TODO: PoliceState sets all Objects NoStrikesIfDestroyed to false
-            return true;
-		}
-        #endregion
-        #region StatusEffects
-        public void StatusEffects_00()
-		{
-            Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
-            Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
-        }
-        public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance)
-        {
-            if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
-                __instance.agent.agentCollider.enabled = false;
-            return;
-        }
-        public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
-        {
-            __instance.agent.agentCollider.enabled = true;
-        }
-		#endregion
+
 		#endregion
 		#region Objects
 		#region Alarm Button

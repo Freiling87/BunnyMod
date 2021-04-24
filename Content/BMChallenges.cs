@@ -59,7 +59,7 @@ namespace BunnyMod.Content
 			#region Floors & Features
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
+				new CustomNameInfo("FloorTiles: Arcology Ecology"),
 				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(cChallenge.FloorsAndFeatures);
@@ -237,7 +237,7 @@ namespace BunnyMod.Content
 			ShantyTown.IsActive = false;
 
 			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
-				new CustomNameInfo("000: Construction: Spelunky Dory"),
+				new CustomNameInfo("Construction: Spelunky Dory"),
 				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
 			SpelunkyDory.Available = true;
 			SpelunkyDory.Conflicting.AddRange(cChallenge.WallsAndFloors);

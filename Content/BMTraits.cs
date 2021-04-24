@@ -176,6 +176,7 @@ namespace BunnyMod.Content
             DimBulb.CanSwap = false;
 			DimBulb.Conflicting.AddRange(cTrait.ExperienceRate);
             DimBulb.Conflicting.AddRange(vTrait.ExperienceRate);
+            DimBulb.Conflicting.Remove(cTrait.DimBulb);
             DimBulb.CostInCharacterCreation = -5;
             DimBulb.IsActive = true;
             DimBulb.Upgrade = null;
@@ -189,6 +190,7 @@ namespace BunnyMod.Content
             MoronTheMerrier.CanSwap = false;
             MoronTheMerrier.Conflicting.AddRange(cTrait.ExperienceRate);
             MoronTheMerrier.Conflicting.AddRange(vTrait.ExperienceRate);
+            MoronTheMerrier.Conflicting.Remove(cTrait.MoronTheMerrier);
             MoronTheMerrier.CostInCharacterCreation = -10;
             MoronTheMerrier.IsActive = true;
             MoronTheMerrier.Upgrade = null;
@@ -202,6 +204,7 @@ namespace BunnyMod.Content
             SmoothBrained.CanSwap = false;
             SmoothBrained.Conflicting.AddRange(cTrait.ExperienceRate);
             SmoothBrained.Conflicting.AddRange(vTrait.ExperienceRate);
+            SmoothBrained.Conflicting.Remove(cTrait.SmoothBrained);
             SmoothBrained.CostInCharacterCreation = -20;
             SmoothBrained.IsActive = true;
             SmoothBrained.Upgrade = null;
@@ -227,6 +230,7 @@ namespace BunnyMod.Content
             Charmed.CanRemove = false;
             Charmed.CanSwap = true;
             Charmed.Conflicting.AddRange(cTrait.Luck);
+            Charmed.Conflicting.Remove(cTrait.Charmed);
             Charmed.CostInCharacterCreation = 3;
             Charmed.IsActive = true;
             Charmed.Upgrade = cTrait.Charmed_2;
@@ -239,6 +243,7 @@ namespace BunnyMod.Content
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
             Charmed_2.Conflicting.AddRange(cTrait.Luck);
+            Charmed_2.Conflicting.Remove(cTrait.Charmed_2);
             Charmed_2.CostInCharacterCreation = 6;
             Charmed_2.Upgrade = null;
 
@@ -250,6 +255,7 @@ namespace BunnyMod.Content
             Cursed.CanRemove = true;
             Cursed.CanSwap = false;
             Cursed.Conflicting.AddRange(cTrait.Luck);
+            Cursed.Conflicting.Remove(cTrait.Cursed);
             Cursed.CostInCharacterCreation = -2;
             Cursed.IsActive = true;
             Cursed.Upgrade = null;
@@ -262,6 +268,7 @@ namespace BunnyMod.Content
             Cursed_2.CanRemove = true;
             Cursed_2.CanSwap = false;
             Cursed_2.Conflicting.AddRange(cTrait.Luck);
+            Cursed_2.Conflicting.Remove(cTrait.Cursed_2);
             Cursed_2.CostInCharacterCreation = -4;
             Cursed_2.IsActive = true;
             Cursed_2.Upgrade = null;
@@ -275,6 +282,7 @@ namespace BunnyMod.Content
             Archmage.CanRemove = false;
             Archmage.CanSwap = false;
             Archmage.Conflicting.AddRange(cTrait.Magic);
+            Archmage.Conflicting.Remove(cTrait.Archmage);
             Archmage.CostInCharacterCreation = 100;
             Archmage.IsActive = true;
             Archmage.Recommendations.AddRange(cSpecialAbility.Magic);
@@ -289,6 +297,7 @@ namespace BunnyMod.Content
             FocusedCasting.CanRemove = false;
             FocusedCasting.CanSwap = false;
             FocusedCasting.Conflicting.AddRange(cTrait.MagicStyles);
+            FocusedCasting.Conflicting.Remove(cTrait.FocusedCasting);
             FocusedCasting.CostInCharacterCreation = 3;
             FocusedCasting.IsActive = true;
             FocusedCasting.Recommendations.AddRange(cSpecialAbility.Magic);
@@ -303,6 +312,7 @@ namespace BunnyMod.Content
             FocusedCasting_2.CanRemove = false;
             FocusedCasting_2.CanSwap = false;
             FocusedCasting_2.Conflicting.AddRange(cTrait.MagicStyles);
+            FocusedCasting_2.Conflicting.Remove(cTrait.FocusedCasting_2);
             FocusedCasting_2.CostInCharacterCreation = 6;
             FocusedCasting_2.IsActive = true;
             FocusedCasting_2.Upgrade = null;
@@ -312,6 +322,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("Improves your skills with any Magic Special Ability."));
             MagicTraining.Available = true;
             MagicTraining.AvailableInCharacterCreation = true;
+            MagicTraining.Conflicting.Add(cTrait.Archmage);
             MagicTraining.CostInCharacterCreation = 5;
             MagicTraining.CanRemove = false;
             MagicTraining.CanSwap = false;
@@ -325,6 +336,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("Further improves your skills with any Magic Special Ability."));
             MagicTraining_2.Available = false;
             MagicTraining_2.AvailableInCharacterCreation = false;
+            MagicTraining_2.Conflicting.Add(cTrait.Archmage);
             MagicTraining_2.CostInCharacterCreation = 10;
             MagicTraining_2.CanRemove = false;
             MagicTraining_2.CanSwap = false;
@@ -337,6 +349,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("You can store more mana. Nifty."));
             ManaBattery.Available = true;
             ManaBattery.AvailableInCharacterCreation = true;
+            ManaBattery.Conflicting.Add(cTrait.Archmage);
             ManaBattery.CostInCharacterCreation = 2;
             ManaBattery.CanRemove = false;
             ManaBattery.CanSwap = false;
@@ -350,6 +363,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("You can store even more mana. Even niftier."));
             ManaBattery_2.Available = true;
             ManaBattery_2.AvailableInCharacterCreation = false;
+            ManaBattery_2.Conflicting.Add(cTrait.Archmage);
             ManaBattery_2.CostInCharacterCreation = 4;
             ManaBattery_2.CanRemove = false;
             ManaBattery_2.CanSwap = false;
@@ -366,6 +380,7 @@ namespace BunnyMod.Content
             WildCasting.CanRemove = false;
             WildCasting.CanSwap = false;
             WildCasting.Conflicting.AddRange(cTrait.MagicStyles);
+            WildCasting.Conflicting.Remove(cTrait.WildCasting);
             WildCasting.CostInCharacterCreation = 3;
             WildCasting.IsActive = true;
             WildCasting.Recommendations.AddRange(cSpecialAbility.Magic);
@@ -380,6 +395,7 @@ namespace BunnyMod.Content
             WildCasting_2.CanRemove = false;
             WildCasting_2.CanSwap = false;
             WildCasting_2.Conflicting.AddRange(cTrait.MagicStyles);
+            WildCasting_2.Conflicting.Remove(cTrait.WildCasting_2);
             WildCasting_2.CostInCharacterCreation = 6;
             WildCasting_2.IsActive = true;
             WildCasting_2.Upgrade = null;

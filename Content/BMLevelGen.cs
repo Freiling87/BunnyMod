@@ -106,23 +106,6 @@ namespace BunnyMod.Content
 				case cChallenge.TransitExperiment:
 					return vFloor.IceRink;
 
-				// Wall & Floor Mods
-
-				case cChallenge.CityOfSteel:
-					return vFloor.MetalPlates;
-
-				case cChallenge.GreenLiving:
-					return vFloor.Grass;
-
-				case cChallenge.Panoptikopolis:
-					return vFloor.CleanTilesRaised;
-
-				case cChallenge.ShantyTown:
-					return vFloor.DirtFloor;
-
-				case cChallenge.SpelunkyDory:
-					return vFloor.CaveFloor;
-
 				default:
 					return "";
 			}
@@ -141,23 +124,6 @@ namespace BunnyMod.Content
 
 				case cChallenge.TransitExperiment:
 					return vFloorTileGroup.Ice;
-
-				// Wall & Floor Mods
-
-				case cChallenge.CityOfSteel:
-					return vFloorTileGroup.Uptown;
-
-				case cChallenge.GreenLiving:
-					return vFloorTileGroup.Park;
-
-				case cChallenge.Panoptikopolis:
-					return vFloorTileGroup.Uptown;
-
-				case cChallenge.ShantyTown:
-					return vFloorTileGroup.Slums;
-
-				case cChallenge.SpelunkyDory:
-					return vFloorTileGroup.Industrial;
 
 				default:
 					return "";
@@ -7281,6 +7247,8 @@ namespace BunnyMod.Content
 							default:
 								if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.GreenLiving))
 									ambience = vAmbience.Park;
+								else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+									ambience = vAmbience.Cave;
 								break;
 						}
 

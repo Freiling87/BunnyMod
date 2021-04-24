@@ -206,7 +206,7 @@ namespace BunnyMod.Content
 			YoungMenIntheNeighborhood.IsActive = false;
 
 			#endregion
-			#region Walls & Floors
+			#region Walls
 
 			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
 				new CustomNameInfo("Construction: City Of Steel"),
@@ -237,7 +237,7 @@ namespace BunnyMod.Content
 			ShantyTown.IsActive = false;
 
 			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
-				new CustomNameInfo("Construction: Spelunky Dory"),
+				new CustomNameInfo("000: Construction: Spelunky Dory"),
 				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
 			SpelunkyDory.Available = true;
 			SpelunkyDory.Conflicting.AddRange(cChallenge.WallsAndFloors);

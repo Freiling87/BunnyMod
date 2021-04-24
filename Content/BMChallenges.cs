@@ -175,8 +175,8 @@ namespace BunnyMod.Content
 			DoublePlyRewards.IsActive = false;
 
 			CustomMutator UnpaidInternship = RogueLibs.CreateCustomMutator(cChallenge.UnpaidInternship, true,
-				new CustomNameInfo("000: Rewards: Unpaid Internship"),
-				new CustomNameInfo("The double-experience you're getting working for the Resistance is worth more than any reward, they say. But so far, you're mainly learning one thing: Work for people who pay you."));
+				new CustomNameInfo("Rewards: Unpaid Internship"),
+				new CustomNameInfo("The double-experience you're getting working for the Resistance is worth more than any reward, they say. But so far, you're mainly learning one thing: Work for people who pay you. At least they provide lunch, though?"));
 			UnpaidInternship.Available = true;
 			UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });
 			UnpaidInternship.IsActive = false;

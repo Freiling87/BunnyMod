@@ -880,14 +880,14 @@ namespace BunnyMod.Content
 
             return true;
         }
-        public static bool InvDatabase_SubtractFromItemCount_c(int slotNum, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+        public static bool InvDatabase_SubtractFromItemCount_c(int slotNum, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
 		{
             BMLog("InvDatabase_SubtractFromItemCount_c:");
             BMLog("\tslotNum = " + slotNum);
             BMLog("\tamount = " + amount);
             BMLog("\ttoolbarMove = " + toolbarMove);
 
-            if (BMHeader.tools.Contains(__instance.InvItemList[slotNum].invItemName))
+            if (vItem.Tools.Contains(__instance.InvItemList[slotNum].invItemName))
 			{
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;
@@ -896,14 +896,14 @@ namespace BunnyMod.Content
             }
             return true;
 		}
-        public static bool InvDatabase_SubtractFromItemCount_d(InvItem invItem, int amount, bool toolbarMove, InvDatabase __instance) // Prefix
+        public static bool InvDatabase_SubtractFromItemCount_d(InvItem invItem, ref int amount, bool toolbarMove, InvDatabase __instance) // Prefix
         {
-            BMLog("InvDatabase_SubtractFromItemCount_d:");
+            BMLog("InvDatabase_SubtractFromItemCount_d:"); 
             BMLog("\tInvItem = " + invItem.invItemName);
             BMLog("\tamount = " + amount);
             BMLog("\ttoolbarMove = " + toolbarMove);
 
-            if (BMHeader.tools.Contains(invItem.invItemName))
+            if (vItem.Tools.Contains(invItem.invItemName))
             {
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;

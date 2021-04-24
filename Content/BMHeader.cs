@@ -53,7 +53,6 @@ namespace BunnyMod.Content
         public static List<string> heavy = new List<string>() { vItem.Axe, vItem.BaseballBat, vItem.Beartrap, vItem.BulletproofVest, vItem.Crowbar, vItem.FireExtinguisher, vItem.FireproofSuit, vItem.Flamethrower, vItem.GhostGibber, vItem.LandMine, vItem.MachineGun, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.Sledgehammer, vItem.Wrench };
         public static List<string> loud = new List<string>() { vItem.BoomBox, vItem.DizzyGrenade, vItem.DoorDetonator, vItem.EMPGrenade, vItem.Explodevice, vItem.FireExtinguisher, vItem.Fireworks, vItem.GhostGibber, vItem.Grenade, vItem.EarWarpWhistle, vItem.Leafblower, vItem.LandMine, vItem.MachineGun, vItem.MolotovCocktail, vItem.Pistol, vItem.RemoteBomb, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.TimeBomb, vItem.WarpGrenade };
         public static List<string> piercing = new List<string>() { vItem.Axe, vItem.Beartrap, vItem.Grenade, vItem.Knife, vItem.LandMine, vItem.MachineGun, vItem.Pistol, vItem.Revolver, vItem.RocketLauncher, vItem.Shotgun, vItem.Shuriken, vItem.Sword };
-        public static List<string> tools = new List<string> { vItem.Crowbar, vItem.Wrench };
 		#endregion
 		public static void Log (string logMessage) =>
 			ConsoleMessage.LogMessage(logMessage);
@@ -1902,6 +1901,12 @@ namespace BunnyMod.Content
             Will = "Will",
             WindowCutter = "WindowCutter",
             Wrench = "Wrench";
+
+        public static List<string> Tools = new List<string>()
+        {
+            Crowbar,
+            Wrench,
+        };
 	}
     public static class vLevelFeature // Vanilla Features
     {

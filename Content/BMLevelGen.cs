@@ -319,241 +319,14 @@ namespace BunnyMod.Content
 		#region LoadLevel
 		public void LoadLevel_00()
 		{
-			//Prefix(typeof(LoadLevel), "CanUseChunk", GetType(), "LoadLevel_CanUseChunk", new Type[6] { typeof(GameObject), typeof(ChunkData), typeof(bool), typeof(int), typeof(int), typeof(Vector3) });
 			Prefix(typeof(LoadLevel), "CreateInitialMap", GetType(), "LoadLevel_CreateInitialMap", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillFloors", GetType(), "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillMapChunks", GetType(), "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "FillMapChunks2", GetType(), "LoadLevel_FillMapChunks2_Prefix", new Type[0] { });
-			Prefix(typeof(LoadLevel), "LoadStuff2", GetType(), "LoadLevel_LoadStuff2_Prefix", new Type[0] { });
+			Prefix(typeof(LoadLevel), "loadStuff2", GetType(), "LoadLevel_loadStuff2_Prefix", new Type[0] { });
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
-		}
-		public static bool LoadLevel_CanUseChunk(GameObject myChunkGo, ChunkData myChunkBasic, bool checkSessionData, int randChunkNum, int chunkShape, Vector3 myNewPos, LoadLevel __instance, ref bool __result) // Prefix
-		{
-			BMLog("LoadLevel_CanUseChunk:");
-			int bmlogIterator = 1;
-			BMLog(bmlogIterator++.ToString());
-
-			#region Generic
-			Chunk chunk = null;
-			string description;
-
-			BMLog(bmlogIterator++.ToString());
-
-			if (GC.basicSpawns)
-				description = myChunkBasic.description;
-			else
-			{
-				chunk = myChunkGo.GetComponent<Chunk>();
-				description = chunk.description;
-			}
-
-			BMLog(bmlogIterator++.ToString());
-
-			int sameChunkTypeCount = 0;
-			
-			if (checkSessionData && GC.sessionData.usedChunks.Contains(randChunkNum))
-			{
-				__result = false; 
-				return false;
-			}
-
-			BMLog(bmlogIterator++.ToString());
-
-			if (GC.basicSpawns)
-				using (List<ChunkData>.Enumerator enumerator = __instance.usedChunksThisLevelBasic.GetEnumerator())
-					while (enumerator.MoveNext())
-					{
-						ChunkData chunkData = enumerator.Current;
-
-						if (description == chunkData.description && checkSessionData)
-							sameChunkTypeCount++;
-						if (description != "Generic" && description != "Lake" && myChunkBasic == chunkData)
-						{
-							__result = false; 
-							return false;
-						}
-					}
-
-			BMLog(bmlogIterator++.ToString());
-
-			foreach (GameObject gameObject in __instance.usedChunksThisLevel)
-			{
-				Chunk component = gameObject.GetComponent<Chunk>();
-
-				if (description == component.description && checkSessionData)
-					sameChunkTypeCount++;
-
-				if (description != "Generic" && description != "Lake" && chunk == component)
-				{
-					__result = false; 
-					return false;
-				}
-			}
-
-			BMLog(bmlogIterator++.ToString());
-
-			#endregion
-			#region Levels
-			if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Slums &&description != "Generic")
-			{
-				BMLog("\tLevelTheme "+ GC.levelTheme +": '" + description + "'");
-
-				if ((GC.sessionDataBig.curLevelEndless == 1 && description == vChunkType.PoliceStation) ||
-					vChunkType.SlumsProhibited.Contains(description) ||
-					(sameChunkTypeCount >= 3 && vChunkType.SlumsLimitedTo3.Contains(description)) ||
-					(sameChunkTypeCount >= 2 && vChunkType.SlumsLimitedTo2.Contains(description)) ||
-					(sameChunkTypeCount >= 1 && vChunkType.SlumsLimitedTo1.Contains(description)))
-					__result = false;
-
-				return false;
-			}
-			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Industrial && description != "Generic")
-			{
-				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
-
-				if (vChunkType.IndustrialProhibited.Contains(description) ||
-						(sameChunkTypeCount >= 3 && vChunkType.IndustrialLimitedTo3.Contains(description)) ||
-						(sameChunkTypeCount >= 2 && vChunkType.IndustrialLimitedTo2.Contains(description)) ||
-						(sameChunkTypeCount >= 1 && vChunkType.IndustrialLimitedTo1.Contains(description)))
-					__result = false; 
-
-				return false;
-			}
-			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Park)
-			{
-				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
-
-				if (vChunkType.ParkProhibited.Contains(description) ||
-					(sameChunkTypeCount >= 3 && vChunkType.ParkLimitedTo3.Contains(description)) ||
-					(sameChunkTypeCount >= 2 && vChunkType.ParkLimitedTo2.Contains(description)) ||
-					(sameChunkTypeCount >= 1 && vChunkType.ParkLimitedTo1.Contains(description)))
-				{
-					__result = false; 
-					return false;
-				}
-
-				if (chunkShape >= 0 && chunkShape <= 4)
-				{
-					bool flag = false;
-
-					for (int i = 0; i < __instance.levelChunks.Count; i++)
-						if (__instance.levelChunks[i].description != "Generic" && __instance.levelChunks[i].description != "Lake" && Vector2.Distance(__instance.levelChunks[i].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
-							flag = true;
-					
-					if (flag && description != "Generic" && description != "Lake")
-					{
-						__result = false; 
-						return false;
-					}
-				}
-
-				if (chunkShape == 5 || chunkShape == 6)
-				{
-					if (chunkShape == 6)
-					{
-						string a = GC.rnd.RandomSelect("Level3ChunkHuge", "RandomScenarios");
-
-						if ((description == "Hideout" && a == "NotHideout") ||
-							(description != "Hideout" && a == "Hideout"))
-						{
-							__result = false; 
-							return false;
-						}
-					}
-
-					__result = (
-						description == "Hideout" || 
-						description == "Graveyard" || 
-						description == "MilitaryOutpost" || 
-						description == "Cabin" || 
-						description == "Greenhouse" || 
-						description == "Cave" || 
-						description == "Farm" || 
-						description == "HedgeMaze");
-					return false;
-				}
-
-				if (chunkShape == 1 || chunkShape == 2 || chunkShape == 3)
-				{
-					__result = true; 
-					return false;
-				}
-
-				if (!(description == "Generic") && 
-					!(description == "Lake") && 
-					!(description == "Hideout") && 
-					!(description == "MilitaryOutpost") && 
-					!(description == "Cabin") && 
-					!(description == "Greenhouse") && 
-					!(description == "Cave") && 
-					!(description == "Farm") && 
-					!(description == "HedgeMaze") && 
-					!(description == "Shop") && 
-					!(description == "Bathroom") && 
-					!(description == "Graveyard"))
-				{
-					__result = false; 
-					return false;
-				}
-
-				if (description == "Lake")
-				{
-					bool flag2 = false;
-
-					for (int j = 0; j < __instance.levelChunks.Count; j++)
-						if ((__instance.levelChunks[j].description == "Lake" || __instance.levelChunks[j].description == "Island") && Vector2.Distance(__instance.levelChunks[j].chunkPos, myNewPos) <= __instance.chunkSize * 2f)
-							flag2 = true;
-
-					__result = !flag2;
-					return false;
-				}
-
-				__result = true; 
-				return false;
-			}
-			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Downtown && description != "Generic")
-			{
-				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
-
-				if (vChunkType.DowntownProhibited.Contains(description) ||
-					(sameChunkTypeCount >= 3 && description == "Temp") ||
-					(sameChunkTypeCount >= 2 && vChunkType.DowntownLimitedTo2.Contains(description)) ||
-					(sameChunkTypeCount >= 1 && vChunkType.DowntownLimitedTo1.Contains(description)))
-					__result = false; 
-
-				return false;
-			}
-			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.Uptown && description != "Generic")
-			{
-				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
-
-				if (vChunkType.UptownProhibited.Contains(description) ||
-					(sameChunkTypeCount >= 5 && vChunkType.UptownLimitedTo5.Contains(description)) ||
-					(sameChunkTypeCount >= 3 && vChunkType.UptownLimitedTo3.Contains(description)) ||
-					(sameChunkTypeCount >= 2 && vChunkType.UptownLimitedTo2.Contains(description)) ||
-					(sameChunkTypeCount >= 1 && !__instance.squareMap && vChunkType.UptownLimitedTo1.Contains(description)))
-					__result = false; 
-
-				return false;
-			}
-			else if (GC.levelTheme == (int)vLevelTheme.LevelTheme.MayorVillage && description != "Generic")
-			{
-				BMLog("\tLevelTheme " + GC.levelTheme + ": '" + description + "'");
-
-				if (vChunkType.MayorVillageProhibited.Contains(description) ||
-					(sameChunkTypeCount >= 2 && vChunkType.MayorVillageLimitedTo2.Contains(description)) ||
-					(sameChunkTypeCount >= 1 && vChunkType.MayorVillageLimitedTo1.Contains(description)))
-				{
-					__result = false; 
-					return false;
-				}
-			}
-			#endregion
-
-			__result = true; 
-			return false;
 		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
@@ -3519,16 +3292,16 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_LoadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
+		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_LoadStuff2_Prefix");
 
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
-			__result = LoadLevel_LoadStuff2_Replacement(__instance, ___chunkListBasic, ___tilemapFloors, ___tilemapFloors2, ___tilemapWalls, ___placedKey1, ___placedKey2, ___placedKey3, ___chunkList, ___chunkListBasicBackup);
+			__result = LoadLevel_loadStuff2_Replacement(__instance, ___chunkListBasic, ___tilemapFloors, ___tilemapFloors2, ___tilemapWalls, ___placedKey1, ___placedKey2, ___placedKey3, ___chunkList, ___chunkListBasicBackup);
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_LoadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Prefix
+		public static IEnumerator LoadLevel_loadStuff2_Replacement (LoadLevel __instance, List<ChunkData> ___chunkListBasic, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors2, tk2dTileMap ___tilemapWalls, bool ___placedKey1, bool ___placedKey2, bool ___placedKey3, List <GameObject> ___chunkList, List <ChunkData> ___chunkListBasicBackup) // Prefix
 		{
 			BMLog("LoadLevel_LoadStuff2_Replacement");
 
@@ -6586,13 +6359,10 @@ namespace BunnyMod.Content
 
 								if (flag13)
 								{
-									string text3 = GC.Choose<string>("Thief", "Thief", new string[]
-									{
-										"Thief",
-										"Cannibal"
-									});
+									string text3 = GC.Choose<string>("Thief", "Thief", "Thief", "Cannibal");
 
-									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && (!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
+									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) && 
+										(!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
 									{
 										Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
 										agent2.SetDefaultGoal("Idle");

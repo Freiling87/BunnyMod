@@ -2152,7 +2152,7 @@ namespace BunnyMod.Content
             WerewolfTransformation = "Werewolf Transformation",
             ZombieSpit = "Zombie Spit";
     }
-    public static class vStatus // Vanilla Status Effects
+    public static class vStatusEffect // Vanilla Status Effects
 	{
         public const string
             AbovetheLaw = "AboveTheLaw",

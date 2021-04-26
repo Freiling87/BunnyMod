@@ -1499,7 +1499,7 @@ namespace BunnyMod.Content
                 {
                     Agent agent = myObject.GetComponent<Agent>();
 
-                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen) && !agent.statusEffects.hasStatusEffect(vStatus.Giant))
+                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen) && !agent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
                     {
                         Manhole_FlushYourself(agent, (Manhole)__instance.GetComponent<ObjectReal>());
 
@@ -2544,7 +2544,7 @@ namespace BunnyMod.Content
         {
             if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
 			{
-                if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) || __instance.interactingAgent.statusEffects.hasStatusEffect(vStatus.Shrunk)) && !__instance.interactingAgent.statusEffects.hasStatusEffect(vStatus.Giant))
+                if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) || __instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Shrunk)) && !__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
                 {
                     List<ObjectReal> exits = new List<ObjectReal>();
                     float furthestDistance = 0f;

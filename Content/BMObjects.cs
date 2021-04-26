@@ -2013,6 +2013,7 @@ namespace BunnyMod.Content
         public void SecurityCam_00()
         {
             Prefix(typeof(SecurityCam), "MyUpdate", GetType(), "SecurityCam_MyUpdate", new Type[0] { });
+            Postfix(typeof(SecurityCam), "SetVars", GetType(), "SecurityCam_SetVars", new Type[0] { });
         }
         public static bool SecurityCam_MyUpdate(ref IEnumerator __result, SecurityCam __instance, ref tk2dTileMap ___tilemapFloors2, ref bool ___agentsPreviouslyInView) // Prefix
         {
@@ -2148,6 +2149,10 @@ namespace BunnyMod.Content
             }
 
             yield break;
+        }
+        public static void SecurityCam_SetVars(SecurityCam __instance) // Postfix
+		{
+            __instance.shiftAmountS = -0.16f;
         }
         // If PoliceState, alert if any Guilty detected
         #endregion

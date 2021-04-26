@@ -35,7 +35,6 @@ namespace BunnyMod.Content
 			SpawnerFloor_00();
 			SpawnerObject_00();
 			SpawnerWall_00();
-			TileInfo_00();
 		}
 		#region Custom
 		public static int LevelSizeMod(int vanilla)
@@ -1658,8 +1657,8 @@ namespace BunnyMod.Content
 										}
 										else
 										{
-											text = GC.Choose<string>("Normal", "Reverse");
-											text2 = GC.Choose<string>("Normal", "Reverse");
+											text = GC.Choose("Normal", "Reverse");
+											text2 = GC.Choose("Normal", "Reverse");
 											num5 = 0;
 										}
 
@@ -5834,7 +5833,7 @@ namespace BunnyMod.Content
 					#region Public Security Cams for Police State
 					if (GC.challenges.Contains(cChallenge.PoliceState))
 					{
-						Debug.Log("Loading Public Security Cams");
+						BMLog("Loading Public Security Cams");
 
 						int bigTries = (int)((float)Random.Range(8, 12) * __instance.levelSizeModifier);
 						List<int> spawnedInChunks = new List<int>();
@@ -9696,35 +9695,6 @@ namespace BunnyMod.Content
 		#region SpawnerWall
 		public void SpawnerWall_00()
 		{
-		}
-		#endregion
-		#region TileInfo
-		public void TileInfo_00()
-		{
-			Prefix(typeof(TileInfo), "setFloor", GetType(), "TileInfo_setFloor", new Type[4] { typeof(int), typeof(int), typeof(int), typeof(int) });
-		}
-		public static bool TileInfo_setFloor(int x, int y, ref int tileNum, ref int layerNum, TileInfo __instance) // Prefix
-		{
-			try
-			{
-				BMLog("TileInfo_setFloor:");
-				foreach (TileData tile in __instance.curMyTileArray)
-					BMLog("\t" + tile.chunkID + "\t" + tile.posX + "|" + tile.posY + ": " + tile.floorMaterial);
-
-				if (GC.challenges.Contains(cChallenge.TransitExperiment))
-				{
-					foreach (TileData tile in __instance.curMyTileArray)
-						tile.ice = true;
-				}
-				else if (GC.challenges.Contains(cChallenge.SunkenCity))
-				{
-					foreach (TileData tile in __instance.curMyTileArray)
-						tile.water = true;
-				}
-			}
-			catch { }
-
-			return true;
 		}
 		#endregion
 	}

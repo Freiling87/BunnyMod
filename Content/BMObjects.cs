@@ -2540,7 +2540,7 @@ namespace BunnyMod.Content
 
             return true;
 		}
-        public bool Toilet_FlushYourself(Toilet __instance) // Replacement
+        public static bool Toilet_FlushYourself(Toilet __instance) // Replacement
         {
             if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
 			{
@@ -2791,7 +2791,7 @@ namespace BunnyMod.Content
 	{
         public static GameController GC => GameController.gameController;
 
-        public Elevator elevatorHost;
+        public Elevator elevatorHost; 
 
         public bool ticketPurchased = false;
     }

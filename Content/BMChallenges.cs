@@ -53,7 +53,7 @@ namespace BunnyMod.Content
 			PoliceState.Conflicting.AddRange(vChallenge.RemovesLawEnforcement);
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
 			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
-			PoliceState.IsActive = true;
+			PoliceState.IsActive = false;
 
 			#endregion
 			#region Floors & Features

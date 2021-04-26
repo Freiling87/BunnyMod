@@ -141,7 +141,7 @@ namespace BunnyMod.Content
         }
 		#endregion
 
-		#region Generic
+		#region Base Classes
 		#region ObjectReal
 		public void ObjectReal_00()
 		{

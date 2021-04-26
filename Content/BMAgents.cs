@@ -26,6 +26,7 @@ namespace BunnyMod.Content
 		public void Agent_00()
 		{
 			Postfix(typeof(Agent), "SetupAgentStats", GetType(), "Agent_SetupAgentStats", new Type[1] { typeof(string) });
+			Postfix(typeof(Agent), "Start", GetType(), "Agent_Start", new Type[0] { });
 		}
 		public static void Agent_SetupAgentStats(string transformationType, Agent __instance) // Postfix
 		{
@@ -86,6 +87,13 @@ namespace BunnyMod.Content
 				__instance.setInitialCategories = true;
 			}
 		}
+		public static void Agent_Start(Agent __instance) // Postfix
+		{
+			Agent_Remora remora = new Agent_Remora();
+			Agent_Variables[__instance] = remora;
+			remora.agentHost = __instance;
+		}
+		public static Dictionary<Agent, Agent_Remora> Agent_Variables = new Dictionary<Agent, Agent_Remora>();
 		#endregion
 		#region Relationships
 		public void Relationships_00()
@@ -115,5 +123,13 @@ namespace BunnyMod.Content
 			__instance.agent.agentCollider.enabled = true;
 		}
 		#endregion
+	}
+	public class Agent_Remora
+	{
+		public static GameController GC => GameController.gameController;
+
+		public Agent agentHost;
+
+		public bool hasElevatorPass = false;
 	}
 }

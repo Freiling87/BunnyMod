@@ -367,6 +367,11 @@ namespace BunnyMod.Content
             TelemanticBlink,
         };
     }
+    public static class cStatuseffect // Custom Status Effects
+	{
+        public const string
+            ElevatorAccess = "ElevatorAccess";
+	}
 
     public static class vAgent // Vanilla Agent Classes
     {

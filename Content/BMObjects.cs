@@ -257,48 +257,29 @@ namespace BunnyMod.Content
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
             if (__instance is FlamingBarrel)
-            {
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
-                __instance.StopInteraction();
-            }
             else if (__instance is Manhole)
 			{
-                if (__instance.operatingItem.invItemName == "Crowbar")
-				{
+                if (__instance.operatingItem.invItemName == vItem.Crowbar)
                     Manhole_UseCrowbar((Manhole)__instance);
-                    __instance.StopInteraction();
-				}
 			}
             else if (__instance is Stove)
             {
-                if (__instance.operatingItem.invItemName == "Wrench")
-                {
+                if (__instance.operatingItem.invItemName == vItem.Wrench)
                     Stove_UseWrenchToDetonate((Stove)__instance);
-                    __instance.StopInteraction();
-                }
-
-                if (__instance.operatingItem.invItemName == "Fud")
-                {
+                else if (__instance.operatingItem.invItemName == vItem.Fud)
                     Stove_GrilledFud((Stove)__instance);
-                    __instance.StopInteraction();
-                }
             }
             else if (__instance is VendorCart)
-            {
                 VendorCart_Steal((VendorCart)__instance);
-                __instance.StopInteraction();
-            }
-
-            if (!__instance.interactingAgent.interactionHelper.interactingFar)
+            else if (!__instance.interactingAgent.interactionHelper.interactingFar)
             {
                 string operatingBarType = __instance.operatingBarType;
 
                 if (operatingBarType == "Collecting")
-                {
                     __instance.CollectPart();
-                    __instance.StopInteraction();
-                }
             }
+
             return false;
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement

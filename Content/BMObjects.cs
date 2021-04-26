@@ -1518,9 +1518,9 @@ namespace BunnyMod.Content
                 {
                     Agent agent = myObject.GetComponent<Agent>();
 
-                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
+                    if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen) && !agent.statusEffects.hasStatusEffect(vStatus.Giant))
                     {
-                        Manhole_FlushYourself(agent);
+                        Manhole_FlushYourself(agent, (Manhole)__instance.GetComponent<ObjectReal>());
 
                         return false;
                     }
@@ -1546,7 +1546,7 @@ namespace BunnyMod.Content
             Postfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
             Prefix(typeof(Manhole), "Start", GetType(), "Manhole_Start", new Type[0] { });
         }
-        public static void Manhole_FlushYourself(Agent agent) // Non-Patch
+        public static void Manhole_FlushYourself(Agent agent, ObjectReal __instance) // Non-Patch
         {
             List<ObjectReal> exits = new List<ObjectReal>();
 
@@ -1554,63 +1554,77 @@ namespace BunnyMod.Content
             {
                 ObjectReal objectReal = GC.objectRealList[i];
 
-                if (objectReal.objectName == "Manhole")
+                if (objectReal == __instance)
+                    continue;
+                else if (objectReal.objectName == vObject.Manhole)
                 {
                     Manhole manhole = (Manhole)objectReal;
 
                     if (manhole.opened)
                         exits.Add(objectReal);
                 }
+                else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
+				{
+                    Toilet toilet = (Toilet)objectReal;
+
+                    if (!toilet.destroyed)
+                        exits.Add(objectReal);
+                }
             }
 
-            Vector2 exit = exits[UnityEngine.Random.Range(0, exits.Count)].curPosition;
-            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized;
+            ObjectReal exit = __instance;
+
+            if (exits.Count >= 1)
+                exit = exits[Random.Range(0, exits.Count)];
+            Vector2 exitPos = exit.curPosition;
+            Vector2 offset = Random.insideUnitCircle.normalized;
 
             GC.audioHandler.Play(agent, "ToiletTeleportIn");
             agent.toiletTeleporting = true;
-            agent.Teleport(exit + offset, true, false);
+            agent.Teleport(exitPos + offset, true, false);
+            GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitPos, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
         }
 		public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
 		{
-			Agent agent = __instance.interactingAgent;
+            Agent agent = __instance.interactingAgent;
 
-			if ((agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen)) && !agent.statusEffects.hasStatusEffect("Giant"))
-			{
-				List<ObjectReal> list = new List<ObjectReal>();
-				float furthestManholeDistance = 0f;
+            List<ObjectReal> exits = new List<ObjectReal>();
 
-				for (int i = 0; i < GC.objectRealList.Count; i++)
-				{
-					ObjectReal objectReal = GC.objectRealList[i];
+            for (int i = 0; i < GC.objectRealList.Count; i++)
+            {
+                ObjectReal objectReal = GC.objectRealList[i];
 
-					if (objectReal.objectName == vObject.Manhole && objectReal != __instance)
-					{
-						Manhole manhole = (Manhole)objectReal;
+                if (objectReal == __instance)
+                    continue;
+                else if (objectReal.objectName == vObject.Manhole)
+                {
+                    Manhole manhole = (Manhole)objectReal;
 
-						if (manhole.opened)
-						{
-							list.Add(objectReal);
-							float distance = Vector2.Distance(__instance.tr.position, objectReal.tr.position);
+                    if (manhole.opened)
+                        exits.Add(objectReal);
+                }
+                else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
+                {
+                    Toilet toilet = (Toilet)objectReal;
 
-							if (distance > furthestManholeDistance)
-								furthestManholeDistance = distance;
-						}
-					}
-				}
+                    if (!toilet.destroyed)
+                        exits.Add(objectReal);
+                }
+            }
 
-				ObjectReal destinationManhole = __instance;
+            ObjectReal exit = __instance;
 
-				if (list.Count > 0)
-					destinationManhole = list[Random.Range(0, list.Count)];
+            if (exits.Count >= 1)
+                exit = exits[Random.Range(0, exits.Count)];
+            Vector2 exitPos = exit.curPosition;
+            Vector2 offset = Random.insideUnitCircle.normalized;
 
-				Vector2 outHole = destinationManhole.tr.position;
-                Vector2 offset = Random.insideUnitCircle.normalized;
+            GC.audioHandler.Play(agent, "ToiletTeleportIn");
+            agent.toiletTeleporting = true;
+            agent.Teleport(exitPos + offset, true, false);
 
-                GC.audioHandler.Play(__instance, vAudioClip.ToiletTeleportIn);
-				agent.toiletTeleporting = true;
-				agent.Teleport(outHole + offset, true, false);
-			}
-		}
+            GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitPos, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
+        }
         public static IEnumerator Manhole_HoleAppearAfterLoad(Manhole __instance) // Non-Patch
 		{
             if (GC.streamingWorld)
@@ -2506,6 +2520,7 @@ namespace BunnyMod.Content
         public void Toilet_00()
         {
             Prefix(typeof(Toilet), "DetermineButtons", GetType(), "Toilet_DetermineButtons", new Type[0] { });
+            Prefix(typeof(Toilet), "FlushYourself", GetType(), "Toilet_FlushYourself", new Type[0] { });
             Prefix(typeof(Toilet), "PressedButton", GetType(), "Toilet_PressedButton", new Type[2] { typeof(string), typeof(int) });
         }
         public static bool Toilet_DetermineButtons(Toilet __instance) // Prefix
@@ -2544,6 +2559,122 @@ namespace BunnyMod.Content
 
             return true;
 		}
+        public bool Toilet_FlushYourself(Toilet __instance) // Replacement
+        {
+            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
+			{
+                if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) || __instance.interactingAgent.statusEffects.hasStatusEffect(vStatus.Shrunk)) && !__instance.interactingAgent.statusEffects.hasStatusEffect(vStatus.Giant))
+                {
+                    List<ObjectReal> exits = new List<ObjectReal>();
+                    float furthestDistance = 0f;
+
+                    for (int i = 0; i < GC.objectRealList.Count; i++)
+                    {
+                        ObjectReal exitCandidate = GC.objectRealList[i];
+
+                        if ((exitCandidate.objectName == vObject.Toilet || exitCandidate.objectName == vObject.Manhole) && 
+                            exitCandidate != __instance && !exitCandidate.destroyed && exitCandidate.startingChunk != __instance.startingChunk)
+                        {
+                            if (exitCandidate.objectName == vObject.Manhole)
+                            {
+                                Manhole manhole = (Manhole)exitCandidate;
+
+                                if (manhole.opened)
+                                {
+                                    exits.Add(exitCandidate);
+                                    float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
+
+                                    if (distance > furthestDistance)
+                                        furthestDistance = distance;
+                                }
+                            }
+							else
+                            {
+                                exits.Add(exitCandidate);
+                                float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
+
+                                if (distance > furthestDistance)
+                                    furthestDistance = distance;
+                            }
+                        }
+                    }
+
+                    if (exits.Count == 0)
+                    {
+                        for (int j = 0; j < GC.objectRealList.Count; j++)
+                        {
+                            ObjectReal exitCandidate = GC.objectRealList[j];
+
+                            if ((exitCandidate.objectName == vObject.Toilet || exitCandidate.objectName == vObject.Manhole) 
+                                && exitCandidate != __instance && !exitCandidate.destroyed)
+                            {
+                                if (exitCandidate.objectName == vObject.Manhole)
+                                {
+                                    Manhole manhole = (Manhole)exitCandidate;
+
+                                    if (manhole.opened)
+                                    {
+                                        exits.Add(exitCandidate);
+                                        float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
+
+                                        if (distance > furthestDistance)
+                                            furthestDistance = distance;
+                                    }
+                                }
+                                else
+                                {
+                                    exits.Add(exitCandidate);
+                                    float num3 = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
+
+                                    if (num3 > furthestDistance)
+                                        furthestDistance = num3;
+                                }
+                            }
+                        }
+                    }
+
+                    ObjectReal exit = __instance;
+
+                    if (exits.Count > 0)
+                        exit = exits[Random.Range(0, exits.Count)];
+
+                    Vector3 zero = Vector3.zero;
+                    string direction = exit.direction;
+
+                    switch (direction)
+                    {
+                        case "E":
+                            zero = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                            break;
+
+                        case "N":
+                            zero = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
+
+                            break;
+
+                        case "S":
+                            zero = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
+
+                            break;
+
+                        case "W":
+                            zero = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                            break;
+                    }
+
+                    GC.audioHandler.Play(__instance, "ToiletTeleportIn");
+                    __instance.interactingAgent.toiletTeleporting = true;
+                    __instance.interactingAgent.Teleport(zero);
+                    GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false, __instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+                }
+
+                return false;
+            }
+
+            return true;
+        }
         public static bool Toilet_PressedButton(string buttonText, int buttonPrice, Toilet __instance) // Prefix
 		{
             if (GC.challenges.Contains(cChallenge.AnCapistan))
@@ -2683,6 +2814,14 @@ namespace BunnyMod.Content
 
         public bool ticketPurchased = false;
     }
+    public class Manhole_Remora
+	{
+        public static GameController GC => GameController.gameController;
+
+        public Manhole manholeHost;
+
+        public bool splashed = false;
+    }
     public class Stove_Remora
     {
         public static GameController GC => GameController.gameController;
@@ -2713,31 +2852,39 @@ namespace BunnyMod.Content
                 stove.CancelInvoke();
         }
     }
- //   public class Refrigerator_Remora
-	//{
- //       public Refrigerator refrigeratorHost;
+    public class Toilet_Remora
+	{
+        public static GameController GC => GameController.gameController;
 
- //       public int animateSpriteID;
- //       public int animateSpriteID2;
- //       public float animationCountdown;
- //       public int animationFrame;
- //       public PlayfieldObject savedDamagerObject;
- //       public bool wasHacked = false;
+        public Toilet toiletHost;
 
- //       public void Countdown()
- //       {
- //           Refrigerator Refrigerator = BunnyObjects.Refrigerator_Variables.FirstOrDefault(x => x.Value == this).Key;
+        public bool splashed = false;
+    }
+    //   public class Refrigerator_Remora
+    //{
+    //       public Refrigerator refrigeratorHost;
 
- //           string myText = string.Concat(Refrigerator.timeCountdownClock);
+    //       public int animateSpriteID;
+    //       public int animateSpriteID2;
+    //       public float animationCountdown;
+    //       public int animationFrame;
+    //       public PlayfieldObject savedDamagerObject;
+    //       public bool wasHacked = false;
 
- //           if (Refrigerator.timeCountdownClock > 0 && !Refrigerator.destroyed && !Refrigerator.destroying)
- //               gc.spawnerMain.SpawnStatusText(Refrigerator, "Countdown", myText);
+    //       public void Countdown()
+    //       {
+    //           Refrigerator Refrigerator = BunnyObjects.Refrigerator_Variables.FirstOrDefault(x => x.Value == this).Key;
 
- //           Refrigerator.timeCountdownClock--;
+    //           string myText = string.Concat(Refrigerator.timeCountdownClock);
 
- //           if (Refrigerator.timeCountdownClock == 0 || Refrigerator.timeCountdownClock == -1 || Refrigerator.destroyed)
- //               Refrigerator.CancelInvoke();
- //       }
- //   }
-	#endregion
+    //           if (Refrigerator.timeCountdownClock > 0 && !Refrigerator.destroyed && !Refrigerator.destroying)
+    //               gc.spawnerMain.SpawnStatusText(Refrigerator, "Countdown", myText);
+
+    //           Refrigerator.timeCountdownClock--;
+
+    //           if (Refrigerator.timeCountdownClock == 0 || Refrigerator.timeCountdownClock == -1 || Refrigerator.destroyed)
+    //               Refrigerator.CancelInvoke();
+    //       }
+    //   }
+    #endregion
 }

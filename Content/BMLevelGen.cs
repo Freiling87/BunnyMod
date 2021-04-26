@@ -5664,7 +5664,7 @@ namespace BunnyMod.Content
 					#region Cave wall outcroppings for SpelunkyDory
 					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 					{
-						Debug.Log("Loading Trash Cans");
+						Debug.Log("Loading SpelunkyDory Cave Wall Outcroppings");
 						int bigTries = (int)((float)Random.Range(24, 24) * __instance.levelSizeModifier);
 						List<int> spawnedCount = new List<int>();
 						int itemCountIterator;

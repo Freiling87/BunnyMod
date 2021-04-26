@@ -393,7 +393,7 @@ namespace BunnyMod.Content
                 {
                     if (___agent.statusEffects.hasTrait(vTrait.Studious))
                         xpModifier = 1.30f;
-                    else if (___agent.statusEffects.hasTrait(vTrait.Studious2))
+                    else if (___agent.statusEffects.hasTrait(vTrait.SuperStudious))
                         xpModifier = 1.50f;
                     else if (___agent.statusEffects.hasTrait(cTrait.DimBulb))
                         xpModifier = 0.75f;
@@ -448,7 +448,7 @@ namespace BunnyMod.Content
 
                     if (GC.unlocks.CanDoUnlocks())
                     {
-                        if (___agent.statusEffects.hasTrait(vTrait.Studious2))
+                        if (___agent.statusEffects.hasTrait(vTrait.SuperStudious))
                         {
                             GC.unlocks.AddNuggets(2);
                             GC.spawnerMain.SpawnStatusText(___agent, "ItemPickupSlower", "Nuggets", "Item", "Add2Nuggets", "");

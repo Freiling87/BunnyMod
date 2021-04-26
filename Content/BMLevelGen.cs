@@ -9480,16 +9480,24 @@ namespace BunnyMod.Content
 		}
 		public static bool TileInfo_setFloor(int x, int y, ref int tileNum, ref int layerNum, TileInfo __instance) // Prefix
 		{
-			if (GC.challenges.Contains(cChallenge.TransitExperiment))
+			try
 			{
+				BMLog("TileInfo_setFloor:");
 				foreach (TileData tile in __instance.curMyTileArray)
-					tile.ice = true;
+					BMLog("\t" + tile.chunkID + "\t" + tile.posX + "|" + tile.posY + ": " + tile.floorMaterial);
+
+				if (GC.challenges.Contains(cChallenge.TransitExperiment))
+				{
+					foreach (TileData tile in __instance.curMyTileArray)
+						tile.ice = true;
+				}
+				else if (GC.challenges.Contains(cChallenge.SunkenCity))
+				{
+					foreach (TileData tile in __instance.curMyTileArray)
+						tile.water = true;
+				}
 			}
-			else if (GC.challenges.Contains(cChallenge.SunkenCity))
-			{
-				foreach (TileData tile in __instance.curMyTileArray)
-					tile.water = true;
-			}
+			catch { }
 
 			return true;
 		}

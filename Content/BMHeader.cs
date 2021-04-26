@@ -2417,7 +2417,7 @@ namespace BunnyMod.Content
             StrictCannibal = "CannibalizeRestoresHealth",
             StubbyFingers = "CantUseGuns",
             Studious = "MoreSkillPoints",
-            Studious2 = "MoreSkillPoints",
+            SuperStudious = "MoreSkillPoints2",
             SubduingSpree = "NoChloroformCooldown",
             Sucker = "BadTrader",
             SuperDizzy = "DizzyB",
@@ -2459,7 +2459,7 @@ namespace BunnyMod.Content
         public static List<string> ExperienceRate = new List<string>()
         {
             Studious,
-            Studious2,
+            SuperStudious,
         };
         public static List<string> LimitDrugs = new List<string>()
         {

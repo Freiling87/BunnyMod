@@ -310,6 +310,7 @@ namespace BunnyMod.Content
 			Prefix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore3_3", GetType(), "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(typeof(LoadLevel), "SetupMore5_2", GetType(), "LoadLevel_SetupMore5_2", new Type[0] { });
+			Prefix(typeof(LoadLevel), "SetupRels", GetType(), "LoadLevel_SetupRels", new Type[0] { });
 		}
 		public static bool LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
@@ -9140,12 +9141,18 @@ namespace BunnyMod.Content
 				}
 			}
 		}
-
+		//
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore5_2");
 
 			BMAbilities.baseTimeScale = GameController.gameController.selectedTimeScale;
+		}
+		public static bool LoadLevel_SetupRels() // Prefix
+		{
+			BMTraits.setPlayerInitialRelationshipTraitActive();
+
+			return true;
 		}
 		#endregion
 		#region RandomWalls

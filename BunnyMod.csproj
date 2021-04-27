@@ -91,6 +91,7 @@
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMCombat.cs" />
+    <Compile Include="Content\BMInterface.cs" />
     <Compile Include="Content\BMLevelFeelings.cs" />
     <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMMiscellaneous.cs" />

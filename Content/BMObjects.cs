@@ -108,12 +108,12 @@ namespace BunnyMod.Content
 
                 if (buttonLabel.EndsWith("-30"))
                 {
-                    newLabel = buttonLabel.Replace("-30", "-" + BMTraits.ToolCost(objectReal.interactingAgent, 30));
+                    newLabel = buttonLabel.Replace("-30", "-" + BMAgents.ToolCost(objectReal.interactingAgent, 30));
                     flag = true;
                 }
                 else if (buttonLabel.EndsWith("-20"))
                 {
-                    newLabel = buttonLabel.Replace("-20", "-" + BMTraits.ToolCost(objectReal.interactingAgent, 20));
+                    newLabel = buttonLabel.Replace("-20", "-" + BMAgents.ToolCost(objectReal.interactingAgent, 20));
                     flag = true;
                 }
                 else if (buttonLabel == " - 7HP")
@@ -213,7 +213,7 @@ namespace BunnyMod.Content
                 if (!manhole.opened && agent.inventory.HasItem("Crowbar"))
                 {
                     __instance.buttons.Add("UseCrowbar");
-                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMTraits.ToolCost(agent, 15));
+                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMAgents.ToolCost(agent, 15));
                 }
 
                 if (manhole.opened && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
@@ -226,7 +226,7 @@ namespace BunnyMod.Content
                     if (agent.inventory.HasItem("Wrench"))
                     {
                         __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMTraits.ToolCost(agent, 30));
+                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMAgents.ToolCost(agent, 30));
                     }
 
                     if (agent.inventory.HasItem(vItem.Fud))
@@ -514,9 +514,94 @@ namespace BunnyMod.Content
         #region PlayfieldObject
         public void PlayfieldObject_00()
 		{
-            //this.PatchPrefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) }); 
+            Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
             Prefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating", new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
             Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
+        }
+        public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance, ref int __result) // Postfix
+        {
+            Agent agent = __instance.playfieldObjectAgent;
+
+            int luckBonus = 0;
+            int luckMultiplier = 0;
+            bool RATStargetable = false;
+
+            if (luckType == "FreeShopItem2")
+                luckBonus = 10;
+            else if (luckType == "DestroyGravestone")
+                luckBonus = -5;
+            else if (luckType == "TurnTables")
+                luckBonus = 10;
+            else if (luckType == "Joke")
+                luckBonus = 10;
+            else if (luckType == "CritChance")
+            {
+                luckBonus = 3;
+                RATStargetable = true;
+            }
+            else if (luckType == "ChanceAttacksDoZeroDamage")
+            {
+                luckBonus = 4;
+                RATStargetable = true;
+            }
+            else if (luckType == "DoorDetonator")
+                luckBonus = 10;
+            else if (luckType == "FreeShopItem")
+                luckBonus = 10;
+            else if (luckType == "FindThreat")
+                luckBonus = 8;
+            else if (luckType == "FindAskMayorHatPercentage")
+                luckBonus = 8;
+            else if (luckType == "ChanceToKnockWeapons")
+            {
+                luckBonus = 5;
+                RATStargetable = true;
+            }
+            else if (luckType == "SlotMachine")
+                luckBonus = 8;
+            else if (luckType == "AttacksDamageAttacker")
+                luckBonus = 10;
+            else if (luckType == "Hack")
+                luckBonus = 10;
+            else if (luckType == "GunAim")
+            {
+                luckBonus = 5;
+                RATStargetable = true;
+            }
+            else if (luckType == "SecurityCam")
+                luckBonus = 10;
+            else if (luckType == "FindAskPercentage")
+                luckBonus = 8;
+            else if (luckType == "ThiefToolsMayNotSubtract")
+                luckBonus = 10;
+            else if (luckType == "ChanceToSlowEnemies")
+            {
+                luckBonus = 4;
+                RATStargetable = true;
+            }
+
+            if (agent.statusEffects.hasTrait(cTrait.Charmed))
+                luckMultiplier = 1;
+            else if (agent.statusEffects.hasTrait(cTrait.Charmed_2))
+                luckMultiplier = 2;
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed))
+                luckMultiplier = -1;
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed_2))
+                luckMultiplier = -2;
+
+            if (RATStargetable)
+            {
+                if (agent.statusEffects.hasTrait(cTrait.RATS))
+                    luckMultiplier += 1;
+                if (agent.statusEffects.hasTrait(cTrait.RATS_2))
+                    luckMultiplier += 2;
+
+                if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
+                    if (BMAbilities.MSA_CD_IsCast(agent))
+                        luckMultiplier *= 2;
+            }
+
+            __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);
         }
         public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType, PlayfieldObject __instance) // Prefix
         {
@@ -548,12 +633,13 @@ namespace BunnyMod.Content
             else
                 return false;
         }
-		#endregion
+        #endregion
 
-		#endregion
-		#region Objects
-		#region Alarm Button
-		public void AlarmButton_00()
+        #endregion
+
+        #region Objects
+        #region Alarm Button
+        public void AlarmButton_00()
 		{
             Prefix(typeof(AlarmButton), "DetermineButtons", GetType(), "AlarmButton_DetermineButtons", new Type[0] { });
             Prefix(typeof(AlarmButton), "DoLockdown", GetType(), "AlarmButton_DoLockdown", new Type[1] { typeof(bool) });
@@ -889,8 +975,13 @@ namespace BunnyMod.Content
         }
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
+            BMLog("Bathtub_SetVars");
+
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
+			{
+                BMLog("SBD trait detected");
                 __instance.interactable = true;
+            }
 
             //TODO: Closed Bath Curtain sprite?
             // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.

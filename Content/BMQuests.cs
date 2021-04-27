@@ -635,6 +635,5 @@ namespace BunnyMod.Content
             yield break;
         }
         #endregion
-
     }
 }

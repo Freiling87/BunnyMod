@@ -81,12 +81,14 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Names()
         {
-            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", "Interface", new CustomNameInfo("Dispense Ice"));
-
-            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", "Interface", new CustomNameInfo("Open container"));
-
-            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", "Interface", new CustomNameInfo("Bet $1"));
-            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", "Interface", new CustomNameInfo("Bet $100"));
+            string t = vNameType.Interface;
+            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", t, new CustomNameInfo("Dispense ice"));
+            CustomName grillFudPaid = RogueLibs.CreateCustomName("GrillFudPaid", t, new CustomNameInfo("Grill Fud"));
+            CustomName hideInContainer = RogueLibs.CreateCustomName("HideInContainer", t, new CustomNameInfo("Hide in container"));
+            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", t, new CustomNameInfo("Open container"));
+            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", t, new CustomNameInfo("Bet $1"));
+            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", t, new CustomNameInfo("Bet $100"));
+            CustomName stealItem = RogueLibs.CreateCustomName("StealItem", t, new CustomNameInfo("Steal item"));
         }
         #endregion
 
@@ -190,7 +192,7 @@ namespace BunnyMod.Content
             {
                 if (__instance.ora.hasParticleEffect)
                 {
-                    if (agent.inventory.HasItem("Fud"))
+                    if (agent.inventory.HasItem(vItem.Fud))
                     {
                         __instance.buttons.Add("GrillFud");
                         __instance.buttonsExtra.Add(" (Burn hands for " + BMTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
@@ -200,7 +202,7 @@ namespace BunnyMod.Content
                 }
                 else
                 {
-                    if (agent.inventory.HasItem("CigaretteLighter"))
+                    if (agent.inventory.HasItem(vItem.CigaretteLighter))
                         __instance.buttons.Add("LightBarbecue");
                     else
                         agent.SayDialogue("CantOperateBarbecue");
@@ -210,44 +212,41 @@ namespace BunnyMod.Content
             {
                 Manhole manhole = (Manhole)__instance;
 
-                if (!manhole.opened && agent.inventory.HasItem("Crowbar"))
+                if (!manhole.opened && agent.inventory.HasItem(vItem.Crowbar))
                 {
                     __instance.buttons.Add("UseCrowbar");
-                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Crowbar").invItemCount + ") -" + BMAgents.ToolCost(agent, 15));
+                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem(vItem.Crowbar).invItemCount + ") -" + BMAgents.ToolCost(agent, 15));
                 }
 
                 if (manhole.opened && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
                     __instance.buttons.Add("FlushYourself");
             }
-            else if (__instance is Stove)
+            else if (__instance is Stove && !__instance.startedFlashing)
             {
-                if (!__instance.startedFlashing)
+                if (agent.inventory.HasItem(vItem.Wrench))
                 {
-                    if (agent.inventory.HasItem("Wrench"))
-                    {
-                        __instance.buttons.Add("UseWrenchToDetonate");
-                        __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem("Wrench").invItemCount + ") -" + BMAgents.ToolCost(agent, 30));
-                    }
+                    __instance.buttons.Add("UseWrenchToDetonate");
+                    __instance.buttonsExtra.Add(" (" + agent.inventory.FindItem(vItem.Wrench).invItemCount + ") -" + BMAgents.ToolCost(agent, 30));
+                }
 
-                    if (agent.inventory.HasItem(vItem.Fud))
-                    {
-                        if (GC.challenges.Contains(cChallenge.AnCapistan))
-						{
-                            __instance.buttons.Add("GrillFudPaid");
-                            __instance.buttonPrices.Add(5);
-                        }
-                        else
-                            __instance.buttons.Add("GrillFud");
+                if (agent.inventory.HasItem(vItem.Fud))
+                {
+                    if (GC.challenges.Contains(cChallenge.AnCapistan))
+					{
+                        __instance.buttons.Add("GrillFudPaid");
+                        __instance.buttonPrices.Add(5);
                     }
+                    else
+                        __instance.buttons.Add("GrillFud");
                 }
             }
-            else if (__instance is TrashCan)
+            else if (__instance is TrashCan) // This is already gated for Diminutive/SBD
             {
-                __instance.buttons.Add("HideInTrashcan");
-                __instance.buttons.Add("OpenChest");
+                __instance.buttons.Add("HideInContainer");
+                __instance.buttons.Add("OpenContainer");
             }
             else if (__instance is VendorCart)
-                __instance.buttons.Add("VendorCart_Steal");
+                __instance.buttons.Add("StealItem");
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
@@ -2306,10 +2305,10 @@ namespace BunnyMod.Content
         #region SlotMachine
         public void SlotMachine_00()
         {
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
-            //BunnyHeader.MainInstance.PatchPrefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
-        }
+			Prefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
+            Prefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
+            Prefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+		}
         public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
@@ -2340,6 +2339,7 @@ namespace BunnyMod.Content
                 __instance.buttons.Add("Play100");
                 __instance.buttonPrices.Add(100);
             }
+
             return false;
         }
         public static void SlotMachine_DropMoney(int amount, SlotMachine __instance) // Non-Patch

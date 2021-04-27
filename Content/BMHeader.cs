@@ -2003,6 +2003,18 @@ namespace BunnyMod.Content
             Null = "",
             Tutorial = "Tutorial";
     }
+    public static class vNameType // Vanilla Name Types
+	{
+        public const string
+            Agent = "Agent",
+            Dialogue = "Dialogue",
+            Description = "Description",
+            Interface = "Interface",
+            Item = "Item",
+            Object = "Object",
+            StatusEffect = "StatusEffect",
+            Unlock = "Unlock";
+	}
     public static class vObject // Vanilla Objects
 	{
         public const string

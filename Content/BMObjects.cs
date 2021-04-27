@@ -406,43 +406,33 @@ namespace BunnyMod.Content
             pressedButton_Base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
             Agent agent = __instance.interactingAgent;
+            int dodgyStrikes = 0;
+            float dodgyVolume = 0f;
 
             if (buttonText == "CollectPart") // Vanilla
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 5f, true, "Collecting"));
+                __instance.StartCoroutine(__instance.Operating(agent, null, 5f, true, "Collecting"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
-                {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    GC.audioHandler.Play(__instance, "Hack");
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
-                }
+                dodgyStrikes = 0;
+                dodgyVolume = 1f;
             }
             else if (buttonText == "DispenseIce")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+                __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Wrench), 2f, true, "Tampering"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
-                {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    //gc.audioHandler.Play(__instance, "Hack");
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
-                }
+                dodgyStrikes = 0;
+                dodgyVolume = 1f;
             }
             else if (buttonText == "FlushYourself" && __instance is Manhole)
                 Manhole_FlushYourself((Manhole)__instance);
             else if (buttonText == "GrillFud")
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Fud"), 2f, true, "Grilling"));
+                __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
             else if (buttonText == "GrillFudPaid" && __instance.moneySuccess(5))
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
-            else if (buttonText == "HackExplode") // Vanilla
-                __instance.HackExplode(__instance.interactingAgent);
+                __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
+            else if (buttonText == "HackExplode")
+                __instance.HackExplode(agent);
             else if (buttonText == "HideInTrashcan")
-                TrashCan_Hide((TrashCan)__instance, __instance.interactingAgent);
+                TrashCan_Hide((TrashCan)__instance, agent);
             else if (buttonText == "LightBarbecue")
             {
                 __instance.StartFireInObject();
@@ -451,36 +441,40 @@ namespace BunnyMod.Content
             else if (buttonText == "OpenChest")
                 __instance.ShowChest();
             else if (buttonText == "UseCrowbar")
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Crowbar"), 2f, true, "Unlocking"));
+			{
+                __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem("Crowbar"), 2f, true, "Unlocking"));
+                dodgyStrikes = 0;
+                dodgyVolume = 1f;
+            }
             else if (buttonText == "UseWrenchToDetonate")
             {
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, __instance.interactingAgent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
-
-                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
-                {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
-                    GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 0);
-                }
+                __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem("Wrench"), 2f, true, "Tampering"));
+                dodgyStrikes = 0;
+                dodgyVolume = 1f;
             }
             else if (buttonText == "VendorCart_Steal")
             {
-                if (!__instance.interactingAgent.inventory.hasEmptySlot())
+                if (!agent.inventory.hasEmptySlot())
                 {
-                    __instance.interactingAgent.inventory.PlayerFullResponse(__instance.interactingAgent);
+                    agent.inventory.PlayerFullResponse(agent);
                     __instance.StopInteraction();
 
                     return false;
                 }
 
-                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, false, "Tampering"));
+                __instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
 
-                if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers))
-                {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, __instance.interactingAgent, "Normal", __instance.interactingAgent);
-                    GC.OwnCheck(__instance.interactingAgent, __instance.go, "Normal", 1);
-                }
+                dodgyStrikes = 1;
+                dodgyVolume = 0.2f;
+            }
+
+            if (dodgyVolume != 0f && !agent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
+			{
+                GC.spawnerMain.SpawnNoise(__instance.tr.position, dodgyVolume, agent, "Normal", agent);
+                GC.audioHandler.Play(__instance, "Hack");
+                __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                GC.OwnCheck(agent, __instance.go, "Normal", dodgyStrikes);
             }
 
             return false;

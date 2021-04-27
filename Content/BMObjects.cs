@@ -256,29 +256,26 @@ namespace BunnyMod.Content
             MethodInfo finishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
             finishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
+            string opItem = "";
+
+            if (!(__instance.operatingItem is null))
+                opItem = __instance.operatingItem.invItemName;
+
             if (__instance is FlamingBarrel)
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
-            else if (__instance is Manhole)
-			{
-                if (__instance.operatingItem.invItemName == vItem.Crowbar)
-                    Manhole_UseCrowbar((Manhole)__instance);
-			}
+            else if (__instance is Manhole && opItem == vItem.Crowbar)
+                Manhole_UseCrowbar((Manhole)__instance);
             else if (__instance is Stove)
             {
-                if (__instance.operatingItem.invItemName == vItem.Wrench)
+                if (opItem == vItem.Wrench)
                     Stove_UseWrenchToDetonate((Stove)__instance);
-                else if (__instance.operatingItem.invItemName == vItem.Fud)
+                else if (opItem == vItem.Fud)
                     Stove_GrilledFud((Stove)__instance);
             }
             else if (__instance is VendorCart)
                 VendorCart_Steal((VendorCart)__instance);
-            else if (!__instance.interactingAgent.interactionHelper.interactingFar)
-            {
-                string operatingBarType = __instance.operatingBarType;
-
-                if (operatingBarType == "Collecting")
+            else if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.operatingBarType == "Collecting")
                     __instance.CollectPart();
-            }
 
             return false;
         }

@@ -154,15 +154,21 @@ namespace BunnyMod.Content
 		public static void Relationships_SetupRelationshipOriginal(Agent otherAgent, Relationships __instance, ref Agent ___agent) // Postfix
 		{
 			// This method sets how ___agent feels about otherAgent
+			// Don't delete this comment, it gets confusing-er-than-shit
 
-			if (otherAgent.agentName == vAgent.ResistanceLeader)
+			if (GC.levelType == vLevelType.HomeBase)
 			{
 				__instance.SetRelInitial(otherAgent, vRelationship.Aligned);
 				otherAgent.relationships.SetRelInitial(___agent, vRelationship.Aligned);
 			}
-
-			if (GC.levelType != vLevelType.HomeBase)
+			else
 			{
+				if (otherAgent.agentName == vAgent.ResistanceLeader)
+				{
+					__instance.SetRelInitial(otherAgent, vRelationship.Aligned);
+					otherAgent.relationships.SetRelInitial(___agent, vRelationship.Aligned);
+				}
+
 				if (BMTraits.isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
 				{
 					BMLog("Relationships_SetupRelationshipOriginal: ");

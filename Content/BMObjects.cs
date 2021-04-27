@@ -1638,27 +1638,57 @@ namespace BunnyMod.Content
                         exits.Add(objectReal);
                 }
                 else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
-				{
-                    Toilet toilet = (Toilet)objectReal;
-
-                    if (!toilet.destroyed)
+                    if (objectReal.destroyed)
                         exits.Add(objectReal);
-                }
             }
 
             ObjectReal exit = __instance;
 
-            if (exits.Count >= 1)
+            if (exits.Count > 0)
                 exit = exits[Random.Range(0, exits.Count)];
-            Vector2 exitPos = exit.curPosition;
-            Vector2 offset = Random.insideUnitCircle.normalized;
 
-            GC.audioHandler.Play(agent, "ToiletTeleportIn");
-            agent.toiletTeleporting = true;
-            agent.Teleport(exitPos + offset, true, false);
-            GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitPos, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
+            Vector3 exitSpot = Vector3.zero;
+
+            if (exit is Manhole)
+            {
+                exitSpot = exit.curPosition;
+                Vector2 offset = Random.insideUnitCircle.normalized;
+                agent.Teleport((Vector2)exitSpot + offset, exit.objectName == vObject.Manhole, false);
+                GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
+
+            }
+            else if (exit is Toilet)
+            {
+                string direction = exit.direction;
+
+                switch (direction)
+                {
+                    case "E":
+                        exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                        break;
+
+                    case "N":
+                        exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
+
+                        break;
+
+                    case "S":
+                        exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
+
+                        break;
+
+                    case "W":
+                        exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                        break;
+                }
+
+                __instance.interactingAgent.Teleport(exitSpot, false, true);
+                GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false, __instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+            }
         }
-		public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
+        public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
 		{
             Agent agent = __instance.interactingAgent;
 
@@ -1678,26 +1708,58 @@ namespace BunnyMod.Content
                         exits.Add(objectReal);
                 }
                 else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
-                {
-                    Toilet toilet = (Toilet)objectReal;
-
-                    if (!toilet.destroyed)
+                    if (!objectReal.destroyed)
                         exits.Add(objectReal);
-                }
             }
 
             ObjectReal exit = __instance;
 
-            if (exits.Count >= 1)
+            if (exits.Count > 0)
                 exit = exits[Random.Range(0, exits.Count)];
-            Vector2 exitPos = exit.curPosition;
-            Vector2 offset = Random.insideUnitCircle.normalized;
 
             GC.audioHandler.Play(agent, "ToiletTeleportIn");
             agent.toiletTeleporting = true;
-            agent.Teleport(exitPos + offset, true, false);
 
-            GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitPos, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
+            Vector3 exitSpot = Vector3.zero;
+
+            if (exit is Manhole)
+            {
+                exitSpot = exit.curPosition;
+                Vector2 offset = Random.insideUnitCircle.normalized;
+                agent.Teleport((Vector2)exitSpot + offset, exit.objectName == vObject.Manhole, false);
+                GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
+
+            }
+            else if (exit is Toilet)
+			{
+                string direction = exit.direction;
+
+                switch (direction)
+                {
+                    case "E":
+                        exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                        break;
+
+                    case "N":
+                        exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
+
+                        break;
+
+                    case "S":
+                        exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
+
+                        break;
+
+                    case "W":
+                        exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
+
+                        break;
+                }
+
+                __instance.interactingAgent.Teleport(exitSpot, false, true);
+                GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false, __instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+            }
         }
         public static IEnumerator Manhole_HoleAppearAfterLoad(Manhole __instance) // Non-Patch
 		{
@@ -2640,7 +2702,6 @@ namespace BunnyMod.Content
                 if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) || __instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Shrunk)) && !__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
                 {
                     List<ObjectReal> exits = new List<ObjectReal>();
-                    float furthestDistance = 0f;
 
                     for (int i = 0; i < GC.objectRealList.Count; i++)
                     {
@@ -2654,27 +2715,14 @@ namespace BunnyMod.Content
                                 Manhole manhole = (Manhole)exitCandidate;
 
                                 if (manhole.opened)
-                                {
                                     exits.Add(exitCandidate);
-                                    float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
-
-                                    if (distance > furthestDistance)
-                                        furthestDistance = distance;
-                                }
                             }
 							else
-                            {
                                 exits.Add(exitCandidate);
-                                float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
-
-                                if (distance > furthestDistance)
-                                    furthestDistance = distance;
-                            }
                         }
                     }
 
                     if (exits.Count == 0)
-                    {
                         for (int j = 0; j < GC.objectRealList.Count; j++)
                         {
                             ObjectReal exitCandidate = GC.objectRealList[j];
@@ -2687,60 +2735,47 @@ namespace BunnyMod.Content
                                     Manhole manhole = (Manhole)exitCandidate;
 
                                     if (manhole.opened)
-                                    {
                                         exits.Add(exitCandidate);
-                                        float distance = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
-
-                                        if (distance > furthestDistance)
-                                            furthestDistance = distance;
-                                    }
                                 }
                                 else
-                                {
                                     exits.Add(exitCandidate);
-                                    float num3 = Vector2.Distance(__instance.tr.position, exitCandidate.tr.position);
-
-                                    if (num3 > furthestDistance)
-                                        furthestDistance = num3;
-                                }
                             }
                         }
-                    }
 
                     ObjectReal exit = __instance;
 
                     if (exits.Count > 0)
                         exit = exits[Random.Range(0, exits.Count)];
 
-                    Vector3 zero = Vector3.zero;
+                    Vector3 exitSpot = Vector3.zero;
                     string direction = exit.direction;
 
                     switch (direction)
                     {
                         case "E":
-                            zero = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
+                            exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
 
                             break;
 
                         case "N":
-                            zero = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
+                            exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
 
                             break;
 
                         case "S":
-                            zero = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
+                            exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
 
                             break;
 
                         case "W":
-                            zero = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
+                            exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
 
                             break;
                     }
 
                     GC.audioHandler.Play(__instance, "ToiletTeleportIn");
                     __instance.interactingAgent.toiletTeleporting = true;
-                    __instance.interactingAgent.Teleport(zero);
+                    __instance.interactingAgent.Teleport(exitSpot, false, true);
                     GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false, __instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
                 }
 

@@ -46,7 +46,7 @@ namespace BunnyMod.Content
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
 				new CustomNameInfo("The Mayor has decided to get tough on crime. What's crime? Whatever we want it to be."));
-			PoliceState.Available = true;
+			PoliceState.Available = false;
 			PoliceState.Conflicting.AddRange(cChallenge.AddCriminals);
 			PoliceState.Conflicting.AddRange(vChallenge.AddsNonhumans);
 			PoliceState.Conflicting.AddRange(cChallenge.Overhauls);

@@ -80,7 +80,7 @@ namespace BunnyMod.Content
 		}
 		public static string GetFloorMutator()
 		{
-			foreach (string mutator in cChallenge.FloorsAndFeatures)
+			foreach (string mutator in cChallenge.AffectsFloors)
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
@@ -1310,7 +1310,7 @@ namespace BunnyMod.Content
 
 							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
-								if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 									tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 								else if (GC.levelTheme == 0)
 									tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -1367,30 +1367,30 @@ namespace BunnyMod.Content
 			int triesCount = 0;
 			int num;
 
-			for (int i2 = 0; i2 < __instance.levelSizeAxis; i2 = num + 1)
+			for (int x = 0; x < __instance.levelSizeAxis; x = num + 1)
 			{
-				for (int j2 = 0; j2 < __instance.levelSizeAxis; j2 = num + 1)
+				for (int y = 0; y < __instance.levelSizeAxis; y = num + 1)
 				{
 					num = triesCount;
 					triesCount = num + 1;
 
-					if (__instance.mapChunkArray[i2, j2].chunkID != 0)
+					if (__instance.mapChunkArray[x, y].chunkID != 0)
 					{
-						int num2 = i2 * 16;
-						int num3 = i2 * 16 + 16;
-						int num4 = 160 - j2 * 16;
-						int num5 = 160 - j2 * 16 - 16;
+						int num2 = x * 16;
+						int num3 = x * 16 + 16;
+						int num4 = 160 - y * 16;
+						int num5 = 160 - y * 16 - 16;
 
-						for (int k = num2; k < num3; k++)
-							for (int l = num4; l > num5; l--)
+						for (int i = num2; i < num3; i++)
+							for (int j = num4; j > num5; j--)
 							{
-								___tilemapWalls.ClearTile(k, l - 1, 0);
-								__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+								___tilemapWalls.ClearTile(i, j - 1, 0);
+								__instance.tileInfo.tileArray[i, j - 1].chunkID = __instance.mapChunkArray[x, y].chunkID;
 								int tile = 0;
 
 								if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
-									if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+									if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 										tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 									else if (GC.levelTheme == 0)
 										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -1408,20 +1408,20 @@ namespace BunnyMod.Content
 								else
 									tile = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
 								
-								___tilemapFloors2.SetTile(k, l - 1, 0, tile);
+								___tilemapFloors2.SetTile(i, j - 1, 0, tile);
 							}
 					}
 					else if (!GC.holeLevel)
 					{
-						__instance.mapChunkArray[i2, j2].filled = true;
-						int num6 = i2 * 16;
-						int num7 = i2 * 16 + 16;
-						int num8 = 160 - j2 * 16;
-						int num9 = 160 - j2 * 16 - 16;
+						__instance.mapChunkArray[x, y].filled = true;
+						int num6 = x * 16;
+						int num7 = x * 16 + 16;
+						int num8 = 160 - y * 16;
+						int num9 = 160 - y * 16 - 16;
 
-						for (int m = num6; m < num7; m++)
-							for (int n = num8; n > num9; n--)
-								if (m != 0 && n != 160 && m != (__instance.levelSizeAxis - 1) * 16 + 16 - 1 && n != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
+						for (int i = num6; i < num7; i++)
+							for (int j = num8; j > num9; j--)
+								if (i != 0 && j != 160 && i != (__instance.levelSizeAxis - 1) * 16 + 16 - 1 && j != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
 								{
 									int wallMaterialOffset = 0;
 									int wallMaterialOffsetTop = 0;
@@ -1454,8 +1454,8 @@ namespace BunnyMod.Content
 											break;
 									}
 
-									___tilemapWalls.SetTile(m, n - 1, 0, 0);
-									TileData tileData = __instance.tileInfo.tileArray[m, n - 1];
+									___tilemapWalls.SetTile(i, j - 1, 0, 0);
+									TileData tileData = __instance.tileInfo.tileArray[i, j - 1];
 									tileData.wallMaterialOffset = wallMaterialOffset;
 									tileData.wallMaterialOffsetTop = wallMaterialOffsetTop;
 									tileData.wallFrontVariation = true;
@@ -1464,7 +1464,7 @@ namespace BunnyMod.Content
 
 									if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
-										if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+										if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 										else if (GC.levelTheme == 0)
 											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -1482,8 +1482,8 @@ namespace BunnyMod.Content
 									else
 										tile2 = int.Parse(GC.rnd.RandomSelect("FloorTilesBuilding", "RandomFloorsWalls"));
 									
-									___tilemapFloors2.SetTile(m, n - 1, 0, tile2);
-									tileData.chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+									___tilemapFloors2.SetTile(i, j - 1, 0, tile2);
+									tileData.chunkID = __instance.mapChunkArray[x, y].chunkID;
 								}
 					}
 
@@ -1495,10 +1495,10 @@ namespace BunnyMod.Content
 					}
 
 					Random.InitState(__instance.randomSeedNum + triesCount);
-					num = j2;
+					num = y;
 				}
 
-				num = i2;
+				num = x;
 			}
 
 			if (GC.levelType == "Tutorial" || GC.levelType == "HomeBase")
@@ -4639,7 +4639,7 @@ namespace BunnyMod.Content
 											int tile = 0;
 
 
-											if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+											if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 												tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 											else if (GC.levelTheme == 0)
 												tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -4683,7 +4683,7 @@ namespace BunnyMod.Content
 										int tile2 = 0;
 
 
-										if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+										if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 										else if (GC.levelTheme == 0)
 											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -9190,10 +9190,8 @@ namespace BunnyMod.Content
 		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
 		{
-			if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
-			{
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
 				floorName = GetFloorTileFromMutator();
-			}
 
 			if (GC.levelTheme == 2 && floorName == vFloor.FlamePit)
 				floorName = vFloor.Hole;

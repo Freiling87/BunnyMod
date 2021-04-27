@@ -164,7 +164,7 @@ namespace BunnyMod.Content
             cChallenge.MobTown,
             cChallenge.YoungMenInTheNeighborhood,
         };
-        public static List<string> FloorsAndFeatures = new List<string>()
+        public static List<string> AffectsFloors = new List<string>()
         {
             cChallenge.ArcologyEcology,
             cChallenge.SunkenCity,

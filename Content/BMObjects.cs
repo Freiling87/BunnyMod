@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
-	public class BMObjects
+    public class BMObjects
     {
         public static GameController GC => GameController.gameController;
         public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -47,7 +47,7 @@ namespace BunnyMod.Content
             TableBig_00();
             Television_00();
             Toilet_00();
-			TrashCan_00();
+            TrashCan_00();
             VendorCart_00();
             Window_00();
         }
@@ -129,10 +129,10 @@ namespace BunnyMod.Content
                     flag = true;
                 }
                 else if (buttonLabel.EndsWith("(Burn hands for 10 damage)"))
-				{
+                {
                     newLabel = buttonLabel.Replace("(Burn hands for 10 damage)", "(Burn hands for " + BMTraits.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
                     flag = true;
-				}
+                }
 
                 if (flag)
                 {
@@ -141,12 +141,12 @@ namespace BunnyMod.Content
                 }
             }
         }
-		#endregion
+        #endregion
 
-		#region Base Classes
-		#region ObjectReal
-		public void ObjectReal_00()
-		{
+        #region Base Classes
+        #region ObjectReal
+        public void ObjectReal_00()
+        {
             Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
             Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
             Postfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons", new Type[0]);
@@ -232,7 +232,7 @@ namespace BunnyMod.Content
                 if (agent.inventory.HasItem(vItem.Fud))
                 {
                     if (GC.challenges.Contains(cChallenge.AnCapistan))
-					{
+                    {
                         __instance.buttons.Add("GrillFudPaid");
                         __instance.buttonPrices.Add(5);
                     }
@@ -274,7 +274,7 @@ namespace BunnyMod.Content
             else if (__instance is VendorCart)
                 VendorCart_Steal((VendorCart)__instance);
             else if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.operatingBarType == "Collecting")
-                    __instance.CollectPart();
+                __instance.CollectPart();
 
             return false;
         }
@@ -358,7 +358,7 @@ namespace BunnyMod.Content
             }
             else if (__instance is VendorCart)
                 if (myAction == "VendorCart_Steal")
-				{
+                {
                     VendorCart_Steal((VendorCart)__instance);
 
                     ___noMoreObjectActions = true;
@@ -437,7 +437,7 @@ namespace BunnyMod.Content
             else if (buttonText == "OpenChest")
                 __instance.ShowChest();
             else if (buttonText == "UseCrowbar")
-			{
+            {
                 __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem("Crowbar"), 2f, true, "Unlocking"));
                 dodgyStrikes = 0;
                 dodgyVolume = 1f;
@@ -465,7 +465,7 @@ namespace BunnyMod.Content
             }
 
             if (dodgyVolume != 0f && !agent.statusEffects.hasTrait(vTrait.SneakyFingers) && __instance.functional)
-			{
+            {
                 GC.spawnerMain.SpawnNoise(__instance.tr.position, dodgyVolume, agent, "Normal", agent);
                 GC.audioHandler.Play(__instance, "Hack");
                 __instance.SpawnParticleEffect("Hack", __instance.tr.position);
@@ -480,11 +480,11 @@ namespace BunnyMod.Content
             //BunnyHeader.ConsoleMessage.LogMessage("ObjectReal_Start");
 
             if (__instance is Elevator elevator)
-			{
+            {
                 Elevator_Remora remora = new Elevator_Remora();
                 Elevator_Variables[elevator] = remora;
                 remora.elevatorHost = elevator;
-			}
+            }
             else if (__instance is Stove stove)
             {
                 Stove_Remora remora = new Stove_Remora();
@@ -503,7 +503,7 @@ namespace BunnyMod.Content
         #endregion
         #region PlayfieldObject
         public void PlayfieldObject_00()
-		{
+        {
             Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck", new Type[3] { typeof(int), typeof(string), typeof(bool) });
             Prefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating", new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
             Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
@@ -624,13 +624,12 @@ namespace BunnyMod.Content
                 return false;
         }
         #endregion
-
         #endregion
 
         #region Objects
         #region Alarm Button
         public void AlarmButton_00()
-		{
+        {
             Prefix(typeof(AlarmButton), "DetermineButtons", GetType(), "AlarmButton_DetermineButtons", new Type[0] { });
             Prefix(typeof(AlarmButton), "DoLockdown", GetType(), "AlarmButton_DoLockdown", new Type[1] { typeof(bool) });
             Prefix(typeof(AlarmButton), "EndLockdown", GetType(), "AlarmButton_EndLockdown", new Type[0] { });
@@ -640,9 +639,9 @@ namespace BunnyMod.Content
             Prefix(typeof(AlarmButton), "ToggleSwitch", GetType(), "AlarmButton_ToggleSwitch", new Type[2] { typeof(Agent), typeof(Agent) });
             //Pressedbutton
             //Toggleswitch
-		}
+        }
         public static bool AlarmButton_DetermineButtons(AlarmButton __instance) // Replacement
-		{
+        {
             BMLog("AlarmButton_DetermineButtons");
 
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
@@ -658,7 +657,7 @@ namespace BunnyMod.Content
             }
 
             if (GC.challenges.Contains(cChallenge.AnCapistan) && !__instance.hacked)
-			{
+            {
                 if (!__instance.hacked)
                 {
                     __instance.buttons.Add("AlarmButtonAncapistan");
@@ -671,12 +670,12 @@ namespace BunnyMod.Content
             return false;
         }
         public static bool AlarmButton_DoLockdown(bool closePanicRoomDoors, AlarmButton __instance) // Prefix
-		{
+        {
             if (GC.challenges.Contains(cChallenge.AnCapistan))
             {
                 if (AlarmButton.lockdownTimerCooldown > 0f)
                     return false;
-                
+
                 if (__instance.gc.serverPlayer)
                 {
                     if (__instance.gc.lockdown)
@@ -688,13 +687,13 @@ namespace BunnyMod.Content
 
                         if (!__instance.noLockdown)
                             __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "DoLockdown");
-                        
+
                         __instance.endLockDownGoing = true;
                         __instance.keepGoing = true;
                         __instance.firstTick = true;
                         __instance.mustKeepGoing = false;
                         __instance.InvokeRepeating("EndLockdownCoroutine", 0.01f, 0.1f);
-                        
+
                         if (!__instance.noLockdown)
                             for (int i = 0; i < __instance.gc.agentList.Count; i++)
                                 if (__instance.gc.agentList[i].pathing == 1)
@@ -745,17 +744,17 @@ namespace BunnyMod.Content
             return true;
         }
         public static bool AlarmButton_EndLockdown(AlarmButton __instance) // Prefix
-		{
+        {
             if (GC.challenges.Contains(cChallenge.AnCapistan))
             {
                 if (AlarmButton.lockdownTimerCooldown <= 0f)
                     __instance.StartCoroutine(AlarmButton_LockdownCooldown(__instance));
-                
+
                 if (__instance.gc.levelTheme == 4 || __instance.gc.loadLevel.hasLockdownWalls)
                 {
                     if (__instance.gc.serverPlayer)
                         __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "EndLockdown");
-                    
+
                     if (!__instance.noLockdown)
                         for (int i = 0; i < __instance.gc.agentList.Count; i++)
                             if (__instance.gc.agentList[i].pathing == 1)
@@ -763,14 +762,14 @@ namespace BunnyMod.Content
                                 __instance.gc.agentList[i].pathfindingAI.rePath = true;
                                 __instance.gc.tileInfo.DoWandererRepath();
                             }
-                    
+
                     if (__instance.gc.lockdown)
                         __instance.gc.audioHandler.Play(__instance.gc.playerAgent, "LockdownWallDown");
-                    
+
                     for (int j = 0; j < __instance.gc.lockdownWallList.Count; j++)
                     {
                         LockdownWall lockdownWall = __instance.gc.lockdownWallList[j];
-                    
+
                         if (lockdownWall.objectCollider.enabled)
                             lockdownWall.SetWallDownAnim();
                     }
@@ -778,15 +777,15 @@ namespace BunnyMod.Content
                     for (int k = 0; k < __instance.gc.objectRealListWithDestroyed.Count; k++)
                     {
                         ObjectReal objectReal = __instance.gc.objectRealListWithDestroyed[k];
-                    
+
                         if (objectReal.objectName == "AlarmButton" && objectReal != null)
                         {
                             int prison = __instance.gc.tileInfo.GetTileData(objectReal.tr.position).prison;
-                        
+
                             for (int l = 0; l < __instance.gc.objectRealList.Count; l++)
                             {
                                 ObjectReal objectReal2 = __instance.gc.objectRealList[l];
-                            
+
                                 if (objectReal2.startingChunk == objectReal.startingChunk && objectReal2.objectName == "Door" && prison != 0 && prison == __instance.gc.tileInfo.GetTileData(objectReal2.tr.position).prison)
                                     ((Door)objectReal2).OpenDoor(null);
                             }
@@ -802,13 +801,13 @@ namespace BunnyMod.Content
             return true;
         }
         public static bool AlarmButton_Interact(Agent agent, AlarmButton __instance) // Replacement
-		{
+        {
             BMLog("AlarmButton_Interact");
 
-			MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
-			interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
+            MethodInfo interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+            interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
-			__instance.lastHitByAgent = __instance.interactingAgent;
+            __instance.lastHitByAgent = __instance.interactingAgent;
 
             if (!__instance.isBroken())
             {
@@ -832,7 +831,7 @@ namespace BunnyMod.Content
             return false;
         }
         public static IEnumerator AlarmButton_JustEndedLockdown(AlarmButton __instance) // Prefix
-		{
+        {
             GC.justEndedLockdown = true;
 
             yield return new WaitForSeconds(0.4f);
@@ -842,7 +841,7 @@ namespace BunnyMod.Content
             yield break;
         }
         public static IEnumerator AlarmButton_LockdownCooldown(AlarmButton __instance) // Non-Patch
-		{
+        {
             AlarmButton.lockdownTimerCooldown = 5f;
 
             while (AlarmButton.lockdownTimerCooldown > 0f)
@@ -860,7 +859,7 @@ namespace BunnyMod.Content
             yield break;
         }
         public static bool AlarmButton_PressedButton(string buttonText, int buttonPrice, AlarmButton __instance) // Replacement
-		{
+        {
             MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[2] { typeof(string), typeof(int) });
             pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
@@ -875,7 +874,7 @@ namespace BunnyMod.Content
                     __instance.gc.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "AllAccess");
             }
             else if (buttonText == "AlarmButtonAncapistan")
-			{
+            {
                 if (__instance.moneySuccess(buttonPrice))
                     __instance.ToggleSwitch(__instance.interactingAgent, null);
                 else
@@ -887,7 +886,7 @@ namespace BunnyMod.Content
             return false;
         }
         public static IEnumerator AlarmButton_SetSwitchOn(AlarmButton __instance) // Non-Patch
-		{
+        {
             __instance.switchOn = true;
 
             yield return new WaitForSeconds(0.5f);
@@ -897,9 +896,9 @@ namespace BunnyMod.Content
             yield break;
         }
         public static bool AlarmButton_ToggleSwitch(Agent causerAgent, Agent criminal, AlarmButton __instance) // Prefix
-		{
+        {
             if (GC.challenges.Contains(cChallenge.AnCapistan))
-			{
+            {
                 if (GC.serverPlayer)
                 {
                     if (causerAgent.isPlayer != 0)
@@ -924,16 +923,16 @@ namespace BunnyMod.Content
                     {
                         if (!__instance.switchOn)
                             __instance.StartCoroutine(AlarmButton_SetSwitchOn(__instance));
-                        
+
                         if (!__instance.destroyed || __instance.destroying)
                             GC.audioHandler.Play(__instance, "AlarmButton");
-                        
+
                         if (__instance.functional)
                         {
                             __instance.StartCoroutine(AlarmButton_WaitToBecomeActive(__instance));
                             __instance.SpawnEnforcer(causerAgent, criminal);
                         }
-                        
+
                         if (!__instance.destroying)
                             causerAgent.usedAlarmButton = true;
                     }
@@ -946,12 +945,12 @@ namespace BunnyMod.Content
                     __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "ToggleSwitch");
 
                 return false;
-			}
+            }
 
             return true;
-		}
+        }
         public static IEnumerator AlarmButton_WaitToBecomeActive(AlarmButton __instance) // Non-Patch
-		{
+        {
             for (; ; )
                 yield return null;
 
@@ -960,7 +959,7 @@ namespace BunnyMod.Content
         #endregion
         #region Bathtub
         public void BathTub_00()
-		{
+        {
             Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
         }
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
@@ -968,7 +967,7 @@ namespace BunnyMod.Content
             BMLog("Bathtub_SetVars");
 
             if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-			{
+            {
                 BMLog("SBD trait detected");
                 __instance.interactable = true;
             }
@@ -979,7 +978,7 @@ namespace BunnyMod.Content
         #endregion
         #region Crate
         public void Crate_00()
-		{
+        {
             Postfix(typeof(Crate), "DetermineButtons", GetType(), "Crate_DetermineButtons", new Type[0] { });
         }
         public static void Crate_DetermineButtons(Crate __instance) // Postfix
@@ -990,13 +989,13 @@ namespace BunnyMod.Content
         #endregion
         #region Door
         public void Door_00()
-		{
+        {
             Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
             Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
             Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
         }
         public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
-		{
+        {
             if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
             {
                 if (__instance.open && !__instance.destroyed)
@@ -1031,13 +1030,13 @@ namespace BunnyMod.Content
 
                     GC.tileInfo.DirtyWalls();
                     __instance.StartCoroutine(Door_CloseDoorAnim(__instance));
-                    
+
                     if (__instance.objectShadow != null)
                         __instance.objectShadow.gameObject.SetActive(true);
-                    
+
                     if (__instance.objectShadowCustom != null)
                         __instance.objectShadowCustom.gameObject.SetActive(true);
-                    
+
                     __instance.GetComponent<BoxCollider2D>().enabled = true;
                     __instance.bulletsCanPass = false;
                     __instance.meleeCanPass = false;
@@ -1046,7 +1045,7 @@ namespace BunnyMod.Content
 
                     if (myAgent != null && myAgent.isPlayer > 0 && GC.serverPlayer && !__instance.outsideDoor && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                         GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
-                    
+
                     if (__instance.locked)
                     {
                         if (__instance.prisonObject > 0 && !__instance.prisonWallDown)
@@ -1058,7 +1057,7 @@ namespace BunnyMod.Content
                                 if (tileData.chunkID == __instance.startingChunk && tileData.prison == __instance.prisonObject && tileData.prison > 0)
                                     agent.prisoner = __instance.prisonObject;
                             }
-                        
+
                         if (__instance.prisonDoor > 0)
                         {
                             __instance.graphUpdateScene.setTag = 5;
@@ -1088,9 +1087,9 @@ namespace BunnyMod.Content
                             __instance.lightObstacle.SetActive(true);
                     }
                     catch { }
-                    
+
                     GC.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.Door;
-                    
+
                     if (GC.multiplayerMode && !GC.clientControlling)
                     {
                         if (!GC.serverPlayer)
@@ -1114,7 +1113,7 @@ namespace BunnyMod.Content
                     for (int j = 0; j < GC.playerAgentList.Count; j++)
                     {
                         Agent agent2 = GC.playerAgentList[j];
-                    
+
                         if (agent2.localPlayer && agent2.interactionHelper.gameObject.activeSelf)
                             agent2.interactionHelper.StartCoroutine(agent2.interactionHelper.RefreshMe());
                     }
@@ -1128,7 +1127,7 @@ namespace BunnyMod.Content
                     myAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
                 else
                     GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "CloseDoor");
-                
+
                 __instance.StopInteraction();
             }
 
@@ -1148,8 +1147,10 @@ namespace BunnyMod.Content
                 CorrectButtonCosts(__instance);
         }
         public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
-		{
-            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
+        {
+            BMLog("Door_OpenDoor");
+
+            if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions && (__instance.interactingAgent == GC.playerAgent || myAgent != null && myAgent.oma.mindControlled)))
             {
                 if (__instance.hasDetonator)
                 {
@@ -1161,7 +1162,7 @@ namespace BunnyMod.Content
                 else if (!__instance.open && !__instance.destroyed)
                 {
                     __instance.open = true;
-
+                    
                     if (myAgent != null)
                     {
                         if (myAgent.isPlayer > 0)
@@ -1169,7 +1170,7 @@ namespace BunnyMod.Content
                     }
                     else
                         __instance.noEntryCleared = true;
-                    
+
                     __instance.RemoveObjectAgent();
                     
                     if (myAgent != null)
@@ -1209,14 +1210,9 @@ namespace BunnyMod.Content
                     __instance.meleeCanPass = true;
                     __instance.lowInteractionPriority = true;
                     __instance.doorCooldown = 0.25f;
-
-                    if (GC.serverPlayer && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+                    
+                    if (GC.serverPlayer)
                         GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
-                    
-                    bool flag3 = false;
-                    
-                    if (__instance.prisonDoor > 0)
-                        flag3 = true;
                     
                     if (myAgent != null && !remote && !__instance.boughtKeyInChunk)
                     {
@@ -1242,12 +1238,12 @@ namespace BunnyMod.Content
                         __instance.graphUpdateScene.setTag = 8;
                         __instance.graphUpdateScene.Apply();
                     }
-
+                    
                     if (__instance.prisonObject > 0)
                     {
                         if (!__instance.prisonWallDown)
                             Door.freerAgent = myAgent;
-                        
+                    
                         __instance.FreeFromPrison("Door");
                         
                         if (__instance.locked && __instance.extraVar != 10)
@@ -1263,21 +1259,22 @@ namespace BunnyMod.Content
                             ___usedTutorialKey = true;
                         }
                     }
-                    else if (__instance.wasLocked && !__instance.locked && ((__instance.prisonDoor > 0 && flag3) || __instance.startingChunkRealDescription == "Hotel"))
+                    else if (__instance.wasLocked && !__instance.locked && ((__instance.prisonDoor > 0 && __instance.prisonDoor > 0) || __instance.startingChunkRealDescription == "Hotel"))
                         __instance.DestroyKeyItem("Key");
 
                     try
                     {
                         if (__instance.lightObstacle == null)
                             __instance.lightObstacle = __instance.tr.Find("LightObstacle").gameObject;
+
                         if (__instance.hasLightObstacle && __instance.lightObstacle.activeSelf)
                             __instance.lightObstacle.SetActive(false);
                     }
                     catch { }
-
+                    
                     GC.tileInfo.GetTileData(__instance.tr.position).wallSide = wallSideType.None;
                     __instance.StopInteraction();
-
+                    
                     if (__instance.fire != null && !__instance.fire.destroying)
                     {
                         __instance.fire.timeLeft = 0f;
@@ -1310,7 +1307,6 @@ namespace BunnyMod.Content
                         else
                             GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoorClient");
                     }
-
                     if (GC.levelType == "HomeBase")
                     {
                         if (__instance.extraVar == 30)
@@ -1330,7 +1326,7 @@ namespace BunnyMod.Content
                 for (int k = 0; k < GC.playerAgentList.Count; k++)
                 {
                     Agent agent = GC.playerAgentList[k];
-                    
+
                     if (agent.localPlayer && agent.interactionHelper.gameObject.activeSelf)
                         agent.interactionHelper.StartCoroutine(agent.interactionHelper.RefreshMe());
                 }
@@ -1342,13 +1338,15 @@ namespace BunnyMod.Content
                 myAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
             else
                 GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoor");
-            
+
             __instance.StopInteraction();
 
             return false;
         }
         public static IEnumerator Door_OpenDoorAnim(Door __instance) // Non-Patch
-		{
+        {
+            BMLog("Door_OpenDoorAnim");
+
             __instance.objectHitbox.GetComponent<MeshRenderer>().enabled = false;
 
             yield return new WaitForSeconds(0.02f);

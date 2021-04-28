@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
+using System.Collections;
 
 namespace BunnyMod.Content
 {
@@ -235,7 +236,7 @@ namespace BunnyMod.Content
 		public void StatusEffects_00()
 		{
 			Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-			Postfix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+			Prefix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
 			Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
 			Prefix(typeof(StatusEffects), "ChangeHealth", GetType(), "StatusEffects_ChangeHealth", new Type[6] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) });
 			Postfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
@@ -250,7 +251,7 @@ namespace BunnyMod.Content
 				agent.SetSpeed(agent.speedStatMod - 1);
 			}
 		}
-		public static void StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Postfix
+		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
 		{
 			BMLog("StatusEffects_BecomeHidden");
 			try { BMLog("\tObjectReal: " + hiddenInObject.name); }
@@ -258,13 +259,60 @@ namespace BunnyMod.Content
 			BMLog("\tAgent: " + __instance.agent.agentName);
 
 			Agent agent = __instance.agent;
+			__instance.agent.oma.hidden = true;
+			string obj = hiddenInObject.name;
+
+			if (hiddenInObject != null)
+			{
+				agent.hiddenInObject = hiddenInObject;
+				hiddenInObject.agentHiding = agent;
+				agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
+				agent.rb.velocity = Vector2.zero;
+
+				if (obj == vObject.Manhole || obj == vObject.Plant || obj == vObject.PoolTable || obj == vObject.TrashCan || obj == vObject.Bathtub || obj == vObject.TableBig)
+				{
+					agent.EnableHitboxes(false);
+					agent.agentItemColliderTr.gameObject.SetActive(false);
+				}
+			}
+
+			if (!GC.consoleVersion)
+				agent.EnableMouseboxes(false);
+			
+			agent.agentHitboxScript.shadow.GetComponent<MeshRenderer>().enabled = false;
+			agent.SetInvisible(true);
+			agent.objectSprite.RefreshRenderer();
+			agent.objectMult.BecomeHidden();
+			GC.audioHandler.Play(agent, "Hide");
+			
+			if (GC.loadComplete)
+				for (int i = 0; i < GC.activeBrainAgentList.Count; i++)
+				{
+					Agent iAgent = GC.activeBrainAgentList[i];
+
+					if (iAgent != agent)
+					{
+						Relationship relationship = iAgent.relationships.GetRelationship(agent);
+					
+						if (relationship.HasLOS(""))
+							relationship.sawBecomeHidden = true;
+					}
+				}
+
+			if (agent.isPlayer != 0 && agent.localPlayer)
+			{
+				agent.blockWalking = true;
+				__instance.StartCoroutine(StatusEffects_WaitForAgentUnhide(__instance));
+			}
 
 			if (!(hiddenInObject is null))
 				if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0 && hiddenInObject.objectName == vObject.Manhole)
 					agent.statusEffects.BecomeNotHidden();
 
-			if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
-				__instance.agent.agentCollider.enabled = false;
+			//if (hiddenInObject is Bathtub || hiddenInObject is Plant || hiddenInObject is PoolTable || hiddenInObject is TableBig)
+			//	agent.agentCollider.enabled = false;
+
+			return false;
 		}
 		public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
 		{
@@ -1501,6 +1549,25 @@ namespace BunnyMod.Content
 				agent.SetEndurance(agent.enduranceStatMod - 1);
 				agent.SetSpeed(agent.speedStatMod + 1);
 			}
+		}
+		public static IEnumerator StatusEffects_WaitForAgentUnhide(StatusEffects __instance) // Non-Patch
+		{
+			Vector2 playerPos = new Vector2(__instance.agent.tr.position.x, __instance.agent.tr.position.y + 0.16f);
+			bool closeToPlayerPos = true;
+
+			do
+			{
+				if (Vector2.Distance(__instance.agent.tr.position, playerPos) > 0.32f)
+					closeToPlayerPos = false;
+				else
+					yield return null;
+			}
+			while (closeToPlayerPos && __instance.agent.oma.hidden);
+			
+			if (__instance.agent.oma.hidden)
+				__instance.BecomeNotHidden();
+			
+			yield break;
 		}
 		#endregion
 	}

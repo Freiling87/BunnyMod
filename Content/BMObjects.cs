@@ -529,7 +529,7 @@ namespace BunnyMod.Content
                 luckBonus = 3;
                 RATStargetable = true;
             }
-            else if (luckType == "ChanceAttacksDoZeroDamage")
+            else if (luckType == vTrait.UnCrits)
             {
                 luckBonus = 4;
                 RATStargetable = true;
@@ -542,7 +542,7 @@ namespace BunnyMod.Content
                 luckBonus = 8;
             else if (luckType == "FindAskMayorHatPercentage")
                 luckBonus = 8;
-            else if (luckType == "ChanceToKnockWeapons")
+            else if (luckType == vTrait.Butterfingerer)
             {
                 luckBonus = 5;
                 RATStargetable = true;

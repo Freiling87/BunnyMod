@@ -272,15 +272,17 @@ namespace BunnyMod.Content
 		}
 		public static bool StatusEffects_ChangeHealth(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient, float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance, ref HealthBar ___healthBar) // Replacement
 		{
-			if ((__instance.agent.teleporting && !__instance.agent.skillPoints.justGainedLevel) ||
-				(__instance.agent.ghost && __instance.agent.skillPoints.justGainedLevel) ||
-				(__instance.agent.dead && __instance.agent.skillPoints.justGainedLevel && !__instance.agent.teleporting && !__instance.agent.suicided && !__instance.agent.finishedLevel && !__instance.agent.finishedLevelImmediate && !__instance.agent.finishedLevelImmediateMult && !__instance.agent.finishedLevelRealMult && !__instance.agent.oma.finishedLevel) ||
-				((__instance.agent.finishedLevel || __instance.agent.finishedLevelImmediate || __instance.agent.finishedLevelImmediateMult || __instance.agent.finishedLevelRealMult || __instance.agent.oma.finishedLevel) && !__instance.agent.suicided && healthNum < 0f) ||
-				(__instance.agent.butlerBot || __instance.agent.hologram || (__instance.agent.mechEmpty && healthNum < 0f)) || 
+			Agent hurtAgent = __instance.agent;
+
+			if ((hurtAgent.teleporting && !hurtAgent.skillPoints.justGainedLevel) ||
+				(hurtAgent.ghost && hurtAgent.skillPoints.justGainedLevel) ||
+				(hurtAgent.dead && hurtAgent.skillPoints.justGainedLevel && !hurtAgent.teleporting && !hurtAgent.suicided && !hurtAgent.finishedLevel && !hurtAgent.finishedLevelImmediate && !hurtAgent.finishedLevelImmediateMult && !hurtAgent.finishedLevelRealMult && !hurtAgent.oma.finishedLevel) ||
+				((hurtAgent.finishedLevel || hurtAgent.finishedLevelImmediate || hurtAgent.finishedLevelImmediateMult || hurtAgent.finishedLevelRealMult || hurtAgent.oma.finishedLevel) && !hurtAgent.suicided && healthNum < 0f) ||
+				(hurtAgent.butlerBot || hurtAgent.hologram || (hurtAgent.mechEmpty && healthNum < 0f)) || 
 				(GC.cinematic && GC.loadLevel.LevelContainsMayor()))
 				return false;
 			
-			float num = healthNum;
+			float dmg = healthNum;
 			bool flag = false;
 			bool flag2 = false;
 
@@ -296,10 +298,10 @@ namespace BunnyMod.Content
 					healthNum = 0f;
 				}
 
-				if ((__instance.agent.oma.superSpecialAbility || __instance.hasTrait(vTrait.Juggernaut)) && __instance.agent.chargingForward && !__instance.agent.suiciding && !__instance.agent.suicided)
+				if ((hurtAgent.oma.superSpecialAbility || __instance.hasTrait(vTrait.Juggernaut)) && hurtAgent.chargingForward && !hurtAgent.suiciding && !hurtAgent.suicided)
 					healthNum = (float)((int)(healthNum * 0.4f));
 				
-				if (__instance.agent.oma.hidden && !__instance.GotStatusEffectDamage())
+				if (hurtAgent.oma.hidden && !__instance.GotStatusEffectDamage())
 					__instance.BecomeNotHidden();
 				
 				if (damagerObject != null)
@@ -307,21 +309,21 @@ namespace BunnyMod.Content
 					flag2 = true;
 					__instance.ExitBox(true);
 
-					if (!__instance.agent.oma.superSpecialAbility && !__instance.hasTrait(vTrait.Slinky))
+					if (!hurtAgent.oma.superSpecialAbility && !__instance.hasTrait(vTrait.Slinky))
 						__instance.RemoveInvisibleLimited();
 				}
 
-				if (__instance.agent.isPlayer > 0)
-					GC.playerControl.Vibrate(__instance.agent.isPlayer, Mathf.Clamp(-healthNum / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp(-healthNum / 132f + 0.05f, 0f, 0.2f));
+				if (hurtAgent.isPlayer > 0)
+					GC.playerControl.Vibrate(hurtAgent.isPlayer, Mathf.Clamp(-healthNum / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp(-healthNum / 132f + 0.05f, 0f, 0.2f));
 				
-				if (__instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2 != __instance.agent)
+				if (hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2 != hurtAgent)
 				{
-					Relationship relationship = __instance.agent.relationships.GetRelationship(__instance.agent.justHitByAgent2);
-					Relationship relationship2 = __instance.agent.justHitByAgent2.relationships.GetRelationship(__instance.agent);
+					Relationship relationship = hurtAgent.relationships.GetRelationship(hurtAgent.justHitByAgent2);
+					Relationship relationship2 = hurtAgent.justHitByAgent2.relationships.GetRelationship(hurtAgent);
 
 					if (relationship != null && relationship2 != null)
 					{
-						if (!__instance.agent.justHitByAgent2.objectAgent && __instance.agent.deathMethod != "Bite" && !__instance.agent.oma.mindControlled && !__instance.agent.justHitByAgent2.oma.mindControlled)
+						if (!hurtAgent.justHitByAgent2.objectAgent && hurtAgent.deathMethod != "Bite" && !hurtAgent.oma.mindControlled && !hurtAgent.justHitByAgent2.oma.mindControlled)
 						{
 							bool flag3 = false;
 							bool flag4 = true;
@@ -335,36 +337,36 @@ namespace BunnyMod.Content
 							}
 							if (flag4 && healthNum < 0f)
 							{
-								if (__instance.agent.isPlayer > 0 && __instance.agent.justHitByAgent2.isPlayer > 0 && !GC.pvp)
+								if (hurtAgent.isPlayer > 0 && hurtAgent.justHitByAgent2.isPlayer > 0 && !GC.pvp)
 								{
 									healthNum = 0f;
 									flag = true;
 								}
 								else
 								{
-									if ((relationship.relTypeCode == relStatus.Aligned || relationship.relTypeCode == relStatus.Loyal) && __instance.agent.isPlayer == 0 && !__instance.agent.dead && healthNum != -200f)
+									if ((relationship.relTypeCode == relStatus.Aligned || relationship.relTypeCode == relStatus.Loyal) && hurtAgent.isPlayer == 0 && !hurtAgent.dead && healthNum != -200f)
 									{
 										healthNum = (float)Mathf.Clamp((int)(healthNum / 3f), -1000, -1);
 										flag3 = true;
 									}
-									if ((relationship2.relTypeCode == relStatus.Aligned || relationship2.relTypeCode == relStatus.Loyal) && __instance.agent.justHitByAgent2.isPlayer == 0 && !__instance.agent.dead && healthNum != -200f && !flag3)
+									if ((relationship2.relTypeCode == relStatus.Aligned || relationship2.relTypeCode == relStatus.Loyal) && hurtAgent.justHitByAgent2.isPlayer == 0 && !hurtAgent.dead && healthNum != -200f && !flag3)
 										healthNum = (float)Mathf.Clamp((int)(healthNum / 3f), -1000, -1);
 								}
 							}
 						}
 
-						if (!__instance.agent.suicided)
+						if (!hurtAgent.suicided)
 						{
 							if (__instance.hasTrait("ChanceAttacksDoZeroDamage2"))
 							{
-								int myChance = __instance.agent.DetermineLuck(10, vTrait.UnCrits, true);
+								int myChance = hurtAgent.DetermineLuck(10, vTrait.UnCrits, true);
 
 								if (GC.percentChance(myChance))
 									healthNum = 0f;
 							}
 							else if (__instance.hasTrait(vTrait.UnCrits))
 							{
-								int myChance2 = __instance.agent.DetermineLuck(5, vTrait.UnCrits, true);
+								int myChance2 = hurtAgent.DetermineLuck(5, vTrait.UnCrits, true);
 
 								if (GC.percentChance(myChance2))
 									healthNum = 0f;
@@ -373,67 +375,67 @@ namespace BunnyMod.Content
 
 						if (GC.serverPlayer)
 						{
-							if (__instance.agent.hasStealingFromAgent && __instance.agent.justHitByAgent2 == __instance.agent.stealingFromAgent)
-								__instance.agent.SetDefaultGoal(vGoal.WanderFar);
+							if (hurtAgent.hasStealingFromAgent && hurtAgent.justHitByAgent2 == hurtAgent.stealingFromAgent)
+								hurtAgent.SetDefaultGoal(vGoal.WanderFar);
 							
-							if (healthNum < 0f && (relationship.relTypeCode == relStatus.Aligned || relationship.relTypeCode == relStatus.Submissive || (relationship.relTypeCode == relStatus.Loyal && __instance.agent.hasEmployer)) && !__instance.agent.oma.bodyGuarded && __instance.agent.deathMethod != "Poison")
+							if (healthNum < 0f && (relationship.relTypeCode == relStatus.Aligned || relationship.relTypeCode == relStatus.Submissive || (relationship.relTypeCode == relStatus.Loyal && hurtAgent.hasEmployer)) && !hurtAgent.oma.bodyGuarded && hurtAgent.deathMethod != "Poison")
 							{
 								relationship.damageDone += -(int)healthNum;
 
-								if (!__instance.agent.justHitByAgent2.objectAgent)
+								if (!hurtAgent.justHitByAgent2.objectAgent)
 								{
-									if (__instance.agent.justHitByAgent2.mostRecentGoalCode == goalType.Battle)
+									if (hurtAgent.justHitByAgent2.mostRecentGoalCode == goalType.Battle)
 										relationship.hitNumberOfTimesInCombat++;
 									else
 										relationship.hitNumberOfTimes++;
 								}
 
-								if ((relationship.damageDone >= 10 && (relationship.hitNumberOfTimes > 4 || relationship.hitNumberOfTimesInCombat > 12) && __instance.agent.isPlayer == 0 && (__instance.agent.isPlayer != 0 || __instance.agent.justHitByAgent2.isPlayer != 0)) || (__instance.agent.killForQuest != null && __instance.agent.isPlayer == 0 && (__instance.agent.justHitByAgent2.isPlayer != 0 || __instance.agent.justHitByAgent2.hasEmployer)) || (__instance.agent.isBigQuestObject && (__instance.agent.bigQuestType == "Gangbanger" || __instance.agent.bigQuestType == "GangbangerB" || __instance.agent.bigQuestType == "Vampire" || __instance.agent.bigQuestType == "Assassin" || __instance.agent.bigQuestType == "MechPilot")) || (__instance.agent.oma.didAsk && (__instance.agent.justHitByAgent2.isPlayer != 0 || __instance.agent.justHitByAgent2.hasEmployer)) || __instance.agent.justHitByAgent2.oma.mindControlled)
+								if ((relationship.damageDone >= 10 && (relationship.hitNumberOfTimes > 4 || relationship.hitNumberOfTimesInCombat > 12) && hurtAgent.isPlayer == 0 && (hurtAgent.isPlayer != 0 || hurtAgent.justHitByAgent2.isPlayer != 0)) || (hurtAgent.killForQuest != null && hurtAgent.isPlayer == 0 && (hurtAgent.justHitByAgent2.isPlayer != 0 || hurtAgent.justHitByAgent2.hasEmployer)) || (hurtAgent.isBigQuestObject && (hurtAgent.bigQuestType == "Gangbanger" || hurtAgent.bigQuestType == "GangbangerB" || hurtAgent.bigQuestType == "Vampire" || hurtAgent.bigQuestType == "Assassin" || hurtAgent.bigQuestType == "MechPilot")) || (hurtAgent.oma.didAsk && (hurtAgent.justHitByAgent2.isPlayer != 0 || hurtAgent.justHitByAgent2.hasEmployer)) || hurtAgent.justHitByAgent2.oma.mindControlled)
 								{
-									__instance.agent.relationships.SetRel(__instance.agent.justHitByAgent2, "Hateful");
-									__instance.agent.relationships.SetRelHate(__instance.agent.justHitByAgent2, 5);
+									hurtAgent.relationships.SetRel(hurtAgent.justHitByAgent2, "Hateful");
+									hurtAgent.relationships.SetRelHate(hurtAgent.justHitByAgent2, 5);
 
-									if (__instance.agent.justHitByAgent2.oma.mindControlled)
+									if (hurtAgent.justHitByAgent2.oma.mindControlled)
 									{
-										__instance.agent.justHitByAgent2.relationships.SetRel(__instance.agent, "Hateful");
-										__instance.agent.justHitByAgent2.relationships.SetRelHate(__instance.agent, 5);
+										hurtAgent.justHitByAgent2.relationships.SetRel(hurtAgent, "Hateful");
+										hurtAgent.justHitByAgent2.relationships.SetRelHate(hurtAgent, 5);
 									}
 
-									if (__instance.agent.justHitByAgent2.isPlayer > 0)
-										__instance.agent.justHitByAgent2.relationships.SetRel(__instance.agent, "Hateful");
+									if (hurtAgent.justHitByAgent2.isPlayer > 0)
+										hurtAgent.justHitByAgent2.relationships.SetRel(hurtAgent, "Hateful");
 									
-									if (!__instance.agent.isMayor)
+									if (!hurtAgent.isMayor)
 									{
 										List<Agent> agentList = GC.agentList;
 
 										for (int i = 0; i < agentList.Count; i++)
 										{
-											Agent agent = agentList[i];
+											Agent iAgent = agentList[i];
 
-											if (Vector2.Distance(agent.curPosition, __instance.agent.curPosition) < agent.LOSRange / __instance.agent.hardToSeeFromDistance)
+											if (Vector2.Distance(iAgent.curPosition, hurtAgent.curPosition) < iAgent.LOSRange / hurtAgent.hardToSeeFromDistance)
 											{
-												relStatus relCode = agent.relationships.GetRelCode(__instance.agent);
+												relStatus relCode = iAgent.relationships.GetRelCode(hurtAgent);
 
-												if (relCode == relStatus.Aligned && agent.movement.HasLOSObject360(__instance.agent))
+												if (relCode == relStatus.Aligned && iAgent.movement.HasLOSObject360(hurtAgent))
 												{
-													agent.relationships.SetRel(__instance.agent.justHitByAgent2, "Hateful");
-													agent.relationships.SetRelHate(__instance.agent.justHitByAgent2, 5);
+													iAgent.relationships.SetRel(hurtAgent.justHitByAgent2, "Hateful");
+													iAgent.relationships.SetRelHate(hurtAgent.justHitByAgent2, 5);
 
-													if (__instance.agent.justHitByAgent2.isPlayer > 0)
-														__instance.agent.justHitByAgent2.relationships.SetRel(agent, "Hateful");
+													if (hurtAgent.justHitByAgent2.isPlayer > 0)
+														hurtAgent.justHitByAgent2.relationships.SetRel(iAgent, "Hateful");
 												}
 
 												if (relCode == relStatus.Loyal)
 												{
-													relStatus relCode2 = agent.relationships.GetRelCode(__instance.agent.justHitByAgent2);
+													relStatus relCode2 = iAgent.relationships.GetRelCode(hurtAgent.justHitByAgent2);
 
-													if (relCode2 != relStatus.Aligned && relCode2 != relStatus.Loyal && agent.movement.HasLOSObject360(__instance.agent))
+													if (relCode2 != relStatus.Aligned && relCode2 != relStatus.Loyal && iAgent.movement.HasLOSObject360(hurtAgent))
 													{
-														agent.relationships.SetRel(__instance.agent.justHitByAgent2, "Hateful");
-														agent.relationships.SetRelHate(__instance.agent.justHitByAgent2, 5);
+														iAgent.relationships.SetRel(hurtAgent.justHitByAgent2, "Hateful");
+														iAgent.relationships.SetRelHate(hurtAgent.justHitByAgent2, 5);
 													
-														if (__instance.agent.justHitByAgent2.isPlayer > 0)
-															__instance.agent.justHitByAgent2.relationships.SetRel(agent, "Hateful");
+														if (hurtAgent.justHitByAgent2.isPlayer > 0)
+															hurtAgent.justHitByAgent2.relationships.SetRel(iAgent, "Hateful");
 													}
 												}
 											}
@@ -447,19 +449,19 @@ namespace BunnyMod.Content
 
 				if (healthNum != -200f && healthNum != -2000f && !flag)
 				{
-					if (__instance.agent.isPlayer > 0 && __instance.agent.localPlayer)
+					if (hurtAgent.isPlayer > 0 && hurtAgent.localPlayer)
 					{
 						float f = healthNum;
 
 						if (num2 != 0f)
 							f = num2;
 						
-						GC.alienFX.PlayerHurt(__instance.agent);
+						GC.alienFX.PlayerHurt(hurtAgent);
 						
-						if (__instance.agent.critted && (!__instance.agent.dead || __instance.agent.fakeDead))
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "PlayerHealthDownCrit", Mathf.Abs(f).ToString(), cameFromClient);
-						else if (!__instance.agent.dead || __instance.agent.fakeDead)
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "PlayerHealthDown", Mathf.Abs(f).ToString(), cameFromClient);
+						if (hurtAgent.critted && (!hurtAgent.dead || hurtAgent.fakeDead))
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "PlayerHealthDownCrit", Mathf.Abs(f).ToString(), cameFromClient);
+						else if (!hurtAgent.dead || hurtAgent.fakeDead)
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "PlayerHealthDown", Mathf.Abs(f).ToString(), cameFromClient);
 					}
 					else
 					{
@@ -468,55 +470,55 @@ namespace BunnyMod.Content
 						if (clientFinalHealthNum != -999f)
 							f2 = clientFinalHealthNum;
 						
-						if (__instance.agent.critted && (!__instance.agent.dead || __instance.agent.fakeDead))
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "NPCHealthDownCrit", Mathf.Abs(f2).ToString(), cameFromClient);
-						else if (!__instance.agent.dead || __instance.agent.fakeDead)
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "NPCHealthDown", Mathf.Abs(f2).ToString(), cameFromClient);
+						if (hurtAgent.critted && (!hurtAgent.dead || hurtAgent.fakeDead))
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "NPCHealthDownCrit", Mathf.Abs(f2).ToString(), cameFromClient);
+						else if (!hurtAgent.dead || hurtAgent.fakeDead)
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "NPCHealthDown", Mathf.Abs(f2).ToString(), cameFromClient);
 					}
 				}
 
-				__instance.agent.critted = false;
+				hurtAgent.critted = false;
 
-				if (__instance.agent.health + healthNum > 0f || __instance.agent.dead)
+				if (hurtAgent.health + healthNum > 0f || hurtAgent.dead)
 				{
 					bool flag5 = false;
 
 					if (flag2 && damagerObject.bulletType == bulletStatus.GhostBlaster)
 					{
-						__instance.agent.objectSprite.Flash("GhostBlaster");
+						hurtAgent.objectSprite.Flash("GhostBlaster");
 
 						flag5 = true;
 					}
 
 					if (!flag5)
 					{
-						__instance.agent.objectSprite.Flash();
+						hurtAgent.objectSprite.Flash();
 
 						if (GC.multiplayerMode && flag2 && damagerObjectName != "Bullet" && damagerObjectName != "Melee" && damagerObjectName != "Explosion")
-							__instance.agent.objectMult.AgentFlash();
+							hurtAgent.objectMult.AgentFlash();
 					}
 				}
 
-				if (GC.levelType == "Tutorial" && __instance.agent.isPlayer > 0)
+				if (GC.levelType == "Tutorial" && hurtAgent.isPlayer > 0)
 				{
 					GC.tutorial.LoseHealth();
 				
-					if (__instance.agent.health < 0f)
-						__instance.agent.health = 1f;
+					if (hurtAgent.health < 0f)
+						hurtAgent.health = 1f;
 				}
 
-				if (__instance.agent.isPlayer > 0)
+				if (hurtAgent.isPlayer > 0)
 					__instance.timeSinceLastDamaged = 0f;
 				
-				if (__instance.agent.arenaBattler && !__instance.agent.arenaBattleStarted && GC.serverPlayer)
+				if (hurtAgent.arenaBattler && !hurtAgent.arenaBattleStarted && GC.serverPlayer)
 				{
-					__instance.agent.arenaBattleStarted = true;
+					hurtAgent.arenaBattleStarted = true;
 
-					for (int j = 0; j < __instance.agent.gc.objectRealList.Count; j++)
+					for (int j = 0; j < hurtAgent.gc.objectRealList.Count; j++)
 					{
-						ObjectReal objectReal = __instance.agent.gc.objectRealList[j];
+						ObjectReal objectReal = hurtAgent.gc.objectRealList[j];
 					
-						if (objectReal.startingChunk == __instance.agent.startingChunk && objectReal.objectName == "EventTriggerFloor")
+						if (objectReal.startingChunk == hurtAgent.startingChunk && objectReal.objectName == "EventTriggerFloor")
 						{
 							EventTriggerFloor eventTriggerFloor = (EventTriggerFloor)objectReal;
 						
@@ -526,55 +528,55 @@ namespace BunnyMod.Content
 					}
 				}
 
-				if (__instance.agent.challengedToFight > 0 && __instance.agent.justHitByAgent2 != null)
+				if (hurtAgent.challengedToFight > 0 && hurtAgent.justHitByAgent2 != null)
 				{
-					if (__instance.agent.justHitByAgent2.isPlayer != 0)
+					if (hurtAgent.justHitByAgent2.isPlayer != 0)
 					{
-						if (__instance.agent.challengedToFight == 1 || (__instance.agent.challengedToFight == 2 && (damagerObjectName == "Bullet" || damagerObjectName == "Explosion" || damagerObjectName == "Fire")))
+						if (hurtAgent.challengedToFight == 1 || (hurtAgent.challengedToFight == 2 && (damagerObjectName == "Bullet" || damagerObjectName == "Explosion" || damagerObjectName == "Fire")))
 						{
-							__instance.agent.challengedToFight = 0;
-							__instance.agent.challengedToFightAgentID = 0;
-							__instance.agent.challengedToFightAgent = null;
-							__instance.agent.SetFollowing(null);
-							__instance.agent.SayDialogue("NotFair", true);
+							hurtAgent.challengedToFight = 0;
+							hurtAgent.challengedToFightAgentID = 0;
+							hurtAgent.challengedToFightAgent = null;
+							hurtAgent.SetFollowing(null);
+							hurtAgent.SayDialogue("NotFair", true);
 						}
 					}
 					else
 					{
-						relStatus relCode3 = __instance.agent.justHitByAgent2.relationships.GetRelCode(__instance.agent.challengedToFightAgent);
+						relStatus relCode3 = hurtAgent.justHitByAgent2.relationships.GetRelCode(hurtAgent.challengedToFightAgent);
 
 						if (relCode3 == relStatus.Aligned || relCode3 == relStatus.Loyal)
 						{
-							__instance.agent.challengedToFight = 0;
-							__instance.agent.challengedToFightAgentID = 0;
-							__instance.agent.challengedToFightAgent = null;
-							__instance.agent.SetFollowing(null);
-							__instance.agent.SayDialogue("NotFair", true);
+							hurtAgent.challengedToFight = 0;
+							hurtAgent.challengedToFightAgentID = 0;
+							hurtAgent.challengedToFightAgent = null;
+							hurtAgent.SetFollowing(null);
+							hurtAgent.SayDialogue("NotFair", true);
 						}
 					}
 				}
-				if (__instance.agent.localPlayer && __instance.agent.isPlayer != 0)
+				if (hurtAgent.localPlayer && hurtAgent.isPlayer != 0)
 				{
-					if (__instance.agent.inventory.HasItem("CourierPackage") && !__instance.hasTrait("NoBrokenPackages") && (!__instance.agent.oma.superSpecialAbility || !(__instance.agent.agentName == "Courier")) && !__instance.GotNonHitDamage() && __instance.agent.deathMethod != "FellInHole")
+					if (hurtAgent.inventory.HasItem("CourierPackage") && !__instance.hasTrait("NoBrokenPackages") && (!hurtAgent.oma.superSpecialAbility || !(hurtAgent.agentName == "Courier")) && !__instance.GotNonHitDamage() && hurtAgent.deathMethod != "FellInHole")
 					{
-						__instance.agent.courierPackageDamage -= healthNum;
+						hurtAgent.courierPackageDamage -= healthNum;
 
-						if (__instance.agent.courierPackageDamage >= 20f)
+						if (hurtAgent.courierPackageDamage >= 20f)
 						{
-							__instance.agent.inventory.DestroyItem(__instance.agent.inventory.FindItem("CourierPackage"));
+							hurtAgent.inventory.DestroyItem(hurtAgent.inventory.FindItem("CourierPackage"));
 							InvItem invItem = new InvItem();
 							invItem.invItemName = "CourierPackageBroken";
 							invItem.SetupDetails(false);
-							GC.audioHandler.Play(__instance.agent, "CourierPackageBreak");
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "OutOfAmmo", "CourierPackage", "Item");
-							__instance.agent.inventory.DontPlayPickupSounds(true);
-							__instance.agent.inventory.AddItemOrDrop(invItem);
-							__instance.agent.inventory.DontPlayPickupSounds(false);
+							GC.audioHandler.Play(hurtAgent, "CourierPackageBreak");
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "OutOfAmmo", "CourierPackage", "Item");
+							hurtAgent.inventory.DontPlayPickupSounds(true);
+							hurtAgent.inventory.AddItemOrDrop(invItem);
+							hurtAgent.inventory.DontPlayPickupSounds(false);
 						}
 					}
 				
-					if (__instance.agent.mindControlling && !__instance.GotNonHitDamage())
-						__instance.agent.relationships.StopAgentsUnderMindControl();
+					if (hurtAgent.mindControlling && !__instance.GotNonHitDamage())
+						hurtAgent.relationships.StopAgentsUnderMindControl();
 				}
 			}
 			else if (healthNum > 0f)
@@ -584,28 +586,28 @@ namespace BunnyMod.Content
 				
 				if (!flag)
 				{
-					if (healthNum == __instance.agent.healthMax && !__instance.agent.finishedLevel)
+					if (healthNum == hurtAgent.healthMax && !hurtAgent.finishedLevel)
 					{
-						if (__instance.agent.skillPoints.justGainedLevel)
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "HealthUpSlower", "FullHealth", "StatusEffect", cameFromClient);
+						if (hurtAgent.skillPoints.justGainedLevel)
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "HealthUpSlower", "FullHealth", "StatusEffect", cameFromClient);
 						else
 						{
-							GC.alienFX.GainHealth(__instance.agent);
-							GC.spawnerMain.SpawnStatusText(__instance.agent, "HealthUp", "FullHealth", "StatusEffect", cameFromClient);
+							GC.alienFX.GainHealth(hurtAgent);
+							GC.spawnerMain.SpawnStatusText(hurtAgent, "HealthUp", "FullHealth", "StatusEffect", cameFromClient);
 						}
 					}
-					else if (!__instance.agent.finishedLevel)
+					else if (!hurtAgent.finishedLevel)
 					{
-						GC.alienFX.GainHealth(__instance.agent);
-						GC.spawnerMain.SpawnStatusText(__instance.agent, "HealthUp", healthNum.ToString(), cameFromClient);
+						GC.alienFX.GainHealth(hurtAgent);
+						GC.spawnerMain.SpawnStatusText(hurtAgent, "HealthUp", healthNum.ToString(), cameFromClient);
 					}
 				}
 			}
 
-			if (healthNum <= 0f && (!__instance.GotStatusEffectDamage() || __instance.agent.health + healthNum <= 0f))
+			if (healthNum <= 0f && (!__instance.GotStatusEffectDamage() || hurtAgent.health + healthNum <= 0f))
 			{
-				if (__instance.agent.isPlayer == 0 && __instance.agent.interactingAgent != null)
-					__instance.agent.StopInteraction();
+				if (hurtAgent.isPlayer == 0 && hurtAgent.interactingAgent != null)
+					hurtAgent.StopInteraction();
 				
 				if (__instance.hasStatusEffect(vStatusEffect.Dizzy))
 					__instance.RemoveStatusEffect(vStatusEffect.Dizzy);
@@ -616,63 +618,67 @@ namespace BunnyMod.Content
 
 			if (clientFinalHealthNum != -999f)
 			{
-				if (clientFinalHealthNum > 0f && __instance.agent.health < 0f)
-					__instance.agent.health = 0f;
+				if (clientFinalHealthNum > 0f && hurtAgent.health < 0f)
+					hurtAgent.health = 0f;
 				
-				__instance.agent.health += clientFinalHealthNum;
+				hurtAgent.health += clientFinalHealthNum;
 			}
 			else
-				__instance.agent.health += healthNum;
+				hurtAgent.health += healthNum;
 			
 			bool flag6 = false;
 			
-			if (__instance.agent.oma.bodyGuarded && __instance.agent.employer != null && __instance.agent.employer.oma.superSpecialAbility && __instance.agent.employer.agentName == vAgent.Bouncer)
+			if (hurtAgent.oma.bodyGuarded && hurtAgent.employer != null && hurtAgent.employer.oma.superSpecialAbility && hurtAgent.employer.agentName == vAgent.Bouncer)
 				flag6 = true;
 			
-			if (__instance.agent.oma.bodyGuarded && __instance.agent.bodyguardedWantsRevenge && (__instance.agent.health <= __instance.agent.healthMax * 0.3f || flag6) && __instance.agent.health > 0f && __instance.agent.isPlayer == 0 && GC.serverPlayer && __instance.agent.justHitByAgent2 != null && (__instance.agent.justHitByAgent2.isPlayer != 0 || __instance.agent.justHitByAgent2.hasEmployer))
-				__instance.agent.BodyguardedSorryMutiny();
+			if (hurtAgent.oma.bodyGuarded && hurtAgent.bodyguardedWantsRevenge && (hurtAgent.health <= hurtAgent.healthMax * 0.3f || flag6) && hurtAgent.health > 0f && hurtAgent.isPlayer == 0 && GC.serverPlayer && hurtAgent.justHitByAgent2 != null && (hurtAgent.justHitByAgent2.isPlayer != 0 || hurtAgent.justHitByAgent2.hasEmployer))
+				hurtAgent.BodyguardedSorryMutiny();
 			
-			if (__instance.agent.health <= __instance.agent.healthMax * 0.4f && __instance.agent.health > 0f && __instance.agent.isPlayer == 0 && GC.serverPlayer && __instance.agent.CanShakeDown() && __instance.agent.justHitByAgent2 != null && (__instance.agent.justHitByAgent2.isPlayer != 0 || __instance.agent.justHitByAgent2.hasEmployer))
+			if (hurtAgent.health <= hurtAgent.healthMax * 0.4f && hurtAgent.health > 0f && hurtAgent.isPlayer == 0 && GC.serverPlayer && hurtAgent.CanShakeDown() && hurtAgent.justHitByAgent2 != null && (hurtAgent.justHitByAgent2.isPlayer != 0 || hurtAgent.justHitByAgent2.hasEmployer))
 			{
 				int k = 0;
 
 				while (k < GC.playerAgentList.Count)
 				{
-					Agent agent2 = GC.playerAgentList[k];
-					bool flag7 = false;
+					Agent shakedowningAgent = GC.playerAgentList[k];
+					bool canMakeSubmissive = false;
 
-					if (__instance.agent.justHitByAgent2.isPlayer != 0 && __instance.agent.justHitByAgent2 != agent2 && !__instance.agent.justHitByAgent2.statusEffects.hasTrait("Shakedowner") && !__instance.agent.justHitByAgent2.statusEffects.hasTrait("Shakedowner2") && Vector2.Distance(agent2.tr.position, __instance.agent.justHitByAgent2.tr.position) < 13.44f)
-						flag7 = true;
-					else if (__instance.agent.justHitByAgent2.isPlayer == 0 && !__instance.agent.justHitByAgent2.hasEmployer)
+					if (hurtAgent.justHitByAgent2.isPlayer != 0 && hurtAgent.justHitByAgent2 != shakedowningAgent && !hurtAgent.justHitByAgent2.statusEffects.hasTrait(vTrait.Extortionist) && !hurtAgent.justHitByAgent2.statusEffects.hasTrait(vTrait.Extortionist_2) && Vector2.Distance(shakedowningAgent.tr.position, hurtAgent.justHitByAgent2.tr.position) < 13.44f)
+						canMakeSubmissive = true;
+					else if (hurtAgent.justHitByAgent2.isPlayer == 0 && !hurtAgent.justHitByAgent2.hasEmployer)
 					{
-						relStatus relCode4 = __instance.agent.justHitByAgent2.relationships.GetRelCode(agent2);
+						relStatus relCode4 = hurtAgent.justHitByAgent2.relationships.GetRelCode(shakedowningAgent);
 					
-						if ((relCode4 == relStatus.Aligned || relCode4 == relStatus.Loyal) && Vector2.Distance(agent2.tr.position, __instance.agent.justHitByAgent2.tr.position) < 13.44f)
-							flag7 = true;
+						if ((relCode4 == relStatus.Aligned || relCode4 == relStatus.Loyal) && Vector2.Distance(shakedowningAgent.tr.position, hurtAgent.justHitByAgent2.tr.position) < 13.44f)
+							canMakeSubmissive = true;
 					}
-					if ((agent2 == __instance.agent.justHitByAgent2 || agent2 == __instance.agent.justHitByAgent2.employer || flag7) && (agent2.statusEffects.hasTrait("Shakedowner") || agent2.statusEffects.hasTrait("Shakedowner2")))
+
+					if (shakedowningAgent.statusEffects.hasTrait(cTrait.Warlord))
+						canMakeSubmissive = true;
+
+					if ((shakedowningAgent == hurtAgent.justHitByAgent2 || shakedowningAgent == hurtAgent.justHitByAgent2.employer || canMakeSubmissive) && (shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist) || shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist_2) || shakedowningAgent.statusEffects.hasTrait(cTrait.Warlord)))
 					{
-						__instance.agent.relationships.SetRel(agent2, "Submissive");
-						__instance.agent.agentInteractions.BecomeSubmissiveWithAlliesAllInChunk(__instance.agent, agent2);
+						hurtAgent.relationships.SetRel(shakedowningAgent, vRelationship.Submissive);
+						hurtAgent.agentInteractions.BecomeSubmissiveWithAlliesAllInChunk(hurtAgent, shakedowningAgent);
 						int num3 = 0;
 
 						for (int l = 0; l < GC.agentList.Count; l++)
 							if (GC.agentList[l].oma.shookDown)
 								num3++;
 						
-						int shakedownAmount = agent2.objectMult.FindShakedownAmount(num3);
-						agent2.objectMult.AddShakedownPerson(__instance.agent, shakedownAmount, true);
-						__instance.agent.oma.shookDown = true;
-						__instance.agent.shookDownAgent = agent2;
+						int shakedownAmount = shakedowningAgent.objectMult.FindShakedownAmount(num3);
+						shakedowningAgent.objectMult.AddShakedownPerson(hurtAgent, shakedownAmount, true);
+						hurtAgent.oma.shookDown = true;
+						hurtAgent.shookDownAgent = shakedowningAgent;
 
 						if (num3 >= 3)
 						{
-							__instance.agent.SayDialogue("ThreatenedShakedownLowCash", true);
+							hurtAgent.SayDialogue("ThreatenedShakedownLowCash", true);
 						
 							break;
 						}
 
-						__instance.agent.SayDialogue("SubmitShakedowner", true);
+						hurtAgent.SayDialogue("SubmitShakedowner", true);
 
 						break;
 					}
@@ -683,53 +689,53 @@ namespace BunnyMod.Content
 
 			bool flag8 = false;
 
-			if (cameFromClient != NetworkInstanceId.Invalid && healthNum < 0f && __instance.agent.isPlayer == 0)
+			if (cameFromClient != NetworkInstanceId.Invalid && healthNum < 0f && hurtAgent.isPlayer == 0)
 			{
 				Agent component = NetworkServer.FindLocalObject(cameFromClient).GetComponent<Agent>();
-				__instance.agent.justHitByAgent3 = true;
+				hurtAgent.justHitByAgent3 = true;
 
 				if (!component.invisible)
-					__instance.agent.relationships.AddRelHate(component, Mathf.Clamp((int)Mathf.Abs(healthNum), 5, 200));
+					hurtAgent.relationships.AddRelHate(component, Mathf.Clamp((int)Mathf.Abs(healthNum), 5, 200));
 
-				__instance.agent.justHitByAgent3 = false;
+				hurtAgent.justHitByAgent3 = false;
 
 				if (extraVar == 1)
 					flag8 = true;
 			}
 
-			if (__instance.agent.deathMethod == "Cyanide") { } // Sic
+			if (hurtAgent.deathMethod == "Cyanide") { } // Sic
 			
 			if (!flag || healthNum != 0f)
-				__instance.agent.objectMult.ChangeHealth(num, damagerObject, cameFromClient, healthNum);
+				hurtAgent.objectMult.ChangeHealth(dmg, damagerObject, cameFromClient, healthNum);
 			
-			__instance.agent.SetBrainActive(true);
+			hurtAgent.SetBrainActive(true);
 			
 			if (__instance.hasTrait(vTrait.ImOuttie) || __instance.hasTrait(vTrait.ImOuttie_2))
-				__instance.agent.FindSpeed();
+				hurtAgent.FindSpeed();
 			
-			if (__instance.agent.health > __instance.agent.healthMax && !__instance.hasTrait("Supercharge"))
-				__instance.agent.health = __instance.agent.healthMax;
+			if (hurtAgent.health > hurtAgent.healthMax && !__instance.hasTrait("Supercharge"))
+				hurtAgent.health = hurtAgent.healthMax;
 			
-			if (__instance.agent.health <= __instance.agent.healthMax && __instance.hasTrait("Supercharge"))
+			if (hurtAgent.health <= hurtAgent.healthMax && __instance.hasTrait("Supercharge"))
 				__instance.RemoveTrait("Supercharge");
 			
-			if (__instance.agent.isPlayer > 0 && __instance.agent.localPlayer)
+			if (hurtAgent.isPlayer > 0 && hurtAgent.localPlayer)
 				___healthBar.StartChange();
 			
-			if (__instance.agent.mechEmpty)
+			if (hurtAgent.mechEmpty)
 			{
 				try
 				{
-					GC.sessionData.mechHealth[__instance.agent.mechTiedToPlayer] = (int)__instance.agent.health;
+					GC.sessionData.mechHealth[hurtAgent.mechTiedToPlayer] = (int)hurtAgent.health;
 				}
 				catch { }
 			}
 
-			if ((__instance.agent.isPlayer == 0 || !__instance.agent.localPlayer) && __instance.agent.agentHealthBar != null)
-				__instance.agent.agentHealthBar.ChangeHealth();
+			if ((hurtAgent.isPlayer == 0 || !hurtAgent.localPlayer) && hurtAgent.agentHealthBar != null)
+				hurtAgent.agentHealthBar.ChangeHealth();
 			
-			if (__instance.agent.isPlayer > 0 && __instance.agent.localPlayer && (!__instance.agent.dead || __instance.agent.fakeDead) && healthNum != -200f && healthNum < 0f)
-				GC.stats.AddToStat(__instance.agent, "DamageTaken", -(int)healthNum);
+			if (hurtAgent.isPlayer > 0 && hurtAgent.localPlayer && (!hurtAgent.dead || hurtAgent.fakeDead) && healthNum != -200f && healthNum < 0f)
+				GC.stats.AddToStat(hurtAgent, "DamageTaken", -(int)healthNum);
 			
 			if (healthNum < 0f)
 				__instance.UseQuickEscapeTeleporter(false);
@@ -739,10 +745,10 @@ namespace BunnyMod.Content
 
 			if (GC.multiplayerMode)
 			{
-				if (__instance.agent.isPlayer != 0 && !__instance.agent.localPlayer)
+				if (hurtAgent.isPlayer != 0 && !hurtAgent.localPlayer)
 					flag9 = false;
 				
-				if (!GC.serverPlayer && __instance.agent.isPlayer == 0)
+				if (!GC.serverPlayer && hurtAgent.isPlayer == 0)
 				{
 					flag9 = true;
 					flag10 = true;
@@ -754,33 +760,33 @@ namespace BunnyMod.Content
 			
 			if (flag9)
 			{
-				if (__instance.agent.dead && __instance.agent.fakeDead)
+				if (hurtAgent.dead && hurtAgent.fakeDead)
 					flag11 = false;
-				else if (__instance.agent.dead)
+				else if (hurtAgent.dead)
 					flag11 = true;
 				
-				if (__instance.agent.ghost && __instance.agent.isPlayer > 0 && __instance.agent.health > -40f)
+				if (hurtAgent.ghost && hurtAgent.isPlayer > 0 && hurtAgent.health > -40f)
 					flag11 = true;
 			}
 
-			if (__instance.agent.sleepKnockedOut && __instance.agent.agentHitboxScript.wholeBodyAnimType == "Sleep")
-				__instance.agent.agentHitboxScript.PlayWholeBodyAnim("Dead");
+			if (hurtAgent.sleepKnockedOut && hurtAgent.agentHitboxScript.wholeBodyAnimType == "Sleep")
+				hurtAgent.agentHitboxScript.PlayWholeBodyAnim("Dead");
 			
-			if (__instance.agent.health <= 0f && !flag11 && flag9 && !__instance.agent.mechEmpty && __instance.agent.agentName != "MechEmpty")
+			if (hurtAgent.health <= 0f && !flag11 && flag9 && !hurtAgent.mechEmpty && hurtAgent.agentName != "MechEmpty")
 			{
-				if (__instance.agent.mechFilled && !__instance.agent.suiciding && !__instance.agent.suicided)
+				if (hurtAgent.mechFilled && !hurtAgent.suiciding && !hurtAgent.suicided)
 				{
-					if (!__instance.agent.fellInHole && !__instance.clientMechTransforming)
+					if (!hurtAgent.fellInHole && !__instance.clientMechTransforming)
 					{
 						if (GC.serverPlayer)
 						{
 							__instance.MechTransformBackStart(true);
-							__instance.agent.objectMult.SpecialAbility("MechTransformBackDead", null);
+							hurtAgent.objectMult.SpecialAbility("MechTransformBackDead", null);
 			
 							return false;
 						}
 
-						__instance.agent.objectMult.SpecialAbility("MechTransformBackStartDead", null);
+						hurtAgent.objectMult.SpecialAbility("MechTransformBackStartDead", null);
 						__instance.clientMechTransforming = true;
 					}
 
@@ -794,29 +800,29 @@ namespace BunnyMod.Content
 				
 				if (extraVar == 2 || flag13)
 				{
-					__instance.agent.knockedOut = true;
-					__instance.agent.knockedOutLocal = true;
+					hurtAgent.knockedOut = true;
+					hurtAgent.knockedOutLocal = true;
 					flag13 = true;
 				}
 				
-				if (__instance.agent.oma.bodyGuarded)
+				if (hurtAgent.oma.bodyGuarded)
 				{
-					__instance.agent.zombified = false;
-					__instance.agent.zombieWhenDead = false;
+					hurtAgent.zombified = false;
+					hurtAgent.zombieWhenDead = false;
 				
-					if (!__instance.hasStatusEffect(vStatusEffect.Resurrection) && !__instance.agent.fellInHoleWhileDead)
-						GC.quests.AddBigQuestPoints(__instance.agent.employer, __instance.agent, "BodyguardKill");
+					if (!__instance.hasStatusEffect(vStatusEffect.Resurrection) && !hurtAgent.fellInHoleWhileDead)
+						GC.quests.AddBigQuestPoints(hurtAgent.employer, hurtAgent, "BodyguardKill");
 				}
 
-				if ((__instance.agent.KnockedOut() || __instance.agent.arrested || (__instance.agent.FellInHole() && !__instance.agent.oma.bodyGuarded)) && __instance.hasStatusEffect(vStatusEffect.Resurrection) && __instance.agent.isPlayer == 0)
+				if ((hurtAgent.KnockedOut() || hurtAgent.arrested || (hurtAgent.FellInHole() && !hurtAgent.oma.bodyGuarded)) && __instance.hasStatusEffect(vStatusEffect.Resurrection) && hurtAgent.isPlayer == 0)
 				{
-					if (__instance.agent.FellInHole())
+					if (hurtAgent.FellInHole())
 						__instance.RemoveStatusEffect(vStatusEffect.Resurrection, false);
 					else
 						__instance.RemoveStatusEffect(vStatusEffect.Resurrection);
 				}
 
-				if (__instance.hasStatusEffect(vStatusEffect.Resurrection) && __instance.agent.possessing)
+				if (__instance.hasStatusEffect(vStatusEffect.Resurrection) && hurtAgent.possessing)
 					for (int m = 0; m < __instance.StatusEffectList.Count; m++)
 						if (__instance.StatusEffectList[m].statusEffectName == vStatusEffect.Resurrection && !__instance.StatusEffectList[m].infiniteTime)
 						{
@@ -825,20 +831,20 @@ namespace BunnyMod.Content
 							break;
 						}
 
-				if ((__instance.hasStatusEffect(vStatusEffect.Resurrection) || __instance.hasStatusEffect("ExtraLife") || __instance.agent.possessing) && !GC.mainGUI.menuGUI.endedGame && !flag10 && !__instance.agent.suicided)
-					__instance.agent.resurrect = true;
+				if ((__instance.hasStatusEffect(vStatusEffect.Resurrection) || __instance.hasStatusEffect("ExtraLife") || hurtAgent.possessing) && !GC.mainGUI.menuGUI.endedGame && !flag10 && !hurtAgent.suicided)
+					hurtAgent.resurrect = true;
 				
-				if (!__instance.agent.resurrect)
+				if (!hurtAgent.resurrect)
 				{
-					if (!__instance.agent.zombified && __instance.agent.zombieWhenDead && __instance.agent.isPlayer == 0 && !__instance.agent.inhuman && __instance.agent.agentName != "Alien" && !__instance.agent.FellInHole())
+					if (!hurtAgent.zombified && hurtAgent.zombieWhenDead && hurtAgent.isPlayer == 0 && !hurtAgent.inhuman && hurtAgent.agentName != "Alien" && !hurtAgent.FellInHole())
 					{
-						if (__instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2.zombified)
-							__instance.agent.zombifiedByAgent = __instance.agent.justHitByAgent2;
+						if (hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2.zombified)
+							hurtAgent.zombifiedByAgent = hurtAgent.justHitByAgent2;
 						
-						__instance.agent.zombified = true;
-						__instance.agent.resurrect = true;
+						hurtAgent.zombified = true;
+						hurtAgent.resurrect = true;
 						
-						if (__instance.agent.nonQuestObjectMarker != null)
+						if (hurtAgent.nonQuestObjectMarker != null)
 						{
 							bool flag14 = true;
 						
@@ -847,180 +853,180 @@ namespace BunnyMod.Content
 									flag14 = false;
 							
 							if (flag14)
-								Object.Destroy(__instance.agent.nonQuestObjectMarker.gameObject);
+								Object.Destroy(hurtAgent.nonQuestObjectMarker.gameObject);
 						}
 					}
 
-					if (__instance.agent.zombified && __instance.agent.isPlayer != 0 && !__instance.agent.suicided)
-						if (!__instance.agent.resurrect && __instance.agent.justHitByAgent2 != null && !__instance.agent.zombified && __instance.agent.justHitByAgent2.statusEffects.hasTrait("ResurrectionAllies") && !__instance.agent.justHitByAgent2.zombified && GC.percentChance(30))
-							__instance.agent.resurrect = true;
+					if (hurtAgent.zombified && hurtAgent.isPlayer != 0 && !hurtAgent.suicided)
+						if (!hurtAgent.resurrect && hurtAgent.justHitByAgent2 != null && !hurtAgent.zombified && hurtAgent.justHitByAgent2.statusEffects.hasTrait("ResurrectionAllies") && !hurtAgent.justHitByAgent2.zombified && GC.percentChance(30))
+							hurtAgent.resurrect = true;
 				}
-				else if (__instance.agent.zombified && __instance.agent.employer != null)
-					__instance.agent.zombifiedByAgent = __instance.agent.employer;
+				else if (hurtAgent.zombified && hurtAgent.employer != null)
+					hurtAgent.zombifiedByAgent = hurtAgent.employer;
 				
-				if (__instance.agent.transforming && __instance.agent.isPlayer > 0 && !flag10 && !__instance.agent.mechFilled && !__instance.hasSpecialAbility("MechTransform") && !__instance.agent.wasTransforming)
+				if (hurtAgent.transforming && hurtAgent.isPlayer > 0 && !flag10 && !hurtAgent.mechFilled && !__instance.hasSpecialAbility("MechTransform") && !hurtAgent.wasTransforming)
 				{
 					Debug.Log("Remove Werewolf (Dead)");
 				
 					if (GC.serverPlayer)
 					{
 						__instance.RemoveStatusEffect("WerewolfEffect");
-						__instance.agent.objectMult.SpecialAbility("WerewolfTransformBackDead", null);
+						hurtAgent.objectMult.SpecialAbility("WerewolfTransformBackDead", null);
 					}
 					else
-						__instance.agent.objectMult.SpecialAbility("WerewolfTransformBackStartDead", null);
+						hurtAgent.objectMult.SpecialAbility("WerewolfTransformBackStartDead", null);
 				}
 
-				if (!flag2 && !__instance.agent.dead && !__instance.agent.KnockedOut() && __instance.agent.deathMethod == "" && __instance.agent.deathKiller == "")
+				if (!flag2 && !hurtAgent.dead && !hurtAgent.KnockedOut() && hurtAgent.deathMethod == "" && hurtAgent.deathKiller == "")
 				{
-					__instance.agent.deathMethod = "";
-					__instance.agent.deathKiller = "";
+					hurtAgent.deathMethod = "";
+					hurtAgent.deathKiller = "";
 				}
 				
-				__instance.agent.movement.StopChargingForward();
+				hurtAgent.movement.StopChargingForward();
 				
-				if (__instance.agent.isPlayer > 0)
+				if (hurtAgent.isPlayer > 0)
 					__instance.RechargeSpecialAbilityImmediate();
 				
-				if (__instance.agent.KnockedOut())
+				if (hurtAgent.KnockedOut())
 				{
-					if (!GC.audioHandler.soundsPlaying.Contains("ChloroformAgent") && !__instance.agent.arrested)
+					if (!GC.audioHandler.soundsPlaying.Contains("ChloroformAgent") && !hurtAgent.arrested)
 					{
 						if (flag13)
-							GC.audioHandler.Play(__instance.agent, vAudioClip.AgentDie);
+							GC.audioHandler.Play(hurtAgent, vAudioClip.AgentDie);
 						else
-							GC.audioHandler.Play(__instance.agent, vAudioClip.AgentKnockOut);
+							GC.audioHandler.Play(hurtAgent, vAudioClip.AgentKnockOut);
 					}
-					if (!__instance.agent.arrested && !flag10 && !__instance.agent.FellInHole() && !__instance.agent.disappeared)
-						GC.spawnerMain.SpawnStateIndicator(__instance.agent, "DizzyStars");
+					if (!hurtAgent.arrested && !flag10 && !hurtAgent.FellInHole() && !hurtAgent.disappeared)
+						GC.spawnerMain.SpawnStateIndicator(hurtAgent, "DizzyStars");
 					
-					__instance.agent.health = 0f;
+					hurtAgent.health = 0f;
 					
-					if (__instance.agent.sleeping)
-						__instance.agent.sleepKnockedOut = true;
+					if (hurtAgent.sleeping)
+						hurtAgent.sleepKnockedOut = true;
 					
-					if ((GC.coopMode || GC.fourPlayerMode) && __instance.agent.isPlayer > 0)
+					if ((GC.coopMode || GC.fourPlayerMode) && hurtAgent.isPlayer > 0)
 					{
 						for (int num8 = 0; num8 < GC.playerAgentList.Count; num8++)
 						{
 							Agent agent7 = GC.playerAgentList[num8];
 
-							if (!(agent7 != __instance.agent) || (agent7.dead && !agent7.resurrect) || agent7.ghost || !agent7.fakeDead) { } // Sic
+							if (!(agent7 != hurtAgent) || (agent7.dead && !agent7.resurrect) || agent7.ghost || !agent7.fakeDead) { } // Sic
 						}
 					}
 				}
 				else
 				{
-					if (__instance.agent.agentName == vAgent.Robot)
-						GC.audioHandler.Play(__instance.agent, vAudioClip.RobotDeath);
-					else if (!__instance.agent.FellInHole() || __instance.agent.oma.bodyGuarded)
-						GC.audioHandler.Play(__instance.agent, vAudioClip.AgentDie);
+					if (hurtAgent.agentName == vAgent.Robot)
+						GC.audioHandler.Play(hurtAgent, vAudioClip.RobotDeath);
+					else if (!hurtAgent.FellInHole() || hurtAgent.oma.bodyGuarded)
+						GC.audioHandler.Play(hurtAgent, vAudioClip.AgentDie);
 					
-					if (__instance.agent.isPlayer != 0)
+					if (hurtAgent.isPlayer != 0)
 					{
-						GC.audioHandler.Play(__instance.agent, vAudioClip.PlayerDeath);
+						GC.audioHandler.Play(hurtAgent, vAudioClip.PlayerDeath);
 						__instance.playedPlayerDeath = true;
 					}
 				}
 
 				if (GC.levelType == vLevelType.Tutorial)
-					GC.tutorial.KillAgent(__instance.agent);
+					GC.tutorial.KillAgent(hurtAgent);
 				
-				if (cameFromClient == NetworkInstanceId.Invalid && flag2 && damagerObject.CompareTag("Bullet") && !damagerObject.nonLethal && __instance.agent.tickEndDamage == 0)
+				if (cameFromClient == NetworkInstanceId.Invalid && flag2 && damagerObject.CompareTag("Bullet") && !damagerObject.nonLethal && hurtAgent.tickEndDamage == 0)
 				{
-					__instance.agent.rb.velocity = Vector2.zero;
-					__instance.agent.rb.angularVelocity = 0f;
-					__instance.agent.movement.KnockBackBullet(damagerObject.go, Mathf.Abs(healthNum) * 30f, false, damagerObject);
+					hurtAgent.rb.velocity = Vector2.zero;
+					hurtAgent.rb.angularVelocity = 0f;
+					hurtAgent.movement.KnockBackBullet(damagerObject.go, Mathf.Abs(healthNum) * 30f, false, damagerObject);
 				}
 
 				__instance.ExitBox(true);
 				__instance.RemoveInvisibleLimited();
 				bool flag15 = false;
 				
-				if (__instance.agent.justHitByAgent2 && __instance.agent.justHitByAgent2.agentName == "Custom")
+				if (hurtAgent.justHitByAgent2 && hurtAgent.justHitByAgent2.agentName == "Custom")
 				{
-					__instance.agent.deathKiller = __instance.agent.justHitByAgent2.agentRealName;
+					hurtAgent.deathKiller = hurtAgent.justHitByAgent2.agentRealName;
 					flag15 = true;
 				}
 				
-				if (!flag15 && __instance.agent.killedByAgentIndirect != null && __instance.agent.killedByAgentIndirect.agentName == "Custom")
-					__instance.agent.deathKiller = __instance.agent.killedByAgentIndirect.agentRealName;
+				if (!flag15 && hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect.agentName == "Custom")
+					hurtAgent.deathKiller = hurtAgent.killedByAgentIndirect.agentRealName;
 				
 				Agent agent8 = null;
 				
-				if (__instance.agent.oma.mindControlled)
-					agent8 = __instance.agent.mindControlAgent;
+				if (hurtAgent.oma.mindControlled)
+					agent8 = hurtAgent.mindControlAgent;
 				
-				if ((!GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode) || __instance.agent.isPlayer == 0 || __instance.agent.resurrect)
+				if ((!GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode) || hurtAgent.isPlayer == 0 || hurtAgent.resurrect)
 				{
 					if (!GC.serverPlayer)
-						__instance.agent.killedOnClient = true;
+						hurtAgent.killedOnClient = true;
 				
 					__instance.SetupDeath(damagerObject, flag10);
-					__instance.agent.pathing = 0;
-					__instance.agent.movement.PathStop();
-					__instance.agent.SetBrainActive(false);
-					__instance.agent.brainUpdate.slowAIWait = 0;
+					hurtAgent.pathing = 0;
+					hurtAgent.movement.PathStop();
+					hurtAgent.SetBrainActive(false);
+					hurtAgent.brainUpdate.slowAIWait = 0;
 					
 					if (GC.serverPlayer)
 					{
-						if (__instance.agent.brain.Goals.Count > 0)
-							__instance.agent.brain.RemoveAllSubgoals(__instance.agent.brain.Goals[0]);
+						if (hurtAgent.brain.Goals.Count > 0)
+							hurtAgent.brain.RemoveAllSubgoals(hurtAgent.brain.Goals[0]);
 					
-						if (__instance.agent.brain.Goals.Count > 0)
-							__instance.agent.brain.Goals[0].Terminate();
+						if (hurtAgent.brain.Goals.Count > 0)
+							hurtAgent.brain.Goals[0].Terminate();
 						
-						__instance.agent.brain.Goals.Clear();
+						hurtAgent.brain.Goals.Clear();
 					}
 
-					__instance.agent.inCombat = false;
-					__instance.agent.inFleeCombat = false;
+					hurtAgent.inCombat = false;
+					hurtAgent.inFleeCombat = false;
 					
-					if (__instance.agent.isPlayer > 0)
-						__instance.agent.interactionHelper.gameObject.SetActive(false);
+					if (hurtAgent.isPlayer > 0)
+						hurtAgent.interactionHelper.gameObject.SetActive(false);
 					
-					if (!__instance.agent.KnockedOut())
-						GC.spawnerMain.SpawnStateIndicator(__instance.agent, "NoAnim");
+					if (!hurtAgent.KnockedOut())
+						GC.spawnerMain.SpawnStateIndicator(hurtAgent, "NoAnim");
 					
-					__instance.agent.relationships.SetAllRel2("Dead");
+					hurtAgent.relationships.SetAllRel2("Dead");
 					
-					if (!__instance.agent.oma.bodyGuarded)
+					if (!hurtAgent.oma.bodyGuarded)
 					{
-						__instance.agent.job = "";
-						__instance.agent.jobCode = jobType.None;
-						__instance.agent.jobBig = "";
-						__instance.agent.jobBigCode = jobType.None;
-						__instance.agent.SetFollowing(null);
+						hurtAgent.job = "";
+						hurtAgent.jobCode = jobType.None;
+						hurtAgent.jobBig = "";
+						hurtAgent.jobBigCode = jobType.None;
+						hurtAgent.SetFollowing(null);
 					
-						if (!__instance.agent.resurrect)
-							__instance.agent.SetEmployerNullLate();
+						if (!hurtAgent.resurrect)
+							hurtAgent.SetEmployerNullLate();
 					}
 
-					__instance.agent.SetTraversable("");
+					hurtAgent.SetTraversable("");
 					
-					if (__instance.agent.lightReal != null)
-						__instance.agent.lightReal.tr.localPosition = new Vector3(0f, -0.2f, 0f);
+					if (hurtAgent.lightReal != null)
+						hurtAgent.lightReal.tr.localPosition = new Vector3(0f, -0.2f, 0f);
 					
 					bool flag16 = true;
 					
-					if (__instance.agent.justHitByAgent2 || __instance.agent.killedByAgentIndirect)
+					if (hurtAgent.justHitByAgent2 || hurtAgent.killedByAgentIndirect)
 					{
-						if (__instance.agent.justHitByAgent2)
-							__instance.agent.killedByAgent = __instance.agent.justHitByAgent2;
-						else if (__instance.agent.killedByAgentIndirect)
-							__instance.agent.killedByAgent = __instance.agent.killedByAgentIndirect;
+						if (hurtAgent.justHitByAgent2)
+							hurtAgent.killedByAgent = hurtAgent.justHitByAgent2;
+						else if (hurtAgent.killedByAgentIndirect)
+							hurtAgent.killedByAgent = hurtAgent.killedByAgentIndirect;
 						
 						Agent playerGettingPoints = null;
 						
-						if (__instance.agent.killedByAgent.isPlayer > 0)
-							playerGettingPoints = __instance.agent.killedByAgent;
-						else if (__instance.agent.killedByAgent.employer != null)
+						if (hurtAgent.killedByAgent.isPlayer > 0)
+							playerGettingPoints = hurtAgent.killedByAgent;
+						else if (hurtAgent.killedByAgent.employer != null)
 						{
-							if (__instance.agent.killedByAgent.employer.isPlayer > 0)
-								playerGettingPoints = __instance.agent.killedByAgent.employer;
+							if (hurtAgent.killedByAgent.employer.isPlayer > 0)
+								playerGettingPoints = hurtAgent.killedByAgent.employer;
 						}
-						else if (__instance.agent.recentMindControlAgent != null)
-							agent8 = __instance.agent.recentMindControlAgent;
+						else if (hurtAgent.recentMindControlAgent != null)
+							agent8 = hurtAgent.recentMindControlAgent;
 						
 						flag16 = __instance.IsInnocent(playerGettingPoints);
 					}
@@ -1040,158 +1046,158 @@ namespace BunnyMod.Content
 							else
 								agent8.skillPoints.AddPoints("IndirectlyKill");
 						}
-						else if (__instance.agent.killedByAgentIndirect != null && __instance.agent.killedByAgentIndirect != __instance.agent)
+						else if (hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect != hurtAgent)
 						{
-							if (__instance.agent.killedByAgentIndirect.zombified && __instance.agent.agentName == "Zombie")
+							if (hurtAgent.killedByAgentIndirect.zombified && hurtAgent.agentName == "Zombie")
 								flag17 = true;
 							
-							__instance.agent.killedByAgent = __instance.agent.killedByAgentIndirect;
+							hurtAgent.killedByAgent = hurtAgent.killedByAgentIndirect;
 							
-							if (__instance.agent.isPlayer == 0 && __instance.agent.killedByAgent.isPlayer != 0 && !flag17)
+							if (hurtAgent.isPlayer == 0 && hurtAgent.killedByAgent.isPlayer != 0 && !flag17)
 							{
-								GC.stats.AddToStat(__instance.agent.killedByAgent, "IndirectlyKilled", 1);
+								GC.stats.AddToStat(hurtAgent.killedByAgent, "IndirectlyKilled", 1);
 							
 								if (flag16)
-									GC.stats.AddToStat(__instance.agent.killedByAgent, "InnocentsKilled", 1);
+									GC.stats.AddToStat(hurtAgent.killedByAgent, "InnocentsKilled", 1);
 								
-								__instance.agent.relationships.AddToKillStat(__instance.agent.killedByAgent);
+								hurtAgent.relationships.AddToKillStat(hurtAgent.killedByAgent);
 							}
 
-							if (__instance.agent.isPlayer == 0 && (!__instance.agent.resurrect || __instance.agent.zombified) && !flag17 && !__instance.agent.playersReceivedPoints.Contains(__instance.agent.killedByAgent) && __instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
+							if (hurtAgent.isPlayer == 0 && (!hurtAgent.resurrect || hurtAgent.zombified) && !flag17 && !hurtAgent.playersReceivedPoints.Contains(hurtAgent.killedByAgent) && hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
 							{
-								__instance.agent.playersReceivedPoints.Add(__instance.agent.killedByAgent);
+								hurtAgent.playersReceivedPoints.Add(hurtAgent.killedByAgent);
 
-								if (__instance.AgentIsRival(__instance.agent.killedByAgent))
-									__instance.agent.killedByAgent.skillPoints.AddPoints("IndirectlyKillRival");
+								if (__instance.AgentIsRival(hurtAgent.killedByAgent))
+									hurtAgent.killedByAgent.skillPoints.AddPoints("IndirectlyKillRival");
 								else if (flag16)
-									__instance.agent.killedByAgent.skillPoints.AddPoints("IndirectlyKillInnocent");
+									hurtAgent.killedByAgent.skillPoints.AddPoints("IndirectlyKillInnocent");
 								else
-									__instance.agent.killedByAgent.skillPoints.AddPoints("IndirectlyKill");
+									hurtAgent.killedByAgent.skillPoints.AddPoints("IndirectlyKill");
 							}
 						}
-						else if (__instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2 != __instance.agent)
+						else if (hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2 != hurtAgent)
 						{
-							__instance.agent.killedByAgent = __instance.agent.justHitByAgent2;
+							hurtAgent.killedByAgent = hurtAgent.justHitByAgent2;
 
-							if (__instance.agent.killedByAgent.zombified && __instance.agent.agentName == "Zombie")
+							if (hurtAgent.killedByAgent.zombified && hurtAgent.agentName == "Zombie")
 								flag17 = true;
 							
-							if (__instance.agent.isPlayer == 0 && __instance.agent.killedByAgent.isPlayer != 0 && !flag17 && !__instance.agent.arrested)
+							if (hurtAgent.isPlayer == 0 && hurtAgent.killedByAgent.isPlayer != 0 && !flag17 && !hurtAgent.arrested)
 							{
-								if (__instance.agent.KnockedOut())
-									GC.stats.AddToStat(__instance.agent.killedByAgent, "KnockedOut", 1);
+								if (hurtAgent.KnockedOut())
+									GC.stats.AddToStat(hurtAgent.killedByAgent, "KnockedOut", 1);
 								else
 								{
-									GC.stats.AddToStat(__instance.agent.killedByAgent, "Killed", 1);
+									GC.stats.AddToStat(hurtAgent.killedByAgent, "Killed", 1);
 							
 									if (flag16)
-										GC.stats.AddToStat(__instance.agent.killedByAgent, "InnocentsKilled", 1);
+										GC.stats.AddToStat(hurtAgent.killedByAgent, "InnocentsKilled", 1);
 									
-									__instance.agent.relationships.AddToKillStat(__instance.agent.killedByAgent);
+									hurtAgent.relationships.AddToKillStat(hurtAgent.killedByAgent);
 								}
 							}
 
-							if (__instance.agent.isPlayer == 0 && (!__instance.agent.resurrect || __instance.agent.zombified) && !flag17 && !__instance.agent.playersReceivedPoints.Contains(__instance.agent.killedByAgent))
+							if (hurtAgent.isPlayer == 0 && (!hurtAgent.resurrect || hurtAgent.zombified) && !flag17 && !hurtAgent.playersReceivedPoints.Contains(hurtAgent.killedByAgent))
 							{
-								__instance.agent.playersReceivedPoints.Add(__instance.agent.killedByAgent);
+								hurtAgent.playersReceivedPoints.Add(hurtAgent.killedByAgent);
 
-								if (__instance.agent.KnockedOut())
+								if (hurtAgent.KnockedOut())
 								{
-									if (__instance.agent.deathMethod == "Arrested")
+									if (hurtAgent.deathMethod == "Arrested")
 									{
 										if (flag16)
 										{
-											__instance.agent.killedByAgent.skillPoints.AddPoints("ArrestedPointsInnocent");
-											GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "ArrestInnocent");
-											GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
+											hurtAgent.killedByAgent.skillPoints.AddPoints("ArrestedPointsInnocent");
+											GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "ArrestInnocent");
+											GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
 										}
 										else
 										{
-											if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-												__instance.agent.killedByAgent.skillPoints.AddPoints("ArrestedPoints");
+											if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+												hurtAgent.killedByAgent.skillPoints.AddPoints("ArrestedPoints");
 											
-											GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "ArrestGuilty");
-											GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
+											GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "ArrestGuilty");
+											GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
 										}
 									}
-									else if (__instance.AgentIsRival(__instance.agent.killedByAgent))
+									else if (__instance.AgentIsRival(hurtAgent.killedByAgent))
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KnockOutPointsRival");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KnockOutPointsRival");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillGuilty");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillGuilty");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
 									}
 									else if (flag16)
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KnockOutPointsInnocent");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KnockOutPointsInnocent");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillInnocent");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillInnocent");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
 									}
 									else
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KnockOutPoints");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KnockOutPoints");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillGuilty");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillGuilty");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
 									}
 								}
 								else
 								{
-									_ = __instance.agent.deathMethod == "Bite"; // Sic
+									_ = hurtAgent.deathMethod == "Bite"; // Sic
 
-									if (__instance.AgentIsRival(__instance.agent.killedByAgent))
+									if (__instance.AgentIsRival(hurtAgent.killedByAgent))
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KillPointsRival");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KillPointsRival");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillGuilty");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Dead");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "BloodlustKill");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillGuilty");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Dead");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "BloodlustKill");
 									}
 									else if (flag16)
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KillPointsInnocent");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KillPointsInnocent");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillInnocent");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Dead");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "BloodlustKill");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillInnocent");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Dead");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "BloodlustKill");
 									}
 									else
 									{
-										if (__instance.agent.relationships.GetRel(__instance.agent.killedByAgent) != "Aligned")
-											__instance.agent.killedByAgent.skillPoints.AddPoints("KillPoints");
+										if (hurtAgent.relationships.GetRel(hurtAgent.killedByAgent) != "Aligned")
+											hurtAgent.killedByAgent.skillPoints.AddPoints("KillPoints");
 										
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, "KillGuilty");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Dead");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "Neutralize");
-										GC.quests.AddBigQuestPoints(__instance.agent.killedByAgent, __instance.agent, "BloodlustKill");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, "KillGuilty");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Dead");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "Neutralize");
+										GC.quests.AddBigQuestPoints(hurtAgent.killedByAgent, hurtAgent, "BloodlustKill");
 									}
 								}
 							}
 						}
 
-						if (__instance.agent.killForQuest != null && __instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2.isPlayer > 0)
+						if (hurtAgent.killForQuest != null && hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2.isPlayer > 0)
 						{
 							try
 							{
-								__instance.agent.killForQuest.playerTally[__instance.agent.justHitByAgent2.isPlayer - 1]++;
+								hurtAgent.killForQuest.playerTally[hurtAgent.justHitByAgent2.isPlayer - 1]++;
 							}
 							catch
 							{
-								Debug.LogError(string.Concat("Agent killForQuest playerTally Error: ", __instance.agent, " - ", __instance.agent.killForQuest, " - ", __instance.agent.justHitByAgent2));
+								Debug.LogError(string.Concat("Agent killForQuest playerTally Error: ", hurtAgent, " - ", hurtAgent.killForQuest, " - ", hurtAgent.justHitByAgent2));
 							}
 						}
 
-						if (__instance.agent.justHitByAgent2 != null && __instance.agent.isPlayer == 0 && (!__instance.agent.justHitByAgent2.resurrect || __instance.agent.justHitByAgent2.zombified) && !flag17)
+						if (hurtAgent.justHitByAgent2 != null && hurtAgent.isPlayer == 0 && (!hurtAgent.justHitByAgent2.resurrect || hurtAgent.justHitByAgent2.zombified) && !flag17)
 						{
-							if (__instance.agent.justHitByAgent2.zombified && __instance.agent.agentName == "Zombie")
+							if (hurtAgent.justHitByAgent2.zombified && hurtAgent.agentName == "Zombie")
 								flag17 = true;
 							
 							if (!flag17)
@@ -1199,62 +1205,62 @@ namespace BunnyMod.Content
 								Agent agent9 = null;
 								Agent agent10 = null;
 							
-								if (__instance.agent.justHitByAgent2.mindControlAgent != null)
+								if (hurtAgent.justHitByAgent2.mindControlAgent != null)
 								{
-									agent9 = __instance.agent.justHitByAgent2.mindControlAgent;
+									agent9 = hurtAgent.justHitByAgent2.mindControlAgent;
 								
-									if (__instance.agent.killedByAgent != null && __instance.agent.killedByAgent.mindControlAgent != null)
-										agent10 = __instance.agent.killedByAgent.mindControlAgent;
+									if (hurtAgent.killedByAgent != null && hurtAgent.killedByAgent.mindControlAgent != null)
+										agent10 = hurtAgent.killedByAgent.mindControlAgent;
 								}
-								else if (__instance.agent.justHitByAgent2.employer != null)
+								else if (hurtAgent.justHitByAgent2.employer != null)
 								{
-									__instance.agent.justHitByAgent2.killsForEmployer++;
-									agent9 = __instance.agent.justHitByAgent2.employer;
+									hurtAgent.justHitByAgent2.killsForEmployer++;
+									agent9 = hurtAgent.justHitByAgent2.employer;
 								
-									if (__instance.agent.killedByAgent != null && __instance.agent.killedByAgent.employer != null)
-										agent10 = __instance.agent.killedByAgent.employer;
+									if (hurtAgent.killedByAgent != null && hurtAgent.killedByAgent.employer != null)
+										agent10 = hurtAgent.killedByAgent.employer;
 								}
 								if (agent9 != null)
 								{
 									GC.stats.AddToStat(agent9, "IndirectlyKilled", 1);
 								
-									if (__instance.AgentIsRival(__instance.agent.killedByAgent))
+									if (__instance.AgentIsRival(hurtAgent.killedByAgent))
 									{
-										if (agent10 != null && !__instance.agent.playersReceivedPoints.Contains(agent10))
+										if (agent10 != null && !hurtAgent.playersReceivedPoints.Contains(agent10))
 										{
 											agent10.skillPoints.AddPoints("IndirectlyKillRival");
-											__instance.agent.playersReceivedPoints.Add(agent10);
+											hurtAgent.playersReceivedPoints.Add(agent10);
 										}
 									}
 									else if (flag16)
 									{
-										if (!__instance.agent.playersReceivedPoints.Contains(agent9))
+										if (!hurtAgent.playersReceivedPoints.Contains(agent9))
 										{
 											agent9.skillPoints.AddPoints("IndirectlyKillInnocent");
-											__instance.agent.playersReceivedPoints.Add(agent9);
+											hurtAgent.playersReceivedPoints.Add(agent9);
 										}
 									}
-									else if (!__instance.agent.playersReceivedPoints.Contains(agent9))
+									else if (!hurtAgent.playersReceivedPoints.Contains(agent9))
 									{
 										agent9.skillPoints.AddPoints("IndirectlyKill");
-										__instance.agent.playersReceivedPoints.Add(agent9);
+										hurtAgent.playersReceivedPoints.Add(agent9);
 									}
 
-									__instance.agent.relationships.AddToKillStat(agent9);
+									hurtAgent.relationships.AddToKillStat(agent9);
 								}
 							}
 
 							__instance.ActivateKillProfiter();
 						}
 
-						if (!__instance.agent.KnockedOut())
+						if (!hurtAgent.KnockedOut())
 							__instance.RealKillRepercussions(flag10);
 						
 						if (GC.serverPlayer)
 						{
-							if (__instance.agent.agentName == "Gangbanger" && __instance.agent.killedByAgent != null)
+							if (hurtAgent.agentName == "Gangbanger" && hurtAgent.killedByAgent != null)
 							{
-								if (__instance.agent.killedByAgent.isPlayer != 0)
+								if (hurtAgent.killedByAgent.isPlayer != 0)
 								{
 									GC.sessionData.gangbangersKilled++;
 						
@@ -1265,16 +1271,16 @@ namespace BunnyMod.Content
 										GC.playerAgent.objectMult.CallRpcUnlockProgressAll("GangbangerB", "Agent");
 								}
 							}
-							else if (__instance.agent.agentName == "Ghost")
+							else if (hurtAgent.agentName == "Ghost")
 							{
 								GC.unlocks.DoUnlock("Werewolf", "Agent");
 
 								if (GC.multiplayerMode)
 									GC.playerAgent.objectMult.CallRpcUnlockAll("Werewolf", "Agent");
 							}
-							else if (__instance.agent.agentName == "Assassin")
+							else if (hurtAgent.agentName == "Assassin")
 							{
-								if (__instance.agent.isPlayer == 0)
+								if (hurtAgent.isPlayer == 0)
 								{
 									GC.unlocks.DoUnlock("AssassinsEveryLevel", "Challenge");
 							
@@ -1282,9 +1288,9 @@ namespace BunnyMod.Content
 										GC.playerAgent.objectMult.CallRpcUnlockAll("AssassinsEveryLevel", "Challenge");
 								}
 							}
-							else if ((__instance.agent.originalWerewolf || __instance.agent.oma.secretWerewolf) && __instance.agent.killedByAgent != null)
+							else if ((hurtAgent.originalWerewolf || hurtAgent.oma.secretWerewolf) && hurtAgent.killedByAgent != null)
 							{
-								if (__instance.agent.killedByAgent.isPlayer != 0)
+								if (hurtAgent.killedByAgent.isPlayer != 0)
 								{
 									GC.unlocks.DoUnlockProgress("ManyWerewolf", "Challenge", 1);
 
@@ -1292,9 +1298,9 @@ namespace BunnyMod.Content
 										GC.playerAgent.objectMult.CallRpcUnlockProgressAll("ManyWerewolf", "Challenge");
 								}
 							}
-							else if (__instance.agent.agentName == "OfficeDrone")
+							else if (hurtAgent.agentName == "OfficeDrone")
 							{
-								if (__instance.agent.oma.offeredOfficeDrone)
+								if (hurtAgent.oma.offeredOfficeDrone)
 									GC.ChangeStockPrice("Negative2");
 								else
 									GC.ChangeStockPrice("Negative");
@@ -1302,17 +1308,17 @@ namespace BunnyMod.Content
 						}
 					}
 
-					_ = __instance.agent.killedByAgent != null; // Sic
+					_ = hurtAgent.killedByAgent != null; // Sic
 
-					if (__instance.agent.protectingAgent != null)
-						__instance.agent.protectingAgent.hasProtector = false;
+					if (hurtAgent.protectingAgent != null)
+						hurtAgent.protectingAgent.hasProtector = false;
 				}
 				else
 				{
-					Debug.Log("SETUPDEATH " + __instance.agent);
+					Debug.Log("SETUPDEATH " + hurtAgent);
 					__instance.SetupDeath(damagerObject, flag10);
 
-					if (!__instance.agent.KnockedOut())
+					if (!hurtAgent.KnockedOut())
 					{
 						if (GC.arcadeMode)
 							__instance.StartCoroutine(__instance.WaitForArcadeContinue());
@@ -1321,89 +1327,89 @@ namespace BunnyMod.Content
 					}
 				}
 			}
-			else if (((__instance.agent.KnockedOut() && __instance.agent.health <= -10f) || (__instance.agent.FellInHole() && __instance.agent.health <= 0f) || __instance.agent.burnt) && flag9)
+			else if (((hurtAgent.KnockedOut() && hurtAgent.health <= -10f) || (hurtAgent.FellInHole() && hurtAgent.health <= 0f) || hurtAgent.burnt) && flag9)
 			{
-				Debug.Log("Death Type 2: " + __instance.agent);
+				Debug.Log("Death Type 2: " + hurtAgent);
 
-				if (!GC.serverPlayer && __instance.agent.isPlayer != 0 && __instance.agent.localPlayer)
-					__instance.agent.objectMult.CallCmdDieAfterKnockout();
+				if (!GC.serverPlayer && hurtAgent.isPlayer != 0 && hurtAgent.localPlayer)
+					hurtAgent.objectMult.CallCmdDieAfterKnockout();
 				
-				if (__instance.agent.KnockedOut() && GC.levelType == vLevelType.Tutorial)
+				if (hurtAgent.KnockedOut() && GC.levelType == vLevelType.Tutorial)
 					GC.tutorial.tutorialPeopleKilled++;
 				
-				__instance.agent.knockedOut = false;
-				__instance.agent.knockedOutLocal = false;
-				__instance.agent.sleepKnockedOut = false;
+				hurtAgent.knockedOut = false;
+				hurtAgent.knockedOutLocal = false;
+				hurtAgent.sleepKnockedOut = false;
 				
-				if (__instance.agent.oma.bodyGuarded)
+				if (hurtAgent.oma.bodyGuarded)
 				{
-					__instance.agent.zombified = false;
-					__instance.agent.zombieWhenDead = false;
+					hurtAgent.zombified = false;
+					hurtAgent.zombieWhenDead = false;
 				}
 				
 				if (GC.levelType == vLevelType.Tutorial)
 					flag12 = true;
 				
-				if (!__instance.agent.dead)
+				if (!hurtAgent.dead)
 					__instance.RealKillRepercussions(flag10);
 				
-				GC.spawnerMain.SpawnStateIndicator(__instance.agent, "NoAnim");
-				__instance.agent.relationships.SetAllRel2("Dead");
+				GC.spawnerMain.SpawnStateIndicator(hurtAgent, "NoAnim");
+				hurtAgent.relationships.SetAllRel2("Dead");
 
-				if (!__instance.agent.oma.bodyGuarded)
+				if (!hurtAgent.oma.bodyGuarded)
 				{
-					__instance.agent.job = "";
-					__instance.agent.jobCode = jobType.None;
-					__instance.agent.jobBig = "";
-					__instance.agent.jobBigCode = jobType.None;
-					__instance.agent.SetFollowing(null);
+					hurtAgent.job = "";
+					hurtAgent.jobCode = jobType.None;
+					hurtAgent.jobBig = "";
+					hurtAgent.jobBigCode = jobType.None;
+					hurtAgent.SetFollowing(null);
 				
-					if (!__instance.agent.resurrect)
-						__instance.agent.SetEmployerNullLate();
+					if (!hurtAgent.resurrect)
+						hurtAgent.SetEmployerNullLate();
 				}
 
-				if (__instance.agent.isMayor)
+				if (hurtAgent.isMayor)
 					GC.ending.SetMayorTurnover("Dead");
 				
-				__instance.agent.SetTraversable("");
-				__instance.agent.agentHitboxScript.eyesWBGO.SetActive(true);
+				hurtAgent.SetTraversable("");
+				hurtAgent.agentHitboxScript.eyesWBGO.SetActive(true);
 				
-				if (__instance.agent.isPlayer > 0)
+				if (hurtAgent.isPlayer > 0)
 				{
-					if (__instance.agent.possessing)
-						__instance.agent.resurrect = true;
+					if (hurtAgent.possessing)
+						hurtAgent.resurrect = true;
 				
 					__instance.SetupDeath(damagerObject, flag10);
 					
-					if (!__instance.agent.resurrect)
+					if (!hurtAgent.resurrect)
 					{
 						if (GC.coopMode || GC.multiplayerMode || (GC.fourPlayerMode && !GC.arcadeMode))
 						{
-							if (__instance.agent.FellInHole())
+							if (hurtAgent.FellInHole())
 								__instance.RespawnAsGhost();
 							else
 								__instance.StartCoroutine(__instance.WaitForGhostRespawn());
 						}
 						else if (GC.arcadeMode)
 						{
-							Debug.Log("SETUPDEATH 2" + __instance.agent);
+							Debug.Log("SETUPDEATH 2" + hurtAgent);
 							__instance.StartCoroutine(__instance.WaitForArcadeContinue());
 						}
 					}
 				}
 				else
 				{
-					__instance.agent.Say("", true);
+					hurtAgent.Say("", true);
 
-					if (!__instance.agent.zombified && __instance.agent.zombieWhenDead && __instance.agent.isPlayer == 0 && !__instance.agent.inhuman && __instance.agent.agentName != "Alien" && !__instance.agent.FellInHole() && !__instance.agent.burnt)
+					if (!hurtAgent.zombified && hurtAgent.zombieWhenDead && hurtAgent.isPlayer == 0 && !hurtAgent.inhuman && hurtAgent.agentName != "Alien" && !hurtAgent.FellInHole() && !hurtAgent.burnt)
 					{
-						if (__instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2.zombified)
-							__instance.agent.zombifiedByAgent = __instance.agent.justHitByAgent2;
+						if (hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2.zombified)
+							hurtAgent.zombifiedByAgent = hurtAgent.justHitByAgent2;
 					
-						__instance.agent.zombified = true;
-						__instance.agent.resurrect = true;
+						hurtAgent.zombified = true;
+						hurtAgent.resurrect = true;
 						
-						if (__instance.agent.nonQuestObjectMarker != null)
+						if (hurtAgent.nonQuestObjectMarker != null)
 						{
 							bool flag18 = true;
 						
@@ -1412,77 +1418,77 @@ namespace BunnyMod.Content
 									flag18 = false;
 							
 							if (flag18)
-								Object.Destroy(__instance.agent.nonQuestObjectMarker.gameObject);
+								Object.Destroy(hurtAgent.nonQuestObjectMarker.gameObject);
 						}
 
 						__instance.StartCoroutine(__instance.ResurrectSequence());
 					}
-					else if (__instance.agent.resurrect && __instance.agent.isPlayer == 0 && !__instance.agent.FellInHole())
+					else if (hurtAgent.resurrect && hurtAgent.isPlayer == 0 && !hurtAgent.FellInHole())
 						__instance.StartCoroutine(__instance.ResurrectSequence());
 				}
 
-				__instance.agent.agentHitboxScript.wholeBodyMode = 0;
-				__instance.agent.agentHitboxScript.SetWBSprites();
+				hurtAgent.agentHitboxScript.wholeBodyMode = 0;
+				hurtAgent.agentHitboxScript.SetWBSprites();
 			}
 
 			if (flag9)
 			{
-				if (__instance.agent.frozen && !__instance.agent.dead && healthNum <= 0f && __instance.agent.deathMethod != "Poison" && __instance.agent.deathMethod != "Nicotine" && __instance.agent.deathMethod != "Acid" && __instance.agent.deathMethod != "Cyanide")
+				if (hurtAgent.frozen && !hurtAgent.dead && healthNum <= 0f && hurtAgent.deathMethod != "Poison" && hurtAgent.deathMethod != "Nicotine" && hurtAgent.deathMethod != "Acid" && hurtAgent.deathMethod != "Cyanide")
 					__instance.RemoveStatusEffect("Frozen");
 				
-				if (__instance.agent.frozen && __instance.agent.resurrect)
+				if (hurtAgent.frozen && hurtAgent.resurrect)
 				{
 					__instance.RemoveStatusEffect("Frozen");
-					__instance.agent.frozen = false;
-					__instance.agent.objectSprite.agentColorDirty = true;
+					hurtAgent.frozen = false;
+					hurtAgent.objectSprite.agentColorDirty = true;
 				}
 
-				if (__instance.agent.ghost && __instance.agent.dead)
+				if (hurtAgent.ghost && hurtAgent.dead)
 				{
 					if (GC.multiplayerMode)
-						__instance.agent.objectMult.Gib(2);
+						hurtAgent.objectMult.Gib(2);
 				
 					__instance.GhostGib();
 				}
-				else if (__instance.agent.frozen && __instance.agent.dead && !__instance.agent.KnockedOut() && !__instance.agent.FellInHole() && !__instance.agent.disappeared && !__instance.agent.resurrect && !__instance.agent.inhuman && !__instance.agent.oma.bodyGuarded)
+				else if (hurtAgent.frozen && hurtAgent.dead && !hurtAgent.KnockedOut() && !hurtAgent.FellInHole() && !hurtAgent.disappeared && !hurtAgent.resurrect && !hurtAgent.inhuman && !hurtAgent.oma.bodyGuarded)
 				{
-					if (GC.serverPlayer || (!GC.serverPlayer && (__instance.agent.localPlayer || flag10)))
+					if (GC.serverPlayer || (!GC.serverPlayer && (hurtAgent.localPlayer || flag10)))
 					{
 						if (GC.multiplayerMode)
-							__instance.agent.objectMult.Gib(1);
+							hurtAgent.objectMult.Gib(1);
 					
 						__instance.IceGib();
 					}
 				}
-				else if ((__instance.agent.health <= -20f || healthNum <= -20f || (num <= -20f && healthNum <= 0f) || ((GC.levelType == "Tutorial" && healthNum <= -10f) || flag12) || __instance.agent.bloodyMessed) && __instance.agent.dead && !__instance.agent.KnockedOut() && !__instance.agent.resurrect && !__instance.agent.FellInHole() && !__instance.agent.inhuman && !__instance.agent.disappeared && !flag8 && !__instance.agent.oma.bodyGuarded)
+				else if ((hurtAgent.health <= -20f || healthNum <= -20f || (dmg <= -20f && healthNum <= 0f) || ((GC.levelType == "Tutorial" && healthNum <= -10f) || flag12) || hurtAgent.bloodyMessed) && hurtAgent.dead && !hurtAgent.KnockedOut() && !hurtAgent.resurrect && !hurtAgent.FellInHole() && !hurtAgent.inhuman && !hurtAgent.disappeared && !flag8 && !hurtAgent.oma.bodyGuarded)
 				{
 					bool flag19 = true;
 
-					if (__instance.agent.justHitByAgent2 != null && __instance.agent.justHitByAgent2.melee != null && (__instance.agent.justHitByAgent2.melee.successfullyBackstabbed || __instance.agent.justHitByAgent2.melee.successfullySleepKilled) && !__instance.agent.justHitByAgent2.statusEffects.hasTrait("BloodyMess"))
+					if (hurtAgent.justHitByAgent2 != null && hurtAgent.justHitByAgent2.melee != null && (hurtAgent.justHitByAgent2.melee.successfullyBackstabbed || hurtAgent.justHitByAgent2.melee.successfullySleepKilled) && !hurtAgent.justHitByAgent2.statusEffects.hasTrait("BloodyMess"))
 					{
 						flag19 = false;
-						__instance.agent.health = 0f;
+						hurtAgent.health = 0f;
 					}
 					
-					if (flag19 && (GC.serverPlayer || (!GC.serverPlayer && (__instance.agent.localPlayer || flag10) && !__instance.hasTrait(vStatusEffect.Resurrection))))
+					if (flag19 && (GC.serverPlayer || (!GC.serverPlayer && (hurtAgent.localPlayer || flag10) && !__instance.hasTrait(vStatusEffect.Resurrection))))
 					{
 						if (GC.multiplayerMode && !__instance.dontDoBloodExplosion)
-							__instance.agent.objectMult.Gib(0);
+							hurtAgent.objectMult.Gib(0);
 					
 						__instance.NormalGib();
 					}
 				}
 
-				if (__instance.agent.frozen && __instance.agent.dead)
+				if (hurtAgent.frozen && hurtAgent.dead)
 				{
-					__instance.agent.frozen = false;
-					__instance.agent.objectSprite.agentColorDirty = true;
+					hurtAgent.frozen = false;
+					hurtAgent.objectSprite.agentColorDirty = true;
 				}
 			}
 
-			__instance.agent.bloodyMessed = false;
-			__instance.agent.slippedOnBananaPeel = false;
-			__instance.agent.justHitByAgent2 = null;
+			hurtAgent.bloodyMessed = false;
+			hurtAgent.slippedOnBananaPeel = false;
+			hurtAgent.justHitByAgent2 = null;
 
 			return false;
 		}

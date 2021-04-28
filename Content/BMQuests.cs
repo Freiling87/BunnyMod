@@ -200,13 +200,17 @@ namespace BunnyMod.Content
                     break;
                 case "FreedPrisoner":
                     xpReward = 20 * extraNum;
+
                     if (extraNum > 1)
                         pointsType = "FreedPrisoners";
+
                     break;
                 case "FreedSlave":
                     xpReward = 50 * extraNum;
+
                     if (extraNum > 1)
                         pointsType = "FreedSlaves";
+
                     break;
                 case "HackPoints":
                     xpReward = 20;
@@ -251,6 +255,7 @@ namespace BunnyMod.Content
                     }
                     else
                         xpReward = 10;
+
                     break;
                 case "KillPointsRival":
                     xpReward = 150;
@@ -270,6 +275,7 @@ namespace BunnyMod.Content
                     }
                     else
                         xpReward = 10;
+
                     break;
                 case "KnockOutPointsRival":
                     xpReward = 150;
@@ -319,6 +325,7 @@ namespace BunnyMod.Content
                     }
                     else
                         xpReward = 15;
+
                     break;
                 case "PoisonAirPoints":
                     xpReward = 20;

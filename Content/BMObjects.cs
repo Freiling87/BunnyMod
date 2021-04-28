@@ -634,12 +634,10 @@ namespace BunnyMod.Content
             Prefix(typeof(AlarmButton), "DoLockdown", GetType(), "AlarmButton_DoLockdown", new Type[1] { typeof(bool) });
             Prefix(typeof(AlarmButton), "EndLockdown", GetType(), "AlarmButton_EndLockdown", new Type[0] { });
             Prefix(typeof(AlarmButton), "Interact", GetType(), "AlarmButton_Interact", new Type[1] { typeof(Agent) });
-            Prefix(typeof(AlarmButton), "JustEndedLockdown", GetType(), "AlarmButton_JustEndedLockdown", new Type[0] { });
+            //Prefix(typeof(AlarmButton), "JustEndedLockdown", GetType(), "AlarmButton_JustEndedLockdown", new Type[0] { });
             Prefix(typeof(AlarmButton), "PressedButton", GetType(), "AlarmButton_PressedButton", new Type[2] { typeof(string), typeof(int) });
             Prefix(typeof(AlarmButton), "ToggleSwitch", GetType(), "AlarmButton_ToggleSwitch", new Type[2] { typeof(Agent), typeof(Agent) });
-            //Pressedbutton
-            //Toggleswitch
-        }
+		}
         public static bool AlarmButton_DetermineButtons(AlarmButton __instance) // Replacement
         {
             BMLog("AlarmButton_DetermineButtons");
@@ -830,8 +828,8 @@ namespace BunnyMod.Content
 
             return false;
         }
-        public static IEnumerator AlarmButton_JustEndedLockdown(AlarmButton __instance) // Prefix
-        {
+        public static IEnumerator AlarmButton_JustEndedLockdown(AlarmButton __instance) // Non-Patch
+		{
             GC.justEndedLockdown = true;
 
             yield return new WaitForSeconds(0.4f);

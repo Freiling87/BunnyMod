@@ -1193,7 +1193,9 @@ namespace BunnyMod.Content
                         __instance.graphUpdateScene.setTag = 2;
                         __instance.graphUpdateScene.Apply();
                     }
-                    
+
+                    BMLog("\tCheckpoint 1");
+
                     GC.tileInfo.DirtyWalls();
                     GC.tileInfo.ToggleDoorAtPosition(__instance.tr.position.x, __instance.tr.position.y, false, true);
                     __instance.StartCoroutine(Door_OpenDoorAnim(__instance));
@@ -1211,10 +1213,10 @@ namespace BunnyMod.Content
                     __instance.lowInteractionPriority = true;
                     __instance.doorCooldown = 0.25f;
                     
-                    if (GC.serverPlayer)
+                    if (GC.serverPlayer && myAgent != null && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                         GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
                     
-                    if (myAgent != null && !remote && !__instance.boughtKeyInChunk)
+                    if (myAgent != null && !remote && !__instance.boughtKeyInChunk && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
                     {
                         GC.OwnCheck(myAgent, __instance.go, "Door", 0);
 
@@ -1307,6 +1309,7 @@ namespace BunnyMod.Content
                         else
                             GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "OpenDoorClient");
                     }
+
                     if (GC.levelType == "HomeBase")
                     {
                         if (__instance.extraVar == 30)
@@ -1323,6 +1326,7 @@ namespace BunnyMod.Content
                             GC.cinematics.ResistanceLeaderIntro();
                     }
                 }
+
                 for (int k = 0; k < GC.playerAgentList.Count; k++)
                 {
                     Agent agent = GC.playerAgentList[k];

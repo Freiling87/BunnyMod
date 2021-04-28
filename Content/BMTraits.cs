@@ -376,7 +376,7 @@ namespace BunnyMod.Content
             WildCasting.SpecialAbilities.AddRange(cSpecialAbility.Magic);
             WildCasting.Upgrade = cTrait.WildCasting_2;
 
-            CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait("WildCasting_2", true,
+            CustomTrait WildCasting_2 = RogueLibs.CreateCustomTrait(cTrait.WildCasting_2, true,
                 new CustomNameInfo("Wild Casting +"),
                 new CustomNameInfo("You're addicted to power. Your spells are ridiculously powerful... and risky."));
             WildCasting_2.Available = false;
@@ -576,7 +576,7 @@ namespace BunnyMod.Content
             Warlord.Upgrade = null;
             #endregion
             #region Spawns
-            CustomTrait Haunted = RogueLibs.CreateCustomTrait("Haunted", true,
+            CustomTrait Haunted = RogueLibs.CreateCustomTrait(cTrait.Haunted, true,
                 new CustomNameInfo("000: Haunted"),
                 new CustomNameInfo("You spent too long spelunking in an ancient treasure vault. The local ghosts were very unhappy with you, and you had their legal case dismissed. Now they're taking it into their own hands."));
             Haunted.Available = true;
@@ -587,7 +587,7 @@ namespace BunnyMod.Content
             Haunted.IsActive = true;
             Haunted.Upgrade = null;
 
-            CustomTrait MobDebt = RogueLibs.CreateCustomTrait("MobDebt", true,
+            CustomTrait MobDebt = RogueLibs.CreateCustomTrait(cTrait.MobDebt, true,
                 new CustomNameInfo("000: Mob Debt"),
                 new CustomNameInfo("You found a sack of money, and the people to whom it belongs want it back with interest. Well, they certainly have your interest, but you've spent the principal. Pay it off at an ATM by Level 10, or else your kneecaps (and the rest of your body) will pay the price."));
             MobDebt.Available = true;
@@ -598,7 +598,7 @@ namespace BunnyMod.Content
             MobDebt.IsActive = true;
             MobDebt.Upgrade = null;
 
-            CustomTrait MookMasher = RogueLibs.CreateCustomTrait("MookMasher", true,
+            CustomTrait MookMasher = RogueLibs.CreateCustomTrait(cTrait.MookMasher, true,
                 new CustomNameInfo("000: Mook Masher"),
                 new CustomNameInfo("The Mayor knows you're a threat, and you're coming for him. He could just destroy you, but as a villain, he prefers to send his henchmen at you in steadily increasing but manageable waves."));
             MookMasher.Available = true;
@@ -609,7 +609,7 @@ namespace BunnyMod.Content
             MookMasher.IsActive = true;
             MookMasher.Upgrade = null;
 
-            CustomTrait Reinforcements = RogueLibs.CreateCustomTrait("Reinforcements", true,
+            CustomTrait Reinforcements = RogueLibs.CreateCustomTrait(cTrait.Reinforcements, true,
                 new CustomNameInfo("000: Reinforcements"),
                 new CustomNameInfo("You have worked to create an army for the Resistance. That army now patrols the City secretly, looking for the opportunity to aid the cause."));
             Reinforcements.Available = true;
@@ -619,9 +619,9 @@ namespace BunnyMod.Content
             Reinforcements.Conflicting.AddRange(new string[] { cTrait.Reinforcements_2 });
             Reinforcements.CostInCharacterCreation = 5;
             Reinforcements.IsActive = true;
-            Reinforcements.Upgrade = "Reinforcements_2";
+            Reinforcements.Upgrade = cTrait.Reinforcements_2;
 
-            CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait("Reinforcements_2", true,
+            CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait(cTrait.Reinforcements_2, true,
                 new CustomNameInfo("000: Reinforcements +"),
                 new CustomNameInfo("Your allies now have top-of-the-line equipment."));
             Reinforcements_2.Available = true;
@@ -631,9 +631,45 @@ namespace BunnyMod.Content
             Reinforcements_2.Conflicting.AddRange(new string[] { cTrait.Reinforcements });
             Reinforcements_2.CostInCharacterCreation = 10;
             Reinforcements_2.IsActive = true;
-            Reinforcements_2.Upgrade = "Reinforcements_2";
+            Reinforcements_2.Upgrade = null;
             #endregion
             #region Stealth
+            CustomTrait DoubleTapper = RogueLibs.CreateCustomTrait(cTrait.DoubleTapper, true,
+                new CustomNameInfo("000: Double-Tapper"),
+                new CustomNameInfo("You're not some kind of monster. A quick bullet to the back of the head is more humane than the alternatives, isn't it?\n\nBullet attacks from behind within melee range do 2x damage. 10x if you're invisible."));
+            DoubleTapper.Available = true;
+            DoubleTapper.AvailableInCharacterCreation = true;
+            DoubleTapper.CanRemove = false;
+            DoubleTapper.CanSwap = true;
+            DoubleTapper.Conflicting.AddRange(new string[] { vTrait.Loud });
+            DoubleTapper.CostInCharacterCreation = 5;
+            DoubleTapper.IsActive = true;
+            DoubleTapper.Upgrade = null;
+
+            CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
+                new CustomNameInfo("000: Sniper"),
+                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Bullet attacks on far & unaware enemies do 2x damage. 10x if you're invisible.\n-Bullet range extended."));
+            Sniper.Available = true;
+            Sniper.AvailableInCharacterCreation = true;
+            Sniper.CanRemove = false;
+            Sniper.CanSwap = true;
+            Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
+            Sniper.CostInCharacterCreation = 10;
+            Sniper.IsActive = true;
+            Sniper.Upgrade = cTrait.Sniper_2;
+
+            CustomTrait Sniper2 = RogueLibs.CreateCustomTrait(cTrait.Sniper_2, true,
+                new CustomNameInfo("000: Sniper +"),
+                new CustomNameInfo("You've mastered the trajectories. Your bullets fly until they hit something."));
+            Sniper2.Available = true;
+            Sniper2.AvailableInCharacterCreation = true;
+            Sniper2.CanRemove = false;
+            Sniper2.CanSwap = true;
+            Sniper2.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
+            Sniper2.CostInCharacterCreation = 15;
+            Sniper2.IsActive = true;
+            Sniper2.Upgrade = null;
+
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait(cTrait.StealthBastardDeluxe, true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("- Move through broken windows without taking a scratch.\n- Open and close doors silently.\n- Hide in Bathtubs, Plants, Pool Tables, and Big Tables.\n\n[Bug: If you get stuck between it and the wall, you might clip through the wall]"));

@@ -37,13 +37,13 @@ namespace BunnyMod.Content
 			GC.cameraScript.zoomLevel = GetZoomLevelFromTrait();
 		public static float GetZoomLevelFromTrait()
 		{
-			if (BMTraits.IsPlayerTraitActive("EagleEyes"))
+			if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes))
 				return 0.75f;
-			else if (BMTraits.IsPlayerTraitActive("EagleEyes_2"))
+			else if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes_2))
 				return 0.50f;
-			else if (BMTraits.IsPlayerTraitActive("Myopic"))
+			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic))
 				return 1.50f;
-			else if (BMTraits.IsPlayerTraitActive("Myopic_2"))
+			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic2))
 				return 2.00f;
 
 			return 1f;

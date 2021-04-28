@@ -43,180 +43,182 @@ namespace BunnyMod.Content
 		}
 		public static bool PlayfieldObject_FindDamage(PlayfieldObject damagerObject, bool generic, bool testOnly, bool fromClient, PlayfieldObject __instance, ref int __result) // Replacement
 		{
-			Agent agent = null;
+			// Not sure what Generic is, but it does not ever seem to be anything but false.
+
+			Agent damagedAgent = null;
 			ObjectReal objectReal = null;
-			bool flag = false;
+			bool instanceIsAgent = false;
 			bool flag2 = false;
-			bool flag3 = false;
+			bool instanceIsObject = false;
 			bool flag4 = true;
 
 			if (__instance.isAgent && !generic)
 			{
-				agent = (Agent)__instance;
-				flag = true;
+				damagedAgent = (Agent)__instance;
+				instanceIsAgent = true;
 			}
 			else if (__instance.isObjectReal && !generic)
 			{
 				objectReal = (ObjectReal)__instance;
-				flag3 = true;
+				instanceIsObject = true;
 			}
 			
-			Agent agent2 = null;
-			float num = 0f;
-			string a = "";
-			bool flag5 = false;
+			Agent damagerAgent = null;
+			float dmg = 0f;
+			string type = "";
+			bool isShotgunDamage = false;
 			Item item = null;
 			bool flag6 = true;
-			bool flag7 = false;
+			bool isGhostBlasterDamage = false;
 			bool flag8 = false;
 			bool flag9 = false;
 
 			if (damagerObject.isAgent)
 			{
-				agent2 = damagerObject.GetComponent<Agent>();
+				damagerAgent = damagerObject.GetComponent<Agent>();
 				flag2 = true;
 
-				if (agent2.statusEffects.hasStatusEffect("Giant"))
-					num = 30f;
-				else if (agent2.statusEffects.hasStatusEffect("ElectroTouch"))
+				if (damagerAgent.statusEffects.hasStatusEffect("Giant"))
+					dmg = 30f;
+				else if (damagerAgent.statusEffects.hasStatusEffect("ElectroTouch"))
 				{
-					num = 15f;
+					dmg = 15f;
 				
-					if (flag)
+					if (instanceIsAgent)
 					{
-						if (agent.underWater || GC.tileInfo.GetTileData(agent.tr.position).spillWater)
+						if (damagedAgent.underWater || GC.tileInfo.GetTileData(damagedAgent.tr.position).spillWater)
 						{
-							if (agent.underWater)
-								num *= 3f;
+							if (damagedAgent.underWater)
+								dmg *= 3f;
 							else
-								num *= 1.5f;
+								dmg *= 1.5f;
 							
-							if (agent2.localPlayer && agent2.isPlayer != 0)
+							if (damagerAgent.localPlayer && damagerAgent.isPlayer != 0)
 								GC.unlocks.DoUnlockEarly("ElectrocuteInWater", "Extra");
 						}
-						else if (agent.underWater)
+						else if (damagedAgent.underWater)
 						{
-							num *= 3f;
+							dmg *= 3f;
 
-							if (agent2.localPlayer && agent2.isPlayer != 0)
+							if (damagerAgent.localPlayer && damagerAgent.isPlayer != 0)
 								GC.unlocks.DoUnlockEarly("ElectrocuteInWater", "Extra");
 						}
 
-						if (!agent.dead && !testOnly)
+						if (!damagedAgent.dead && !testOnly)
 						{
-							agent.deathMethod = "ElectroTouch";
-							agent.deathKiller = agent2.agentName;
+							damagedAgent.deathMethod = "ElectroTouch";
+							damagedAgent.deathKiller = damagerAgent.agentName;
 						}
 					}
 				}
-				else if (agent2.chargingForward)
+				else if (damagerAgent.chargingForward)
 				{
-					if (flag)
+					if (instanceIsAgent)
 					{
-						if (!agent2.oma.superSpecialAbility && !agent2.statusEffects.hasTrait("ChargeMorePowerful"))
-							num = 10f;
+						if (!damagerAgent.oma.superSpecialAbility && !damagerAgent.statusEffects.hasTrait("ChargeMorePowerful"))
+							dmg = 10f;
 						else
-							num = 20f;
+							dmg = 20f;
 						
-						if (!agent.dead && !testOnly)
+						if (!damagedAgent.dead && !testOnly)
 						{
-							agent.deathMethod = "Charge";
-							agent.deathKiller = agent2.agentName;
+							damagedAgent.deathMethod = "Charge";
+							damagedAgent.deathKiller = damagerAgent.agentName;
 						}
 					}
 					else
-						num = 30f;
+						dmg = 30f;
 				}
-				else if (agent2 == agent && agent.Tripped())
-					num = 5f;
+				else if (damagerAgent == damagedAgent && damagedAgent.Tripped())
+					dmg = 5f;
 				else
-					num = 30f;
+					dmg = 30f;
 				
-				if (flag && agent.shrunk && !agent2.shrunk)
+				if (instanceIsAgent && damagedAgent.shrunk && !damagerAgent.shrunk)
 				{
-					num = 200f;
+					dmg = 200f;
 				
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethod = "Stomping";
-						agent.deathKiller = agent2.agentName;
+						damagedAgent.deathMethod = "Stomping";
+						damagedAgent.deathKiller = damagerAgent.agentName;
 					}
 				}
 
-				a = "TouchDamage";
+				type = "TouchDamage";
 			}
 			else if (damagerObject.isBullet)
 			{
 				Bullet component = damagerObject.GetComponent<Bullet>();
-				agent2 = component.agent;
+				damagerAgent = component.agent;
 
 				if (component.agent != null)
 				{
 					flag2 = true;
 
-					if (flag && component.agent.objectAgent && component.bulletType == bulletStatus.Fire && agent.knockedByObject != null && agent.bouncy && agent.knockedByObject.playfieldObjectType == "Agent" && agent.lastHitByAgent != null)
-						agent2 = agent.lastHitByAgent;
+					if (instanceIsAgent && component.agent.objectAgent && component.bulletType == bulletStatus.Fire && damagedAgent.knockedByObject != null && damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
+						damagerAgent = damagedAgent.lastHitByAgent;
 				}
 				
-				num = (float)component.damage;
-				a = "Bullet";
+				dmg = (float)component.damage;
+				type = "Bullet";
 				
 				if (component.bulletType == bulletStatus.Fire || component.bulletType == bulletStatus.Fireball)
-					a = "Fire";
+					type = "Fire";
 				
 				if (component.bulletType == bulletStatus.Shotgun && (__instance.tickEndObject == null || __instance.tickEndObject.bulletType == bulletStatus.Shotgun))
-					flag5 = true;
+					isShotgunDamage = true;
 				
 				if (component.bulletType == bulletStatus.GhostBlaster)
-					flag7 = true;
+					isGhostBlasterDamage = true;
 				
-				if (flag)
+				if (instanceIsAgent)
 				{
 					if (flag2)
 					{
-						if (!agent2.objectAgent)
+						if (!damagerAgent.objectAgent)
 						{
-							float num2 = (float)agent2.accuracyStatMod;
+							float num2 = (float)damagerAgent.accuracyStatMod;
 							num2 += (float)component.moreAccuracy;
-							num *= 0.6f + num2 / 5f;
-							float x = agent2.agentSpriteTransform.localScale.x;
+							dmg *= 0.6f + num2 / 5f;
+							float x = damagerAgent.agentSpriteTransform.localScale.x;
 
 							if (x <= 0.65f || x >= 0.67f)
-								num *= x;
+								dmg *= x;
 
-							if (!agent.dead && !testOnly)
+							if (!damagedAgent.dead && !testOnly)
 							{
-								agent.deathMethodItem = component.cameFromWeapon;
-								agent.deathMethodObject = component.cameFromWeapon;
-								agent.deathMethod = component.cameFromWeapon;
+								damagedAgent.deathMethodItem = component.cameFromWeapon;
+								damagedAgent.deathMethodObject = component.cameFromWeapon;
+								damagedAgent.deathMethod = component.cameFromWeapon;
 
-								if (!agent2.objectAgent)
-									agent.deathKiller = agent2.agentName;
+								if (!damagerAgent.objectAgent)
+									damagedAgent.deathKiller = damagerAgent.agentName;
 							}
 						}
-						else if (!agent.dead && !testOnly)
+						else if (!damagedAgent.dead && !testOnly)
 						{
-							agent.deathMethodItem = component.cameFromWeapon;
-							agent.deathMethodObject = component.cameFromWeapon;
-							agent.deathMethod = component.cameFromWeapon;
-							agent.deathKiller = "Nature";
+							damagedAgent.deathMethodItem = component.cameFromWeapon;
+							damagedAgent.deathMethodObject = component.cameFromWeapon;
+							damagedAgent.deathMethod = component.cameFromWeapon;
+							damagedAgent.deathKiller = "Nature";
 						}
 					}
-					else if (!agent.dead && !testOnly)
+					else if (!damagedAgent.dead && !testOnly)
 					{
 						if (component.bulletType == bulletStatus.Water || component.bulletType == bulletStatus.Water2)
 						{
-							agent.deathMethodItem = component.cameFromWeapon;
-							agent.deathMethodObject = component.cameFromWeapon;
-							agent.deathMethod = component.cameFromWeapon;
-							agent.deathKiller = "Nature";
+							damagedAgent.deathMethodItem = component.cameFromWeapon;
+							damagedAgent.deathMethodObject = component.cameFromWeapon;
+							damagedAgent.deathMethod = component.cameFromWeapon;
+							damagedAgent.deathKiller = "Nature";
 						}
 						else
 						{
-							agent.deathMethodItem = component.cameFromWeapon;
-							agent.deathMethodObject = damagerObject.objectName;
-							agent.deathMethod = damagerObject.objectName;
-							agent.deathKiller = "Nature";
+							damagedAgent.deathMethodItem = component.cameFromWeapon;
+							damagedAgent.deathMethodObject = damagerObject.objectName;
+							damagedAgent.deathMethod = damagerObject.objectName;
+							damagedAgent.deathKiller = "Nature";
 						}
 					}
 				}
@@ -224,150 +226,150 @@ namespace BunnyMod.Content
 			else if (damagerObject.isMelee)
 			{
 				Melee melee = damagerObject.playfieldObjectMelee;
-				agent2 = melee.agent;
+				damagerAgent = melee.agent;
 				flag2 = true;
 				InvItem invItem;
 
 				if (melee.invItem.weaponCode != weaponType.WeaponMelee)
-					invItem = agent2.inventory.fist;
+					invItem = damagerAgent.inventory.fist;
 				else
 					invItem = melee.invItem;
 				
-				num = (float)invItem.meleeDamage;
-				num *= 1f + (float)agent2.strengthStatMod / 3f;
-				float x2 = agent2.agentSpriteTransform.localScale.x;
-				num *= x2;
-				a = "Melee";
+				dmg = (float)invItem.meleeDamage;
+				dmg *= 1f + (float)damagerAgent.strengthStatMod / 3f;
+				float x2 = damagerAgent.agentSpriteTransform.localScale.x;
+				dmg *= x2;
+				type = "Melee";
 				
-				if (flag2 && flag)
+				if (flag2 && instanceIsAgent)
 				{
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethodItem = invItem.invItemName;
-						agent.deathMethodObject = invItem.invItemName;
-						agent.deathMethod = invItem.invItemName;
-						agent.deathKiller = agent2.agentName;
+						damagedAgent.deathMethodItem = invItem.invItemName;
+						damagedAgent.deathMethodObject = invItem.invItemName;
+						damagedAgent.deathMethod = invItem.invItemName;
+						damagedAgent.deathKiller = damagerAgent.agentName;
 					}
 				}
-				else if (flag && !agent.dead && !testOnly)
+				else if (instanceIsAgent && !damagedAgent.dead && !testOnly)
 				{
-					agent.deathMethodItem = invItem.invItemName;
-					agent.deathMethodObject = invItem.invItemName;
-					agent.deathMethod = invItem.invItemName;
-					agent.deathKiller = "Nature";
+					damagedAgent.deathMethodItem = invItem.invItemName;
+					damagedAgent.deathMethodObject = invItem.invItemName;
+					damagedAgent.deathMethod = invItem.invItemName;
+					damagedAgent.deathKiller = "Nature";
 				}
 			}
 			else if (damagerObject.isExplosion)
 			{
 				Explosion explosion = damagerObject.playfieldObjectExplosion;
-				agent2 = explosion.agent;
+				damagerAgent = explosion.agent;
 
 				if (explosion.agent != null)
 				{
 					flag2 = true;
 				
-					if (flag)
+					if (instanceIsAgent)
 					{
-						if (explosion.realSource != null && explosion.realSource.isItem && (!agent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(agent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / agent.hardToSeeFromDistance))
+						if (explosion.realSource != null && explosion.realSource.isItem && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					
-						if (explosion.sourceObject != null && explosion.sourceObject.isBullet && explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" && (!agent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(agent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / agent.hardToSeeFromDistance))
+						if (explosion.sourceObject != null && explosion.sourceObject.isBullet && explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 				}
 
-				num = (float)explosion.damage;
-				a = "Explosion";
+				dmg = (float)explosion.damage;
+				type = "Explosion";
 				
-				if (flag2 && flag)
+				if (flag2 && instanceIsAgent)
 				{
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethod = "Explosion";
+						damagedAgent.deathMethod = "Explosion";
 
-						if (agent2 != agent && !agent2.objectAgent)
-							agent.deathKiller = agent2.agentName;
+						if (damagerAgent != damagedAgent && !damagerAgent.objectAgent)
+							damagedAgent.deathKiller = damagerAgent.agentName;
 						else
-							agent.deathKiller = "Self";
+							damagedAgent.deathKiller = "Self";
 					}
 				}
-				else if (flag && !agent.dead && !testOnly)
+				else if (instanceIsAgent && !damagedAgent.dead && !testOnly)
 				{
-					agent.deathMethod = "Explosion";
-					agent.deathKiller = "Nature";
+					damagedAgent.deathMethod = "Explosion";
+					damagedAgent.deathKiller = "Nature";
 				}
 			}
 			else if (damagerObject.isFire)
 			{
 				Fire fire = damagerObject.playfieldObjectFire;
-				agent2 = fire.agent;
+				damagerAgent = fire.agent;
 
 				if (fire.agent != null)
 				{
 					flag2 = true;
 				
-					if (flag && (!agent.movement.HasLOSAgent360(fire.agent) || Vector2.Distance(agent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / agent.hardToSeeFromDistance))
+					if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(fire.agent) || Vector2.Distance(damagedAgent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 						flag4 = false;
 				}
 
-				num = (float)fire.damage;
-				a = "Fire";
+				dmg = (float)fire.damage;
+				type = "Fire";
 				
-				if (flag)
+				if (instanceIsAgent)
 				{
 					if (flag2)
 					{
-						if (!agent.dead && !testOnly)
+						if (!damagedAgent.dead && !testOnly)
 						{
-							agent.deathMethod = "Fire";
+							damagedAgent.deathMethod = "Fire";
 				
-							if (!agent2.objectAgent)
-								agent.deathKiller = agent2.agentName;
+							if (!damagerAgent.objectAgent)
+								damagedAgent.deathKiller = damagerAgent.agentName;
 						}
 					}
-					else if (!agent.dead && !testOnly)
+					else if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethod = "Fire";
-						agent.deathKiller = "Nature";
+						damagedAgent.deathMethod = "Fire";
+						damagedAgent.deathKiller = "Nature";
 					}
 				}
 			}
 			else if (damagerObject.isObjectReal)
 			{
 				ObjectReal objectReal2 = damagerObject.playfieldObjectReal;
-				num = (float)objectReal2.hazardDamage;
-				a = "Hazard";
+				dmg = (float)objectReal2.hazardDamage;
+				type = "Hazard";
 
-				if (flag && agent.knockedByObject != null && agent.bouncy && agent.knockedByObject.playfieldObjectType == "Agent" && agent.lastHitByAgent != null)
+				if (instanceIsAgent && damagedAgent.knockedByObject != null && damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
 				{
-					agent2 = agent.lastHitByAgent;
+					damagerAgent = damagedAgent.lastHitByAgent;
 					flag2 = true;
 				}
 				
-				if (flag2 && flag)
+				if (flag2 && instanceIsAgent)
 				{
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethodItem = objectReal2.objectName;
-						agent.deathMethodObject = objectReal2.objectName;
-						agent.deathMethod = objectReal2.objectName;
+						damagedAgent.deathMethodItem = objectReal2.objectName;
+						damagedAgent.deathMethodObject = objectReal2.objectName;
+						damagedAgent.deathMethod = objectReal2.objectName;
 				
-						if (!agent2.objectAgent)
-							agent.deathKiller = agent2.agentName;
+						if (!damagerAgent.objectAgent)
+							damagedAgent.deathKiller = damagerAgent.agentName;
 					}
 				}
-				else if (flag)
+				else if (instanceIsAgent)
 				{
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethodItem = objectReal2.objectName;
-						agent.deathMethodObject = objectReal2.objectName;
-						agent.deathMethod = objectReal2.objectName;
-						agent.deathKiller = "Nature";
+						damagedAgent.deathMethodItem = objectReal2.objectName;
+						damagedAgent.deathMethodObject = objectReal2.objectName;
+						damagedAgent.deathMethod = objectReal2.objectName;
+						damagedAgent.deathKiller = "Nature";
 					}
 				}
-				else if (flag3)
-					num = 30f;
+				else if (instanceIsObject)
+					dmg = 30f;
 			}
 			else if (damagerObject.isItem)
 			{
@@ -377,260 +379,322 @@ namespace BunnyMod.Content
 				{
 					if (item.hitCauser != null)
 					{
-						agent2 = item.hitCauser;
+						damagerAgent = item.hitCauser;
 						flag2 = true;
 					}
 					else if (item.owner != null)
 					{
-						agent2 = item.owner;
+						damagerAgent = item.owner;
 						flag2 = true;
 				
-						if (flag && (!agent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(agent.curPosition, item.owner.curPosition) > item.owner.LOSRange / agent.hardToSeeFromDistance))
+						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 
-					num = (float)item.invItem.otherDamage;
+					dmg = (float)item.invItem.otherDamage;
 				}
 				else if (item.invItem.touchDamage > 0 && __instance.playfieldObjectType == "Agent")
 				{
 					if (item.hitCauser != null)
 					{
-						agent2 = item.hitCauser;
+						damagerAgent = item.hitCauser;
 						flag2 = true;
 					}
 					else if (item.owner != null)
 					{
-						agent2 = item.owner;
+						damagerAgent = item.owner;
 						flag2 = true;
 					
-						if (flag && (!agent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(agent.curPosition, item.owner.curPosition) > item.owner.LOSRange / agent.hardToSeeFromDistance))
+						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 					
 					if (item.invItem.touchDamage > 0)
-						num = (float)item.invItem.touchDamage;
+						dmg = (float)item.invItem.touchDamage;
 					else if (item.invItem.otherDamage > 0)
-						num = (float)item.invItem.otherDamage;
+						dmg = (float)item.invItem.otherDamage;
 					
 					if (item.thrower != null)
-						a = "Throw";
+						type = "Throw";
 				}
 				else
 				{
 					if (item.thrower != null && item.invItem.throwDamage != 0)
 					{
-						agent2 = item.thrower;
+						damagerAgent = item.thrower;
 						flag2 = true;
 					}
 				
-					num = (float)item.invItem.throwDamage;
+					dmg = (float)item.invItem.throwDamage;
 					
-					if (flag2 && item.invItem.invItemName == "TossItem" && (agent2.oma.superSpecialAbility || agent2.statusEffects.hasTrait("GoodThrower")))
-						num *= 2f;
+					if (flag2 && item.invItem.invItemName == "TossItem" && (damagerAgent.oma.superSpecialAbility || damagerAgent.statusEffects.hasTrait("GoodThrower")))
+						dmg *= 2f;
 					
-					a = "Throw";
+					type = "Throw";
 				}
 
 				if (!flag2 && item.thrower != null && item.thrower.statusEffects.hasTrait("KillerThrower"))
 				{
-					agent2 = item.thrower;
+					damagerAgent = item.thrower;
 					flag2 = true;
-					a = "Throw";
+					type = "Throw";
 				}
 				
-				if (flag2 && flag)
+				if (flag2 && instanceIsAgent)
 				{
-					if (!agent.dead && !testOnly)
+					if (!damagedAgent.dead && !testOnly)
 					{
-						agent.deathMethodItem = item.invItem.invItemName;
-						agent.deathMethodObject = item.invItem.invItemName;
-						agent.deathMethod = item.invItem.invItemName;
+						damagedAgent.deathMethodItem = item.invItem.invItemName;
+						damagedAgent.deathMethodObject = item.invItem.invItemName;
+						damagedAgent.deathMethod = item.invItem.invItemName;
 				
-						if (!agent2.objectAgent)
-							agent.deathKiller = agent2.agentName;
+						if (!damagerAgent.objectAgent)
+							damagedAgent.deathKiller = damagerAgent.agentName;
 					}
 				}
-				else if (flag && !agent.dead && !testOnly)
+				else if (instanceIsAgent && !damagedAgent.dead && !testOnly)
 				{
-					agent.deathMethodItem = item.invItem.invItemName;
-					agent.deathMethodObject = item.invItem.invItemName;
-					agent.deathMethod = item.invItem.invItemName;
-					agent.deathKiller = "Nature";
+					damagedAgent.deathMethodItem = item.invItem.invItemName;
+					damagedAgent.deathMethodObject = item.invItem.invItemName;
+					damagedAgent.deathMethod = item.invItem.invItemName;
+					damagedAgent.deathKiller = "Nature";
 				}
 			}
 
-			bool flag10 = false;
+			bool playerDamagedByNpc = false;
 			
 			if (flag2)
 			{
-				if (agent2.isPlayer != 0 && !agent2.localPlayer)
-					flag10 = true;
+				if (damagerAgent.isPlayer != 0 && !damagerAgent.localPlayer)
+					playerDamagedByNpc = true;
 			
-				if (flag && agent.isPlayer != 0 && agent2.isPlayer != 0 && !GC.pvp)
+				if (instanceIsAgent && damagedAgent.isPlayer != 0 && damagerAgent.isPlayer != 0 && !GC.pvp)
 					flag6 = false;
 			}
-			if (a == "Melee")
+			if (type == "Melee")
 			{
-				if (agent2.statusEffects.hasTrait("Strength"))
-					num *= 1.5f;
+				if (damagerAgent.statusEffects.hasTrait("Strength"))
+					dmg *= 1.5f;
 				
-				if (agent2.statusEffects.hasTrait("StrengthSmall"))
-					num *= 1.25f;
+				if (damagerAgent.statusEffects.hasTrait("StrengthSmall"))
+					dmg *= 1.25f;
 				
-				if (agent2.statusEffects.hasTrait("Weak"))
-					num *= 0.5f;
+				if (damagerAgent.statusEffects.hasTrait("Weak"))
+					dmg *= 0.5f;
 				
-				if (agent2.statusEffects.hasTrait("Withdrawal"))
-					num *= 0.75f;
+				if (damagerAgent.statusEffects.hasTrait("Withdrawal"))
+					dmg *= 0.75f;
 			
-				if (agent2.melee.specialLunge)
+				if (damagerAgent.melee.specialLunge)
 				{
-					if (agent2.agentName == "WerewolfB")
-						num *= 1.3f;
+					if (damagerAgent.agentName == "WerewolfB")
+						dmg *= 1.3f;
 					else
-						num *= 2f;
+						dmg *= 2f;
 				}
 				
-				if (agent2.inventory.equippedWeapon.invItemName == "Fist" || agent2.inventory.equippedWeapon.itemType == "WeaponProjectile")
+				if (damagerAgent.inventory.equippedWeapon.invItemName == "Fist" || damagerAgent.inventory.equippedWeapon.itemType == "WeaponProjectile")
 				{
-					if (agent2.statusEffects.hasTrait("StrongFists2"))
-						num *= 1.8f;
-					else if (agent2.statusEffects.hasTrait("StrongFists"))
-						num *= 1.4f;
+					if (damagerAgent.statusEffects.hasTrait("StrongFists2"))
+						dmg *= 1.8f;
+					else if (damagerAgent.statusEffects.hasTrait("StrongFists"))
+						dmg *= 1.4f;
 				
-					if (agent2.statusEffects.hasTrait("CantAttack") && __instance.isAgent)
+					if (damagerAgent.statusEffects.hasTrait("CantAttack") && __instance.isAgent)
 					{
-						num = 0f;
+						dmg = 0f;
 						flag8 = true;
 					}
-					else if (agent2.statusEffects.hasTrait("AttacksOneDamage") && __instance.isAgent)
+					else if (damagerAgent.statusEffects.hasTrait("AttacksOneDamage") && __instance.isAgent)
 					{
-						num = 1f;
+						dmg = 1f;
 						flag9 = true;
 					}
 				}
 
-				if (!flag10 && flag6)
+				if (!playerDamagedByNpc && flag6)
 				{
-					if (agent2.inventory.equippedArmor != null && !testOnly && (agent2.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && flag) && !agent.dead && !agent.mechEmpty && !agent.butlerBot)
-						agent2.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(num / 2f), 0, 12));
+					if (damagerAgent.inventory.equippedArmor != null && !testOnly && (damagerAgent.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead && !damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+						damagerAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg / 2f), 0, 12));
 				
-					if (agent2.inventory.equippedArmorHead != null && !testOnly && (agent2.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && flag) && !agent.dead && !agent.mechEmpty && !agent.butlerBot)
-						agent2.inventory.DepleteArmor("Head", Mathf.Clamp((int)(num / 2f), 0, 12));
+					if (damagerAgent.inventory.equippedArmorHead != null && !testOnly && (damagerAgent.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead && !damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+						damagerAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg / 2f), 0, 12));
 				}
 
-				if (flag)
+				if (instanceIsAgent)
 				{
-					float num3 = num / agent2.agentSpriteTransform.localScale.x;
+					float num3 = dmg / damagerAgent.agentSpriteTransform.localScale.x;
 				
-					if (!agent.dead && !testOnly && !flag10 && flag6 && !agent.butlerBot && !agent.mechEmpty)
-						agent2.inventory.DepleteMelee(Mathf.Clamp((int)num3, 0, 15), damagerObject.playfieldObjectMelee.invItem);
+					if (!damagedAgent.dead && !testOnly && !playerDamagedByNpc && flag6 && !damagedAgent.butlerBot && !damagedAgent.mechEmpty)
+						damagerAgent.inventory.DepleteMelee(Mathf.Clamp((int)num3, 0, 15), damagerObject.playfieldObjectMelee.invItem);
 					
-					if ((agent2.statusEffects.hasTrait("SleepKiller") || agent2.statusEffects.hasTrait("Backstabber")) && agent.sleeping)
+					if ((damagerAgent.statusEffects.hasTrait("SleepKiller") || damagerAgent.statusEffects.hasTrait("Backstabber")) && damagedAgent.sleeping)
 					{
-						num = 200f;
-						agent.agentHitboxScript.wholeBodyMode = 0;
-						agent2.melee.successfullySleepKilled = true;
+						dmg = 200f;
+						damagedAgent.agentHitboxScript.wholeBodyMode = 0;
+						damagerAgent.melee.successfullySleepKilled = true;
 					
-						if (agent2.statusEffects.hasTrait("Backstabber"))
-							agent.statusEffects.CreateBuffText("Backstab", agent.objectNetID);
+						if (damagerAgent.statusEffects.hasTrait("Backstabber"))
+							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
 					}
-					else if ((agent2.melee.mustDoBackstab && num != 200f && !agent.dead) || (agent2.statusEffects.hasTrait("Backstabber") && ((agent.mostRecentGoalCode != goalType.Battle && agent.mostRecentGoalCode != goalType.Flee) || agent.frozen) && !agent.movement.HasLOSObjectBehind(agent2) && !agent.sleeping && num != 200f && !agent.dead))
+					else if ((damagerAgent.melee.mustDoBackstab && dmg != 200f && !damagedAgent.dead) || (damagerAgent.statusEffects.hasTrait("Backstabber") && ((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) && !damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.sleeping && dmg != 200f && !damagedAgent.dead))
 					{
-						agent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
+						damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
 
-						if (!GC.tileInfo.IsOverlapping(agent.agentHelperTr.position, "Wall"))
+						if (!GC.tileInfo.IsOverlapping(damagedAgent.agentHelperTr.position, "Wall"))
 						{
-							agent.agentHelperTr.localPosition = Vector3.zero;
-							agent.statusEffects.CreateBuffText("Backstab", agent.objectNetID);
+							damagedAgent.agentHelperTr.localPosition = Vector3.zero;
+							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
 						
-							if (agent2.statusEffects.hasStatusEffect("InvisibleLimited") || (agent2.statusEffects.hasStatusEffect("Invisible") && agent2.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
+							if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
 							{
-								num *= 10f;
-								agent2.melee.successfullyBackstabbed = true;
-								GC.OwnCheck(agent2, agent.go, "Normal", 0);
+								dmg *= 10f;
+								damagerAgent.melee.successfullyBackstabbed = true;
+								GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
 							}
 							else
-								num *= 2f;
+								dmg *= 2f;
 						}
 					}
-					else if (agent2.statusEffects.hasStatusEffect("InvisibleLimited"))
+					else if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited"))
 					{
 						bool flag11 = false;
 
-						if (flag && agent.dead)
+						if (instanceIsAgent && damagedAgent.dead)
 							flag11 = true;
 						
-						if (!flag10 && !flag11 && !agent2.oma.superSpecialAbility && !agent2.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
-							agent2.statusEffects.RemoveInvisibleLimited();
+						if (!playerDamagedByNpc && !flag11 && !damagerAgent.oma.superSpecialAbility && !damagerAgent.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
+							damagerAgent.statusEffects.RemoveInvisibleLimited();
 					}
 				}
 			}
-			else if (a == "Bullet")
+			else if (type == "Bullet")
 			{
-				if (flag && !flag7)
+				if (instanceIsAgent)
 				{
-					if (agent.statusEffects.hasTrait("ResistBullets"))
-						num /= 1.5f;
-				
-					if (agent.statusEffects.hasTrait("ResistBulletsSmall"))
-						num /= 1.2f;
-					
-					if (agent.statusEffects.hasTrait("ResistBulletsTrait2"))
-						num /= 2f;
-					else if (agent.statusEffects.hasTrait("ResistBulletsTrait"))
-						num /= 1.5f;
+					if (!isGhostBlasterDamage)
+					{
+						if (damagedAgent.statusEffects.hasTrait("ResistBullets"))
+							dmg /= 1.5f;
+
+						if (damagedAgent.statusEffects.hasTrait("ResistBulletsSmall"))
+							dmg /= 1.2f;
+
+						if (damagedAgent.statusEffects.hasTrait("ResistBulletsTrait2"))
+							dmg /= 2f;
+						else if (damagedAgent.statusEffects.hasTrait("ResistBulletsTrait"))
+							dmg /= 1.5f;
+
+						bool bulletSneakAttack = false;
+
+						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) || damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper_2) &&
+							!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && 
+							damagedAgent.movement.GetDistance(damagerAgent.gameObject, damagedAgent.gameObject) <= 1f)
+							bulletSneakAttack = true;
+
+						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) || damagerAgent.statusEffects.hasTrait(cTrait.Sniper_2) &&
+							!damagedAgent.movement.HasLOSAgent(damagerAgent) &&
+							damagedAgent.movement.GetDistance(damagerAgent.gameObject, damagedAgent.gameObject) >= 5f)
+							bulletSneakAttack = true;
+
+						if (bulletSneakAttack)
+						{
+							if (damagedAgent.sleeping)
+							{
+								dmg = 200f;
+								damagedAgent.agentHitboxScript.wholeBodyMode = 0;
+								damagerAgent.melee.successfullySleepKilled = true;
+
+								damagedAgent.statusEffects.CreateBuffText(cBuffText.DoubleTap, damagedAgent.objectNetID);
+							}
+							else if (
+								(dmg != 200f && !damagedAgent.dead) ||
+								(((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) &&
+								!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) &&
+								!damagedAgent.sleeping &&
+								dmg != 200f &&
+								!damagedAgent.dead))
+							{
+								damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
+
+								if (!GC.tileInfo.IsOverlapping(damagedAgent.agentHelperTr.position, "Wall"))
+								{
+									damagedAgent.agentHelperTr.localPosition = Vector3.zero;
+									damagedAgent.statusEffects.CreateBuffText(cBuffText.DoubleTap, damagedAgent.objectNetID);
+
+									if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
+									{
+										dmg *= 10f;
+										damagerAgent.melee.successfullyBackstabbed = true;
+										GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
+									}
+									else
+										dmg *= 2f;
+								}
+							}
+							else if (damagerAgent.statusEffects.hasStatusEffect(vStatusEffect.InvisibleTemporary))
+							{
+								bool alreadyDead = false;
+
+								if (instanceIsAgent && damagedAgent.dead)
+									alreadyDead = true;
+
+								if (!playerDamagedByNpc && !alreadyDead && !damagerAgent.statusEffects.hasTrait(cTrait.Sniper) && !damagerAgent.statusEffects.hasTrait(cTrait.Sniper_2))
+									damagerAgent.statusEffects.RemoveInvisibleLimited();
+							}
+						}
+					}
 				}
 			}
-			else if (a == "Fire")
+			else if (type == "Fire")
 			{
-				if (flag)
+				if (instanceIsAgent)
 				{
-					if (agent.statusEffects.hasTrait("ResistFire"))
-						num /= 1.5f;
+					if (damagedAgent.statusEffects.hasTrait("ResistFire"))
+						dmg /= 1.5f;
 					
-					if ((agent.oma.superSpecialAbility && agent.agentName == "Firefighter") || agent.statusEffects.hasTrait("FireproofSkin2"))
+					if ((damagedAgent.oma.superSpecialAbility && damagedAgent.agentName == "Firefighter") || damagedAgent.statusEffects.hasTrait("FireproofSkin2"))
 					{
-						num = 0f;
+						dmg = 0f;
 						flag8 = true;
 					}
-					else if (agent.statusEffects.hasTrait("FireproofSkin"))
-						num /= 1.5f;
+					else if (damagedAgent.statusEffects.hasTrait("FireproofSkin"))
+						dmg /= 1.5f;
 				}
 			}
-			else if (a == "Throw")
+			else if (type == "Throw")
 			{
 				if (flag2)
 				{
-					if (agent2.statusEffects.hasTrait("GoodThrower"))
-						num *= 2f;
+					if (damagerAgent.statusEffects.hasTrait("GoodThrower"))
+						dmg *= 2f;
 					
-					if (flag && agent2.statusEffects.hasTrait("KillerThrower") && item.throwerReal == item.thrower)
+					if (instanceIsAgent && damagerAgent.statusEffects.hasTrait("KillerThrower") && item.throwerReal == item.thrower)
 					{
-						if (agent != item.thrower)
+						if (damagedAgent != item.thrower)
 						{
-							if (agent.health >= 100f)
-								num = 100f;
+							if (damagedAgent.health >= 100f)
+								dmg = 100f;
 							else
-								num = 200f;
+								dmg = 200f;
 						}
 						else
-							num = 20f;
+							dmg = 20f;
 					}
 				}
 			}
-			else if (!(a == "Explosion"))
-				_ = a == "Hazard";
+			else if (!(type == "Explosion"))
+				_ = type == "Hazard";
 			
-			if (flag2 && flag && !testOnly)
+			if (flag2 && instanceIsAgent && !testOnly)
 			{
-				if (agent2.statusEffects.hasTrait("BloodyMess"))
-					agent.bloodyMessed = true;
+				if (damagerAgent.statusEffects.hasTrait("BloodyMess"))
+					damagedAgent.bloodyMessed = true;
 			
-				if ((agent2.invisible && !agent2.oma.hidden) || agent2.ghost)
+				if ((damagerAgent.invisible && !damagerAgent.oma.hidden) || damagerAgent.ghost)
 				{
-					agent2.gc.spawnerMain.SpawnDanger(agent2, "Targeted", "Spooked", agent);
-					relStatus relCode = agent2.relationships.GetRelCode(agent);
+					damagerAgent.gc.spawnerMain.SpawnDanger(damagerAgent, "Targeted", "Spooked", damagedAgent);
+					relStatus relCode = damagerAgent.relationships.GetRelCode(damagedAgent);
 				
 					if (relCode != relStatus.Aligned && relCode != relStatus.Loyal)
 					{
@@ -640,126 +704,127 @@ namespace BunnyMod.Content
 						{
 							Agent agent3 = agentList[i];
 						
-							if (agent3.employer == agent2)
+							if (agent3.employer == damagerAgent)
 							{
-								relStatus relCode2 = agent3.relationships.GetRelCode(agent);
+								relStatus relCode2 = agent3.relationships.GetRelCode(damagedAgent);
 							
 								if (relCode2 != relStatus.Aligned && relCode2 != relStatus.Loyal)
-									agent3.relationships.SetRelHate(agent, 5);
-								else if (relCode2 == relStatus.Aligned && agent3.relationships.GetRelCode(agent2) == relStatus.Loyal)
+									agent3.relationships.SetRelHate(damagedAgent, 5);
+								else if (relCode2 == relStatus.Aligned && agent3.relationships.GetRelCode(damagerAgent) == relStatus.Loyal)
 								{
-									agent3.relationships.SetRelHate(agent2, 5);
-									agent2.agentInteractions.LetGo(agent3, agent2);
+									agent3.relationships.SetRelHate(damagerAgent, 5);
+									damagerAgent.agentInteractions.LetGo(agent3, damagerAgent);
 								}
 							}
 						}
 					}
 				}
 			}
-			if (flag)
+
+			if (instanceIsAgent)
 			{
-				if (agent.statusEffects.hasTrait("NumbToPain"))
-					num /= 3f;
+				if (damagedAgent.statusEffects.hasTrait("NumbToPain"))
+					dmg /= 3f;
 				
-				if (agent.statusEffects.hasTrait("ResistDamageSmall"))
-					num /= 1.25f;
+				if (damagedAgent.statusEffects.hasTrait("ResistDamageSmall"))
+					dmg /= 1.25f;
 				
-				if (agent.statusEffects.hasTrait("ResistDamageMed"))
-					num /= 1.5f;
+				if (damagedAgent.statusEffects.hasTrait("ResistDamageMed"))
+					dmg /= 1.5f;
 				
-				if (agent.statusEffects.hasTrait("ResistDamageLarge"))
-					num /= 2f;
+				if (damagedAgent.statusEffects.hasTrait("ResistDamageLarge"))
+					dmg /= 2f;
 				
-				if (agent.statusEffects.hasTrait("Giant"))
-					num /= 3f;
+				if (damagedAgent.statusEffects.hasTrait("Giant"))
+					dmg /= 3f;
 				
-				if (agent.statusEffects.hasTrait("Shrunk"))
-					num *= 3f;
+				if (damagedAgent.statusEffects.hasTrait("Shrunk"))
+					dmg *= 3f;
 				
-				if (agent.statusEffects.hasTrait("Diminutive"))
-					num *= 1.5f;
+				if (damagedAgent.statusEffects.hasTrait("Diminutive"))
+					dmg *= 1.5f;
 				
-				if (agent.frozen)
-					num *= 2f;
+				if (damagedAgent.frozen)
+					dmg *= 2f;
 				
-				if (agent.statusEffects.hasSpecialAbility("ProtectiveShell") && agent.objectMult.chargingSpecialLunge)
-					num /= 8f;
+				if (damagedAgent.statusEffects.hasSpecialAbility("ProtectiveShell") && damagedAgent.objectMult.chargingSpecialLunge)
+					dmg /= 8f;
 				
-				if (agent.hasEmployer && agent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && agent.employer.objectMult.chargingSpecialLunge)
-					num /= 8f;
+				if (damagedAgent.hasEmployer && damagedAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && damagedAgent.employer.objectMult.chargingSpecialLunge)
+					dmg /= 8f;
 				
-				if (agent.oma.mindControlled && agent.mindControlAgent != null && (agent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") || (agent.mindControlAgent.oma.superSpecialAbility && agent.mindControlAgent.agentName == "Alien")))
-					num /= 1.5f;
+				if (damagedAgent.oma.mindControlled && damagedAgent.mindControlAgent != null && (damagedAgent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") || (damagedAgent.mindControlAgent.oma.superSpecialAbility && damagedAgent.mindControlAgent.agentName == "Alien")))
+					dmg /= 1.5f;
 				
-				if (flag2 && flag6 && !agent2.dead)
+				if (flag2 && flag6 && !damagerAgent.dead)
 				{
-					if (agent2.statusEffects.hasTrait("MoreDamageWhenHealthLow") && agent2.agentID != agent.agentID)
+					if (damagerAgent.statusEffects.hasTrait("MoreDamageWhenHealthLow") && damagerAgent.agentID != damagedAgent.agentID)
 					{
-						int num4 = (int)(agent2.healthMax / 4f);
+						int num4 = (int)(damagerAgent.healthMax / 4f);
 				
-						if (agent2.health <= (float)num4)
+						if (damagerAgent.health <= (float)num4)
 						{
-							float num5 = agent2.health / (float)num4;
-							num5 = (1f - num5) * num * 1.5f;
-							num += num5;
+							float num5 = damagerAgent.health / (float)num4;
+							num5 = (1f - num5) * dmg * 1.5f;
+							dmg += num5;
 						}
 					}
-					else if (agent2.statusEffects.hasTrait("MoreDamageWhenHealthLow2") && agent2.agentID != agent.agentID)
+					else if (damagerAgent.statusEffects.hasTrait("MoreDamageWhenHealthLow2") && damagerAgent.agentID != damagedAgent.agentID)
 					{
-						int num6 = (int)(agent2.healthMax / 2f);
+						int num6 = (int)(damagerAgent.healthMax / 2f);
 						
-						if (agent2.health <= (float)num6)
+						if (damagerAgent.health <= (float)num6)
 						{
-							float num7 = agent2.health / (float)num6;
-							num7 = (1f - num7) * num * 1.5f;
-							num += num7;
+							float num7 = damagerAgent.health / (float)num6;
+							num7 = (1f - num7) * dmg * 1.5f;
+							dmg += num7;
 						}
 					}
 
-					if (!testOnly && agent2.agentID != agent.agentID)
+					if (!testOnly && damagerAgent.agentID != damagedAgent.agentID)
 					{
-						int num8 = agent2.critChance;
-						num8 = agent2.DetermineLuck(num8, "CritChance", true);
+						int num8 = damagerAgent.critChance;
+						num8 = damagerAgent.DetermineLuck(num8, "CritChance", true);
 
-						if (Random.Range(0, 100) <= num8 - 1 && (!(GC.levelType == "Tutorial") || !(a == "Explosion")))
+						if (Random.Range(0, 100) <= num8 - 1 && (!(GC.levelType == "Tutorial") || !(type == "Explosion")))
 						{
-							num *= 2f;
-							agent.critted = true;
+							dmg *= 2f;
+							damagedAgent.critted = true;
 						}
 						
-						if (agent2.statusEffects.hasTrait("ChanceToSlowEnemies2"))
+						if (damagerAgent.statusEffects.hasTrait("ChanceToSlowEnemies2"))
 						{
-							int myChance = agent2.DetermineLuck(20, "ChanceToSlowEnemies", true);
+							int myChance = damagerAgent.DetermineLuck(20, "ChanceToSlowEnemies", true);
 						
 							if (GC.percentChance(myChance))
-								agent.statusEffects.AddStatusEffect("Slow");
+								damagedAgent.statusEffects.AddStatusEffect("Slow");
 						}
-						else if (agent2.statusEffects.hasTrait("ChanceToSlowEnemies"))
+						else if (damagerAgent.statusEffects.hasTrait("ChanceToSlowEnemies"))
 						{
-							int myChance2 = agent2.DetermineLuck(8, "ChanceToSlowEnemies", true);
+							int myChance2 = damagerAgent.DetermineLuck(8, "ChanceToSlowEnemies", true);
 						
 							if (GC.percentChance(myChance2))
-								agent.statusEffects.AddStatusEffect("Slow");
+								damagedAgent.statusEffects.AddStatusEffect("Slow");
 						}
 					}
 
-					if (agent2.statusEffects.hasTrait("MoreFollowersCauseMoreDamage") || agent2.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
+					if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage") || damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
 					{
 						float num9 = 1.2f;
 
-						if (agent2.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
+						if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
 							num9 = 1.4f;
 						
-						float num10 = num;
+						float num10 = dmg;
 						int num11 = 0;
 						
 						for (int j = 0; j < GC.agentList.Count; j++)
 						{
 							Agent agent4 = GC.agentList[j];
 						
-							if (agent4.hasEmployer && agent4.employer == agent2 && Vector2.Distance(agent4.tr.position, agent.tr.position) < 10.24f)
+							if (agent4.hasEmployer && agent4.employer == damagerAgent && Vector2.Distance(agent4.tr.position, damagedAgent.tr.position) < 10.24f)
 							{
-								num += num10 * num9 - num10;
+								dmg += num10 * num9 - num10;
 								num11++;
 							
 								if (num11 >= 3 && !GC.challenges.Contains("NoLimits"))
@@ -768,83 +833,83 @@ namespace BunnyMod.Content
 						}
 					}
 
-					if (agent2.oma.mindControlled && agent2.mindControlAgent != null && (agent2.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") || (agent2.mindControlAgent.oma.superSpecialAbility && agent2.mindControlAgent.agentName == "Alien")))
-						num *= 1.5f;
+					if (damagerAgent.oma.mindControlled && damagerAgent.mindControlAgent != null && (damagerAgent.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") || (damagerAgent.mindControlAgent.oma.superSpecialAbility && damagerAgent.mindControlAgent.agentName == "Alien")))
+						dmg *= 1.5f;
 				}
 
 				int num12 = 0;
 				
-				if (agent.inventory.equippedArmor != null && !testOnly && flag6)
+				if (damagedAgent.inventory.equippedArmor != null && !testOnly && flag6)
 				{
-					InvItem equippedArmor = agent.inventory.equippedArmor;
+					InvItem equippedArmor = damagedAgent.inventory.equippedArmor;
 				
 					if (equippedArmor.armorDepletionType == "Everything")
 						num12++;
-					else if (equippedArmor.armorDepletionType == "Bullet" && a == "Bullet")
+					else if (equippedArmor.armorDepletionType == "Bullet" && type == "Bullet")
 						num12++;
-					else if (equippedArmor.armorDepletionType == "Fire" && a == "Fire")
+					else if (equippedArmor.armorDepletionType == "Fire" && type == "Fire")
 						num12++;
 					else if (equippedArmor.armorDepletionType == "FireAndEverything")
 						num12++;
 				}
 
-				if (agent.inventory.equippedArmorHead != null && !testOnly && flag6)
+				if (damagedAgent.inventory.equippedArmorHead != null && !testOnly && flag6)
 				{
-					InvItem equippedArmorHead = agent.inventory.equippedArmorHead;
+					InvItem equippedArmorHead = damagedAgent.inventory.equippedArmorHead;
 				
 					if (equippedArmorHead.armorDepletionType == "Everything")
 						num12++;
-					else if (equippedArmorHead.armorDepletionType == "Bullet" && a == "Bullet")
+					else if (equippedArmorHead.armorDepletionType == "Bullet" && type == "Bullet")
 						num12++;
-					else if (equippedArmorHead.armorDepletionType == "Fire" && a == "Fire")
+					else if (equippedArmorHead.armorDepletionType == "Fire" && type == "Fire")
 						num12++;
 					else if (equippedArmorHead.armorDepletionType == "FireAndEverything")
 						num12++;
 				}
 
-				if (agent.inventory.equippedArmor != null && !testOnly && flag6)
+				if (damagedAgent.inventory.equippedArmor != null && !testOnly && flag6)
 				{
-					InvItem equippedArmor2 = agent.inventory.equippedArmor;
+					InvItem equippedArmor2 = damagedAgent.inventory.equippedArmor;
 				
 					if (equippedArmor2.armorDepletionType == "Everything")
-						agent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
-					else if (equippedArmor2.armorDepletionType == "Bullet" && a == "Bullet")
-						agent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
-					else if (equippedArmor2.armorDepletionType == "Fire" && a == "Fire")
-						agent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+					else if (equippedArmor2.armorDepletionType == "Bullet" && type == "Bullet")
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+					else if (equippedArmor2.armorDepletionType == "Fire" && type == "Fire")
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
 					else if (equippedArmor2.armorDepletionType == "FireAndEverything")
-						agent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
 				}
 
-				if (agent.inventory.equippedArmorHead != null && !testOnly && flag6)
+				if (damagedAgent.inventory.equippedArmorHead != null && !testOnly && flag6)
 				{
-					InvItem equippedArmorHead2 = agent.inventory.equippedArmorHead;
+					InvItem equippedArmorHead2 = damagedAgent.inventory.equippedArmorHead;
 
 					if (equippedArmorHead2.armorDepletionType == "Everything")
-						agent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
-					else if (equippedArmorHead2.armorDepletionType == "Bullet" && a == "Bullet")
-						agent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
-					else if (equippedArmorHead2.armorDepletionType == "Fire" && a == "Fire")
-						agent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+					else if (equippedArmorHead2.armorDepletionType == "Bullet" && type == "Bullet")
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+					else if (equippedArmorHead2.armorDepletionType == "Fire" && type == "Fire")
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
 					else if (equippedArmorHead2.armorDepletionType == "FireAndEverything")
-						agent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(num * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
 				}
 
-				if (agent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer") || agent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
+				if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer") || damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
 				{
 					int num13 = 0;
 					float num14 = 1.2f;
 				
-					if (agent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
+					if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
 						num14 = 1.4f;
 					
 					for (int k = 0; k < GC.agentList.Count; k++)
 					{
 						Agent agent5 = GC.agentList[k];
 					
-						if (agent5.hasEmployer && agent5.employer == agent && Vector2.Distance(agent5.tr.position, agent.tr.position) < 10.24f)
+						if (agent5.hasEmployer && agent5.employer == damagedAgent && Vector2.Distance(agent5.tr.position, damagedAgent.tr.position) < 10.24f)
 						{
-							num /= num14;
+							dmg /= num14;
 							num13++;
 						
 							if (num13 >= 3 && !GC.challenges.Contains("NoLimits"))
@@ -854,32 +919,32 @@ namespace BunnyMod.Content
 				}
 
 				if (!testOnly && flag4)
-					agent.attackCooldown = 2f;
+					damagedAgent.attackCooldown = 2f;
 			}
 
-			if (flag3 && flag2 && (__instance.objectName == "Bars" || __instance.objectName == "BarbedWire"))
+			if (instanceIsObject && flag2 && (__instance.objectName == "Bars" || __instance.objectName == "BarbedWire"))
 			{
-				if (agent2.statusEffects.hasTrait("MeleeDestroysWalls2"))
-					num = 99f;
-				else if (agent2.statusEffects.hasTrait("MeleeDestroysWalls") && __instance.objectName == "BarbedWire")
-					num = 99f;
+				if (damagerAgent.statusEffects.hasTrait("MeleeDestroysWalls2"))
+					dmg = 99f;
+				else if (damagerAgent.statusEffects.hasTrait("MeleeDestroysWalls") && __instance.objectName == "BarbedWire")
+					dmg = 99f;
 			}
 			
-			if (num > 200f)
-				num = 200f;
+			if (dmg > 200f)
+				dmg = 200f;
 			
-			int num15 = Mathf.Clamp((int)num, 1, 1000);
+			int num15 = Mathf.Clamp((int)dmg, 1, 1000);
 			
-			if ((damagerObject.isItem && a == "Throw" && num == 0f) || flag8)
+			if ((damagerObject.isItem && type == "Throw" && dmg == 0f) || flag8)
 				num15 = 0;
 			else if (flag9)
 				num15 = 1;
 			
-			if (flag2 && flag && !testOnly)
+			if (flag2 && instanceIsAgent && !testOnly)
 			{
-				if ((float)num15 < agent.health)
+				if ((float)num15 < damagedAgent.health)
 				{
-					Relationship relationship = agent.relationships.GetRelationship(agent2);
+					Relationship relationship = damagedAgent.relationships.GetRelationship(damagerAgent);
 					relStatus myRel = relStatus.Neutral;
 					bool flag12 = false;
 			
@@ -889,28 +954,28 @@ namespace BunnyMod.Content
 						flag12 = relationship.sawBecomeHidden;
 					}
 					
-					if ((!agent2.invisible || flag12) && flag4)
+					if ((!damagerAgent.invisible || flag12) && flag4)
 					{
-						if ((agent2.isPlayer <= 0 || agent2.localPlayer || damagerObject.isItem || damagerObject.isExplosion || agent2.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) && !agent.mechEmpty)
+						if ((damagerAgent.isPlayer <= 0 || damagerAgent.localPlayer || damagerObject.isItem || damagerObject.isExplosion || damagerAgent.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) && !damagedAgent.mechEmpty)
 						{
-							agent.justHitByAgent3 = true;
-							agent.relationships.AddRelHate(agent2, Mathf.Clamp(num15, 5, 200));
-							agent.justHitByAgent3 = false;
+							damagedAgent.justHitByAgent3 = true;
+							damagedAgent.relationships.AddRelHate(damagerAgent, Mathf.Clamp(num15, 5, 200));
+							damagedAgent.justHitByAgent3 = false;
 						}
 					
-						agent.relationships.PotentialAlignmentCheck(myRel);
+						damagedAgent.relationships.PotentialAlignmentCheck(myRel);
 					}
 				}
 
 				if (flag4)
-					agent.SetJustHitByAgent(agent2);
+					damagedAgent.SetJustHitByAgent(damagerAgent);
 				
-				agent.justHitByAgent2 = agent2;
-				agent.lastHitByAgent = agent2;
+				damagedAgent.justHitByAgent2 = damagerAgent;
+				damagedAgent.lastHitByAgent = damagerAgent;
 				
-				if (!agent2.killerRobot && !agent.killerRobot)
+				if (!damagerAgent.killerRobot && !damagedAgent.killerRobot)
 				{
-					relStatus relCode3 = agent2.relationships.GetRelCode(agent);
+					relStatus relCode3 = damagerAgent.relationships.GetRelCode(damagedAgent);
 				
 					if (damagerObject.isExplosion)
 					{
@@ -918,51 +983,51 @@ namespace BunnyMod.Content
 					
 						if (explosion2.explosionType == "Huge" || explosion2.explosionType == "Ridiculous")
 						{
-							GC.EnforcerAlertAttack(agent2, agent, 10.8f, explosion2.tr.position);
+							GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 10.8f, explosion2.tr.position);
 						
-							if (agent2.ownerID != 0 && relCode3 == relStatus.Hostile)
-								GC.EnforcerAlertAttack(agent, agent2, 10.8f, explosion2.tr.position);
+							if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
+								GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 10.8f, explosion2.tr.position);
 						}
 						else
 						{
-							GC.EnforcerAlertAttack(agent2, agent, 10.8f, explosion2.tr.position);
+							GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 10.8f, explosion2.tr.position);
 						
-							if (agent2.ownerID != 0 && relCode3 == relStatus.Hostile)
-								GC.EnforcerAlertAttack(agent, agent2, 10.8f, explosion2.tr.position);
+							if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
+								GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 10.8f, explosion2.tr.position);
 						}
 					}
 					else
 					{
-						GC.EnforcerAlertAttack(agent2, agent, 7.4f);
+						GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 7.4f);
 						
-						if (agent2.ownerID != 0 && relCode3 == relStatus.Hostile)
-							GC.EnforcerAlertAttack(agent, agent2, 7.4f);
+						if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
+							GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 7.4f);
 					}
 				}
 
-				agent.damagedAmount = num15;
+				damagedAgent.damagedAmount = num15;
 				
-				if (agent.agentName == "Slave")
-					__instance.StartCoroutine(agent.agentInteractions.OwnCheckSlaveOwners(agent, agent2));
+				if (damagedAgent.agentName == "Slave")
+					__instance.StartCoroutine(damagedAgent.agentInteractions.OwnCheckSlaveOwners(damagedAgent, damagerAgent));
 				
-				if (agent.isPlayer == 0 && !agent.hasEmployer && !agent.zombified && !agent.noEnforcerAlert)
-					agent2.oma.hasAttacked = true;
+				if (damagedAgent.isPlayer == 0 && !damagedAgent.hasEmployer && !damagedAgent.zombified && !damagedAgent.noEnforcerAlert)
+					damagerAgent.oma.hasAttacked = true;
 			}
 
-			if (flag3)
+			if (instanceIsObject)
 			{
 				if (flag2)
 				{
 					if (!testOnly)
 					{
-						objectReal.lastHitByAgent = agent2;
+						objectReal.lastHitByAgent = damagerAgent;
 						objectReal.damagedAmount = num15;
 			
 						if (objectReal.useForQuest != null || objectReal.destroyForQuest != null)
-							GC.OwnCheck(agent2, objectReal.gameObject, "Normal", 0);
+							GC.OwnCheck(damagerAgent, objectReal.gameObject, "Normal", 0);
 					}
 
-					if (!agent2.objectAgent && agent2.agentSpriteTransform.localScale.x > 1f)
+					if (!damagerAgent.objectAgent && damagerAgent.agentSpriteTransform.localScale.x > 1f)
 						num15 = 99;
 				}
 				else if (!testOnly)
@@ -972,7 +1037,7 @@ namespace BunnyMod.Content
 				}
 			}
 
-			if (!flag5 || flag3 || fromClient)
+			if (!isShotgunDamage || instanceIsObject || fromClient)
 			{
 				__result = num15;
 				return false;
@@ -991,6 +1056,7 @@ namespace BunnyMod.Content
 				__instance.tickEndBullet = (Bullet)__instance.tickEndObject;
 			
 			__result = 9999;
+
 			return false;
 		}
 		#endregion

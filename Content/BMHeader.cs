@@ -114,6 +114,11 @@ namespace BunnyMod.Content
             Tourist = "Tourist",
             Wildfolk = "Wildfolk";
 	}
+    public static class cBuffText
+	{
+        public const string
+            DoubleTap = "DoubleTap";
+	}
     public static class cChallenge // Custom Mutators
     {
         public const string
@@ -212,45 +217,49 @@ namespace BunnyMod.Content
             Archmage = "Archmage",
             Carnivore = "Carnivore",
             Charmed = "Charmed",
-            Charmed_2 = "Charmed_2",
+            Charmed_2 = "Charmed2",
             Cursed = "Cursed",
-            Cursed_2 = "Cursed_2",
+            Cursed_2 = "Cursed2",
             DAREdevil = "DAREdevil",
             DimBulb = "DimBulb",
             Domineering = "Domineering",
-            Domineering_2 = "Domineering_2",
+            Domineering_2 = "Domineering2",
+            DoubleTapper = "DoubleTapper",
+            DoubleTapper_2 = "DoubleTapper2",
             DrawNoBlood = "DrawNoBlood",
             EagleEyes = "EagleEyes",
-            EagleEyes_2 = "EagleEyes_2",
+            EagleEyes_2 = "EagleEyes2",
             Fatass = "Fatass",
             FatHead = "FatHead",
             FocusedCasting = "FocusedCasting",
-            FocusedCasting_2 = "FocusedCasting_2",
+            FocusedCasting_2 = "FocusedCasting2",
             FriendOfBill = "FriendOfBill",
             GenerallyUnpleasant = "GenerallyUnpleasant",
-            GenerallyUnpleasant_2 = "GenerallyUnpleasant_2",
+            GenerallyUnpleasant_2 = "GenerallyUnpleasant2",
             Haunted = "Haunted",
             MagicTraining = "MagicTraining",
-            MagicTraining_2 = "MagicTraining_2",
+            MagicTraining_2 = "MagicTraining2",
             ManaBattery = "ManaBattery",
-            ManaBattery_2 = "ManaBattery_2",
+            ManaBattery_2 = "ManaBattery2",
             MobDebt = "MobDebt",
-            MobDebt_2 = "MobDebt_2",
+            MobDebt_2 = "MobDebt2",
             MookMasher = "MookMasher",
             MoronTheMerrier = "Moronic",
             Myopic = "Myopic",
-            Myopic2 = "Myopic_2",
+            Myopic2 = "Myopic2",
             Polarizing = "Polarizing",
-            Polarizing_2 = "Polarizing_2",
+            Polarizing_2 = "Polarizing2",
             Priors = "Priors",
             RATS = "RATS",
-            RATS_2 = "RATS_2",
+            RATS_2 = "RATS2",
             Reinforcements = "Reinforcements",
-            Reinforcements_2 = "Reinforcements_2",
+            Reinforcements_2 = "Reinforcements2",
             SmoothBrained = "SmoothBrained",
+            Sniper = "Sniper",
+            Sniper_2 = "Sniper2",
             StealthBastardDeluxe = "StealthBastardDeluxe",
             TamperTantrum = "TamperTantrum",
-            TamperTantrum_2 = "TamperTantrum_2",
+            TamperTantrum_2 = "TamperTantrum2",
             Teetotaller = "Teetotaller",
             UnderdarkCitizen = "UnderdarkCitizen",
             Vegetarian = "Vegetarian",
@@ -258,7 +267,7 @@ namespace BunnyMod.Content
             VeryHardOnYourself = "VeryHardOnYourself",
             Warlord = "Warlord",
             WildCasting = "WildCasting",
-            WildCasting_2 = "WildCasting_2";
+            WildCasting_2 = "WildCasting2";
 
         public static List<string> ExperienceRate = new List<string>()
         {
@@ -2515,6 +2524,7 @@ namespace BunnyMod.Content
             Kneecapper = "ChanceToSlowEnemies",
             KnockbackKing = "CauseBiggerKnockback",
             Knuckley = "StrongFists",
+            Knuckley_2 = "StrongFists2",
             LeisurelyRide = "MoreTimeForDeliveries",
             LockandLoad = "ReloadWeaponsNewLevel",
             LonelinessKiller = "StartWithFollowers",

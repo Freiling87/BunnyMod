@@ -120,7 +120,7 @@ namespace BunnyMod.Content
             BMLog("\tamount = " + amount);
             BMLog("\ttoolbarMove = " + toolbarMove);
 
-            if (vItem.Tools.Contains(__instance.InvItemList[slotNum].invItemName))
+            if (vItem.tools.Contains(__instance.InvItemList[slotNum].invItemName))
             {
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;
@@ -136,7 +136,7 @@ namespace BunnyMod.Content
             BMLog("\tamount = " + amount);
             BMLog("\ttoolbarMove = " + toolbarMove);
 
-            if (vItem.Tools.Contains(invItem.invItemName))
+            if (vItem.tools.Contains(invItem.invItemName))
             {
                 if (__instance.agent.statusEffects.hasTrait(cTrait.TamperTantrum_2))
                     amount = 0;
@@ -162,27 +162,31 @@ namespace BunnyMod.Content
             if (__instance.Categories.Contains("Alcohol"))
             {
             }
+
             if (__instance.Categories.Contains("Drugs"))
             {
             }
+
             if (__instance.Categories.Contains("Food"))
             {
-                if (BMHeader.nonVegetarian.Contains(name))
+                if (vItem.nonVegetarian.Contains(name))
                     __instance.Categories.Add("NonVegetarian");
-                else if (BMHeader.vegetarian.Contains(name))
+                else if (vItem.vegetarian.Contains(name))
                     __instance.Categories.Add(cTrait.Vegetarian);
             }
+
             if (__instance.Categories.Contains("Weapons"))
             {
-                if (BMHeader.blunt.Contains(name))
+                if (vItem.blunt.Contains(name))
                     __instance.Categories.Add("Blunt");
-                if (BMHeader.explosive.Contains(name))
+                if (vItem.explosive.Contains(name))
                     __instance.Categories.Add("Explosive");
-                if (BMHeader.loud.Contains(name) && !__instance.contents.Contains("Silencer"))
+                if (vItem.loud.Contains(name) && !__instance.contents.Contains("Silencer"))
                     __instance.Categories.Add("Loud");
-                if (BMHeader.piercing.Contains(name))
+                if (vItem.piercing.Contains(name))
                     __instance.Categories.Add("Piercing");
             }
+
             return;
         }
         public static bool InvItem_UseItem(InvItem __instance) // Prefix
@@ -255,24 +259,24 @@ namespace BunnyMod.Content
         {
             if (item.itemType == "Consumable")
             {
-                if (BMHeader.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
+                if (vItem.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
                 {
                     agent.Say("Today, I choose not to drink.");
                     goto terminus;
                 }
 
-                if (BMHeader.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
+                if (vItem.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
                 {
                     agent.Say("Nope, my body is a temple!");
                     goto terminus;
                 }
 
-                if (BMHeader.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Vegetarian))
+                if (vItem.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Vegetarian))
                 {
                     agent.Say("Meat is murder!");
                     goto terminus;
                 }
-                else if (BMHeader.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Carnivore))
+                else if (vItem.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Carnivore))
                 {
                     agent.Say("No! Me want meat!");
                     goto terminus;
@@ -280,13 +284,13 @@ namespace BunnyMod.Content
             }
             else
             {
-                if (BMHeader.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
+                if (vItem.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
                 {
                     agent.Say("But that'll hurt my little ears!");
                     goto terminus;
                 }
 
-                if (BMHeader.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
+                if (vItem.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
                 {
                     agent.Say("I swore to draw no blood. Unless I remove this trait first.");
                     goto terminus;

@@ -120,6 +120,8 @@ namespace BunnyMod.Content
             ResistanceHacker = "ResistanceHacker",
             ResistanceInfiltrator = "ResistanceInfiltrator",
             ResistanceSoldier = "ResistanceSoldier",
+            SecretPolice = "SecretPolice",
+            SWAT = "SWAT",
             Teamster = "Teamster",
             Tourist = "Tourist",
             Wildfolk = "Wildfolk";

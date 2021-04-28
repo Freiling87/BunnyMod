@@ -59,6 +59,14 @@ namespace BunnyMod.Content
 			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
 			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
 			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
+		public static bool IsFloorModActive()
+		{
+			foreach (string mutator in cChallenge.AffectsFloors)
+				if (GC.challenges.Contains(mutator))
+					return true;
+
+			return false;
+		}
 		public static bool IsWallModActive()
 		{
 			foreach (string mutator in cChallenge.WallsAndFloors)
@@ -127,6 +135,18 @@ namespace BunnyMod.Content
 				default:
 					return "";
 			}
+		}
+		public static string GetFloorTileNumberFromMutator()
+		{
+			switch (GetFloorMutator())
+			{
+				case cChallenge.SunkenCity:
+					return "335";
+				case cChallenge.TransitExperiment:
+					return "335";
+			}
+
+			return "";
 		}
 		public static string GetWallMutator()
 		{
@@ -9155,12 +9175,131 @@ namespace BunnyMod.Content
 			return true;
 		}
 		#endregion
+		#region RandomFloorsWalls
+		public void RandomFloorsWalls_00()
+		{
+
+		}
+		public static bool RandomFloorsWalls_fillFloorswalls() // Replacement
+		{
+			string floorType = null;
+
+			if (IsFloorModActive())
+				floorType = GetFloorTileNumberFromMutator();
+
+			if (floorType == null)
+				return true;
+			else
+			{
+				RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
+				RandomList rList;
+
+				string tilenumber = GetFloorTileNumberFromMutator();
+
+				rList = component.CreateRandomList(vFloorTileGroup.Wall, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "0", 5);
+				component.CreateRandomElement(rList, "3", 5);
+				component.CreateRandomElement(rList, "4", 5);
+				component.CreateRandomElement(rList, "5", 5);
+				component.CreateRandomElement(rList, "6", 5);
+				rList = component.CreateRandomList(vFloorTileGroup.HoleTiles, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "0", 5);
+				component.CreateRandomElement(rList, "14", 5);
+				component.CreateRandomElement(rList, "15", 5);
+				component.CreateRandomElement(rList, "16", 5);
+				component.CreateRandomElement(rList, "17", 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Water, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "0", 5);
+				component.CreateRandomElement(rList, "1", 5);
+				component.CreateRandomElement(rList, "2", 5);
+				component.CreateRandomElement(rList, "3", 5);
+				component.CreateRandomElement(rList, "4", 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Ice, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "0", 5);
+				component.CreateRandomElement(rList, "1", 5);
+				component.CreateRandomElement(rList, "2", 5);
+				component.CreateRandomElement(rList, "3", 5);
+				component.CreateRandomElement(rList, "4", 5);
+
+				// Here goes :shrug:
+
+				rList = component.CreateRandomList(vFloorTileGroup.UnknownPossiblyGeneric, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Slums, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Industrial, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Park, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Downtown, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Uptown, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+				rList = component.CreateRandomList(vFloorTileGroup.MayorVillage, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, tilenumber, 5);
+
+				//switch (GetFloorMutator())
+				//{
+				//	case cChallenge.SunkenCity:
+				//		rList = component.CreateRandomList(vFloorTileGroup.UnknownPossiblyGeneric, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Slums, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Industrial, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Park, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Downtown, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Uptown, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.MayorVillage, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		break;
+
+				//	case cChallenge.TransitExperiment:
+				//		rList = component.CreateRandomList(vFloorTileGroup.UnknownPossiblyGeneric, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Slums, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Industrial, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Park, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Downtown, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.Uptown, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		rList = component.CreateRandomList(vFloorTileGroup.MayorVillage, "RandomFloorWall", "RandomFloorsWalls");
+
+				//		break;
+				//}
+
+				rList = component.CreateRandomList(vFloorTileGroup.Building, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "111", 5);
+				component.CreateRandomElement(rList, "126", 5);
+				component.CreateRandomElement(rList, "127", 5);
+				component.CreateRandomElement(rList, "128", 5);
+				component.CreateRandomElement(rList, "129", 5);
+				rList = component.CreateRandomList(vFloorTileGroup.Rug, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "PurpleRug", 1);
+				component.CreateRandomElement(rList, "BlueRug", 1);
+				component.CreateRandomElement(rList, "DarkBlueRug", 1);
+				component.CreateRandomElement(rList, "RedRug", 1);
+				rList = component.CreateRandomList(vFloorTileGroup.Disposal, "RandomFloorWall", "RandomFloorsWalls");
+				component.CreateRandomElement(rList, "Hole", 3);
+				component.CreateRandomElement(rList, "FlamePit", 3);
+			}
+
+			return false;
+		}
+		#endregion
 		#region RandomWalls
 		public void RandomWalls_00()
-		{
-			Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
-		}
-		public static bool RandomWalls_fillWalls() // Replacement
+			{
+				Prefix(typeof(RandomWalls), "fillWalls", GetType(), "RandomWalls_fillWalls", new Type[0] { });
+			}
+		public static bool RandomWalls_fillWalls() // Prefix
 		{
 			string wallType = null;
 

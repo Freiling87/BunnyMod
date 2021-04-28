@@ -19,10 +19,9 @@ namespace BunnyMod.Content
 		{
 			InitializeLevelFeelings();
 		}
-
 		public static void InitializeLevelFeelings()
 		{
-			
+			// Pending addition to RogueLibs
 		}
 	}
 }

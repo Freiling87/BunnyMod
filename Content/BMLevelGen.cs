@@ -29,8 +29,9 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
-			BasicFloor_00();
+			//BasicFloor_00();
 			LoadLevel_00();
+			RandomFloorsWalls_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
 			SpawnerObject_00();
@@ -9178,7 +9179,7 @@ namespace BunnyMod.Content
 		#region RandomFloorsWalls
 		public void RandomFloorsWalls_00()
 		{
-
+			Prefix(typeof(RandomFloorsWalls), "fillFloorsWalls", GetType(), "RandomFloorsWalls_fillFloorsWalls", new Type[0] { });
 		}
 		public static bool RandomFloorsWalls_fillFloorswalls() // Replacement
 		{

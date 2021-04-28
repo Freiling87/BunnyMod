@@ -22,6 +22,9 @@ namespace BunnyMod.Content
 		{
             InitializeItems();
 
+            InvDatabase_00();
+            InvItem_00();
+            ItemFunctions_00();
         }
         public static void InitializeItems()
 		{

@@ -25,28 +25,56 @@ namespace BunnyMod.Content
 		#region Main
 		public void Awake()
 		{
+			AgentHealthBar_00();
+			ObjectInfo_00();
 			PlayerControl_00();
+			OperatingBar_00();
 		}
 		#endregion
 
 		#region Custom
-		public static void ResetCameras()
+		public static void SetTraitZoom() =>
+			GC.cameraScript.zoomLevel = GetZoomLevelFromTrait();
+		public static float GetZoomLevelFromTrait()
 		{
-			float zoomLevel = GC.cameraScript.zoomLevel;
-
 			if (BMTraits.IsPlayerTraitActive("EagleEyes"))
-				zoomLevel = 0.75f;
+				return 0.75f;
 			else if (BMTraits.IsPlayerTraitActive("EagleEyes_2"))
-				zoomLevel = 0.50f;
+				return 0.50f;
 			else if (BMTraits.IsPlayerTraitActive("Myopic"))
-				zoomLevel = 1.50f;
+				return 1.50f;
 			else if (BMTraits.IsPlayerTraitActive("Myopic_2"))
-				zoomLevel = 2.00f;
+				return 2.00f;
 
-			GC.cameraScript.zoomLevel = zoomLevel;
+			return 1f;
 		}
 		#endregion
 
+		#region AgentHealthBar
+		public void AgentHealthBar_00()
+		{
+			Postfix(typeof(AgentHealthBar), "Awake", GetType(), "AgentHealthBar_Awake", new Type[0] { });
+		}
+		public static void AgentHealthBar_Awake(AgentHealthBar __instance) => // Postfix
+			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
+		#endregion
+		#region ObjectInfo 
+		// The Arrows pointing to quest targets, etc.
+		public void ObjectInfo_00()
+		{
+			Postfix(typeof(ObjectInfo), "OnEnable", GetType(), "ObjectInfo_OnEnable", new Type[0] { });
+		}
+		public static void ObjectInfo_OnEnable(ObjectInfo __instance) => // Postfix
+			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
+		#endregion
+		#region OperatingBar
+		public void OperatingBar_00()
+		{
+			Postfix(typeof(OperatingBar), "Start", GetType(), "OperatingBar_Start", new Type[0] { });
+		}
+		public static void OperatingBar_Start(OperatingBar __instance) => // Postfix
+			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
+		#endregion
 		#region PlayerControl
 		public void PlayerControl_00()
 		{
@@ -54,7 +82,7 @@ namespace BunnyMod.Content
 		}
 		public static void PlayerControl_Update() // Postfix
 		{
-			ResetCameras();
+			SetTraitZoom();
 		}
 		#endregion
 	}

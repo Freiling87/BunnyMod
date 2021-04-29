@@ -218,6 +218,17 @@ namespace BunnyMod.Content
             ShantyTown
         };
     }
+    public static class cObject
+	{
+        public static List<string> HideableSBD = new List<string>()
+        {
+            vObject.Bathtub,
+            vObject.Plant,
+            vObject.PoolTable,
+            vObject.TableBig,
+            vObject.TrashCan
+        };
+	}
     public static class cTrait // Custom Traits
     {
         public const string

@@ -261,8 +261,8 @@ namespace BunnyMod.Content
 			int a = 0;
 
 			Agent agent = __instance.agent;
-			__instance.agent.oma.hidden = true;
-			string obj = hiddenInObject.name;
+			agent.oma.hidden = true;
+			string objName = hiddenInObject.name;
 
 			BMLog("\tA" + a++);
 
@@ -277,7 +277,7 @@ namespace BunnyMod.Content
 
 				BMLog("\tB" + a++);
 
-				if (obj == vObject.Manhole || obj == vObject.Plant || obj == vObject.PoolTable || obj == vObject.TrashCan || obj == vObject.Bathtub || obj == vObject.TableBig)
+				if (objName == vObject.Manhole || objName == vObject.Plant || objName == vObject.PoolTable || objName == vObject.TrashCan || objName == vObject.Bathtub || objName == vObject.TableBig)
 				{
 					agent.EnableHitboxes(false);
 					agent.agentItemColliderTr.gameObject.SetActive(false);

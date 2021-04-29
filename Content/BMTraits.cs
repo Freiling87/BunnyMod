@@ -37,6 +37,43 @@ namespace BunnyMod.Content
         #region Main
         public void Awake()
         {
+            #region Combat
+            CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,
+                new CustomNameInfo("000: Ballistician"),
+                new CustomNameInfo("You've mastered the trajectories. Your bullets fly until they hit something (or nothing)."));
+            Ballistician.Available = true;
+            Ballistician.AvailableInCharacterCreation = true;
+            Ballistician.CanRemove = false;
+            Ballistician.CanSwap = true;
+            Ballistician.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
+            Ballistician.CostInCharacterCreation = 2;
+            Ballistician.IsActive = true;
+            Ballistician.Upgrade = null;
+
+            CustomTrait DoubleTapper = RogueLibs.CreateCustomTrait(cTrait.DoubleTapper, true,
+                new CustomNameInfo("000: Double-Tapper"),
+                new CustomNameInfo("You're not some kind of monster. A quick bullet to the back of the head is more humane than the alternatives, isn't it?\n\nBullet attacks from behind within melee range do 2x damage. 10x if you're invisible or hidden."));
+            DoubleTapper.Available = true;
+            DoubleTapper.AvailableInCharacterCreation = true;
+            DoubleTapper.CanRemove = false;
+            DoubleTapper.CanSwap = true;
+            DoubleTapper.Conflicting.AddRange(new string[] { vTrait.Loud });
+            DoubleTapper.CostInCharacterCreation = 6;
+            DoubleTapper.IsActive = true;
+            DoubleTapper.Upgrade = null;
+
+            CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
+                new CustomNameInfo("000: Sniper"),
+                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Bullet attacks on far & unaware enemies do 2x damage. 10x if you're invisible.\n-Bullet range extended."));
+            Sniper.Available = true;
+            Sniper.AvailableInCharacterCreation = true;
+            Sniper.CanRemove = false;
+            Sniper.CanSwap = true;
+            Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
+            Sniper.CostInCharacterCreation = 10;
+            Sniper.IsActive = true;
+            Sniper.Upgrade = null;
+            #endregion
             #region Drug Limitations
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,
                 new CustomNameInfo("DAREdevil"),
@@ -536,7 +573,7 @@ namespace BunnyMod.Content
 
             CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
                 new CustomNameInfo("Priors"),
-                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. So do the criminal element, whose respect you have earned."));
+                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. On the upside, you've earned the respect of the City's criminals."));
             Priors.Available = true;
             Priors.AvailableInCharacterCreation = true;
             Priors.CanRemove = true;
@@ -561,13 +598,13 @@ namespace BunnyMod.Content
 
             CustomTrait Warlord = RogueLibs.CreateCustomTrait(cTrait.Warlord, true,
                 new CustomNameInfo("Warlord"),
-                new CustomNameInfo("To crush your enemies, to see them fall at your feet -- to take their horses and goods and hear the lamentation of their women. That is best! You can convince anyone to accept your rule by force."));
+                new CustomNameInfo("What is best in this game run, Onan? \n\nTo gib your enemies, to see them fall at your little rectangle legs -- to take their E_Horse and item drops and hear the lamentations of their... people with pixelated, possibly female presentation. That is best!\n\nYou can force anyone into submission."));
             Warlord.Available = true;
             Warlord.AvailableInCharacterCreation = true;
             Warlord.CanRemove = false;
             Warlord.CanSwap = true;
             Warlord.Conflicting.AddRange(new string[] { });
-            Warlord.CostInCharacterCreation = 16;
+            Warlord.CostInCharacterCreation = 20;
             Warlord.IsActive = true;
             Warlord.Upgrade = null;
             #endregion
@@ -630,42 +667,6 @@ namespace BunnyMod.Content
             Reinforcements_2.Upgrade = null;
             #endregion
             #region Stealth
-            CustomTrait DoubleTapper = RogueLibs.CreateCustomTrait(cTrait.DoubleTapper, true,
-                new CustomNameInfo("000: Double-Tapper"),
-                new CustomNameInfo("You're not some kind of monster. A quick bullet to the back of the head is more humane than the alternatives, isn't it?\n\nBullet attacks from behind within melee range do 2x damage. 10x if you're invisible."));
-            DoubleTapper.Available = true;
-            DoubleTapper.AvailableInCharacterCreation = true;
-            DoubleTapper.CanRemove = false;
-            DoubleTapper.CanSwap = true;
-            DoubleTapper.Conflicting.AddRange(new string[] { vTrait.Loud });
-            DoubleTapper.CostInCharacterCreation = 5;
-            DoubleTapper.IsActive = true;
-            DoubleTapper.Upgrade = null;
-
-            CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
-                new CustomNameInfo("000: Sniper"),
-                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Bullet attacks on far & unaware enemies do 2x damage. 10x if you're invisible.\n-Bullet range extended."));
-            Sniper.Available = true;
-            Sniper.AvailableInCharacterCreation = true;
-            Sniper.CanRemove = false;
-            Sniper.CanSwap = true;
-            Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Sniper.CostInCharacterCreation = 10;
-            Sniper.IsActive = true;
-            Sniper.Upgrade = cTrait.Sniper_2;
-
-            CustomTrait Sniper2 = RogueLibs.CreateCustomTrait(cTrait.Sniper_2, true,
-                new CustomNameInfo("000: Sniper +"),
-                new CustomNameInfo("You've mastered the trajectories. Your bullets fly until they hit something."));
-            Sniper2.Available = true;
-            Sniper2.AvailableInCharacterCreation = true;
-            Sniper2.CanRemove = false;
-            Sniper2.CanSwap = true;
-            Sniper2.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Sniper2.CostInCharacterCreation = 15;
-            Sniper2.IsActive = true;
-            Sniper2.Upgrade = null;
-
             CustomTrait StealthBastardDeluxe = RogueLibs.CreateCustomTrait(cTrait.StealthBastardDeluxe, true,
                 new CustomNameInfo("Stealth Bastard Deluxe"),
                 new CustomNameInfo("- Move through broken windows without taking a scratch.\n- Open and close doors silently.\n- Hide in Bathtubs, Plants, Pool Tables, and Big Tables.\n\n[Bug: If you get stuck between it and the wall, you might clip through the wall]"));

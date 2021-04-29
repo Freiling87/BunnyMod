@@ -275,7 +275,7 @@ namespace BunnyMod.Content
             Reinforcements_2 = "Reinforcements2",
             SmoothBrained = "SmoothBrained",
             Sniper = "Sniper",
-            Sniper_2 = "Sniper2",
+            Ballistician = "Sniper2",
             StealthBastardDeluxe = "StealthBastardDeluxe",
             TamperTantrum = "TamperTantrum",
             TamperTantrum_2 = "TamperTantrum2",

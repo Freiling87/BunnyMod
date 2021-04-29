@@ -369,7 +369,7 @@ namespace BunnyMod.Content
 				if (objName == vObject.Bush)
 					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
 				else
-					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y);
+					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y - 0.24f);
 
 				agent.rb.velocity = Vector2.zero;
 

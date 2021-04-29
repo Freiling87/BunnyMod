@@ -877,12 +877,12 @@ namespace BunnyMod.Content
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.movement.HasLOSAgent(damagerAgent)) ||
 							!(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) <= 0.64f)
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) <= 1.28f)
 							headShot = true;
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
 							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || !(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 10.24f)
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 8.00f)
 							headShot = true;
 
 						BMLog("\tHeadshot: " + headShot);

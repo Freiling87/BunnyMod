@@ -1113,19 +1113,17 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		// loadStuff2 [sic]
-		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance, ref IEnumerator __result, ref List<ChunkData> ___chunkListBasic, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors2, ref tk2dTileMap ___tilemapWalls, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3, ref List<GameObject> ___chunkList, ref List <ChunkData> ___chunkListBasicBackup) // Prefix
+		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance) // Prefix
 		{
-			BMLog("LoadLevel_LoadStuff2_Prefix");
+			BMLog("LoadLevel_loadStuff2_Prefix");
 
 			if (GC.challenges.Contains(cChallenge.SkywayDistrict))
 				GC.canalHoles = true;
 			else
-				GC.canalHoles = false;
+				GC.canalHoles = false; 
 
-			return false;
+			return true;
 		}
-		// SetupMore3_3
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Prefix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Prefix");

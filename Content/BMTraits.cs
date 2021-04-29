@@ -417,6 +417,7 @@ namespace BunnyMod.Content
 			EagleEyes.CanRemove = false;
 			EagleEyes.CanSwap = true;
             EagleEyes.Conflicting.AddRange(cTrait.VisionRange);
+            EagleEyes.Conflicting.Remove(cTrait.EagleEyes);
 			EagleEyes.CostInCharacterCreation = 3;
 			EagleEyes.IsActive = true;
 			EagleEyes.Upgrade = cTrait.EagleEyes_2;
@@ -429,6 +430,7 @@ namespace BunnyMod.Content
 			EagleEyes_2.CanRemove = false;
 			EagleEyes_2.CanSwap = false;
             EagleEyes_2.Conflicting.AddRange(cTrait.VisionRange);
+            EagleEyes_2.Conflicting.Remove(cTrait.EagleEyes_2);
             EagleEyes_2.CostInCharacterCreation = 6;
 			EagleEyes_2.IsActive = true;
 			EagleEyes_2.Upgrade = null;
@@ -441,6 +443,7 @@ namespace BunnyMod.Content
 			Myopic.CanRemove = true;
 			Myopic.CanSwap = true;
             Myopic.Conflicting.AddRange(cTrait.VisionRange);
+            Myopic.Conflicting.Remove(cTrait.Myopic);
             Myopic.CostInCharacterCreation = -4;
 			Myopic.IsActive = true;
 			Myopic.Upgrade = null;
@@ -453,6 +456,7 @@ namespace BunnyMod.Content
 			Myopic_2.CanRemove = true;
 			Myopic_2.CanSwap = true;
             Myopic_2.Conflicting.AddRange(cTrait.VisionRange);
+            Myopic_2.Conflicting.Remove(cTrait.Myopic2);
             Myopic_2.CostInCharacterCreation = -8;
 			Myopic_2.IsActive = true;
 			Myopic_2.Upgrade = null;

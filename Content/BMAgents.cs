@@ -28,6 +28,102 @@ namespace BunnyMod.Content
 		}
 
 		#region Custom
+		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
+		{
+			BMLog("LoadLevel_SpawnRoamerSquad");
+
+			List<Agent> spawnedAgentList = new List<Agent>();
+			//playerAgent.gangStalking = Agent.gangCount;
+			Vector2 pos = Vector2.zero;
+
+			numberToSpawn = (int)((float)numberToSpawn * __instance.levelSizeModifier);
+
+			for (int i = 0; i < numberToSpawn; i++)
+			{
+				if (i % splitIntoGroupSize == 0)
+					Agent.gangCount++; // Splits spawn into groups
+
+				Vector2 vector = Vector2.zero;
+				int attempts = 0;
+
+				if (i == 0)
+				{
+					do
+					{
+						vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
+						attempts++;
+					}
+					while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
+
+					pos = vector;
+				}
+				else
+					vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
+
+				if (vector != Vector2.zero && attempts < 300)
+				{
+					Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
+					agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
+					agent.gang = Agent.gangCount;
+					agent.modLeashes = 0;
+
+					if (agentType == vAgent.Ghost)
+						agent.alwaysRun = true;
+
+					agent.wontFlee = true;
+					agent.agentActive = true;
+					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
+					//agent.oma.mustBeGuilty = true;
+					spawnedAgentList.Add(agent);
+
+					if (spawnedAgentList.Count > 1)
+						for (int j = 0; j < spawnedAgentList.Count; j++)
+							if (spawnedAgentList[j] != agent)
+							{
+								agent.relationships.SetRelInitial(spawnedAgentList[j], "Aligned");
+								spawnedAgentList[j].relationships.SetRelInitial(agent, "Aligned");
+							}
+
+					if (aligned)
+					{
+						agent.relationships.SetRel(playerAgent, "Aligned");
+						playerAgent.relationships.SetRel(agent, "Aligned");
+					}
+					else
+					{
+						agent.relationships.SetRel(playerAgent, "Hateful");
+						playerAgent.relationships.SetRel(agent, "Hateful");
+						agent.relationships.SetRelHate(playerAgent, 5);
+						playerAgent.relationships.SetRelHate(agent, 5);
+					}
+
+					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
+						invItem.ItemSetup(false);
+						invItem.invItemCount = invItem.rewardCount;
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
+					}
+					else if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
+					{
+						InvItem invItem = new InvItem();
+						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
+						invItem.ItemSetup(false);
+						invItem.invItemCount = invItem.rewardCount;
+						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
+						agent.inventory.equippedWeapon = invItem;
+
+						agent.inventory.startingHeadPiece = vArmorHead.HardHat;
+					}
+
+					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
+				}
+			}
+		}
 		public static int ToolCost(Agent agent, int baseCost)
 		{
 			BMLog("ToolCost:");

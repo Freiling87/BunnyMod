@@ -38,52 +38,23 @@ namespace BunnyMod.Content
 			SpawnerWall_00();
 		}
 		#region Custom
-		public static int LevelSizeMod(int vanilla)
+		public static int GangCount(int vanilla)
 		{
-			if (GC.challenges.Contains(cChallenge.ACityForAnts))
-				vanilla = 4;
-			else if (GC.challenges.Contains(cChallenge.Claustropolis))
+			BMLog("SetGangCount");
+
+			if (GC.challenges.Contains(cChallenge.HoodlumsWonderland))
 				vanilla = 12;
-			else if (GC.challenges.Contains(cChallenge.Megalopolis))
-				vanilla = 48;
-			else if (GC.challenges.Contains(cChallenge.Ultrapolis))
-				vanilla = 64;
-				
+
 			return vanilla;
 		}
-		public static bool IsNextToLake(Vector2 spot) =>
-			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
-		public static bool IsFloorModActive()
+		public static int GenPopCount(int vanilla)
 		{
-			foreach (string mutator in cChallenge.AffectsFloors)
-				if (GC.challenges.Contains(mutator))
-					return true;
-
-			return false;
-		}
-		public static bool IsWallModActive()
-		{
-			foreach (string mutator in cChallenge.WallsAndFloors)
-				if (GC.challenges.Contains(mutator))
-					return true;
-
-			return false;
-		}
-		public static int ForceQuestCount(int vanilla)
-		{
-			if (GC.challenges.Contains(cChallenge.RushinRevolution))
-				vanilla = 0;
-			else if (GC.challenges.Contains(cChallenge.SingleMinded))
-				vanilla = 1;
-			else if (GC.challenges.Contains(cChallenge.Workhorse))
-				vanilla = 4;
+			if (GC.challenges.Contains(cChallenge.GhostTown))
+				vanilla *= 0;
+			if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong))
+				vanilla *= 4;
+			else if (GC.challenges.Contains(cChallenge.SwarmWelcome))
+				vanilla *= 8;
 
 			return vanilla;
 		}
@@ -189,127 +160,58 @@ namespace BunnyMod.Content
 
 			return null;
 		}
-		public static int SetRoamerCount(int vanilla)
+		public static bool IsFloorModActive()
 		{
-			if (GC.challenges.Contains(cChallenge.GhostTown))
-				vanilla *= 0;
-			if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong))
-				vanilla *= 4;
-			else if (GC.challenges.Contains(cChallenge.SwarmWelcome))
-				vanilla *= 8;
+			foreach (string mutator in cChallenge.AffectsFloors)
+				if (GC.challenges.Contains(mutator))
+					return true;
 
-			return vanilla;
+			return false;
 		}
-		public static int SetGangCount(int vanilla)
+		public static bool IsNextToLake(Vector2 spot) =>
+			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
+		public static bool IsWallModActive()
 		{
-			BMLog("SetGangCount");
+			foreach (string mutator in cChallenge.WallsAndFloors)
+				if (GC.challenges.Contains(mutator))
+					return true;
 
-			if (GC.challenges.Contains(cChallenge.HoodlumsWonderland))
+			return false;
+		}
+		public static int LevelSizeModifier(int vanilla)
+		{
+			if (GC.challenges.Contains(cChallenge.ACityForAnts))
+				vanilla = 4;
+			else if (GC.challenges.Contains(cChallenge.Claustropolis))
 				vanilla = 12;
+			else if (GC.challenges.Contains(cChallenge.Megalopolis))
+				vanilla = 48;
+			else if (GC.challenges.Contains(cChallenge.Ultrapolis))
+				vanilla = 64;
 
 			return vanilla;
 		}
-		public static int SetMafiaCount(int vanilla)
+		public static int MafiaCount(int vanilla)
 		{
-
-
 			return vanilla;
 		}
-		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
+		public static int QuestCount(int vanilla)
 		{
-			BMLog("LoadLevel_SpawnRoamerSquad");
+			if (GC.challenges.Contains(cChallenge.RushinRevolution))
+				vanilla = 0;
+			else if (GC.challenges.Contains(cChallenge.SingleMinded))
+				vanilla = 1;
+			else if (GC.challenges.Contains(cChallenge.Workhorse))
+				vanilla = 4;
 
-			List<Agent> spawnedAgentList = new List<Agent>();
-			//playerAgent.gangStalking = Agent.gangCount;
-			Vector2 pos = Vector2.zero;
-
-			numberToSpawn = (int)((float)numberToSpawn * __instance.levelSizeModifier);
-
-			for (int i = 0; i < numberToSpawn; i++)
-			{
-				if (i % splitIntoGroupSize == 0)
-					Agent.gangCount++; // Splits spawn into groups
-
-				Vector2 vector = Vector2.zero;
-				int attempts = 0;
-
-				if (i == 0)
-				{
-					do
-					{
-						vector = GC.tileInfo.FindRandLocationGeneral(0.32f);
-						attempts++;
-					}
-					while ((vector == Vector2.zero || Vector2.Distance(vector, GC.playerAgent.tr.position) < 20f) && attempts < 300);
-
-					pos = vector;
-				}
-				else
-					vector = GC.tileInfo.FindLocationNearLocation(pos, null, 0.32f, 1.28f, true, true);
-
-				if (vector != Vector2.zero && attempts < 300)
-				{
-					Agent agent = GC.spawnerMain.SpawnAgent(vector, null, agentType);
-					agent.movement.RotateToAngleTransform((float)Random.Range(0, 360));
-					agent.gang = Agent.gangCount;
-					agent.modLeashes = 0;
-
-					if (agentType == vAgent.Ghost)
-						agent.alwaysRun = true;
-
-					agent.wontFlee = true;
-					agent.agentActive = true;
-					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-					//agent.oma.mustBeGuilty = true;
-					spawnedAgentList.Add(agent);
-
-					if (spawnedAgentList.Count > 1)
-						for (int j = 0; j < spawnedAgentList.Count; j++)
-							if (spawnedAgentList[j] != agent)
-							{
-								agent.relationships.SetRelInitial(spawnedAgentList[j], "Aligned");
-								spawnedAgentList[j].relationships.SetRelInitial(agent, "Aligned");
-							}
-
-					if (aligned)
-					{
-						agent.relationships.SetRel(playerAgent, "Aligned");
-						playerAgent.relationships.SetRel(agent, "Aligned");
-					}
-					else
-					{
-						agent.relationships.SetRel(playerAgent, "Hateful");
-						playerAgent.relationships.SetRel(agent, "Hateful");
-						agent.relationships.SetRelHate(playerAgent, 5);
-						playerAgent.relationships.SetRelHate(agent, 5);
-					}
-
-					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))
-					{
-						InvItem invItem = new InvItem();
-						invItem.invItemName = GC.Choose<string>(vItem.Revolver, vItem.MachineGun);
-						invItem.ItemSetup(false);
-						invItem.invItemCount = invItem.rewardCount;
-						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
-						agent.inventory.equippedWeapon = invItem;
-
-						agent.inventory.startingHeadPiece = vArmorHead.SoldierHelmet;
-					}
-					else if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements))
-					{
-						InvItem invItem = new InvItem();
-						invItem.invItemName = GC.Choose<string>(vItem.Pistol, vItem.Knife);
-						invItem.ItemSetup(false);
-						invItem.invItemCount = invItem.rewardCount;
-						agent.inventory.AddItemAtEmptySlot(invItem, true, false);
-						agent.inventory.equippedWeapon = invItem;
-
-						agent.inventory.startingHeadPiece = vArmorHead.HardHat;
-					}
-
-					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
-				}
-			}
+			return vanilla;
 		}
 		#endregion
 
@@ -682,7 +584,7 @@ namespace BunnyMod.Content
 				if (GC.fourPlayerMode && GC.quests.questTriesTotal < 3)
 					GC.quests.questTriesTotal = 3;
 
-				GC.quests.questTriesTotal = ForceQuestCount(GC.quests.questTriesTotal);
+				GC.quests.questTriesTotal = QuestCount(GC.quests.questTriesTotal);
 				
 				if (__instance.squareMap)
 				{
@@ -801,7 +703,7 @@ namespace BunnyMod.Content
 					}
 				}
 
-				__instance.levelSizeMax = LevelSizeMod(__instance.levelSizeMax);
+				__instance.levelSizeMax = LevelSizeModifier(__instance.levelSizeMax);
 
 				Debug.Log("LEVEL SIZE: " + __instance.levelSizeMax);
 
@@ -7938,7 +7840,7 @@ namespace BunnyMod.Content
 							Debug.Log("Loading Roamers");
 
 							int bigTries = (int)((float)Random.Range(16, 20) * __instance.levelSizeModifier);
-							bigTries = SetRoamerCount(bigTries);
+							bigTries = GenPopCount(bigTries);
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
@@ -8768,7 +8670,7 @@ namespace BunnyMod.Content
 							Debug.Log("Loading Roving Gangs");
 
 							int bigTries = GC.Choose<int>(0, 0, 0, 0, 1, 1, 2);
-							bigTries = (int)(SetGangCount(bigTries) * (float)__instance.levelSizeMax / 30f);
+							bigTries = (int)(GangCount(bigTries) * (float)__instance.levelSizeMax / 30f);
 
 							bool placedGangbangers = false;
 							bool placedGangbangersB = false;
@@ -8879,7 +8781,7 @@ namespace BunnyMod.Content
 						{
 							Debug.Log("Loading Mafia");
 							int bigTries = Random.Range(3, 5);
-							bigTries = SetMafiaCount(bigTries);
+							bigTries = MafiaCount(bigTries);
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
@@ -9148,23 +9050,23 @@ namespace BunnyMod.Content
 				if (agent.isPlayer > 0)
 				{
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
 
 					if (level >= 10)
 					{
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
+							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
 						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
-							SpawnRoamerSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
+							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
 					}
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
+						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						SpawnRoamerSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
 					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						SpawnRoamerSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
 				}
 			}
 		}

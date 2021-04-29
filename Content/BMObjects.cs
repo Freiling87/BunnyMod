@@ -86,8 +86,8 @@ namespace BunnyMod.Content
             CustomName grillFudPaid = RogueLibs.CreateCustomName("GrillFudPaid", t, new CustomNameInfo("Grill Fud"));
             CustomName hideInContainer = RogueLibs.CreateCustomName("HideInContainer", t, new CustomNameInfo("Hide in container"));
             CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", t, new CustomNameInfo("Open container"));
-            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", t, new CustomNameInfo("Bet $1"));
-            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", t, new CustomNameInfo("Bet $100"));
+            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", t, new CustomNameInfo("Play"));
+            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", t, new CustomNameInfo("Play"));
             CustomName stealItem = RogueLibs.CreateCustomName("StealItem", t, new CustomNameInfo("Steal item"));
         }
         #endregion
@@ -233,7 +233,7 @@ namespace BunnyMod.Content
                 {
                     if (GC.challenges.Contains(cChallenge.AnCapistan))
                     {
-                        __instance.buttons.Add("GrillFudPaid");
+                        __instance.buttons.Add(cButtonText.GrillFudPaid);
                         __instance.buttonPrices.Add(5);
                     }
                     else
@@ -242,11 +242,11 @@ namespace BunnyMod.Content
             }
             else if (__instance is TrashCan) // This is already gated for Diminutive/SBD
             {
-                __instance.buttons.Add("HideInContainer");
-                __instance.buttons.Add("OpenContainer");
+                __instance.buttons.Add(cButtonText.HideInContainer);
+                __instance.buttons.Add(cButtonText.OpenContainer);
             }
             else if (__instance is VendorCart)
-                __instance.buttons.Add("StealItem");
+                __instance.buttons.Add(cButtonText.StealItem);
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
         {
@@ -423,18 +423,18 @@ namespace BunnyMod.Content
                 Manhole_FlushYourself((Manhole)__instance);
             else if (buttonText == "GrillFud")
                 __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
-            else if (buttonText == "GrillFudPaid" && __instance.moneySuccess(5))
+            else if (buttonText == cButtonText.GrillFudPaid && __instance.moneySuccess(5))
                 __instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
             else if (buttonText == "HackExplode")
                 __instance.HackExplode(agent);
-            else if (buttonText == "HideInTrashcan")
+            else if (buttonText == cButtonText.HideInContainer)
                 TrashCan_Hide((TrashCan)__instance, agent);
             else if (buttonText == "LightBarbecue")
             {
                 __instance.StartFireInObject();
                 __instance.StopInteraction();
             }
-            else if (buttonText == "OpenChest")
+            else if (buttonText == cButtonText.OpenContainer)
                 __instance.ShowChest();
             else if (buttonText == "UseCrowbar")
             {
@@ -448,7 +448,7 @@ namespace BunnyMod.Content
                 dodgyStrikes = 0;
                 dodgyVolume = 1f;
             }
-            else if (buttonText == "VendorCart_Steal")
+            else if (buttonText == cButtonText.StealItem)
             {
                 if (!agent.inventory.hasEmptySlot())
                 {
@@ -962,13 +962,10 @@ namespace BunnyMod.Content
         }
         public static void Bathtub_SetVars(Bathtub __instance) // Postfix
         {
-            BMLog("Bathtub_SetVars");
+            __instance.interactable = true;
 
-            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-            {
-                BMLog("SBD trait detected");
-                __instance.interactable = true;
-            }
+            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
+                __instance.interactable = false;
 
             //TODO: Closed Bath Curtain sprite?
             // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.
@@ -1857,8 +1854,11 @@ namespace BunnyMod.Content
         }
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
-            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = true;
+            __instance.interactable = true;
+
+            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
+                __instance.interactable = false;
+
             //__instance.lowInteractionPriority = true;
         }
         #endregion
@@ -1880,8 +1880,11 @@ namespace BunnyMod.Content
         }
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
-            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = true;
+            __instance.interactable = true;
+
+            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
+                __instance.interactable = false;
+
             //__instance.lowInteractionPriority = true;
         }
         #endregion
@@ -2635,8 +2638,11 @@ namespace BunnyMod.Content
         }
         public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
-            if (BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = true;
+            __instance.interactable = true;
+
+            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
+                __instance.interactable = false;
+            
             //__instance.lowInteractionPriority = true;
         }
         #endregion

@@ -119,6 +119,14 @@ namespace BunnyMod.Content
         public const string
             DoubleTap = "DoubleTap";
 	}
+    public static class cButtonText
+	{
+        public const string
+            GrillFudPaid = "GrillFudPaid",
+            HideInContainer = "HideInContainer",
+            OpenContainer = "OpenContainer",
+            StealItem = "StealItem";
+	}
     public static class cChallenge // Custom Mutators
     {
         public const string

@@ -260,7 +260,7 @@ namespace BunnyMod.Content
 			__instance.agent.oma.hidden = true;
 			string obj = hiddenInObject.name;
 
-			if (hiddenInObject != null)
+			if (!(hiddenInObject is null))
 			{
 				agent.hiddenInObject = hiddenInObject;
 				hiddenInObject.agentHiding = agent;

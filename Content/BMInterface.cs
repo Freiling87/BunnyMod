@@ -27,7 +27,6 @@ namespace BunnyMod.Content
 		{
 			AgentHealthBar_00();
 			ObjectInfo_00();
-			PlayerControl_00();
 			OperatingBar_00();
 		}
 		#endregion
@@ -78,11 +77,6 @@ namespace BunnyMod.Content
 		#region PlayerControl
 		public void PlayerControl_00()
 		{
-			Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
-		}
-		public static void PlayerControl_Update() // Postfix
-		{
-			SetTraitZoom();
 		}
 		#endregion
 	}

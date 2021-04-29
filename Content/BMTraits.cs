@@ -564,7 +564,7 @@ namespace BunnyMod.Content
             VeiledThreats.Upgrade = null;
 
             CustomTrait Warlord = RogueLibs.CreateCustomTrait(cTrait.Warlord, true,
-                new CustomNameInfo("000: Warlord"),
+                new CustomNameInfo("Warlord"),
                 new CustomNameInfo("To crush your enemies, to see them fall at your feet -- to take their horses and goods and hear the lamentation of their women. That is best! You can convince anyone to accept your rule by force."));
             Warlord.Available = true;
             Warlord.AvailableInCharacterCreation = true;

@@ -93,54 +93,62 @@ namespace BunnyMod.Content
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
-			foreach (string mutator in cChallenge.WallsAndFloors)
-				if (GC.challenges.Contains(mutator))
-					return mutator;
-
 			return cChallenge.Null;
 		}
 		public static string GetFloorTileFromMutator()
 		{
+			BMLog("GetFloorTileFromMutator");
+
+			string result = "";
+
 			switch (GetFloorMutator())
 			{
-				// Floor Mods
-
 				case cChallenge.ArcologyEcology:
-					return vFloor.Grass;
+					result = vFloor.Grass;
+					break;
 
 				case cChallenge.SunkenCity:
-					return vFloor.Canal;
+					result = vFloor.Canal;
+					break;
 
 				case cChallenge.TransitExperiment:
-					return vFloor.IceRink;
-
-				default:
-					return "";
+					result = vFloor.IceRink;
+					break;
 			}
+			BMLog("\tResult: " + result);
+
+			return result;
 		}
 		public static string GetFloorTileGroupFromMutator()
 		{
+			BMLog("GetFloorTileGroupFromMutator");
+
+			string result = "";
+
 			switch (GetFloorMutator())
 			{
-				// Floor Mods
-
 				case cChallenge.ArcologyEcology:
-					return vFloorTileGroup.Park;
+					result = vFloorTileGroup.Park;
+					break;
 
 				case cChallenge.SunkenCity:
-					return vFloorTileGroup.Water;
+					result = vFloorTileGroup.Water;
+					break;
 
 				case cChallenge.TransitExperiment:
-					return vFloorTileGroup.Ice;
-
-				default:
-					return "";
+					result = vFloorTileGroup.Ice;
+					break;
 			}
+
+			BMLog("\tResult: " + result);
+
+			return result;
 		}
 		public static string GetFloorTileNumberFromMutator()
 		{
 			switch (GetFloorMutator())
 			{
+
 				case cChallenge.SunkenCity:
 					return "335";
 				case cChallenge.TransitExperiment:
@@ -1410,9 +1418,11 @@ namespace BunnyMod.Content
 								__instance.tileInfo.tileArray[i, j - 1].chunkID = __instance.mapChunkArray[x, y].chunkID;
 								int tile = 0;
 
+								BMLog("\tA");
+
 								if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
-									if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
+									if (GetFloorTileGroupFromMutator() != "")
 										tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 									else if (GC.levelTheme == 0)
 										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -1484,9 +1494,11 @@ namespace BunnyMod.Content
 									tileData.wallMaterial = wallMaterialType.Border;
 									int tile2 = 0;
 
+									BMLog("\tB");
+
 									if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
-										if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
+										if (GetFloorTileGroupFromMutator() != "")
 											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 										else if (GC.levelTheme == 0)
 											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -9181,7 +9193,7 @@ namespace BunnyMod.Content
 		{
 			Prefix(typeof(RandomFloorsWalls), "fillFloorsWalls", GetType(), "RandomFloorsWalls_fillFloorsWalls", new Type[0] { });
 		}
-		public static bool RandomFloorsWalls_fillFloorswalls() // Replacement
+		public static bool RandomFloorsWalls_fillFloorsWalls() // Replacement
 		{
 			string floorType = null;
 
@@ -9194,8 +9206,6 @@ namespace BunnyMod.Content
 			{
 				RandomSelection component = GameObject.Find("ScriptObject").GetComponent<RandomSelection>();
 				RandomList rList;
-
-				string tilenumber = GetFloorTileNumberFromMutator();
 
 				rList = component.CreateRandomList(vFloorTileGroup.Wall, "RandomFloorWall", "RandomFloorsWalls");
 				component.CreateRandomElement(rList, "0", 5);
@@ -9223,6 +9233,8 @@ namespace BunnyMod.Content
 				component.CreateRandomElement(rList, "4", 5);
 
 				// Here goes :shrug:
+
+				string tilenumber = GetFloorTileNumberFromMutator();
 
 				rList = component.CreateRandomList(vFloorTileGroup.UnknownPossiblyGeneric, "RandomFloorWall", "RandomFloorsWalls");
 				component.CreateRandomElement(rList, tilenumber, 5);

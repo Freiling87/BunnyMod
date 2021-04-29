@@ -117,7 +117,7 @@ namespace BunnyMod.Content
     public static class cBuffText
 	{
         public const string
-            DoubleTap = "DoubleTap";
+            Headshot = "Headshot";
 	}
     public static class cButtonText
 	{

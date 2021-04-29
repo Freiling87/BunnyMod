@@ -37,14 +37,6 @@ namespace BunnyMod.Content
         #region Main
         public void Awake()
         {
-            Initialize_Names();
-            Initialize_Traits();
-        }
-        public static void Initialize_Names()
-        {
-        }
-        public static void Initialize_Traits()
-        {
             #region Drug Limitations
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,
                 new CustomNameInfo("DAREdevil"),

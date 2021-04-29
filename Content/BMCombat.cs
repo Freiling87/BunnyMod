@@ -17,15 +17,419 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			Initialize_Names();
+
 			Bullet_00();
 			PlayfieldObject_00();
 			SpawnerMain_00();
+		}
+		public void Initialize_Names()
+		{
+			string t = vNameType.Interface;
+
+			CustomName headshot = RogueLibs.CreateCustomName("Headshot", t, new CustomNameInfo("Headshot"));
 		}
 
 		#region Bullet
 		public void Bullet_00()
 		{
-			Postfix(typeof(Bullet), "SetupBullet", GetType(), "Bullet_SetupBullet", new Type[0] { });
+			Type t = typeof(Bullet);
+			Type g = GetType();
+
+			Prefix(t, "FindParticleStoppingPoint", g, "Bullet_FindParticleStoppingPoint", new Type[0] { });
+			Prefix(t, "FindStoppingPoint", g, "Bullet_FindStoppingPoint", new Type[0] { });
+			Postfix(t, "SetupBullet", g, "Bullet_SetupBullet", new Type[0] { });
+		}
+		public static bool Bullet_FindParticleStoppingPoint(Bullet __instance, ref Vector2 __result, RaycastHit2D[] ___hitsAlloc) // Replacement
+		{
+			Vector2 vector = Vector2.zero;
+
+			if (__instance.agent == null)
+			{
+				if (__instance.objectReal != null)
+				{
+					switch(__instance.objectReal.direction)
+					{
+						case "N":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 0f);
+							break;
+						case "NE":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 315f);
+							break;
+						case "E":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 270f);
+							break;
+						case "SE":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 225f);
+							break;
+						case "S":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 180f);
+							break;
+						case "SW":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 135f);
+							break;
+						case "W":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 90f);
+							break;
+						case "NW":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 45f);
+							break;
+					}
+
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.tr.position;
+					__instance.tr.rotation = Quaternion.Euler(0f, 0f, 0f);
+				}
+			}
+			else if ((!__instance.agent.localPlayer || __instance.agent.outOfControl) && !__instance.agent.objectAgent)
+			{
+				if (__instance.agent.outOfControl && __instance.agent.isPlayer != 0)
+					vector = __instance.agent.opponent.tr.position - __instance.agent.tr.position;
+				else if (__instance.agent.isPlayer != 0)
+					vector = __instance.agent.gun.holdAttackAimPoint - __instance.agent.tr.position;
+				else if (__instance.agent.oma.mindControlled)
+				{
+					__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.agent.tr.position;
+				}
+				else if (GC.serverPlayer)
+					vector = __instance.agent.opponent.tr.position - __instance.agent.tr.position;
+				else
+					vector = __instance.agent.gun.holdAttackAimPoint - __instance.agent.tr.position;
+			}
+			else if (__instance.agent.controllerType == "Keyboard")
+			{
+				if (GC.sessionDataBig.trackpadMode)
+				{
+					__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.agent.tr.position;
+				}
+				else
+					vector = __instance.agent.agentCamera.actualCamera.ScreenCamera.ScreenToWorldPoint(Input.mousePosition) - __instance.agent.tr.position;
+			}
+			else
+			{
+				if (__instance.agent.isPlayer > 0 && !__instance.agent.outOfControl && __instance.agent.localPlayer)
+				{
+					if (__instance.agent.target.AttackTowardTarget())
+						vector = __instance.agent.target.tr.position - __instance.agent.tr.position;
+					else
+					{
+						__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
+						__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+						vector = __instance.dirHelper.position - __instance.agent.tr.position;
+					}
+				}
+				else if ((__instance.agent.isPlayer <= 0 || __instance.agent.outOfControl || __instance.agent.localPlayer) && !GC.serverPlayer)
+					_ = __instance.agent.localPlayer;
+
+				if (__instance.agent.objectAgent)
+				{
+					switch (__instance.agent.assignedObjectReal.direction)
+					{
+						case "N":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 0f);
+							break;
+						case "NE":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 315f);
+							break;
+						case "E":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 270f);
+							break;
+						case "SE":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 225f);
+							break;
+						case "S":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 180f);
+							break;
+						case "SW":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 135f);
+							break;
+						case "W":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 90f);
+							break;
+						case "NW":
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, 45f);
+							break;
+					}
+					
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.tr.position;
+					__instance.tr.rotation = Quaternion.Euler(0f, 0f, 0f);
+				}
+			}
+
+			int num2 = 0;
+			Vector2 vector2 = Vector2.zero;
+			
+			if (__instance.agent != null)
+			{
+				vector2 = __instance.agent.tr.position;
+				num2 = Physics2D.RaycastNonAlloc(vector2, vector.normalized, ___hitsAlloc, 13.44f, __instance.myLayerMask);
+			}
+			else if (__instance.objectReal != null)
+			{
+				vector2 = __instance.objectReal.tr.position;
+				num2 = Physics2D.RaycastNonAlloc(vector2, vector.normalized, ___hitsAlloc, 13.44f, __instance.myLayerMask);
+			}
+			
+			float num3 = 13.44f;
+
+			BMLog("\tTrait Check");
+
+			if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
+				num3 = 20.00f;
+			else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper_2))
+				num3 = 50.00f;
+
+			BMLog("\tnum3 = " + num3);
+
+			Vector2 ___result = Vector2.zero;
+			__instance.stoppingPointObject = null;
+			Window window = null;
+			
+			for (int i = 0; i < num2; i++)
+			{
+				RaycastHit2D raycastHit2D = ___hitsAlloc[i];
+			
+				if (raycastHit2D.collider.CompareTag("Wall"))
+				{
+					if (Vector2.Distance(vector2, raycastHit2D.collider.transform.position) < num3)
+					{
+						num3 = raycastHit2D.distance;
+						___result = raycastHit2D.collider.transform.position;
+						__instance.stoppingPointObject = null;
+					}
+				}
+				else if (raycastHit2D.collider.CompareTag("ObjectRealSprite"))
+				{
+					bool flag = true;
+					ObjectReal objectReal = null;
+
+					if (raycastHit2D.collider.name.Contains("ExtraSprite"))
+						__instance.objectReal = raycastHit2D.collider.transform.parent.transform.parent.GetComponent<ObjectReal>();
+					else
+						objectReal = raycastHit2D.collider.transform.parent.GetComponent<ObjectReal>();
+					
+					if (__instance.objectReal == objectReal)
+						flag = false;
+					
+					if (__instance.bulletType == bulletStatus.FireExtinguisher || __instance.bulletType == bulletStatus.Water || __instance.bulletType == bulletStatus.Water2)
+						flag = false;
+					
+					if (objectReal.bulletsCanPass)
+					{
+						flag = false;
+
+						if (objectReal.objectName == "Window")
+						{
+							if (__instance.bulletType == bulletStatus.LeafBlower || __instance.bulletType == bulletStatus.FireExtinguisher || __instance.bulletType == bulletStatus.ResearchGun || __instance.bulletType == bulletStatus.Water || __instance.bulletType == bulletStatus.Water2)
+								flag = true;
+							else
+							{
+								Window window2 = (Window)objectReal;
+						
+								if (!window2.hitWindowOnce)
+								{
+									window = window2;
+									flag = true;
+								}
+							}
+						}
+					}
+
+					if (flag && Vector2.Distance(vector2, raycastHit2D.collider.transform.position) < num3)
+					{
+						num3 = raycastHit2D.distance;
+						___result = raycastHit2D.collider.transform.position;
+						__instance.stoppingPointObject = objectReal;
+					}
+				}
+			}
+
+			if (window == __instance.stoppingPointObject && window != null)
+			{
+				window.hitWindowOnce = true;
+				__instance.RayHit(window);
+			}
+			
+			__instance.stoppingPointDistance = num3;
+
+			if (___result == Vector2.zero)
+				___result = -Vector2.one;
+
+			return false;
+		}
+		public static bool Bullet_FindStoppingPoint(Bullet __instance, ref Vector2 __result, RaycastHit2D[] ___hitsAlloc) // Replacement
+		{
+			BMLog("Bullet_FindStoppingPoint");
+
+			Vector2 vector = Vector2.zero;
+
+			if ((!__instance.agent.localPlayer || __instance.agent.outOfControl) && !__instance.agent.objectAgent)
+			{
+				if (__instance.agent.outOfControl && __instance.agent.isPlayer != 0)
+					vector = __instance.agent.opponent.tr.position - __instance.agent.tr.position;
+				else if (__instance.agent.isPlayer != 0)
+					vector = __instance.agent.gun.holdAttackAimPoint - __instance.agent.tr.position;
+				else if (__instance.agent.oma.mindControlled)
+				{
+					__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.agent.tr.position;
+				}
+				else if (GC.serverPlayer)
+					vector = __instance.agent.opponent.tr.position - __instance.agent.tr.position;
+				else
+					vector = __instance.agent.melee.attackObject.tr.position - __instance.agent.tr.position;
+			}
+			else if (__instance.agent.controllerType == "Keyboard")
+			{
+				if (GC.sessionDataBig.trackpadMode)
+				{
+					__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+					__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+					vector = __instance.dirHelper.position - __instance.agent.tr.position;
+				}
+				else
+					vector = __instance.agent.agentCamera.actualCamera.ScreenCamera.ScreenToWorldPoint(Input.mousePosition) - __instance.agent.tr.position;
+			}
+			else if (__instance.agent.target.AttackTowardTarget())
+				vector = __instance.agent.target.tr.position - __instance.agent.tr.position;
+			else
+			{
+				__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
+				__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+				vector = __instance.dirHelper.position - __instance.agent.tr.position;
+			}
+			
+			int num = Physics2D.RaycastNonAlloc(__instance.agent.tr.position, vector.normalized, ___hitsAlloc, 13.44f, __instance.myLayerMask);
+
+			float num2 = 13.44f;
+
+			BMLog("\tTrait Check");
+
+			if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
+				num2 = 20.00f;
+			else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper_2))
+				num2 = 50.00f;
+
+			BMLog("\tnum2 = " + num2);
+
+			__result = Vector2.zero;
+			__instance.stoppingPointObject = null;
+			Window window = null;
+
+			for (int i = 0; i < num; i++)
+			{
+				RaycastHit2D raycastHit2D = ___hitsAlloc[i];
+				bool flag = true;
+
+				if (GC.serverPlayer && !__instance.agent.localPlayer && __instance.agent.isPlayer != 0)
+					flag = false;
+
+				if (raycastHit2D.collider.CompareTag("Wall"))
+				{
+					if (Vector2.Distance(__instance.agent.tr.position, raycastHit2D.collider.transform.position) < num2)
+					{
+						num2 = raycastHit2D.distance;
+						__result = raycastHit2D.collider.transform.position;
+						__instance.stoppingPointObject = null;
+					}
+				}
+				else if (raycastHit2D.collider.CompareTag("ObjectRealSprite"))
+				{
+					bool flag2 = true;
+					ObjectReal objectReal = null;
+
+					if (raycastHit2D.collider.name.Contains("ExtraSprite"))
+						__instance.objectReal = raycastHit2D.collider.transform.parent.transform.parent.GetComponent<ObjectReal>();
+					else
+						objectReal = raycastHit2D.collider.transform.parent.GetComponent<ObjectReal>();
+					
+					if (!GC.serverPlayer && !__instance.agent.localPlayer)
+						flag = false;
+					
+					if (objectReal.bulletsCanPass)
+					{
+						flag2 = false;
+					
+						if (objectReal.objectName == "Window")
+						{
+							if (__instance.bulletType == bulletStatus.GhostBlaster)
+							{
+								if (!((Window)objectReal).hitWindowOnce)
+									flag2 = true;
+							}
+							else
+							{
+								Window window2 = (Window)objectReal;
+						
+								if (!window2.hitWindowOnce)
+								{
+									window = window2;
+									flag2 = true;
+								}
+							}
+						}
+					}
+
+					if (flag2 && Vector2.Distance(__instance.agent.tr.position, raycastHit2D.collider.transform.position) < num2)
+					{
+						num2 = raycastHit2D.distance;
+						__result = raycastHit2D.collider.transform.position;
+						__instance.stoppingPointObject = objectReal;
+					}
+				}
+				else if (raycastHit2D.collider.CompareTag("AgentSprite") && raycastHit2D.collider.gameObject != __instance.agent.agentSpriteTransform.gameObject)
+				{
+					GameObject go = raycastHit2D.collider.GetComponent<AgentColliderBox>().objectSprite.go;
+					Agent agent = go.GetComponent<ObjectSprite>().agent;
+
+					if (GC.multiplayerMode)
+					{
+						if (GC.serverPlayer && __instance.agent.localPlayer && agent.isPlayer > 0 && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+					
+						if (GC.serverPlayer && __instance.agent.isPlayer == 0 && agent.isPlayer > 0 && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+						
+						if (!GC.serverPlayer && __instance.agent.isPlayer == 0 && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+						
+						if (!GC.serverPlayer && __instance.agent.isPlayer > 0 && !__instance.agent.localPlayer && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+						
+						if (!GC.serverPlayer && __instance.agent.localPlayer && agent.isPlayer > 0 && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+						
+						if (!GC.serverPlayer && __instance.agent.isPlayer != 0 && !__instance.agent.localPlayer && agent.isPlayer != 0 && !agent.localPlayer && agent != __instance.agent)
+							flag = false;
+					}
+
+					if ((!agent.bulletsCanPass || agent.ghost) && agent != __instance.agent && agent.DontHitAlignedCheck(__instance.agent) && Vector2.Distance(__instance.agent.tr.position, go.transform.position) < num2)
+					{
+						num2 = raycastHit2D.distance;
+						__result = go.transform.position;
+						__instance.stoppingPointObject = go.GetComponent<ObjectSprite>().playFieldObject;
+					}
+				}
+
+				if (!flag)
+					__instance.stoppingPointObject = null;
+			}
+
+			if (window == __instance.stoppingPointObject && window != null)
+			{
+				window.hitWindowOnce = true;
+				__instance.RayHit(window);
+			}
+			
+			__instance.stoppingPointDistance = num2;
+			
+			return false;
 		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
@@ -585,19 +989,20 @@ namespace BunnyMod.Content
 						else if (damagedAgent.statusEffects.hasTrait("ResistBulletsTrait"))
 							dmg /= 1.5f;
 
-						bool bulletSneakAttack = false;
+						bool headShot = false;
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) || damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper_2) &&
 							!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && 
-							damagedAgent.movement.GetDistance(damagerAgent.gameObject, damagedAgent.gameObject) <= 1f)
-							bulletSneakAttack = true;
+							!damagedAgent.movement.HasLOSAgent(damagerAgent) &&
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) <= 0.64f)
+							headShot = true;
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) || damagerAgent.statusEffects.hasTrait(cTrait.Sniper_2) &&
-							!damagedAgent.movement.HasLOSAgent(damagerAgent) &&
-							damagedAgent.movement.GetDistance(damagerAgent.gameObject, damagedAgent.gameObject) >= 5f)
-							bulletSneakAttack = true;
+							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || damagerAgent.hiddenInObject || damagerAgent.invisible)&&
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 5.12f)
+							headShot = true;
 
-						if (bulletSneakAttack)
+						if (headShot)
 						{
 							if (damagedAgent.sleeping)
 							{
@@ -605,7 +1010,7 @@ namespace BunnyMod.Content
 								damagedAgent.agentHitboxScript.wholeBodyMode = 0;
 								damagerAgent.melee.successfullySleepKilled = true;
 
-								damagedAgent.statusEffects.CreateBuffText(cBuffText.DoubleTap, damagedAgent.objectNetID);
+								damagedAgent.statusEffects.CreateBuffText(cBuffText.Headshot, damagedAgent.objectNetID);
 							}
 							else if (
 								(dmg != 200f && !damagedAgent.dead) ||
@@ -620,9 +1025,11 @@ namespace BunnyMod.Content
 								if (!GC.tileInfo.IsOverlapping(damagedAgent.agentHelperTr.position, "Wall"))
 								{
 									damagedAgent.agentHelperTr.localPosition = Vector3.zero;
-									damagedAgent.statusEffects.CreateBuffText(cBuffText.DoubleTap, damagedAgent.objectNetID);
+									damagedAgent.statusEffects.CreateBuffText(cBuffText.Headshot, damagedAgent.objectNetID);
 
-									if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
+									if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || 
+										(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+										damagerAgent.hiddenInObject)
 									{
 										dmg *= 10f;
 										damagerAgent.melee.successfullyBackstabbed = true;

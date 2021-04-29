@@ -204,7 +204,7 @@ namespace BunnyMod.Content
             SingleMinded,
             Workhorse
         };
-        public static List<string> WallsAndFloors = new List<string>()
+        public static List<string> Walls = new List<string>()
         {
             CityOfSteel,
             GreenLiving,

@@ -966,9 +966,6 @@ namespace BunnyMod.Content
         {
             __instance.interactable = true;
 
-            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = false;
-
             //TODO: Closed Bath Curtain sprite?
             // See Generator.Start() for how to set animation sprites. Maybe just toggle sprite when used/unused.
         }
@@ -1857,10 +1854,6 @@ namespace BunnyMod.Content
         public static void Plant_SetVars(Plant __instance) // Postfix
         {
             __instance.interactable = true;
-
-            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = false;
-
             //__instance.lowInteractionPriority = true;
         }
         #endregion
@@ -1883,10 +1876,6 @@ namespace BunnyMod.Content
         public static void PoolTable_SetVars(PoolTable __instance) // Postfix
         {
             __instance.interactable = true;
-
-            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = false;
-
             //__instance.lowInteractionPriority = true;
         }
         #endregion
@@ -2641,10 +2630,6 @@ namespace BunnyMod.Content
         public static void TableBig_SetVars(TableBig __instance) // Postfix
         {
             __instance.interactable = true;
-
-            if (!BMTraits.IsPlayerTraitActive(cTrait.StealthBastardDeluxe))
-                __instance.interactable = false;
-            
             //__instance.lowInteractionPriority = true;
         }
         #endregion

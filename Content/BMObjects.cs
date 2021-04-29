@@ -276,6 +276,8 @@ namespace BunnyMod.Content
             else if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.operatingBarType == "Collecting")
                 __instance.CollectPart();
 
+            __instance.StopInteraction();
+
             return false;
         }
         public static bool ObjectReal_Interact(Agent agent, ObjectReal __instance) // Replacement

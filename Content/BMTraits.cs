@@ -539,14 +539,14 @@ namespace BunnyMod.Content
             Polarizing_2.Upgrade = null;
 
             CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
-                new CustomNameInfo("000: Priors"),
-                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. They are sick of your shit, and just looking for an excuse to beat you down."));
+                new CustomNameInfo("Priors"),
+                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. So do the criminal element, whose respect you have earned."));
             Priors.Available = true;
             Priors.AvailableInCharacterCreation = true;
             Priors.CanRemove = true;
             Priors.CanSwap = true;
             Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
-            Priors.CostInCharacterCreation = -2;
+            Priors.CostInCharacterCreation = -1;
             Priors.IsActive = true;
             Priors.Upgrade = null;
 

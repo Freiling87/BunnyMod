@@ -181,6 +181,8 @@ namespace BunnyMod.Content
 						___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2) ||
 						(___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
 						newRel = vRelationship.Annoyed;
+					else if (___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.Criminal.Contains(otherAgent.agentName))
+						newRel = vRelationship.Friendly;
 					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
 					{
 						if (roll <= 50)

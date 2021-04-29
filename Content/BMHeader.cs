@@ -431,6 +431,14 @@ namespace BunnyMod.Content
             Wrestler = "Wrestler",
             Zombie = "Zombie";
 
+        public static List<string> Criminal = new List<string>()
+        {
+            Blahd,
+            Crepe,
+            DrugDealer,
+            Mobster,
+            Thief,
+        };
         public static List<string> LawEnforcement = new List<string>()
         {
             Cop,

@@ -1418,7 +1418,7 @@ namespace BunnyMod.Content
 
 								if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
-									if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+									if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
 										tile = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 									else if (GC.levelTheme == 0)
 										tile = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));
@@ -1492,7 +1492,7 @@ namespace BunnyMod.Content
 
 									if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
-										if (BMChallenges.IsChallengeFromListActive(cChallenge.FloorsAndFeatures) || BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
+										if (BMChallenges.IsChallengeFromListActive(cChallenge.WallsAndFloors))
 											tile2 = int.Parse(GC.rnd.RandomSelect(GetFloorTileGroupFromMutator(), "RandomFloorsWalls"));
 										else if (GC.levelTheme == 0)
 											tile2 = int.Parse(GC.rnd.RandomSelect(vFloorTileGroup.Slums, "RandomFloorsWalls"));

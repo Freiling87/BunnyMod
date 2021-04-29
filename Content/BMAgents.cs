@@ -350,25 +350,27 @@ namespace BunnyMod.Content
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
 		{
 			BMLog("StatusEffects_BecomeHidden");
-			try { BMLog("\tObjectReal: " + hiddenInObject.name); }
-			catch { BMLog("\tObjectReal: null"); }
-			BMLog("\tAgent: " + __instance.agent.agentName);
 
 			int a = 0;
 
 			Agent agent = __instance.agent;
 			agent.oma.hidden = true;
-			string objName = hiddenInObject.name;
-
+			
 			BMLog("\tA" + a++);
 
 			if (!(hiddenInObject is null))
 			{
 				BMLog("\tB" + a++);
 
+				string objName = hiddenInObject.name;
 				agent.hiddenInObject = hiddenInObject;
 				hiddenInObject.agentHiding = agent;
-				agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
+				
+				if (objName == vObject.Bush)
+					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
+				else
+					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y);
+
 				agent.rb.velocity = Vector2.zero;
 
 				BMLog("\tB" + a++);
@@ -431,6 +433,7 @@ namespace BunnyMod.Content
 		public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
 		{
 			__instance.agent.agentCollider.enabled = true;
+			__instance.agent.EnableHitboxes(true);
 		}
 		public static bool StatusEffects_ChangeHealth(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient, float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance, ref HealthBar ___healthBar) // Replacement
 		{

@@ -256,16 +256,24 @@ namespace BunnyMod.Content
 			catch { BMLog("\tObjectReal: null"); }
 			BMLog("\tAgent: " + __instance.agent.agentName);
 
+			int a = 0;
+
 			Agent agent = __instance.agent;
 			__instance.agent.oma.hidden = true;
 			string obj = hiddenInObject.name;
 
+			BMLog("\tA" + a++);
+
 			if (!(hiddenInObject is null))
 			{
+				BMLog("\tB" + a++);
+
 				agent.hiddenInObject = hiddenInObject;
 				hiddenInObject.agentHiding = agent;
 				agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
 				agent.rb.velocity = Vector2.zero;
+
+				BMLog("\tB" + a++);
 
 				if (obj == vObject.Manhole || obj == vObject.Plant || obj == vObject.PoolTable || obj == vObject.TrashCan || obj == vObject.Bathtub || obj == vObject.TableBig)
 				{
@@ -274,15 +282,21 @@ namespace BunnyMod.Content
 				}
 			}
 
+			BMLog("\tA" + a++);
+
 			if (!GC.consoleVersion)
 				agent.EnableMouseboxes(false);
-			
+
+			BMLog("\tA" + a++);
+
 			agent.agentHitboxScript.shadow.GetComponent<MeshRenderer>().enabled = false;
 			agent.SetInvisible(true);
 			agent.objectSprite.RefreshRenderer();
 			agent.objectMult.BecomeHidden();
 			GC.audioHandler.Play(agent, "Hide");
-			
+
+			BMLog("\tA" + a++);
+
 			if (GC.loadComplete)
 				for (int i = 0; i < GC.activeBrainAgentList.Count; i++)
 				{
@@ -297,11 +311,15 @@ namespace BunnyMod.Content
 					}
 				}
 
+			BMLog("\tA" + a++);
+
 			if (agent.isPlayer != 0 && agent.localPlayer)
 			{
 				agent.blockWalking = true;
 				__instance.StartCoroutine(StatusEffects_WaitForAgentUnhide(__instance));
 			}
+
+			BMLog("\tA" + a++);
 
 			if (!(hiddenInObject is null))
 				if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen) && agent.isPlayer == 0 && hiddenInObject.objectName == vObject.Manhole)

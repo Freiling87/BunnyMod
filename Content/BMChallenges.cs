@@ -59,7 +59,7 @@ namespace BunnyMod.Content
 			#region Floors & Features
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("FloorTiles: Arcology Ecology"),
+				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
 				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);

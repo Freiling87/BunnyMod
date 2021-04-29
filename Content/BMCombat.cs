@@ -1,8 +1,8 @@
-﻿using RogueLibsCore;
+﻿using HarmonyLib;
+using RogueLibsCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -46,6 +46,271 @@ namespace BunnyMod.Content
 				__instance.speed = Mathf.Min(65, __instance.speed * 3);
 			}
 		}
+		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
+		{
+			if (Time.timeScale != 0f)
+			{
+				bool flag = true;
+				Vector2 vector = __instance.tr.position;
+				float maxBulletDistance = 13f;
+
+				if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
+					maxBulletDistance = 50f;
+
+				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
+
+				if (__instance.agent != null && Vector2.Distance(__instance.agent.curPosition, vector) > maxBulletDistance)
+					flag = false;
+				
+				if (!GC.splitScreen)
+				{
+					if (!flag && Vector2.Distance(GC.cameraScript.containerTr.position, vector) > maxBulletDistance)
+					{
+						if (GC.activePooling)
+							__instance.bulletSprite.SetSprite(__instance.bulletSprite.GetSpriteIdByName("Clear"));
+
+						destroyMe_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+						return false;
+					}
+				}
+				else if (!flag)
+				{
+					if (GC.coopMode)
+					{
+						if (Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance && 
+							Vector2.Distance(GC.cameraScriptS2.containerTr.position, vector) > maxBulletDistance)
+						{
+							if (GC.activePooling)
+								__instance.bulletSprite.SetSprite(__instance.bulletSprite.GetSpriteIdByName("Clear"));
+
+							destroyMe_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+							return false;
+						}
+					}
+					else if (GC.fourPlayerMode && 
+						Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance && 
+						Vector2.Distance(GC.cameraScriptS2.containerTr.position, vector) > maxBulletDistance && 
+						Vector2.Distance(GC.cameraScriptS3.containerTr.position, vector) > maxBulletDistance && 
+						Vector2.Distance(GC.cameraScriptS4.containerTr.position, vector) > maxBulletDistance)
+					{
+						if (GC.activePooling)
+							__instance.bulletSprite.SetSprite(__instance.bulletSprite.GetSpriteIdByName("Clear"));
+
+						destroyMe_Base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+						return false;
+					}
+				}
+
+				Vector3 position = new Vector3(vector.x, vector.y, -2f + (vector.y - 1.28f) * 100f / 100000f);
+				___bulletSpriteTr.position = position;
+				__instance.timeSinceLaunch += Time.deltaTime;
+
+				if (__instance.bulletType == bulletStatus.Fire || 
+					__instance.bulletType == bulletStatus.Water || 
+					__instance.bulletType == bulletStatus.Water2 || 
+					__instance.bulletType == bulletStatus.LeafBlower || 
+					__instance.bulletType == bulletStatus.ResearchGun || 
+					__instance.bulletType == bulletStatus.FireExtinguisher)
+				{
+					float num = 0.4f;
+					float num2 = 0.35f;
+
+					if (__instance.bulletType == bulletStatus.ResearchGun)
+					{
+						num = 0.2f;
+						num2 = 0.15f;
+					}
+					else if (__instance.bulletType == bulletStatus.Water2)
+					{
+						num = 0.6f;
+						num2 = 0.55f;
+					}
+
+					if (__instance.timeSinceLaunch >= num2 && !__instance.bulletFireStopped)
+					{
+						__instance.bulletFireStopped = true;
+
+						if (__instance.particles != null)
+						{
+							__instance.particles.GetComponent<ParticleSystem>().Stop();
+							float num3 = __instance.myParticleScale;
+							__instance.particles.transform.SetParent(GC.particleEffectsNest.transform);
+							__instance.particles.transform.localScale = new Vector3(num3, num3, num3);
+
+							return false;
+						}
+					}
+					else if (__instance.timeSinceLaunch >= num)
+					{
+						__instance.DestroyMe();
+
+						return false;
+					}
+				}
+				else if (__instance.bulletType == bulletStatus.GhostBlaster)
+				{
+					try
+					{
+						__instance.tr.position = __instance.agent.tr.position;
+						__instance.agent.gun.visibleTime = 4f;
+
+						if ((!__instance.agent.localPlayer || __instance.agent.outOfControl) && !__instance.agent.objectAgent)
+						{
+							if (__instance.agent.isPlayer != 0 && __instance.agent.outOfControl)
+								__instance.movement.RotateToPositionOffsetTr(__instance.agent.opponent.tr.position);
+							else if (__instance.agent.isPlayer != 0)
+							{
+								Vector3 vector2 = __instance.agent.gun.holdAttackAimPoint - __instance.tr.position;
+								vector2.Normalize();
+								float num4 = Mathf.Atan2(vector2.y, vector2.x) * 57.29578f;
+								Quaternion b = Quaternion.Euler(0f, 0f, num4 - 90f);
+								__instance.tr.rotation = Quaternion.Slerp(__instance.tr.rotation, b, Time.deltaTime * 15f);
+							}
+							else if (__instance.agent.oma.mindControlled)
+								__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+							else if (GC.serverPlayer)
+								__instance.movement.RotateToPositionOffsetTr(__instance.agent.opponent.tr.position);
+							else
+								__instance.movement.RotateToPositionOffsetTr(__instance.agent.melee.attackObject.tr.position);
+						}
+						else if (__instance.agent.controllerType == "Keyboard")
+						{
+							if (GC.sessionDataBig.trackpadMode)
+								__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+							else
+								__instance.movement.RotateToMouseTr(__instance.agent.agentCamera.actualCamera);
+						}
+						else if (__instance.agent.target.AttackTowardTarget())
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.target.transform.eulerAngles.z);
+						else
+							__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
+						
+						if (__instance.FindStoppingPoint() != Vector2.zero)
+						{
+							__instance.movement.MoveForwardTransform(__instance.stoppingPointDistance / 2f);
+							__instance.tr.localScale = new Vector3(__instance.tr.localScale.x, __instance.stoppingPointDistance / 2f, __instance.tr.localScale.z);
+							__instance.particles.GetComponent<ParticleSystem>().emissionRate = __instance.stoppingPointDistance * 150f;
+							ParticleSystem.ShapeModule a = __instance.particles.GetComponent<ParticleSystem>().shape;
+							a.length = __instance.stoppingPointDistance - 0.32f;
+						}
+						else
+						{
+							if ((!__instance.agent.localPlayer || __instance.agent.outOfControl) && !__instance.agent.objectAgent)
+							{
+								if (__instance.agent.isPlayer != 0 && __instance.agent.outOfControl)
+									__instance.movement.RotateToPositionOffsetTr(__instance.agent.opponent.tr.position);
+								else if (__instance.agent.isPlayer != 0)
+								{
+									Vector3 vector3 = __instance.agent.gun.holdAttackAimPoint - __instance.tr.position;
+									vector3.Normalize();
+									float num5 = Mathf.Atan2(vector3.y, vector3.x) * 57.29578f;
+									Quaternion b2 = Quaternion.Euler(0f, 0f, num5 - 90f);
+									__instance.tr.rotation = Quaternion.Slerp(__instance.tr.rotation, b2, Time.deltaTime * 15f);
+								}
+								else if (__instance.agent.oma.mindControlled)
+									__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+								else if (GC.serverPlayer)
+									__instance.movement.RotateToPositionOffsetTr(__instance.agent.opponent.tr.position);
+								else
+									__instance.movement.RotateToPositionOffsetTr(__instance.agent.melee.attackObject.tr.position);
+							}
+							else if (__instance.agent.controllerType == "Keyboard")
+							{
+								if (GC.sessionDataBig.trackpadMode)
+									__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+								else
+									__instance.movement.RotateToMouseTr(__instance.agent.agentCamera.actualCamera);
+							}
+							else if (__instance.agent.target.AttackTowardTarget())
+								__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.target.transform.eulerAngles.z);
+							else
+								__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
+							
+							__instance.movement.MoveForwardTransform(6.72f);
+							__instance.tr.localScale = new Vector3(__instance.tr.localScale.x, 6.72f, __instance.tr.localScale.z);
+							__instance.particles.GetComponent<ParticleSystem>().emissionRate = 2015.9999f;
+							ParticleSystem.ShapeModule a = __instance.particles.GetComponent<ParticleSystem>().shape;
+							a.length = 13.12f;
+						}
+
+						__instance.particles.transform.position = __instance.agent.tr.position;
+						__instance.particles.transform.Translate(Vector3.forward * 0.32f, Space.Self);
+						bool flag2 = false;
+						__instance.timeToDamage += Time.deltaTime;
+
+						if (__instance.timeToDamage >= 0.05f)
+						{
+							flag2 = true;
+							__instance.timeToDamage = 0f;
+						}
+						
+						if (GC.multiplayerMode && __instance.agent.isPlayer != 0)
+						{
+							__instance.timeToSendAimPoint += Time.deltaTime;
+						
+							if (__instance.timeToSendAimPoint >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) && (GC.serverPlayer || __instance.agent.isPlayer != 0))
+							{
+								Vector3 v = Vector3.zero;
+							
+								if (__instance.agent.controllerType == "Keyboard")
+								{
+									if (GC.sessionDataBig.trackpadMode)
+									{
+										__instance.movement.RotateToAngleTransform(__instance.agent.tr.eulerAngles.z - 90f);
+										__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+										v = __instance.dirHelper.position;
+									}
+									else
+										v = __instance.agent.agentCamera.actualCamera.ScreenCamera.ScreenToWorldPoint(Input.mousePosition);
+								}
+								else if (__instance.agent.target.AttackTowardTarget())
+									v = __instance.agent.target.tr.position;
+								else
+								{
+									__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
+									__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
+									v = __instance.dirHelper.position;
+								}
+								
+								__instance.agent.objectMult.SendHoldAttackAimPoint(v);
+								__instance.timeToSendAimPoint = 0f;
+							}
+						}
+
+						if (__instance.stoppingPointObject != null && flag2)
+							__instance.RayHit(__instance.stoppingPointObject);
+						
+						if (__instance.timeSinceLaunch >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) && (GC.serverPlayer || __instance.agent.isPlayer != 0))
+						{
+							__instance.bulletFireStopped = true;
+							__instance.agent.objectMult.StopHoldAttack();
+							__instance.DestroyMe();
+						}
+						
+						if (__instance.agent.gun.stopHoldAttack)
+						{
+							GC.audioHandler.Fade(__instance.agent, "GhostGibberFire");
+							GC.audioHandler.Fade(__instance.agent, "GhostGibberLoop");
+							__instance.agent.gun.stopHoldAttack = false;
+							__instance.bulletFireStopped = true;
+							__instance.timeSinceLaunch = 0f;
+							__instance.timeToSendAimPoint = 0f;
+							__instance.DestroyMe();
+						}
+					}
+					catch
+					{
+						Debug.LogError("Ghost Gibber Error");
+						__instance.DestroyMe();
+					}
+				}
+			}
+
+			return false;
+		}
 		#endregion
 		#region PlayfieldObject
 		public void PlayfieldObject_00()
@@ -55,6 +320,8 @@ namespace BunnyMod.Content
 		public static bool PlayfieldObject_FindDamage(PlayfieldObject damagerObject, bool generic, bool testOnly, bool fromClient, PlayfieldObject __instance, ref int __result) // Replacement
 		{
 			// Not sure what Generic is, but it does not ever seem to be anything but false.
+
+			BMLog("PlayfieldObject_FindDamage");
 
 			Agent damagedAgent = null;
 			ObjectReal objectReal = null;
@@ -84,6 +351,7 @@ namespace BunnyMod.Content
 			bool flag8 = false;
 			bool flag9 = false;
 
+			#region Section 1
 			if (damagerObject.isAgent)
 			{
 				damagerAgent = damagerObject.GetComponent<Agent>();
@@ -471,9 +739,11 @@ namespace BunnyMod.Content
 					damagedAgent.deathKiller = "Nature";
 				}
 			}
+			#endregion
 
 			bool playerDamagedByNpc = false;
-			
+
+			#region Section 2
 			if (flag2)
 			{
 				if (damagerAgent.isPlayer != 0 && !damagerAgent.localPlayer)
@@ -585,6 +855,8 @@ namespace BunnyMod.Content
 				{
 					if (!isGhostBlasterDamage)
 					{
+						BMLog("\tBullet hit");
+
 						if (damagedAgent.statusEffects.hasTrait("ResistBullets"))
 							dmg /= 1.5f;
 
@@ -598,16 +870,22 @@ namespace BunnyMod.Content
 
 						bool headShot = false;
 
-						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) || damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper_2) &&
-							!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && 
-							!damagedAgent.movement.HasLOSAgent(damagerAgent) &&
+						BMLog("\tDistance: "+ Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position));
+						BMLog("\tHasLOSObjectBehind: " + damagedAgent.movement.HasLOSObjectBehind(damagerAgent));
+						BMLog("\tHasLOSAgent: " + damagedAgent.movement.HasLOSAgent(damagerAgent));
+
+						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
+							((!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.movement.HasLOSAgent(damagerAgent)) ||
+							!(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
 							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) <= 0.64f)
 							headShot = true;
 
-						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) || damagerAgent.statusEffects.hasTrait(cTrait.Ballistician) &&
-							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || damagerAgent.hiddenInObject || damagerAgent.invisible)&&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 5.12f)
+						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
+							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || !(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 10.24f)
 							headShot = true;
+
+						BMLog("\tHeadshot: " + headShot);
 
 						if (headShot)
 						{
@@ -699,7 +977,8 @@ namespace BunnyMod.Content
 			}
 			else if (!(type == "Explosion"))
 				_ = type == "Hazard";
-			
+			#endregion
+
 			if (flag2 && instanceIsAgent && !testOnly)
 			{
 				if (damagerAgent.statusEffects.hasTrait("BloodyMess"))

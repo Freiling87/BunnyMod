@@ -2370,7 +2370,7 @@ namespace BunnyMod.Content
 
             advantage = __instance.interactingAgent.DetermineLuck(advantage, "SlotMachine", true);
 
-            if (GC.percentChance(1))
+            if (GC.percentChance(1) || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
             {
                 SlotMachine_Jackpot(gambleAmt * 10, __instance);
             }

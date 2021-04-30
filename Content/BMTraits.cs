@@ -37,6 +37,16 @@ namespace BunnyMod.Content
         #region Main
         public void Awake()
         {
+            CustomTrait DebugTrait = RogueLibs.CreateCustomTrait(cTrait.Debug, true,
+                new CustomNameInfo(cTrait.Debug),
+                new CustomNameInfo("Debug trait. If you see this, I hope you're me."));
+            DebugTrait.Available = true;
+            DebugTrait.AvailableInCharacterCreation = true;
+            DebugTrait.CanRemove = false;
+            DebugTrait.CanSwap = false;
+            DebugTrait.CostInCharacterCreation = 0;
+            DebugTrait.IsActive = true;
+
             #region Combat
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,
                 new CustomNameInfo("000: Ballistician"),

@@ -240,6 +240,7 @@ namespace BunnyMod.Content
             Cursed = "Cursed",
             Cursed_2 = "Cursed2",
             DAREdevil = "DAREdevil",
+            Debug = "00_Debug",
             DimBulb = "DimBulb",
             Domineering = "Domineering",
             Domineering_2 = "Domineering2",

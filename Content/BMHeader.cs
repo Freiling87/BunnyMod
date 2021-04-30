@@ -120,11 +120,14 @@ namespace BunnyMod.Content
             Headshot = "Headshot";
 	}
     public static class cButtonText
-	{
+    {
         public const string
+            DispenseIce = "DispenseIce",
             GrillFudPaid = "GrillFudPaid",
             HideInContainer = "HideInContainer",
             OpenContainer = "OpenContainer",
+            SlotMachinePlay1 = "Play1",
+            SlotMachinePlay100 = "Play100",
             StealItem = "StealItem";
 	}
     public static class cChallenge // Custom Mutators
@@ -217,6 +220,16 @@ namespace BunnyMod.Content
             GreenLiving,
             ShantyTown
         };
+    }
+    public static class cDialogue // Custom Dialogue
+	{
+        public const string
+            MachineBusy = "MachineBusy",
+            SlotMachineJackpot_1 = "SlotMachineJackpot_1",
+            SlotMachineJackpot_2 = "SlotMachineJackpot_2",
+            SlotMachineJackpot_3 = "SlotMachineJackpot_3",
+            SlotMachineJackpot_4 = "SlotMachineJackpot_4",
+            SlotMachineJackpot_5 = "SlotMachineJackpot_5";
     }
     public static class cObject
 	{
@@ -521,6 +534,11 @@ namespace BunnyMod.Content
             Park = "ParkAmbience",
             Television = "TVAmbience";
 	}
+    public static class vAnimation // Vanilla Object Animations
+	{
+        public const string
+            MachineOperate = "MachineOperate";
+	}
     public static class vArmor // Vanilla Armor
 	{
         public const string
@@ -735,6 +753,7 @@ namespace BunnyMod.Content
             ItemFallInHole2 = "ItemFallInHole2",
             ItemFallInHoleSmall = "ItemFallInHoleSmall",
             ItemHitItem = "ItemHitItem",
+            Jukebox = "Jukebox",
             Jump = "Jump",
             JumpIntoWater = "JumpIntoWater",
             JumpIntoWater2 = "JumpIntoWater2",
@@ -2289,6 +2308,14 @@ namespace BunnyMod.Content
             Well = "Well",
             Window = "Window";
     }
+    public static class vOwnerId // Vanilla Magic Number Owner IDs
+	{
+        public const int
+            Unknown_0 = 0,
+            Unknown_1 = 99,
+            Unknown_2 = 255,
+            AngersCops = 888;
+	};
     public static class vQuest // Vanilla Quests
 	{
         public const string

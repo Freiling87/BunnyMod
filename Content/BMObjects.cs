@@ -81,14 +81,24 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Names()
         {
-            string t = vNameType.Interface;
-            CustomName dispenseIce = RogueLibs.CreateCustomName("DispenseIce", t, new CustomNameInfo("Dispense ice"));
-            CustomName grillFudPaid = RogueLibs.CreateCustomName("GrillFudPaid", t, new CustomNameInfo("Grill Fud"));
-            CustomName hideInContainer = RogueLibs.CreateCustomName("HideInContainer", t, new CustomNameInfo("Hide in container"));
-            CustomName openContainer = RogueLibs.CreateCustomName("OpenContainer", t, new CustomNameInfo("Open container"));
-            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName("Play1", t, new CustomNameInfo("Play"));
-            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName("Play100", t, new CustomNameInfo("Play"));
-            CustomName stealItem = RogueLibs.CreateCustomName("StealItem", t, new CustomNameInfo("Steal item"));
+            string t;
+
+            t = vNameType.Dialogue;
+            CustomName machineBusy = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
+            CustomName slotMachineJackpot_1 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Jackpot!"));
+            CustomName slotMachineJackpot_2 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
+            CustomName slotMachineJackpot_3 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+            CustomName slotMachineJackpot_4 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
+            CustomName slotMachineJackpot_5 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
+
+            t = vNameType.Interface;
+            CustomName dispenseIce = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
+            CustomName grillFudPaid = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
+            CustomName hideInContainer = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
+            CustomName openContainer = RogueLibs.CreateCustomName(cButtonText.OpenContainer, t, new CustomNameInfo("Open container"));
+            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay1, t, new CustomNameInfo("Play"));
+            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
+            CustomName stealItem = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
         }
         #endregion
 
@@ -2299,12 +2309,19 @@ namespace BunnyMod.Content
         // If PoliceState, alert if any Guilty detected
         #endregion
         #region SlotMachine
+        static public Dictionary<SlotMachine, bool> jackpotPlaying;
         public void SlotMachine_00()
         {
-			Prefix(typeof(SlotMachine), "DetermineButtons", GetType(), "SlotMachine_DetermineButtons", new Type[0] { });
-            Prefix(typeof(SlotMachine), "Gamble", GetType(), "SlotMachine_Gamble", new Type[1] { typeof(int) });
-            Prefix(typeof(SlotMachine), "PressedButton", GetType(), "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
-		}
+            Type t = typeof(SlotMachine);
+            Type g = GetType();
+
+			Prefix(t, "DetermineButtons", g, "SlotMachine_DetermineButtons", new Type[0] { });
+            Prefix(t, "Gamble", g, "SlotMachine_Gamble", new Type[1] { typeof(int) });
+            Prefix(t, "Interact", g, "SlotMachine_Interact", new Type[1] { typeof(Agent) });
+            Prefix(t, "InteractFar", g, "SlotMachine_InteractFar", new Type[1] { typeof(Agent) });
+            Prefix(t, "PressedButton", g, "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
+            Postfix(t, "SetVars", g, "SlotMachine_SetVars", new Type[0] { });
+        }
         public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
@@ -2337,21 +2354,6 @@ namespace BunnyMod.Content
             }
 
             return false;
-        }
-        public static void SlotMachine_DropMoney(int amount, SlotMachine __instance) // Non-Patch
-        {
-            // Original
-            __instance.interactingAgent.inventory.AddItem("Money", amount);
-            __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, amount);
-            //
-
-            //InvItem money = new InvItem()
-            //{
-
-            //};
-
-            //__instance.objectInvDatabase.DropItem(money, false, __instance.tr.position); // Need to slightly randomize this
-
         }
         public static bool SlotMachine_Gamble(int gambleAmt, SlotMachine __instance) // Replacement
         {
@@ -2392,19 +2394,99 @@ namespace BunnyMod.Content
 
             return false;
         }
+        public static bool SlotMachine_Interact(Agent agent, SlotMachine __instance) // Prefix
+		{
+            if (jackpotPlaying[__instance])
+            {
+                agent.SayDialogue(cDialogue.MachineBusy);
+                GC.audioHandler.Play(__instance, vAudioClip.CantDo);
+
+                return false;
+            }
+
+            return true;
+		}
+        public static bool SlotMachine_InteractFar(Agent agent, SlotMachine __instance) // Prefix
+        {
+            if (jackpotPlaying[__instance])
+            {
+                agent.SayDialogue(cDialogue.MachineBusy);
+                GC.audioHandler.Play(__instance, vAudioClip.CantDo);
+
+                return false;
+            }
+
+            return true;
+        }
         public static async void SlotMachine_Jackpot(int payout, SlotMachine __instance) // Non-Patch
         {
-            __instance.interactingAgent.SayDialogue("SlotMachineJackpot");
+            int cashDropIncrement = payout / 10;
+            GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
+            GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
+            __instance.StartCoroutine(SlotMachine_JackpotPlayTime(__instance));
+            __instance.StartCoroutine(SlotMachine_PlayingNoise(__instance));
 
-            for (int i = 10; i < payout; i += 10)
+            for (int i = 1; i <= 100; i++)
             {
-                SlotMachine_DropMoney(payout / 10, __instance);
+                if (i % 5 == 0)
+				{
+                    __instance.PlayAnim(vAnimation.MachineOperate, __instance.interactingAgent);
+                    GC.audioHandler.Play(__instance, vAudioClip.Win);
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false);
 
-                __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
-                GC.audioHandler.Play(__instance, "Win");
+                    if (i % 10 == 0)
+                    {
+                        SlotMachine_SpitOutMoney(cashDropIncrement, __instance);
+                        GC.audioHandler.Play(__instance, vAudioClip.HighVolume);
 
-                await Task.Delay(200);
+                        if (i % 20 == 0)
+						{
+                            __instance.Say("SlotMachineJackpot" + (i / 20).ToString());
+                            GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
+                        }
+                    }
+                }
+
+                await Task.Delay(100);
             }
+        }
+        public static IEnumerator SlotMachine_JackpotPlayTime(SlotMachine __instance) // Non-Patch
+		{
+            yield return new WaitForSeconds(10f);
+
+            if (__instance.functional && !__instance.destroyed)
+            {
+                if (__instance.stateIndicator != null)
+                    __instance.stateIndicator.StateIndicatorOff();
+                
+                GC.audioHandler.Stop(__instance, vAudioClip.Jukebox);
+                
+                if (GC.serverPlayer)
+                    GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "StopMusicClient");
+            }
+
+            jackpotPlaying[__instance] = false;
+
+            yield break;
+        }
+        public static IEnumerator SlotMachine_PlayingNoise(SlotMachine __instance) // Non-Patch
+		{
+            float jukeboxTimer = 1f;
+
+            while (jackpotPlaying[__instance])
+            {
+                jukeboxTimer -= Time.deltaTime;
+
+                if (jukeboxTimer <= 0f)
+                {
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, null).distraction = true;
+                    jukeboxTimer = 1f;
+                }
+
+                yield return null;
+            }
+
+            yield break;
         }
         public static bool SlotMachine_PressedButton(string buttonText, int buttonPrice, SlotMachine __instance) // Replacement
         {
@@ -2431,6 +2513,52 @@ namespace BunnyMod.Content
                 __instance.StopInteraction();
 
             return false;
+        }
+        public static void SlotMachine_SetVars(SlotMachine __instance) // Postfix
+		{
+            if (!jackpotPlaying.ContainsKey(__instance))
+                jackpotPlaying.Add(__instance, false);
+            else
+                jackpotPlaying[__instance] = false;
+		}
+        public static async void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
+        {
+            if (GC.serverPlayer)
+            {
+                InvItem invItem = new InvItem();
+                invItem.invItemName = vItem.Money;
+                invItem.ItemSetup(false);
+
+                invItem.invItemCount = amount;
+                Vector3 position = __instance.tr.position;
+
+                switch (__instance.direction)
+                {
+                    case "N":
+                        position = new Vector3(__instance.tr.position.x + Random.Range(-0.16f, 0.16f), __instance.tr.position.y + 0.16f, __instance.tr.position.z);
+
+                        break;
+                    case "E":
+                        position = new Vector3(__instance.tr.position.x + 0.16f, __instance.tr.position.y + Random.Range(-0.16f, 0.16f), __instance.tr.position.z);
+
+                        break;
+
+                    case "S":
+                        position = new Vector3(__instance.tr.position.x + Random.Range(-0.16f, 0.16f), __instance.tr.position.y - 0.16f, __instance.tr.position.z);
+
+                        break;
+                    case "W":
+                        position = new Vector3(__instance.tr.position.x - 0.16f, __instance.tr.position.y + Random.Range(-0.16f, 0.16f), __instance.tr.position.z);
+
+                        break;
+                }
+
+                GC.spawnerMain.SpillItem(position, invItem);
+
+                return;
+            }
+
+            __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "SpitOutMoney");
         }
         #endregion
         #region Stove

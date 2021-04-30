@@ -5491,9 +5491,9 @@ namespace BunnyMod.Content
 						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						BMAgents.SpawnRoamerSquad(agent, 3, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, true, 1);
 					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						BMAgents.SpawnRoamerSquad(agent, 6, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 8, vAgent.ResistanceLeader, __instance, true, 1);
 				}
 			}
 		}

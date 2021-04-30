@@ -51,7 +51,7 @@ namespace BunnyMod.Content
             Ballistician.Upgrade = null;
 
             CustomTrait DoubleTapper = RogueLibs.CreateCustomTrait(cTrait.DoubleTapper, true,
-                new CustomNameInfo("000: Double-Tapper"),
+                new CustomNameInfo("Double-Tapper"),
                 new CustomNameInfo("You're not some kind of monster. A quick bullet to the back of the head is more humane than the alternatives, isn't it?\n\nBullet attacks from behind within melee range do 2x damage. 10x if you're invisible or hidden."));
             DoubleTapper.Available = true;
             DoubleTapper.AvailableInCharacterCreation = true;
@@ -70,7 +70,7 @@ namespace BunnyMod.Content
             Sniper.CanRemove = false;
             Sniper.CanSwap = true;
             Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Sniper.CostInCharacterCreation = 10;
+            Sniper.CostInCharacterCreation = 8;
             Sniper.IsActive = true;
             Sniper.Upgrade = null;
             #endregion

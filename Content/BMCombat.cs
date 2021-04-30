@@ -321,6 +321,10 @@ namespace BunnyMod.Content
 		{
 			// Not sure what Generic is, but it does not ever seem to be anything but false.
 
+			// Ballistician
+			// Double-Tapper
+			// Sniper
+
 			BMLog("PlayfieldObject_FindDamage");
 
 			Agent damagedAgent = null;
@@ -870,9 +874,11 @@ namespace BunnyMod.Content
 
 						bool headShot = false;
 
-						BMLog("\tDistance: "+ Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position));
+						BMLog("\tDistance: " + Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position));
+						BMLog("\tHasTrait: " + damagerAgent.statusEffects.hasTrait(cTrait.Sniper));
 						BMLog("\tHasLOSObjectBehind: " + damagedAgent.movement.HasLOSObjectBehind(damagerAgent));
 						BMLog("\tHasLOSAgent: " + damagedAgent.movement.HasLOSAgent(damagerAgent));
+						BMLog("\tHasDistance: " + (Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 4.00f));
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.movement.HasLOSAgent(damagerAgent)) ||
@@ -882,7 +888,7 @@ namespace BunnyMod.Content
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
 							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || !(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 8.00f)
+							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 4.00f)
 							headShot = true;
 
 						BMLog("\tHeadshot: " + headShot);

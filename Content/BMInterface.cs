@@ -25,58 +25,27 @@ namespace BunnyMod.Content
 		#region Main
 		public void Awake()
 		{
-			AgentHealthBar_00();
-			ObjectInfo_00();
-			OperatingBar_00();
+			PlayerControl_00();
 		}
 		#endregion
 
-		#region Custom
-		public static void SetTraitZoom() =>
-			GC.cameraScript.zoomLevel = GetZoomLevelFromTrait();
-		public static float GetZoomLevelFromTrait()
-		{
-			if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes))
-				return 0.75f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes_2))
-				return 0.50f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic))
-				return 1.50f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic2))
-				return 2.00f;
-
-			return 1f;
-		}
-		#endregion
-
-		#region AgentHealthBar
-		public void AgentHealthBar_00()
-		{
-			Postfix(typeof(AgentHealthBar), "Awake", GetType(), "AgentHealthBar_Awake", new Type[0] { });
-		}
-		public static void AgentHealthBar_Awake(AgentHealthBar __instance) => // Postfix
-			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
-		#endregion
-		#region ObjectInfo 
-		// The Arrows pointing to quest targets, etc.
-		public void ObjectInfo_00()
-		{
-			Postfix(typeof(ObjectInfo), "OnEnable", GetType(), "ObjectInfo_OnEnable", new Type[0] { });
-		}
-		public static void ObjectInfo_OnEnable(ObjectInfo __instance) => // Postfix
-			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
-		#endregion
-		#region OperatingBar
-		public void OperatingBar_00()
-		{
-			Postfix(typeof(OperatingBar), "Start", GetType(), "OperatingBar_Start", new Type[0] { });
-		}
-		public static void OperatingBar_Start(OperatingBar __instance) => // Postfix
-			__instance.curScale = 0.72f / GetZoomLevelFromTrait();
-		#endregion
 		#region PlayerControl
 		public void PlayerControl_00()
 		{
+			Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
+		}
+		public static void PlayerControl_Update() // Postfix
+		{
+			if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes))
+				GC.cameraScript.zoomLevel = 0.70f;
+			else if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes_2))
+				GC.cameraScript.zoomLevel = 0.40f;
+			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic))
+				GC.cameraScript.zoomLevel = 1.50f;
+			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic2))
+				GC.cameraScript.zoomLevel = 2.00f;
+			else 
+				GC.cameraScript.zoomLevel = 1f;
 		}
 		#endregion
 	}

@@ -275,6 +275,8 @@ namespace BunnyMod.Content
                 VendorCart_Steal((VendorCart)__instance);
             else if (!__instance.interactingAgent.interactionHelper.interactingFar && __instance.operatingBarType == "Collecting")
                 __instance.CollectPart();
+            else
+                return false;
 
             __instance.StopInteraction();
 

@@ -56,6 +56,8 @@ namespace BunnyMod.Content
 
 				if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
 					maxBulletDistance = 50f;
+				else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
+					maxBulletDistance = 20f;
 
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 
@@ -868,30 +870,35 @@ namespace BunnyMod.Content
 							dmg /= 1.2f;
 
 						if (damagedAgent.statusEffects.hasTrait("ResistBulletsTrait2"))
-							dmg /= 2f;
+							dmg /= 2.0f;
 						else if (damagedAgent.statusEffects.hasTrait("ResistBulletsTrait"))
 							dmg /= 1.5f;
 
 						bool headShot = false;
-
-						BMLog("\tDistance: " + Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position));
-						BMLog("\tHasTrait: " + damagerAgent.statusEffects.hasTrait(cTrait.Sniper));
-						BMLog("\tHasLOSObjectBehind: " + damagedAgent.movement.HasLOSObjectBehind(damagerAgent));
-						BMLog("\tHasLOSAgent: " + damagedAgent.movement.HasLOSAgent(damagerAgent));
-						BMLog("\tHasDistance: " + (Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 4.00f));
+						bool doubleTap = false;
+						bool sniped = false;
+						bool hidden = false;
+						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.movement.HasLOSAgent(damagerAgent)) ||
 							!(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) <= 1.28f)
+							distance <= 1.28f)
+						{
 							headShot = true;
+							doubleTap = true;
+						}
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
 							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || !(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position) >= 4.00f)
+							distance >= 4.00f)
+						{
 							headShot = true;
+							sniped = true;
+						}
 
-						BMLog("\tHeadshot: " + headShot);
+						if (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null))
+							hidden = true;
 
 						if (headShot)
 						{
@@ -918,16 +925,23 @@ namespace BunnyMod.Content
 									damagedAgent.agentHelperTr.localPosition = Vector3.zero;
 									damagedAgent.statusEffects.CreateBuffText(cBuffText.Headshot, damagedAgent.objectNetID);
 
-									if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || 
-										(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
-										damagerAgent.hiddenInObject)
+									if (doubleTap)
 									{
-										dmg *= 10f;
-										damagerAgent.melee.successfullyBackstabbed = true;
-										GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
+										if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") ||
+											(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+											hidden)
+										{
+											dmg *= 10f;
+											damagerAgent.melee.successfullyBackstabbed = true;
+											GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
+										}
+										else
+											dmg *= 2f;
 									}
-									else
-										dmg *= 2f;
+									else if (sniped)
+										dmg *= distance;
+
+									BMLog("\tBullet damage: " + dmg);
 								}
 							}
 							else if (damagerAgent.statusEffects.hasStatusEffect(vStatusEffect.InvisibleTemporary))

@@ -46,7 +46,6 @@ namespace BunnyMod.Content
             DebugTrait.CanSwap = false;
             DebugTrait.CostInCharacterCreation = 0;
             DebugTrait.IsActive = true;
-
             #region Combat
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,
                 new CustomNameInfo("000: Ballistician"),
@@ -56,7 +55,8 @@ namespace BunnyMod.Content
             Ballistician.CanRemove = false;
             Ballistician.CanSwap = true;
             Ballistician.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Ballistician.CostInCharacterCreation = 2;
+            Ballistician.CostInCharacterCreation = 1;
+            Ballistician.Recommendations.Add(cTrait.EagleEyes);
             Ballistician.IsActive = true;
             Ballistician.Upgrade = null;
 
@@ -68,19 +68,21 @@ namespace BunnyMod.Content
             DoubleTapper.CanRemove = false;
             DoubleTapper.CanSwap = true;
             DoubleTapper.Conflicting.AddRange(new string[] { vTrait.Loud });
-            DoubleTapper.CostInCharacterCreation = 6;
+            DoubleTapper.CostInCharacterCreation = 7;
+            DoubleTapper.Recommendations.Add(vSpecialAbility.Camouflage);
             DoubleTapper.IsActive = true;
             DoubleTapper.Upgrade = null;
 
             CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
                 new CustomNameInfo("000: Sniper"),
-                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Bullet attacks on far & unaware enemies do 2x damage. 10x if you're invisible.\n-Bullet range extended."));
+                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, bullet hits on unaware targets deal massive damage\n- Bullet range increased"));
             Sniper.Available = true;
             Sniper.AvailableInCharacterCreation = true;
             Sniper.CanRemove = false;
             Sniper.CanSwap = true;
             Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
             Sniper.CostInCharacterCreation = 8;
+            Sniper.Recommendations.Add(cTrait.EagleEyes);
             Sniper.IsActive = true;
             Sniper.Upgrade = null;
             #endregion
@@ -139,7 +141,6 @@ namespace BunnyMod.Content
             Carnivore.IsActive = true;
             Carnivore.Upgrade = null;
 
-
             CustomTrait Vegetarian = RogueLibs.CreateCustomTrait(cTrait.Vegetarian, true,
                 new CustomNameInfo("Vegetarian"),
                 new CustomNameInfo("You are one of those people."));
@@ -152,7 +153,6 @@ namespace BunnyMod.Content
             Vegetarian.Conflicting.AddRange(vTrait.LimitFood);
             Vegetarian.CostInCharacterCreation = -1;
             Vegetarian.IsActive = true;
-            Vegetarian.Available = true;
             Vegetarian.Upgrade = null;
             #endregion
             #region Equipment

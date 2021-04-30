@@ -718,7 +718,7 @@ namespace BunnyMod.Content
             #endregion
         }
         #endregion
-        #region Custom
+        #region Custom Methods
         public static bool isPlayerInitialRelationshipTraitActive = false;
         public static List<T> ConcatTraitLists<T>(params IEnumerable<T>[] enums)
             => enums.SelectMany(e => e).ToList();

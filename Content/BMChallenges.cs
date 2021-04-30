@@ -23,7 +23,6 @@ namespace BunnyMod.Content
 		public static void InitializeChallenges()
 		{
 			#region Map Generation Overhauls
-
 			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
 				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
@@ -166,11 +165,11 @@ namespace BunnyMod.Content
 
 			#endregion
 			#region Quest Rewards
-
 			CustomMutator DoublePlyRewards = RogueLibs.CreateCustomMutator(cChallenge.DoublePlyRewards, true,
 				new CustomNameInfo("Rewards: Double-Ply Rewards"),
 				new CustomNameInfo("The Resistance is running low on... everything. But please, accept this stack of coupons! They are totally really actually valid.\n\nThe smell? That's *value*!"));
 			DoublePlyRewards.Available = true;
+			DoublePlyRewards.Conflicting.Add(vChallenge.MoneyRewards);
 			DoublePlyRewards.Conflicting.AddRange(new string[] { cChallenge.UnpaidInternship });
 			DoublePlyRewards.IsActive = false;
 
@@ -178,9 +177,9 @@ namespace BunnyMod.Content
 				new CustomNameInfo("Rewards: Unpaid Internship"),
 				new CustomNameInfo("The double-experience you're getting working for the Resistance is worth more than any reward, they say. But so far, you're mainly learning one thing: Work for people who pay you. At least they provide lunch, though?"));
 			UnpaidInternship.Available = true;
+			UnpaidInternship.Conflicting.Add(vChallenge.MoneyRewards);
 			UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });
 			UnpaidInternship.IsActive = false;
-
 			#endregion
 			#region Roamers
 

@@ -25,7 +25,7 @@ namespace BunnyMod.Content
 		}
 		public void Initialize_Names()
 		{
-			string t = vNameType.Interface;
+			string t = vNameType.StatusEffect;
 
 			CustomName headshot = RogueLibs.CreateCustomName("Headshot", t, new CustomNameInfo("Headshot"));
 		}

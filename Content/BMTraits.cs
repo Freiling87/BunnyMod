@@ -108,6 +108,7 @@ namespace BunnyMod.Content
             DAREdevil.CanSwap = false;
             DAREdevil.Conflicting.Add(vTrait.Addict);
             DAREdevil.Conflicting.AddRange(cTrait.LimitDrugs);
+            DAREdevil.Conflicting.Remove(cTrait.DAREdevil);
             DAREdevil.CostInCharacterCreation = -3;
             DAREdevil.IsActive = true;
             DAREdevil.Upgrade = null;
@@ -121,6 +122,7 @@ namespace BunnyMod.Content
             FriendOfBill.CanSwap = false;
             FriendOfBill.Conflicting.Add(vTrait.Addict);
             FriendOfBill.Conflicting.AddRange(cTrait.LimitDrugs);
+            FriendOfBill.Conflicting.Remove(cTrait.FriendOfBill);
             FriendOfBill.CostInCharacterCreation = -1;
             FriendOfBill.IsActive = true;
             FriendOfBill.Upgrade = null;
@@ -134,6 +136,7 @@ namespace BunnyMod.Content
             Teetotaller.CanSwap = false;
             Teetotaller.Conflicting.Add(vTrait.Addict);
             Teetotaller.Conflicting.AddRange(cTrait.LimitDrugs);
+            Teetotaller.Conflicting.Remove(cTrait.Teetotaller);
             Teetotaller.CostInCharacterCreation = -4;
             Teetotaller.IsActive = true;
             Teetotaller.Upgrade = null;

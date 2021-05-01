@@ -331,11 +331,15 @@ namespace BunnyMod.Content
 		#region StatusEffects
 		public void StatusEffects_00()
 		{
-			Postfix(typeof(StatusEffects), "AddTrait", GetType(), "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-			Prefix(typeof(StatusEffects), "BecomeHidden", GetType(), "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
-			Postfix(typeof(StatusEffects), "BecomeNotHidden", GetType(), "StatusEffects_BecomeNotHidden", new Type[0]);
-			Prefix(typeof(StatusEffects), "ChangeHealth", GetType(), "StatusEffects_ChangeHealth", new Type[6] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) });
-			Postfix(typeof(StatusEffects), "RemoveTrait", GetType(), "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
+			Type t = typeof(StatusEffects);
+			Type g = GetType();
+
+			Postfix(t, "AddTrait", g, "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+			Prefix(t, "BecomeHidden", g, "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
+			Prefix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Prefix", new Type[0] { });
+			Postfix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Postfix", new Type[0]);
+			Prefix(t, "ChangeHealth", g, "StatusEffects_ChangeHealth", new Type[6] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) });
+			Postfix(t, "RemoveTrait", g, "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
 		}
 		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
@@ -349,6 +353,9 @@ namespace BunnyMod.Content
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
 		{
+			// Sniper/Doubletapper hidden object non-collision
+			// Underdark Citizen Enemy Manhole unhide
+
 			BMLog("StatusEffects_BecomeHidden");
 
 			int a = 0;
@@ -380,6 +387,9 @@ namespace BunnyMod.Content
 					agent.EnableHitboxes(false);
 					agent.agentItemColliderTr.gameObject.SetActive(false);
 				}
+
+				if (agent.statusEffects.hasTrait(cTrait.Sniper) || agent.statusEffects.hasTrait(cTrait.DoubleTapper))
+					hiddenInObject.objectCollider.enabled = false;
 			}
 
 			BMLog("\tA" + a++);
@@ -430,13 +440,34 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static void StatusEffects_BecomeNotHidden(StatusEffects __instance)
+		public static bool StatusEffects_BecomeNotHidden_Prefix(StatusEffects __instance) // Prefix
+		{
+			// Sniper/Doubletapper Hidden object collision undo
+
+			BMLog("SE_BNH_P");
+
+			if (__instance.agent.hiddenInObject is null ||
+				__instance.agent.hiddenInObject.objectCollider is null) 
+				return true;
+
+			BMLog("\tA");
+
+			ObjectReal hiddenInObject = __instance.agent.hiddenInObject;
+			BMLog("\tA");
+			if (!hiddenInObject.objectCollider.enabled && (hiddenInObject is Plant || hiddenInObject is Bathtub))
+				__instance.agent.hiddenInObject.objectCollider.enabled = true;
+			BMLog("\tA");
+			return true;
+		}
+		public static void StatusEffects_BecomeNotHidden_Postfix(StatusEffects __instance) // Postfix
 		{
 			__instance.agent.agentCollider.enabled = true;
 			__instance.agent.EnableHitboxes(true);
 		}
 		public static bool StatusEffects_ChangeHealth(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient, float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance, ref HealthBar ___healthBar) // Replacement
 		{
+			// Warlord submission
+
 			Agent hurtAgent = __instance.agent;
 
 			if ((hurtAgent.teleporting && !hurtAgent.skillPoints.justGainedLevel) ||

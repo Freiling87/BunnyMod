@@ -40,10 +40,17 @@ namespace BunnyMod.Content
 		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
-			if (GC.challenges.Contains(cChallenge.ScaryGuns))
+			if (__instance.bulletType == bulletStatus.Shotgun || __instance.bulletType == bulletStatus.Normal)
 			{
-				__instance.damage = Mathf.Max(1, (int)(__instance.damage * UnityEngine.Random.Range(0.25f, 5f)));
-				__instance.speed = Mathf.Min(65, __instance.speed * 3);
+				if (GC.challenges.Contains(cChallenge.ScaryGuns))
+				{
+					__instance.damage = Mathf.Max(1, (int)(__instance.damage * Random.Range(0.25f, 5f)));
+					__instance.speed = Mathf.Min(65, __instance.speed * 3);
+				}
+				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
+					__instance.speed = 35;
+				// Lowest bad number: 45
+				// Highest good number: 30
 			}
 		}
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
@@ -54,10 +61,13 @@ namespace BunnyMod.Content
 				Vector2 vector = __instance.tr.position;
 				float maxBulletDistance = 13f;
 
-				if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-					maxBulletDistance = 50f;
-				else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
-					maxBulletDistance = 20f;
+				if (__instance.bulletType == bulletStatus.Shotgun || __instance.bulletType == bulletStatus.Normal)
+				{
+					if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
+						maxBulletDistance = 100f;
+					else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
+						maxBulletDistance = 20f;
+				}
 
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 
@@ -863,6 +873,11 @@ namespace BunnyMod.Content
 					{
 						BMLog("\tBullet hit");
 
+						if (damagerAgent.statusEffects.hasTrait(cTrait.Ballistician))
+							dmg *= 1.25f;
+						else if (damagerAgent.statusEffects.hasTrait(cTrait.Ballistician_2))
+							dmg *= 1.50f;
+
 						if (damagedAgent.statusEffects.hasTrait("ResistBullets"))
 							dmg /= 1.5f;
 
@@ -877,12 +892,14 @@ namespace BunnyMod.Content
 						bool headShot = false;
 						bool doubleTap = false;
 						bool sniped = false;
-						bool hidden = false;
+						bool hidden = (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null));
+						bool invisible = damagerAgent.invisible;
+						bool hasLOSBehind = damagedAgent.movement.HasLOSObjectBehind(damagerAgent);
+						bool hasLOSAgent = damagedAgent.movement.HasLOSAgent(damagerAgent);
 						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
-							((!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.movement.HasLOSAgent(damagerAgent)) ||
-							!(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
+							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible) || damagedAgent.sleeping &&
 							distance <= 1.28f)
 						{
 							headShot = true;
@@ -890,8 +907,9 @@ namespace BunnyMod.Content
 						}
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
-							(!damagedAgent.movement.HasLOSAgent(damagerAgent) || !(damagerAgent.hiddenInObject is null) || !(damagerAgent.hiddenInBush is null) || damagerAgent.invisible) &&
-							distance >= 4.00f)
+							((((!hasLOSAgent || hidden || invisible) || damagedAgent.sleeping) &&
+							distance >= 4.00f)) ||
+							distance >= 8.00f)
 						{
 							headShot = true;
 							sniped = true;
@@ -900,26 +918,29 @@ namespace BunnyMod.Content
 						if (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null))
 							hidden = true;
 
+						BMLog("\theadshot:\t" + headShot);
+						BMLog("\tdoubleTap:\t" + doubleTap);
+						BMLog("\tsniped:\t\t" + sniped);
+						BMLog("\thidden:\t\t" + hidden);
+						BMLog("\tinvisible:\t" + invisible);
+						BMLog("\tdistance:\t" + distance);
+						BMLog("\tHasLOSBehind:\t" + hasLOSBehind);
+						BMLog("\tHasLOSAgent:\t" + hasLOSAgent);
+
 						if (headShot)
 						{
 							if (damagedAgent.sleeping)
 							{
-								dmg = 200f;
+								dmg = 800f;
 								damagedAgent.agentHitboxScript.wholeBodyMode = 0;
 								damagerAgent.melee.successfullySleepKilled = true;
 
 								damagedAgent.statusEffects.CreateBuffText(cBuffText.Headshot, damagedAgent.objectNetID);
 							}
-							else if (
-								(dmg != 200f && !damagedAgent.dead) ||
-								(((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) &&
-								!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) &&
-								!damagedAgent.sleeping &&
-								dmg != 200f &&
-								!damagedAgent.dead))
+							else
 							{
 								damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
-
+								 
 								if (!GC.tileInfo.IsOverlapping(damagedAgent.agentHelperTr.position, "Wall"))
 								{
 									damagedAgent.agentHelperTr.localPosition = Vector3.zero;
@@ -927,8 +948,7 @@ namespace BunnyMod.Content
 
 									if (doubleTap)
 									{
-										if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") ||
-											(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+										if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
 											hidden)
 										{
 											dmg *= 10f;
@@ -936,7 +956,7 @@ namespace BunnyMod.Content
 											GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
 										}
 										else
-											dmg *= 2f;
+											dmg *= 2f; 
 									}
 									else if (sniped)
 										dmg *= distance;
@@ -944,16 +964,16 @@ namespace BunnyMod.Content
 									BMLog("\tBullet damage: " + dmg);
 								}
 							}
-							else if (damagerAgent.statusEffects.hasStatusEffect(vStatusEffect.InvisibleTemporary))
-							{
-								bool alreadyDead = false;
+							//else if (damagerAgent.statusEffects.hasStatusEffect(vStatusEffect.InvisibleTemporary))
+							//{
+							//	bool alreadyDead = false;
 
-								if (instanceIsAgent && damagedAgent.dead)
-									alreadyDead = true;
+							//	if (instanceIsAgent && damagedAgent.dead)
+							//		alreadyDead = true;
 
-								if (!playerDamagedByNpc && !alreadyDead && !damagerAgent.statusEffects.hasTrait(cTrait.Sniper) && !damagerAgent.statusEffects.hasTrait(cTrait.Ballistician))
-									damagerAgent.statusEffects.RemoveInvisibleLimited();
-							}
+							//	if (!playerDamagedByNpc && !alreadyDead && !damagerAgent.statusEffects.hasTrait(cTrait.Sniper))
+							//		damagerAgent.statusEffects.RemoveInvisibleLimited();
+							//}
 						}
 					}
 				}
@@ -1376,192 +1396,6 @@ namespace BunnyMod.Content
 		#region SpawnerMain
 		public void SpawnerMain_00()
 		{
-			Prefix(typeof(SpawnerMain), "SpawnBullet", GetType(), "SpawnerMain_SpawnBullet", new Type[4] { typeof(Vector3), typeof(bulletStatus), typeof(PlayfieldObject), typeof(int) });
-		}
-		public static bool SpawnerMain_SpawnBullet(Vector3 bulletPos, bulletStatus bulletType, PlayfieldObject myPlayfieldObject, int bulletNetID, SpawnerMain __instance, ref Bullet __result) // Prefix
-		{
-			if (!GC.challenges.Contains(cChallenge.ScaryGuns)
-				|| bulletType != bulletStatus.Normal || bulletType != bulletStatus.Shotgun || bulletType != bulletStatus.Revolver)
-				return true;
-
-			BMLog("SpawnerMain_SpawnBullet: bulletType = " + bulletType);
-
-			Agent agent = null;
-			Item item = null;
-			ObjectReal objectReal = null;
-			bool isFromAgent = false;
-			bool isFromItem = false;
-			float bulletScale = 0.333333f;
-
-			if (myPlayfieldObject != null)
-			{
-				if (myPlayfieldObject.playfieldObjectType == "Agent")
-				{
-					isFromAgent = true;
-					agent = myPlayfieldObject.playfieldObjectAgent;
-				}
-
-				if (myPlayfieldObject.playfieldObjectType == "Item")
-				{
-					isFromItem = true;
-					item = myPlayfieldObject.playfieldObjectItem;
-				}
-				else
-					objectReal = myPlayfieldObject.playfieldObjectReal;
-			}
-
-			switch (bulletType)
-			{
-				case bulletStatus.Normal:
-					__result = __instance.bulletNormalPrefab_S.Spawn(bulletPos);
-					break;
-				case bulletStatus.Shotgun:
-					__result = __instance.bulletShotgunPrefab_S.Spawn(bulletPos);
-					break;
-				case bulletStatus.Revolver:
-					__result = __instance.bulletRevolverPrefab_S.Spawn(bulletPos);
-					break;
-				default:
-					__result = __instance.bulletPrefab_S.Spawn(bulletPos);
-					break;
-			}
-
-			__result.streamBullet = false;
-
-			__result.DoEnable();
-			__result.bulletType = bulletType;
-			__result.spr = __result.bulletSprite;
-			__result.bulletNetID = bulletNetID;
-
-			if (isFromAgent)
-			{
-				__result.agent = agent;
-				__result.cameFromCollider = agent.agentColliderNormal;
-
-				__result.cameFromWeapon = agent.inventory.equippedWeapon.invItemName;
-			}
-			else if (isFromItem)
-			{
-				__result.item = item;
-				__result.explosionOwner = item.owner;
-				__result.cameFromCollider = item.itemHitboxCollider;
-				__result.cameFromWeapon = myPlayfieldObject.objectName;
-			}
-			else
-			{
-				__result.objectReal = objectReal;
-				__result.cameFromCollider = objectReal.objectHitbox;
-				__result.cameFromWeapon = myPlayfieldObject.objectName;
-
-				if (objectReal.hasObjectAgent)
-					__result.agent = objectReal.objectAgent;
-			}
-
-			__result.SetupBullet();
-
-			GameObject gameObject9 = null;
-
-			try
-			{
-				gameObject9 = __result.tr.Find("P_BulletTrail").gameObject;
-				gameObject9.transform.localPosition = new Vector3(0f, -0.32f, 0f);
-				gameObject9.transform.localScale = new Vector3(bulletScale, bulletScale, bulletScale);
-			}
-			catch
-			{
-				try
-				{
-					if (__result.particles == null)
-					{
-						string str = "BulletTrail";
-						gameObject9 = __result.tr.Find("P_" + str).gameObject;
-					}
-					else
-						gameObject9 = __result.particles;
-
-					gameObject9.transform.SetParent(__result.tr);
-					gameObject9.transform.localPosition = new Vector3(0f, -0.32f, 0f);
-					gameObject9.transform.localEulerAngles = Vector3.zero;
-					gameObject9.transform.localScale = new Vector3(bulletScale, bulletScale, bulletScale);
-				}
-				catch
-				{
-					string effectType = "BulletTrail";
-					gameObject9 = __instance.SpawnParticleEffect(effectType, bulletPos, __result.tr.eulerAngles.z);
-					gameObject9.transform.SetParent(__result.tr);
-					gameObject9.transform.localPosition = new Vector3(0f, -0.32f, 0f);
-					gameObject9.transform.localEulerAngles = Vector3.zero;
-					gameObject9.transform.localScale = new Vector3(bulletScale, bulletScale, bulletScale);
-				}
-			}
-
-			__result.particles = gameObject9;
-			ParticleEffect component8 = __result.particles.GetComponent<ParticleEffect>();
-			component8.hasAttachedToObject = true;
-			component8.attachedToObject = __result;
-			component8.attachedToObjectTr = __result.tr;
-			component8.ps.Play();
-			__result.particleEffectGetsDeattached = true;
-
-			try
-			{
-				__result.lightTemp.fancyLightRenderer.enabled = true;
-				__result.lightTemp.fancyLight.bulletChanges = true;
-			}
-			catch
-			{
-				Debug.LogError("Bullet has no LightTemp: " + __result);
-			}
-
-			__result.particles = gameObject9;
-
-			MeshRenderer component9 = __result.spr.GetComponent<MeshRenderer>();
-
-			if (GC.challenges.Contains("RogueVision"))
-			{
-				if (__result.agent != null)
-				{
-					if (!__result.agent.rogueVisionInvisible)
-					{
-						component9.enabled = true;
-
-						if (__result.lightTemp != null)
-							__result.lightTemp.tr.Find("LightFancy").GetComponent<MeshRenderer>().enabled = true;
-
-						if (__result.lightReal != null)
-							__result.lightReal.gameObject.SetActive(true);
-
-						if (__result.particles != null)
-							__result.particles.gameObject.SetActive(true);
-					}
-					else
-					{
-						component9.enabled = false;
-
-						if (__result.lightTemp != null)
-							__result.lightTemp.tr.Find("LightFancy").GetComponent<MeshRenderer>().enabled = false;
-
-						if (__result.lightReal != null)
-							__result.lightReal.gameObject.SetActive(false);
-
-						if (__result.particles != null)
-							__result.particles.gameObject.SetActive(false);
-					}
-				}
-			}
-			else if (!component9.enabled)
-			{
-				component9.enabled = true;
-				if (__result.lightTemp != null)
-					__result.lightTemp.tr.Find("LightFancy").GetComponent<MeshRenderer>().enabled = true;
-
-				if (__result.lightReal != null)
-					__result.lightReal.gameObject.SetActive(true);
-
-				if (__result.particles != null)
-					__result.particles.gameObject.SetActive(true);
-			}
-			return false;
 		}
 		#endregion
 	}

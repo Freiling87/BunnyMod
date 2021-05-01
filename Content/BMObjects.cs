@@ -2309,7 +2309,7 @@ namespace BunnyMod.Content
         // If PoliceState, alert if any Guilty detected
         #endregion
         #region SlotMachine
-        static public Dictionary<SlotMachine, bool> jackpotPlaying;
+        static public Dictionary<SlotMachine, bool> jackpotPlaying = new Dictionary<SlotMachine, bool>();
         public void SlotMachine_00()
         {
             Type t = typeof(SlotMachine);
@@ -2521,7 +2521,7 @@ namespace BunnyMod.Content
             else
                 jackpotPlaying[__instance] = false;
 		}
-        public static async void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
+        public static void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
         {
             if (GC.serverPlayer)
             {

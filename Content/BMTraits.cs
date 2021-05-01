@@ -37,6 +37,7 @@ namespace BunnyMod.Content
         #region Main
         public void Awake()
         {
+            ScrollingMenu_00();
             CustomTrait DebugTrait = RogueLibs.CreateCustomTrait(cTrait.Debug, true,
                 new CustomNameInfo(cTrait.Debug),
                 new CustomNameInfo("Debug trait. If you see this, I hope you're me."));
@@ -49,16 +50,27 @@ namespace BunnyMod.Content
             #region Combat
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,
                 new CustomNameInfo("000: Ballistician"),
-                new CustomNameInfo("You've mastered the trajectories. Your bullets fly until they hit something (or nothing)."));
+                new CustomNameInfo("You look around you, and all you see is trajectories.\n\nYour bullets fly faster, further & harder."));
             Ballistician.Available = true;
             Ballistician.AvailableInCharacterCreation = true;
             Ballistician.CanRemove = false;
             Ballistician.CanSwap = true;
             Ballistician.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Ballistician.CostInCharacterCreation = 1;
-            Ballistician.Recommendations.Add(cTrait.EagleEyes);
+            Ballistician.CostInCharacterCreation = 4;
             Ballistician.IsActive = true;
-            Ballistician.Upgrade = null;
+            Ballistician.Upgrade = cTrait.Ballistician_2;
+
+            CustomTrait Ballistician2 = RogueLibs.CreateCustomTrait(cTrait.Ballistician_2, true,
+                new CustomNameInfo("000: Ballistician +"),
+                new CustomNameInfo("When you're shooting people, you like to yell, \"Pew Pew!\" Who's going to stop you, anyway?"));
+            Ballistician2.Available = true;
+            Ballistician2.AvailableInCharacterCreation = false;
+            Ballistician2.CanRemove = false;
+            Ballistician2.CanSwap = true;
+            Ballistician2.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
+            Ballistician2.CostInCharacterCreation = 8;
+            Ballistician2.IsActive = true;
+            Ballistician2.Upgrade = null;
 
             CustomTrait DoubleTapper = RogueLibs.CreateCustomTrait(cTrait.DoubleTapper, true,
                 new CustomNameInfo("Double-Tapper"),
@@ -74,7 +86,7 @@ namespace BunnyMod.Content
             DoubleTapper.Upgrade = null;
 
             CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
-                new CustomNameInfo("000: Sniper"),
+                new CustomNameInfo("Sniper"),
                 new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, bullet hits on unaware targets deal massive damage\n- Bullet range increased"));
             Sniper.Available = true;
             Sniper.AvailableInCharacterCreation = true;
@@ -197,7 +209,7 @@ namespace BunnyMod.Content
             #region Experience Gain Rate
             CustomTrait DimBulb = RogueLibs.CreateCustomTrait(cTrait.DimBulb, true,
                 new CustomNameInfo("Dim Bulb"),
-                new CustomNameInfo("You have more money than sense. And no, you're not exactly rich.\n\nXP gain set to 75%"));
+                new CustomNameInfo("You have more money than sense. And buddy, you're broke.\n\n- XP gain set to 75%"));
             DimBulb.Available = true;
             DimBulb.AvailableInCharacterCreation = true;
             DimBulb.CanRemove = true;
@@ -205,13 +217,13 @@ namespace BunnyMod.Content
 			DimBulb.Conflicting.AddRange(cTrait.ExperienceRate);
             DimBulb.Conflicting.AddRange(vTrait.ExperienceRate);
             DimBulb.Conflicting.Remove(cTrait.DimBulb);
-            DimBulb.CostInCharacterCreation = -5;
+            DimBulb.CostInCharacterCreation = -10;
             DimBulb.IsActive = true;
             DimBulb.Upgrade = null;
 
             CustomTrait MoronTheMerrier = RogueLibs.CreateCustomTrait(cTrait.MoronTheMerrier, true,
                 new CustomNameInfo("Moron the Merrier"),
-                new CustomNameInfo("Sometimes you feel lonely. But as they say, \"Two's company, three's a crowd.\" Except we're talking about your brain cells, you fucking idiot.\n\nXP gain set to 50%"));
+                new CustomNameInfo("You are not playing with a full set of brain cells. You are not the sharpest tool in the dumb-person storage shed. The lights are on, but someone is dumb, and it's you. Are you understanding any of this?\n\n- XP gain set to 50%"));
             MoronTheMerrier.Available = true;
             MoronTheMerrier.AvailableInCharacterCreation = true;
             MoronTheMerrier.CanRemove = true;
@@ -219,13 +231,13 @@ namespace BunnyMod.Content
             MoronTheMerrier.Conflicting.AddRange(cTrait.ExperienceRate);
             MoronTheMerrier.Conflicting.AddRange(vTrait.ExperienceRate);
             MoronTheMerrier.Conflicting.Remove(cTrait.MoronTheMerrier);
-            MoronTheMerrier.CostInCharacterCreation = -10;
+            MoronTheMerrier.CostInCharacterCreation = -20;
             MoronTheMerrier.IsActive = true;
             MoronTheMerrier.Upgrade = null;
 
             CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
                 new CustomNameInfo("Smooth-Brained"),
-                new CustomNameInfo("You are not playing with a full set of brain cells. You are not the sharpest tool in the dumb-person storage shed. The lights are on, but someone is dumb, and it's you. Are you understanding any of this?\n\nXP gain set to 0%"));
+                new CustomNameInfo("You emerged from your mother's womb fully formed, killing her in the process. The terrified doctor declared you a perfect child and in no need of improvement in any way, ever.\n\n- XP gain set to 0%"));
             SmoothBrained.Available = true;
             SmoothBrained.AvailableInCharacterCreation = true;
             SmoothBrained.CanRemove = true;
@@ -233,7 +245,7 @@ namespace BunnyMod.Content
             SmoothBrained.Conflicting.AddRange(cTrait.ExperienceRate);
             SmoothBrained.Conflicting.AddRange(vTrait.ExperienceRate);
             SmoothBrained.Conflicting.Remove(cTrait.SmoothBrained);
-            SmoothBrained.CostInCharacterCreation = -20;
+            SmoothBrained.CostInCharacterCreation = -40;
             SmoothBrained.IsActive = true;
             SmoothBrained.Upgrade = null;
 
@@ -246,6 +258,7 @@ namespace BunnyMod.Content
             VeryHardOnYourself.CanSwap = false;
             VeryHardOnYourself.Conflicting.AddRange(new string[] { cTrait.SmoothBrained });
             VeryHardOnYourself.CostInCharacterCreation = -1;
+            VeryHardOnYourself.Prerequisites.AddRange(new string[] { vTrait.TheLaw, vTrait.Extortionist });
             VeryHardOnYourself.IsActive = true;
             VeryHardOnYourself.Upgrade = null;
             #endregion
@@ -525,7 +538,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("Domineering +"),
                 new CustomNameInfo("Some people make sure their social skills work for them. You crack the whip! You're finding more and more Subs everywhere you look."));
             Domineering_2.Available = true;
-            Domineering_2.AvailableInCharacterCreation = true;
+            Domineering_2.AvailableInCharacterCreation = false;
             Domineering_2.CanRemove = true;
             Domineering_2.CanSwap = false;
             Domineering_2.Conflicting.Add(cTrait.Domineering);
@@ -561,7 +574,7 @@ namespace BunnyMod.Content
                 new CustomNameInfo("Polarizing"),
                 new CustomNameInfo("Everyone has an opinion on you, when they first meet you. Might be good or bad, but at least you feel noticed!"));
             Polarizing.Available = true;
-            Polarizing.AvailableInCharacterCreation = true;
+            Polarizing.AvailableInCharacterCreation = false;
             Polarizing.CanRemove = false;
             Polarizing.CanSwap = true;
             Polarizing.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
@@ -786,5 +799,39 @@ namespace BunnyMod.Content
             // If you do an IL injection, do it at 787
         }
 		#endregion
+
+		#region ScrollingMenu
+        public void ScrollingMenu_00()
+		{
+            Type t = typeof(ScrollingMenu);
+            Type g = GetType();
+
+            Prefix(t, "GetTraitsRemoveTrait", g, "ScrollingMenu_GetTraitsRemoveTrait", new Type[0] { });
+		}
+        public static bool ScrollingMenu_GetTraitsRemoveTrait (ScrollingMenu __instance) // Replacement
+		{
+            // Removed gate that prevents traits with less than -5 value being removed.
+
+            __instance.customTraitList.Clear();
+
+            for (int i = 0; i < __instance.agent.statusEffects.TraitList.Count; i++)
+            {
+                Trait trait = __instance.agent.statusEffects.TraitList[i];
+
+                for (int j = 0; j < __instance.gc.sessionDataBig.unlocks.Count; j++)
+                {
+                    Unlock unlock = __instance.gc.sessionDataBig.unlocks[j];
+
+                    if (unlock.unlockName == trait.traitName && unlock.unlockType == "Trait" && unlock.cost3 < 0 && (!unlock.cantLose || __instance.gc.challenges.Contains("NoLimits")))
+                    {
+                        __instance.customTraitList.Add(unlock);
+                    }
+                }
+            }
+
+            return false;
+        }
+		#endregion
+
 	}
 }

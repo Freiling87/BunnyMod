@@ -247,6 +247,8 @@ namespace BunnyMod.Content
         public const string
             AfraidOfLoudNoises = "AfraidOfLoudNoises",
             Archmage = "Archmage",
+            Ballistician = "Ballistician",
+            Ballistician_2 = "Ballistician2",
             Carnivore = "Carnivore",
             Charmed = "Charmed",
             Charmed_2 = "Charmed2",
@@ -289,7 +291,6 @@ namespace BunnyMod.Content
             Reinforcements_2 = "Reinforcements2",
             SmoothBrained = "SmoothBrained",
             Sniper = "Sniper",
-            Ballistician = "Sniper2",
             StealthBastardDeluxe = "StealthBastardDeluxe",
             TamperTantrum = "TamperTantrum",
             TamperTantrum_2 = "TamperTantrum2",

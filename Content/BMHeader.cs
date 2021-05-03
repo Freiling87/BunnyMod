@@ -250,7 +250,7 @@ namespace BunnyMod.Content
             MSA_CD_Recharge2 = "MSA_CD_Recharge2",
             MSA_CD_Recharge3 = "MSA_CD_Recharge3",
             MSA_CD_Recharge4 = "MSA_CD_Recharge4",
-            MSA_PJ_CantDo1 = "MSA_PJ_CantDo1", 
+            MSA_PJ_CantDo1 = "MSA_PJ_CantDo1",
             MSA_PJ_CantDo2 = "MSA_PJ_CantDo2",
             MSA_PJ_CantDo3 = "MSA_PJ_CantDo3",
             MSA_PJ_CantDo4 = "MSA_PJ_CantDo4",
@@ -288,7 +288,8 @@ namespace BunnyMod.Content
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
             SlotMachineJackpot_4 = "SlotMachineJackpot_4",
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
-            Vegetarian = "Vegetarian";
+            Vegetarian = "Vegetarian",
+            VeiledThreats = "VeiledThreats";
     }
     public static class cObject
 	{

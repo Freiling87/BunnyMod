@@ -21,10 +21,17 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			InitializeNames();
+
 			Agent_00();
 			AgentInteractions_00();
 			Relationships_00();
 			StatusEffects_00();
+		}
+		public static void InitializeNames()
+		{
+			string t = vNameType.Dialogue;
+			CustomName VeiledThreats = RogueLibs.CreateCustomName(cDialogue.VeiledThreats, t, new CustomNameInfo("Did you just... threaten me?"));
 		}
 
 		#region Custom
@@ -230,7 +237,19 @@ namespace BunnyMod.Content
 		#region AgentInteractions
 		public void AgentInteractions_00()
 		{
-			Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			Type t = typeof(AgentInteractions);
+			Type g = GetType();
+
+			Prefix(t, "AddButton", g, "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			Prefix(t, "Shakedown", g, "AgentInteractions_Shakedown", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "Threaten", g, "AgentInteractions_Threaten", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenKey", g, "AgentInteractions_ThreatenKey", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenKeyAndSafeCombination", g, "AgentInteractions_ThreatenKeyAndSafeCombination", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenLeaveTown", g, "AgentInteractions_ThreatenLeaveTown", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenMayor", g, "AgentInteractions_ThreatenMayor", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenMayorBadge", g, "AgentInteractions_ThreatenMayorBadge", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenMoney", g, "AgentInteractions_ThreatenMoney", new Type[2] { typeof(Agent), typeof(Agent) });
+			Prefix(t, "ThreatenSafeCombination", g, "AgentInteractions_ThreatenSafeCombination", new Type[2] { typeof(Agent), typeof(Agent) });
 		}
 		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
@@ -238,6 +257,463 @@ namespace BunnyMod.Content
 				extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
 			else if (extraCost.EndsWith("-20"))
 				extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
+		}
+		public static bool AgentInteractions_Shakedown(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!interactingAgent.gc.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "Shakedown");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance) || agent.health <= agent.healthMax * 0.4f || agent.relationships.GetRel(interactingAgent) == "Aligned" || agent.slaveOwners.Contains(interactingAgent))
+				{
+					int num = 0;
+
+					for (int i = 0; i < agent.gc.agentList.Count; i++)
+						if (agent.gc.agentList[i].oma.shookDown)
+							num++;
+					
+					if (num >= 3)
+						agent.SayDialogue("ThreatenedShakedownLowCash", true);
+					else
+						agent.SayDialogue("ThreatenedShakedown", true);
+					
+					int shakedownAmount = interactingAgent.objectMult.FindShakedownAmount(num);
+					
+					if (interactingAgent.localPlayer)
+					{
+						interactingAgent.objectMult.AddShakedownPerson(agent, shakedownAmount, false);
+						agent.gc.audioHandler.Play(interactingAgent, "Success");
+					}
+					else
+						interactingAgent.objectMult.AddShakedownPerson(agent, shakedownAmount, true);
+					
+					agent.shookDownAgent = interactingAgent;
+					agent.oma.shookDown = true;
+
+					if (agent.relationships.GetRel(interactingAgent) != "Aligned" && agent.relationships.GetRel(interactingAgent) != "Loyal")
+						agent.relationships.SetRel(interactingAgent, "Submissive");
+
+					__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_Threaten(Agent agent, Agent interactingAgent) // Prefix
+		{
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!GC.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "Threaten");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+
+						if (invItem.questItem)
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+							agent.SayDialogue("ThreatenedScared", true);
+							agent.killForQuest.boughtItem = true;
+							agent.cantSleep = true;
+							agent.oma.didAsk = true;
+							GC.audioHandler.Play(interactingAgent, "SelectItem");
+						}
+					}
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+				agent.oma.didAsk = true;
+				// GC.EnforcerAlertAttack(interactingAgent, agent, 7.4f);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenKey(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!GC.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenKey");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (GC.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+
+						if (invItem.invItemName == "Key")
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+
+							for (int j = 0; j < GC.objectRealList.Count; j++)
+								if (GC.objectRealList[j].objectName == "Door" && GC.objectRealList[j].startingChunk == agent.startingChunk && GC.objectRealList[j].owner == agent.ownerID)
+									((Door)GC.objectRealList[j]).boughtKeyInChunk = true;
+							
+							if (agent.relationships.GetRel(interactingAgent) != "Aligned" && agent.relationships.GetRel(interactingAgent) != "Loyal")
+								agent.relationships.SetRel(interactingAgent, "Submissive");
+							
+							__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
+							agent.SayDialogue("ThreatenedScared");
+							GC.audioHandler.Play(interactingAgent, "SelectItem");
+						}
+					}
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 3);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenKeyAndSafeCombination(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!GC.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenKeyAndSafeCombination");
+					
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+				
+				if (agent.gc.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+				
+						if (invItem.invItemName == "Key" || invItem.invItemName == "SafeCombination")
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+						}
+					}
+
+					for (int j = 0; j < agent.gc.objectRealList.Count; j++)
+					{
+						if (agent.gc.objectRealList[j].objectName == "Door" && agent.gc.objectRealList[j].startingChunk == agent.startingChunk && agent.gc.objectRealList[j].owner == agent.ownerID)
+							((Door)agent.gc.objectRealList[j]).boughtKeyInChunk = true;
+					
+						if (agent.gc.objectRealList[j].chestReal && agent.gc.objectRealList[j].startingChunk == agent.startingChunk && agent.gc.objectRealList[j].owner == agent.ownerID)
+							agent.gc.objectRealList[j].allowedToSteal = true;
+					}
+
+					if (agent.relationships.GetRel(interactingAgent) != "Aligned" && agent.relationships.GetRel(interactingAgent) != "Loyal")
+						agent.relationships.SetRel(interactingAgent, "Submissive");
+					
+					__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
+					agent.SayDialogue("ThreatenedScared");
+					GC.audioHandler.Play(interactingAgent, "SelectItem");
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenLeaveTown(Agent agent, Agent interactingAgent) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (interactingAgent.gc.serverPlayer)
+				{
+					int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+					if (agent.slaveOwners.Count > 0)
+					{
+						agent.SayDialogue("AskLeaveTownSlave");
+
+						return false;
+					}
+
+					if (!agent.gc.percentChance(myChance))
+					{
+						agent.StopInteraction();
+						agent.SayDialogue(cDialogue.VeiledThreats, true);
+						agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+						agent.relationships.SetRelHate(interactingAgent, 2);
+						agent.oma.didAsk = true;
+
+						return false;
+					}
+
+					agent.SayDialogue("ThreatenedScaredLeaveTown", true);
+					agent.wantsToExit = true;
+					float num = Vector2.Distance(agent.transform.position, agent.gc.startingPoint.tr.position);
+					float num2 = Vector2.Distance(agent.transform.position, agent.gc.exitPoint.tr.position);
+
+					if (num < num2)
+						agent.wantsToExitLocation = agent.gc.startingPoint;
+					else
+						agent.wantsToExitLocation = agent.gc.exitPoint;
+					
+					agent.oma.didAsk = true;
+					
+					if (agent.killForQuest != null)
+					{
+						agent.killForQuest.playerTally[interactingAgent.isPlayer - 1]++;
+						agent.killForQuest.player = interactingAgent;
+					}
+					
+					string rel = agent.relationships.GetRel(interactingAgent);
+					
+					if (rel == "Friendly" || rel == "Loyal" || rel == "Aligned")
+					{
+						agent.relationships.SetRel(interactingAgent, "Neutral");
+					
+						return false;
+					}
+				}
+				else
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenLeaveTown");
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenMayor(Agent agent, Agent interactingAgent) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!interactingAgent.gc.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenMayor");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+
+						if (invItem.invItemName == "MayorHat")
+						{
+							agent.inventory.DestroyItem(invItem);
+							agent.objectMult.DestroyInvItemByName(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+							agent.SayDialogue("ThreatenedScared", true);
+							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+							agent.gc.ending.SetMayorTurnover("ThreatenedMayor");
+						}
+					}
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenMayorBadge(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!interactingAgent.gc.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenMayorBadge");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+
+						if (invItem.invItemName == "MayorBadge")
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+							agent.SayDialogue("ThreatenedScared", true);
+							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+
+							for (int j = 0; j < agent.gc.agentList.Count; j++)
+							{
+								Agent agent2 = agent.gc.agentList[j];
+
+								if (agent2.agentName == "Mayor" && agent2.startingChunkRealDescription == "MayorOffice")
+								{
+									__instance.BecomeFriendlyWithAlliesAllInChunk(agent, interactingAgent);
+
+									break;
+								}
+							}
+						}
+					}
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenMoney(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!interactingAgent.gc.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenMoney");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance) || agent.relationships.GetRel(interactingAgent) == "Aligned" || agent.relationships.GetRel(interactingAgent) == "Submissive")
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+					
+						if (invItem.invItemName == "Money")
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+							agent.SayDialogue("ThreatenedScared", true);
+							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+						}
+					}
+
+					return false;
+				}
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_ThreatenSafeCombination(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
+		{
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			{
+				if (!interactingAgent.gc.serverPlayer)
+				{
+					interactingAgent.objectMult.ObjectAction(agent.objectNetID, "ThreatenSafeCombination");
+
+					return false;
+				}
+
+				int myChance = agent.relationships.FindThreat(interactingAgent, true);
+
+				if (agent.gc.percentChance(myChance))
+				{
+					for (int i = 0; i < agent.inventory.InvItemList.Count; i++)
+					{
+						InvItem invItem = agent.inventory.InvItemList[i];
+				
+						if (invItem.invItemName == "SafeCombination")
+						{
+							agent.inventory.DestroyItem(invItem);
+							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
+						
+							for (int j = 0; j < agent.gc.objectRealList.Count; j++)
+								if (agent.gc.objectRealList[j].chestReal && agent.gc.objectRealList[j].startingChunk == agent.startingChunk && agent.gc.objectRealList[j].owner == agent.ownerID)
+									agent.gc.objectRealList[j].allowedToSteal = true;
+							
+							if (agent.relationships.GetRel(interactingAgent) != "Aligned" && agent.relationships.GetRel(interactingAgent) != "Loyal")
+								agent.relationships.SetRel(interactingAgent, "Submissive");
+							
+							__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
+							agent.SayDialogue("ThreatenedScared");
+							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
+						}
+					}
+
+					return false;
+				}
+
+				agent.StopInteraction();
+				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
+				agent.relationships.SetRelHate(interactingAgent, 2);
+
+				return false;
+			}
+
+			return true;
 		}
 		#endregion
 		#region Relationships

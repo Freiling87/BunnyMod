@@ -23,11 +23,18 @@ namespace BunnyMod.Content
 		public static void InitializeChallenges()
 		{
 			#region Combat
+			CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
+				new CustomNameInfo("Save The Walls"),
+				new CustomNameInfo("There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n-Knockback reduced globally by 50%."));
+			SaveTheWalls.Available = true;
+			SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback });
+			SaveTheWalls.IsActive = false;
+
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
-				new CustomNameInfo("000: Boring Physics"),
-				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know."));
+				new CustomNameInfo("Boring Physics"),
+				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback reduced globally by 90%."));
 			BoringPhysics.Available = true;
-			BoringPhysics.Conflicting.AddRange(new string[] { });
+			BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback });
 			BoringPhysics.IsActive = false;
 			#endregion
 			#region Floors & Features

@@ -36,7 +36,7 @@ namespace BunnyMod.Content
 
             t = vNameType.Dialogue;
             CustomName AfraidOfLoudNoises = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises, t, new CustomNameInfo("I can't use that! It's too loooooud."));
-            CustomName AfraidOfLoudNoises2 = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises2, t, new CustomNameInfo("But that'll hurt my delicate little ears!."));
+            CustomName AfraidOfLoudNoises2 = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises2, t, new CustomNameInfo("But that'll hurt my delicate little ears!"));
             CustomName Carnivore = RogueLibs.CreateCustomName(cDialogue.Carnivore, t, new CustomNameInfo("No! Me want meat!"));
             CustomName DAREdevil = RogueLibs.CreateCustomName(cDialogue.DAREdevil, t, new CustomNameInfo("Nope, my body is a temple!"));
             CustomName DrawNoBlood = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood, t, new CustomNameInfo("Mommy says I can't use sharp things!"));

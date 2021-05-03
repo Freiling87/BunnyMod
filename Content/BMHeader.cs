@@ -160,6 +160,7 @@ namespace BunnyMod.Content
             SunkenCity = "SunkenCity",
             RoaminOrgy = "RoaminOrgy",
             RushinRevolution = "RushinRevolution",
+            SaveTheWalls = "SaveTheWalls",
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
             UnpaidInternship = "UnpaidInternship",
@@ -1073,7 +1074,7 @@ namespace BunnyMod.Content
     {
         public const string
             AssassinsEveryLevel = "AssassinsEveryLevel",
-            BigKnockbackForAll = "BigKnockbackForAll",
+            BigKnockback = "BigKnockbackForAll",
             CoolWithCannibals = "CannibalsDontAttack",
             DoctorsMoreImportant = "DoctorsMoreImportant",
             EveryoneHatesYou = "EveryoneHatesYou",

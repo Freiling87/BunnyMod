@@ -764,6 +764,8 @@ namespace BunnyMod.Content
             => enums.SelectMany(e => e).ToList();
         public static bool DoesPlayerHaveTraitFromList(Agent agent, List<string> traits)
 		{
+            BMLog("DoesPlayerHaveTraitFromList");
+
             foreach (string trait in traits)
                 if (agent.statusEffects.hasTrait(trait))
                     return true;

@@ -5549,14 +5549,6 @@ namespace BunnyMod.Content
 		#region SpawnerFloor
 		public void SpawnerFloor_00()
 		{
-			Prefix(typeof(SpawnerFloor), "spawn", GetType(), "SpawnerFloor_spawn", new Type[1] { typeof(string) });
-		}
-		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, tk2dTileMap ___tilemapFloors, tk2dTileMap ___tilemapFloors3, tk2dTileMap ___tilemapFloors4) // Prefix
-		{
-			if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-				floorName = vFloor.CasinoFloor;
-
-			return true;
 		}
 		#endregion
 		#region SpawnerObject

@@ -121,12 +121,6 @@
   <data name="ChronomanticDilation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ChronomanticDilation.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Cryomancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Cryomancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Electromancy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Electromancy.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="PyromanticJet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\PyromanticJet.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

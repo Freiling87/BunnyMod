@@ -44,6 +44,19 @@ namespace BunnyMod.Content
 
 			return maxBulletRange;
 		}
+		public static float GetGlobalKnockBackMultiplier()
+		{
+			float baseAmt = 1f;
+
+			if (GC.challenges.Contains(vChallenge.BigKnockback))
+				baseAmt = 1.50f;
+			else if (GC.challenges.Contains(cChallenge.SaveTheWalls))
+				baseAmt = 0.50f;
+			else if (GC.challenges.Contains(cChallenge.BoringPhysics))
+				baseAmt = 0.10f;
+
+			return baseAmt;
+		}
 		#endregion
 
 		#region Bullet
@@ -343,7 +356,7 @@ namespace BunnyMod.Content
 		}
 		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result, ref RaycastHit2D[] ___hitsAlloc) // Prefix
 		{
-			if (BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
+			if (__instance.myBullet.agent != null && BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
 			{
 				float maxBulletRange = GetBulletRange(__instance.myBullet.agent);
 
@@ -377,7 +390,7 @@ namespace BunnyMod.Content
 			Type t = typeof(Movement);
 			Type g = GetType();
 
-			Prefix(t, "GetKnockBackStrength", g, "Movement_GetKnockBackStrength", new Type[1] { typeof(float) });
+			Prefix(t, "FindKnockBackStrength", g, "Movement_FindKnockBackStrength", new Type[1] { typeof(float) });
 		}
 		public static bool Movement_FindKnockBackStrength(float strength, ref float __result, Movement __instance, Agent ___agent) // Prefix
 		{
@@ -408,8 +421,7 @@ namespace BunnyMod.Content
 				else
 					baseAmt = Mathf.Clamp(strength, 0f, max);
 				
-				if (GC.challenges.Contains("BigKnockbackForAll"))
-					baseAmt = Mathf.Clamp(baseAmt * 1.50f, 0f, max);
+				baseAmt = Mathf.Clamp(baseAmt * GetGlobalKnockBackMultiplier(), 0f, max);
 				
 				if (___agent.disappeared)
 					baseAmt = 0f;

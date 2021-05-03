@@ -285,6 +285,7 @@ namespace BunnyMod.Content
             Polarizing = "Polarizing",
             Polarizing_2 = "Polarizing2",
             Priors = "Priors",
+            Prodigy = "Prodigy",
             RATS = "RATS",
             RATS_2 = "RATS2",
             Reinforcements = "Reinforcements",

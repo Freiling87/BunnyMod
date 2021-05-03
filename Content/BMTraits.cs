@@ -238,6 +238,20 @@ namespace BunnyMod.Content
             MoronTheMerrier.IsActive = true;
             MoronTheMerrier.Upgrade = null;
 
+            CustomTrait Prodigy = RogueLibs.CreateCustomTrait(cTrait.Prodigy, true,
+                new CustomNameInfo("000: Prodigy"),
+                new CustomNameInfo("You have a ton of potential, and pretty much nothing else. Hopefully you live past level 1. We're rooting for you, buddy.\n\n-XP gain set to 400%"));
+            Prodigy.Available = true;
+            Prodigy.AvailableInCharacterCreation = true;
+            Prodigy.CanRemove = false;
+            Prodigy.CanSwap = false;
+            Prodigy.Conflicting.AddRange(cTrait.ExperienceRate);
+            Prodigy.Conflicting.AddRange(vTrait.ExperienceRate);
+            Prodigy.Conflicting.Remove(cTrait.Prodigy);
+            Prodigy.CostInCharacterCreation = 40;
+            Prodigy.IsActive = true;
+            Prodigy.Upgrade = null;
+
             CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
                 new CustomNameInfo("Smooth-Brained"),
                 new CustomNameInfo("You emerged from your mother's womb fully formed, killing her in the process. The terrified doctor declared you a perfect child and in no need of improvement in any way, ever.\n\n- XP gain set to 0%"));

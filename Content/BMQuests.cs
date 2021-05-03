@@ -409,6 +409,8 @@ namespace BunnyMod.Content
                         xpModifier = 0.75f;
                     else if (___agent.statusEffects.hasTrait(cTrait.MoronTheMerrier))
                         xpModifier = 0.50f;
+                    else if (___agent.statusEffects.hasTrait(cTrait.Prodigy))
+                        xpModifier = 4.00f;
                 }
                 else if (xpReward < 0)
                     if (___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))

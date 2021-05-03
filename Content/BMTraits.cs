@@ -170,7 +170,7 @@ namespace BunnyMod.Content
             Vegetarian.IsActive = true;
             Vegetarian.Upgrade = null;
             #endregion
-            #region Equipment
+            #region Equipment Limitations
             CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait(cTrait.AfraidOfLoudNoises, true,
                 new CustomNameInfo("Afraid of Loud Noises", "", "", "", "", "Боязнь громких звуков", "", ""),
                 new CustomNameInfo("The recoil bruised my shouldah. The brass shell casings disoriented me as they flew past my face. The smell of sulfur and destruction made me sick. The explosions - loud like a bowomb - gave me a temporary case of PTSD. For at least an hour after firing the gun just a few times, I was anxious and irritable. And it's such small portions!", "", "", "", "", "Отдача от оружия сильно ударяет меня в плечё. Пули пролетая мимо меня сильно дезоринтируют, а от запаха серы у меня проявляются рвотные рефлексы. Громкие взрывы вызывают у меня приступы ПТСР. Всё это я узнал когда выстрелил одну пулю из пистолета.. и это лишь одна пуля..", "", ""));

@@ -10,7 +10,7 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content
 {
-    public class BMItems 
+    public class BMItems
     {
         public static GameController GC => GameController.gameController;
         public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -19,7 +19,7 @@ namespace BunnyMod.Content
 
         #region Generic
         public void Awake()
-		{
+        {
             InitializeItems();
 
             InvDatabase_00();
@@ -27,11 +27,11 @@ namespace BunnyMod.Content
             ItemFunctions_00();
         }
         public static void InitializeItems()
-		{
+        {
             // Not adding here until RL sprites are fixed, for the most part.
         }
         public static void InitializeNames()
-		{
+        {
             string t;
 
             t = vNameType.Dialogue;
@@ -40,11 +40,11 @@ namespace BunnyMod.Content
             CustomName Carnivore = RogueLibs.CreateCustomName(cDialogue.Carnivore, t, new CustomNameInfo("No! Me want meat!"));
             CustomName DAREdevil = RogueLibs.CreateCustomName(cDialogue.DAREdevil, t, new CustomNameInfo("Nope, my body is a temple!"));
             CustomName DrawNoBlood = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood, t, new CustomNameInfo("Mommy says I can't use sharp things!"));
-            CustomName DrawNoBlood2 = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood2, t, new CustomNameInfo("I swore to draw no blood... unless I remove this trait first."));
-            CustomName FatassCantWear = RogueLibs.CreateCustomName(cDialogue.FatassCantWear, t, new CustomNameInfo("I'm too fuckin' fat to wear this!"));
-            CustomName FatheadCantWear = RogueLibs.CreateCustomName(cDialogue.FatHeadCantWear, t, new CustomNameInfo("Owie! This is too tight for my big, fat, stupid, ugly head!"));
+            CustomName DrawNoBlood2 = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood2, t, new CustomNameInfo("I swore to draw no blood... unless I remove __instance trait first."));
+            CustomName FatassCantWear = RogueLibs.CreateCustomName(cDialogue.FatassCantWear, t, new CustomNameInfo("I'm too fuckin' fat to wear __instance!"));
+            CustomName FatheadCantWear = RogueLibs.CreateCustomName(cDialogue.FatHeadCantWear, t, new CustomNameInfo("Owie! __instance is too tight for my big, fat, stupid, ugly head!"));
             CustomName FriendOfBill = RogueLibs.CreateCustomName(cDialogue.FriendOfBill, t, new CustomNameInfo("Today, I choose not to drink."));
-            CustomName SharpOnly = RogueLibs.CreateCustomName(cDialogue.SharpOnly, t, new CustomNameInfo("I need a sharper tool for this work."));
+            CustomName SharpOnly = RogueLibs.CreateCustomName(cDialogue.SharpOnly, t, new CustomNameInfo("I need a sharper tool for __instance work."));
             CustomName Vegetarian = RogueLibs.CreateCustomName(cDialogue.Vegetarian, t, new CustomNameInfo("Meat is murder!"));
         }
         #endregion
@@ -52,14 +52,14 @@ namespace BunnyMod.Content
         #region InvDatabase
         public void InvDatabase_00()
         {
-            Postfix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+            Prefix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
             Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
             Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
             Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
             Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
             Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
         }
-        public static void InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Postfix
+        public static bool InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Prefix
         {
             //TODO: Verify non-equipped items like Time Bomb.
             //TODO: Add Item.Categories for types above for mod compatibility
@@ -67,13 +67,17 @@ namespace BunnyMod.Content
 
             if
             (
-                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Piercing")) ||
-                (__instance.agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer")) ||
-                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Blunt"))
+                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && vItem.piercing.Contains(item.invItemName)) ||
+                (__instance.agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && (vItem.loud.Contains(item.invItemName) && !item.contents.Contains(vItem.Silencer))) ||
+                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && vItem.piercing.Contains(item.invItemName))
             )
+            {
                 __result = false;
 
-            // TODO: See also InvDatabase.ChooseWeapon
+                return false;
+            }
+
+            return true;
         }
         public static bool InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Prefix
         {

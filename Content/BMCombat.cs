@@ -20,6 +20,7 @@ namespace BunnyMod.Content
 			Initialize_Names();
 
 			Bullet_00();
+			BulletHitBox_00();
 			Movement_00();
 			PlayfieldObject_00();
 			SpawnerMain_00();
@@ -30,6 +31,20 @@ namespace BunnyMod.Content
 
 			CustomName headshot = RogueLibs.CreateCustomName("Headshot", t, new CustomNameInfo("Headshot"));
 		}
+
+		#region Custom
+		public static float GetBulletRange(Agent agent)
+		{
+			float maxBulletRange = 13.44f;
+
+			if (agent.statusEffects.hasTrait(cTrait.Ballistician))
+				maxBulletRange = 100f;
+			if (agent.statusEffects.hasTrait(cTrait.Sniper))
+				maxBulletRange = 20f;
+
+			return maxBulletRange;
+		}
+		#endregion
 
 		#region Bullet
 		public void Bullet_00()
@@ -60,15 +75,8 @@ namespace BunnyMod.Content
 			{
 				bool flag = true;
 				Vector2 vector = __instance.tr.position;
-				float maxBulletDistance = 13f;
 
-				if (__instance.bulletType == bulletStatus.Shotgun || __instance.bulletType == bulletStatus.Normal)
-				{
-					if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-						maxBulletDistance = 100f;
-					else if (__instance.agent.statusEffects.hasTrait(cTrait.Sniper))
-						maxBulletDistance = 20f;
-				}
+				float maxBulletDistance = GetBulletRange(__instance.agent);
 
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 
@@ -323,6 +331,44 @@ namespace BunnyMod.Content
 			}
 
 			return false;
+		}
+		#endregion
+		#region BulletHitBox
+		public void BulletHitBox_00()
+		{
+			Type t = typeof(BulletHitbox);
+			Type g = GetType();
+
+			Prefix(t, "HasLOSBullet", g, "BulletHitbox_HasLOSBullet", new Type[1] { typeof(PlayfieldObject) });
+		}
+		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result, ref RaycastHit2D[] ___hitsAlloc) // Prefix
+		{
+			if (BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
+			{
+				float maxBulletRange = GetBulletRange(__instance.myBullet.agent);
+
+				__instance.myBullet.dirHelper.localPosition = new Vector3(0f, -0.16f, 0f);
+				Vector3 position = __instance.myBullet.dirHelper.transform.position;
+				Vector2 vector = playfieldObject.transform.position - position;
+				int hitsInPath = Physics2D.RaycastNonAlloc(position, vector.normalized, ___hitsAlloc, maxBulletRange, __instance.myLayerMask);
+				float closestHit = 1000000f;
+				
+				for (int i = 0; i < hitsInPath; i++)
+				{
+					RaycastHit2D raycastHit2D = ___hitsAlloc[i];
+
+					if (raycastHit2D.collider.CompareTag("Wall") && Vector2.Distance(position, raycastHit2D.collider.transform.position) < closestHit)
+						closestHit = Vector2.Distance(position, raycastHit2D.collider.transform.position);
+				}
+
+				__instance.myBullet.dirHelper.localPosition = new Vector3(0f, -0.32f, 0f);
+				
+				__result = Vector2.Distance(playfieldObject.tr.position, position) < closestHit;
+
+				return false;
+			}
+
+			return true;
 		}
 		#endregion
 		#region Movement

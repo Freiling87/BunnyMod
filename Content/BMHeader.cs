@@ -172,6 +172,10 @@ namespace BunnyMod.Content
 			MobTown,
             YoungMenInTheNeighborhood,
         };
+        public static List<string> AffectsBullets = new List<string>()
+        {
+            ScaryGuns,
+        };
         public static List<string> AffectsFloors = new List<string>()
         {
             ArcologyEcology,
@@ -366,6 +370,12 @@ namespace BunnyMod.Content
             WildCasting = "WildCasting",
             WildCasting_2 = "WildCasting2";
 
+        public static List<string> BulletRange = new List<string>()
+        {
+            Ballistician,
+            Ballistician_2,
+            Sniper
+        };
         public static List<string> ExperienceRate = new List<string>()
         {
             DimBulb,

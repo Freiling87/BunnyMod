@@ -762,6 +762,14 @@ namespace BunnyMod.Content
         public static bool isPlayerInitialRelationshipTraitActive = false;
         public static List<T> ConcatTraitLists<T>(params IEnumerable<T>[] enums)
             => enums.SelectMany(e => e).ToList();
+        public static bool DoesPlayerHaveTraitFromList(Agent agent, List<string> traits)
+		{
+            foreach (string trait in traits)
+                if (agent.statusEffects.hasTrait(trait))
+                    return true;
+
+            return false;
+		}
         internal static string HealthCost(Agent agent, int baseDamage, DamageType type)
         {
             BMLog("HealthCost");

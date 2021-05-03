@@ -22,6 +22,43 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeChallenges()
 		{
+			#region Combat
+			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
+				new CustomNameInfo("000: Boring Physics"),
+				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know."));
+			BoringPhysics.Available = true;
+			BoringPhysics.Conflicting.AddRange(new string[] { });
+			BoringPhysics.IsActive = false;
+			#endregion
+			#region Floors & Features
+			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
+				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
+				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
+			ArcologyEcology.Available = true;
+			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
+			ArcologyEcology.IsActive = false;
+
+			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
+				new CustomNameInfo("Skyway District"),
+				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be."));
+			SkywayDistrict.Available = true;
+			SkywayDistrict.Conflicting.AddRange(new string[] { });
+			SkywayDistrict.IsActive = false;
+
+			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
+				new CustomNameInfo("000: FloorTiles: Sunken City"),
+				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
+			SunkenCity.Available = true;
+			SunkenCity.Conflicting.AddRange(cChallenge.AffectsFloors);
+			SunkenCity.IsActive = false;
+
+			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
+				new CustomNameInfo("000: FloorTiles: Transit Experiment"),
+				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
+			TransitExperiment.Available = true;
+			TransitExperiment.Conflicting.AddRange(cChallenge.AffectsFloors);
+			TransitExperiment.IsActive = false;
+			#endregion
 			#region Map Generation Overhauls
 			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
@@ -53,40 +90,8 @@ namespace BunnyMod.Content
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
 			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
 			PoliceState.IsActive = false;
-
-			#endregion
-			#region Floors & Features
-
-			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
-				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
-			ArcologyEcology.Available = true;
-			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
-			ArcologyEcology.IsActive = false;
-
-			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
-				new CustomNameInfo("Skyway District"),
-				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be."));
-			SkywayDistrict.Available = true;
-			SkywayDistrict.IsActive = false;
-
-			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
-				new CustomNameInfo("000: FloorTiles: Sunken City"),
-				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
-			SunkenCity.Available = true;
-			SunkenCity.Conflicting.AddRange(cChallenge.AffectsFloors);
-			SunkenCity.IsActive = false;
-
-			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
-				new CustomNameInfo("000: FloorTiles: Transit Experiment"),
-				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
-			TransitExperiment.Available = true;
-			TransitExperiment.Conflicting.AddRange(cChallenge.AffectsFloors);
-			TransitExperiment.IsActive = false;
-
 			#endregion
 			#region Map Size
-
 			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
 				new CustomNameInfo("MapSize: A City for Ants?!"),
 				new CustomNameInfo("Yes, that is indeed what it is, figuratively speaking."));
@@ -114,10 +119,8 @@ namespace BunnyMod.Content
 			Ultrapolis.Available = true;
 			Ultrapolis.Conflicting.AddRange(cChallenge.MapSize);
 			Ultrapolis.IsActive = false;
-
 			#endregion
 			#region Population
-
 			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cChallenge.GhostTown, true,
 				new CustomNameInfo("Population: Ghost Town"),
 				new CustomNameInfo("No one walks the streets in this city. Don't act all innocent, I know what you do to people in this game!"));
@@ -138,10 +141,8 @@ namespace BunnyMod.Content
 			SwarmWelcome.Available = true;
 			SwarmWelcome.Conflicting.AddRange(cChallenge.Population);
 			SwarmWelcome.IsActive = false;
-
 			#endregion
 			#region Quest Count
-
 			CustomMutator RushinRevolution = RogueLibs.CreateCustomMutator(cChallenge.RushinRevolution, true,
 				new CustomNameInfo("QuestCount: Rushin' Revolution"),
 				new CustomNameInfo("There are decades where nothing happens; and there are weeks where decades happen. And then there are days where you just don't have time for this shit.\n\nNo quests. Bum rush the Mayor. Take a long weekend."));
@@ -162,7 +163,6 @@ namespace BunnyMod.Content
 			Workhorse.Available = true;
 			Workhorse.Conflicting.AddRange(cChallenge.QuestCount);
 			Workhorse.IsActive = false;
-
 			#endregion
 			#region Quest Rewards
 			CustomMutator DoublePlyRewards = RogueLibs.CreateCustomMutator(cChallenge.DoublePlyRewards, true,
@@ -182,7 +182,6 @@ namespace BunnyMod.Content
 			UnpaidInternship.IsActive = false;
 			#endregion
 			#region Roamers
-
 			CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cChallenge.HoodlumsWonderland, true,
 				new CustomNameInfo("Hoodlum's Wonderland"),
 				new CustomNameInfo("The annual charity drive for the Blahds and Crepes happened to overlap this year. They're in tough competition to sell the most cookies! Roaming gang spawns are increased. By a lot."));
@@ -203,10 +202,8 @@ namespace BunnyMod.Content
 			YoungMenIntheNeighborhood.Available = true;
 			YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
 			YoungMenIntheNeighborhood.IsActive = false;
-
 			#endregion
 			#region Walls
-
 			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
 				new CustomNameInfo("Construction: City Of Steel"),
 				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
@@ -241,7 +238,6 @@ namespace BunnyMod.Content
 			SpelunkyDory.Available = true;
 			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);
 			SpelunkyDory.IsActive = false;
-
 			#endregion
 		}
 

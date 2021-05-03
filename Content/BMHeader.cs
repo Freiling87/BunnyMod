@@ -136,6 +136,7 @@ namespace BunnyMod.Content
             ACityForAnts = "ACityForAnts", 
             AnCapistan = "AnCapistan", 
             ArcologyEcology = "ArcologyEcology",
+            BoringPhysics = "BoringPhysics",
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",
             DoublePlyRewards = "DoublePlyRewards",

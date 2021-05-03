@@ -1691,6 +1691,7 @@ namespace BunnyMod.Content
 		public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
 		{
 			Agent agent = __instance.agent;
+
 			if (traitName == cTrait.Fatass)
 			{
 				//TODO: CharacterCreation.CreatePointTallyText() for stat mods

@@ -26,6 +26,43 @@ namespace BunnyMod.Content
 			MSA_PJ_Initialize();
 			MSA_TB_Initialize();
 		}
+		public static void InitializeNames()
+		{
+			string t;
+
+			t = vNameType.Dialogue;
+			CustomName MSA_CD_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo1, t, new CustomNameInfo("I need to take a \"time out!\" Get it? But seriously, my heart will stop."));
+			CustomName MSA_CD_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo2, t, new CustomNameInfo("I'm gonna take the blue pill for a sec."));
+			CustomName MSA_CD_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast1, t, new CustomNameInfo("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp..."));
+			CustomName MSA_CD_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast2, t, new CustomNameInfo("Bullet Time? More like Bullshit Time!"));
+			CustomName MSA_CD_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast3, t, new CustomNameInfo("(Slow Motion Noises)"));
+			CustomName MSA_CD_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("Okay, maybe there is a spoon, I guess. Whatever."));
+			CustomName MSA_CD_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge1, t, new CustomNameInfo("It's Slowing-down-time... time!"));
+			CustomName MSA_PJ_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo1, t, new CustomNameInfo("I'm burned out."));
+			CustomName MSA_PJ_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo2, t, new CustomNameInfo("I don't feel like exploding right now."));
+			CustomName MSA_PJ_Cast1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast1, t, new CustomNameInfo("Die! Burn! Die! Die!"));
+			CustomName MSA_PJ_Cast2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast2, t, new CustomNameInfo("Burn, baby, burn!"));
+			CustomName MSA_PJ_Cast3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast3, t, new CustomNameInfo("BURN-ie 2024!"));
+			CustomName MSA_PJ_Cast4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast4, t, new CustomNameInfo("Yer fired! Get it?"));
+			CustomName MSA_PJ_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast1, t, new CustomNameInfo("Not very stoked right now."));
+			CustomName MSA_PJ_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast2, t, new CustomNameInfo("Haha my skin is melting lol XDDD"));
+			CustomName MSA_PJ_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast3, t, new CustomNameInfo("Flame off! Flame off!"));
+			CustomName MSA_PJ_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast4, t, new CustomNameInfo("I shidded an farded an bursteded into flames."));
+			CustomName MSA_PJ_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge1, t, new CustomNameInfo("Ready to burn!"));
+			CustomName MSA_PJ_Recharge2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge2, t, new CustomNameInfo("I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do a lot of burning."));
+			CustomName MSA_PJ_Recharge3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge3, t, new CustomNameInfo("(Laughs maniacally)"));
+			CustomName MSA_PJ_Recharge4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge4, t, new CustomNameInfo("Why are the innocent so fun to burn?"));
+
+			CustomName MSA_TB_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo1, t, new CustomNameInfo("I need to give it a rest or my head will explode. I've seen it happen."));
+			CustomName MSA_TB_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo2, t, new CustomNameInfo("Slow down! Haven't you seen The Fly?"));
+			CustomName MSA_TB_Cast1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast1, t, new CustomNameInfo("Vwip!"));
+			CustomName MSA_TB_Cast2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast2, t, new CustomNameInfo("Nothing personal, kid."));
+			CustomName MSA_TB_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast1, t, new CustomNameInfo("I smell burning toast."));
+			CustomName MSA_TB_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast2, t, new CustomNameInfo("Blurgh. (Drool)"));
+			CustomName MSA_TB_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast3, t, new CustomNameInfo("I pink I bust hab a stwoke."));
+			CustomName MSA_TB_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast4, t, new CustomNameInfo("My head a splode."));
+			CustomName MSA_TB_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Recharge1, t, new CustomNameInfo("Who needs Scotty? I'll beam my damn self up."));
+		}
 
 		#region Magic General
 		public static int CalcMaxMana(Agent agent)
@@ -98,41 +135,42 @@ namespace BunnyMod.Content
 
 			string[] dialogue =
 			{
-				"I need to take a \"time out!\" Get it? But seriously, my heart will stop.",
-				"I'm gonna take the blue pill for a sec."
+				cDialogue.MSA_CD_CantDo1,
+				cDialogue.MSA_CD_CantDo2
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_CD_DialogueCast(Agent agent) // TODO
 		{
 			string[] dialogue =
 			{
-				""
+				cDialogue.MSA_CD_Cast1,
+				cDialogue.MSA_CD_Cast2,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_CD_DialogueMiscast(Agent agent)
 		{
 			string[] dialogue =
 			{
-				"Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp...",
-				"Bullet Time? More like Bullshit Time!",
-				"(Slow Motion Noises)",
-				"Okay, maybe there is a spoon, I guess. Whatever."
+				cDialogue.MSA_CD_Miscast1,
+				cDialogue.MSA_CD_Miscast2,
+				cDialogue.MSA_CD_Miscast3,
+				cDialogue.MSA_CD_Miscast4,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_CD_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
-				"It's Slowing-down-time... Time!"
+				cDialogue.MSA_CD_Recharge1
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		#endregion
 		public static float baseTimeScale;
@@ -141,8 +179,8 @@ namespace BunnyMod.Content
 			Sprite spriteChronomanticDilation = RogueUtilities.ConvertToSprite(Properties.Resources.ChronomanticDilation);
 
 			CustomAbility chronomanticDilation = RogueLibs.CreateCustomAbility(cSpecialAbility.ChronomanticDilation, spriteChronomanticDilation, true,
-				new CustomNameInfo("Chronomantic Dilation"),
-				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself."),
+				new CustomNameInfo("Chronomantic Dilation","","","","", "Хрономантический сдвиг","",""),
+				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself.", "", "", "", "", "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\nНеудача: Ускоряет всё кроме вас.", "", ""),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -451,49 +489,49 @@ namespace BunnyMod.Content
 
 			string[] dialogue =
 			{
-				"I'm burned out.",
-				"Hang on. I don't feel like exploding right now."
+				cDialogue.MSA_PJ_CantDo1,
+				cDialogue.MSA_PJ_CantDo2
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_PJ_DialogueCast(Agent agent) // Not used yet
 		{
-			GC.audioHandler.Play(agent, "AgentLaugh");
+			GC.audioHandler.Play(agent, vAudioClip.AgentLaugh);
 
 			string[] dialogue =
 			{
-				"Die! Burn! Die! Die!",
-				"Burn, baby, burn!",
-				"BURN-ie 2024!",
-				"Yer fired! Get it?"
+				cDialogue.MSA_PJ_Cast1,
+				cDialogue.MSA_PJ_Cast2,
+				cDialogue.MSA_PJ_Cast3,
+				cDialogue.MSA_PJ_Cast4
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_PJ_DialogueMiscast(Agent agent)
 		{
 			string[] dialogue =
 			{
-				"Not very stoked right now.",
-				"Haha my skin is melting lol XDDD",
-				"Flame off! Flame off!",
-				"I shidded an farded an bursteded into flames."
+				cDialogue.MSA_PJ_Miscast1,
+				cDialogue.MSA_PJ_Miscast2,
+				cDialogue.MSA_PJ_Miscast3,
+				cDialogue.MSA_PJ_Miscast4,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_PJ_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
-				"Ready to burn!",
-				"I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do both.",
-				"(Laughs maniacally)",
-				"Why are the innocent so fun to burn?"
+				cDialogue.MSA_PJ_Recharge1,
+				cDialogue.MSA_PJ_Recharge2,
+				cDialogue.MSA_PJ_Recharge3,
+				cDialogue.MSA_PJ_Recharge4,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		#endregion
 		public static void MSA_PJ_Initialize()
@@ -501,8 +539,8 @@ namespace BunnyMod.Content
 			Sprite spritePyromanticJet = RogueUtilities.ConvertToSprite(Properties.Resources.PyromanticJet);
 
 			CustomAbility pyromanticJet = RogueLibs.CreateCustomAbility(cSpecialAbility.PyromanticJet, spritePyromanticJet, true,
-				new CustomNameInfo("Pyromantic Jet"),
-				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat?? "),
+				new CustomNameInfo("Pyromantic Jet", "", "", "", "", "Огненная струя", "", ""),
+				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat??", "", "", "", "", "Заклинание: Удерживайте кнопку Супер-способности, чтобы выстрелить пламенем.\nНеудача: Из вас течёт Напалм.. что вы ели??", "", ""),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;
@@ -795,11 +833,11 @@ namespace BunnyMod.Content
 
 			string[] dialogue =
 			{
-				"I need to give it a rest or my head will explode. I've seen it happen.",
-				"Slow down! Haven't you seen The Fly?"
+				cDialogue.MSA_TB_CantDo1,
+				cDialogue.MSA_TB_CantDo2,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
@@ -811,11 +849,11 @@ namespace BunnyMod.Content
 
 			string[] dialogue =
 			{
-				"Vwip!",
-				"Nothing personal, kid."
+				cDialogue.MSA_TB_Cast1,
+				cDialogue.MSA_TB_Cast2,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
@@ -828,22 +866,22 @@ namespace BunnyMod.Content
 
 			string[] dialogue =
 			{
-				"I smell burning toast.",
-				"Blurgh. (Drool)",
-				"I pink I bust hab a stwoke.",
-				"My head a splode."
+				cDialogue.MSA_TB_Miscast1,
+				cDialogue.MSA_TB_Miscast2,
+				cDialogue.MSA_TB_Miscast3,
+				cDialogue.MSA_TB_Miscast4,
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
 			string[] dialogue =
 			{
-				"Who needs Scotty? I'll beam my damn self up."
+				cDialogue.MSA_TB_Recharge1
 			};
 
-			agent.Say(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
 		}
 		#endregion
 		public static void MSA_TB_Initialize()
@@ -851,8 +889,8 @@ namespace BunnyMod.Content
 			Sprite spriteTelemanticBlink = RogueUtilities.ConvertToSprite(Properties.Resources.TelemanticBlink);
 
 			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility(cSpecialAbility.TelemanticBlink, spriteTelemanticBlink, true,
-				new CustomNameInfo("Telemantic Blink"),
-				new CustomNameInfo("Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke."),
+				new CustomNameInfo("Telemantic Blink", "", "", "", "", "Телепортация", "", ""),
+				new CustomNameInfo("Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke.", "", "", "", "", "Заклинание: Удерживайте кнопку Супер-способности, наведите курсор на место в которое хотите переместится. Удерживание кнопки Супер-способности повышает точность, но и шанс на неудачный каст.\nНеудача: Небольшой удар.", "", ""),
 				delegate (InvItem item)
 				{
 					item.cantDrop = true;

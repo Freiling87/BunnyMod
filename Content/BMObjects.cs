@@ -605,7 +605,7 @@ namespace BunnyMod.Content
                         luckMultiplier *= 2;
             }
 
-            __result = Mathf.Clamp(__result + luckBonus * luckMultiplier, 0, 100);
+            __result = Mathf.Clamp(__result + (luckBonus * luckMultiplier), 0, 100);
         }
         public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType, PlayfieldObject __instance) // Prefix
         {
@@ -2372,7 +2372,7 @@ namespace BunnyMod.Content
 
             advantage = __instance.interactingAgent.DetermineLuck(advantage, "SlotMachine", true);
 
-            if (GC.percentChance(1) || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
+            if (Random.Range(1, 625) == 1 || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
             {
                 SlotMachine_Jackpot(gambleAmt * 10, __instance);
             }
@@ -2425,6 +2425,7 @@ namespace BunnyMod.Content
             GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
             __instance.StartCoroutine(SlotMachine_JackpotPlayTime(__instance));
             __instance.StartCoroutine(SlotMachine_PlayingNoise(__instance));
+            __instance.interactable = false;
 
             for (int i = 1; i <= 100; i++)
             {
@@ -2432,7 +2433,6 @@ namespace BunnyMod.Content
 				{
                     __instance.PlayAnim(vAnimation.MachineOperate, __instance.interactingAgent);
                     GC.audioHandler.Play(__instance, vAudioClip.Win);
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false);
 
                     if (i % 10 == 0)
                     {
@@ -2442,13 +2442,15 @@ namespace BunnyMod.Content
                         if (i % 20 == 0)
 						{
                             __instance.Say("SlotMachineJackpot" + (i / 20).ToString());
-                            GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
+                            GC.audioHandler.Play(__instance, vAudioClip.ClubMusic);
                         }
                     }
                 }
 
                 await Task.Delay(100);
             }
+
+            __instance.MakeAllMachinesNonFunctional();
         }
         public static IEnumerator SlotMachine_JackpotPlayTime(SlotMachine __instance) // Non-Patch
 		{
@@ -2459,7 +2461,7 @@ namespace BunnyMod.Content
                 if (__instance.stateIndicator != null)
                     __instance.stateIndicator.StateIndicatorOff();
                 
-                GC.audioHandler.Stop(__instance, vAudioClip.Jukebox);
+                GC.audioHandler.StopObjectSounds(__instance);
                 
                 if (GC.serverPlayer)
                     GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "StopMusicClient");
@@ -2479,7 +2481,7 @@ namespace BunnyMod.Content
 
                 if (jukeboxTimer <= 0f)
                 {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, null).distraction = true;
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false).distraction = true;
                     jukeboxTimer = 1f;
                 }
 
@@ -2532,23 +2534,26 @@ namespace BunnyMod.Content
                 invItem.invItemCount = amount;
                 Vector3 position = __instance.tr.position;
 
+                float randA = Random.Range(-0.16f, 0.16f);
+                float randB = Random.Range(0.16f, 0.32f);
+
                 switch (__instance.direction)
                 {
                     case "N":
-                        position = new Vector3(__instance.tr.position.x + Random.Range(-0.16f, 0.16f), __instance.tr.position.y + 0.16f, __instance.tr.position.z);
+                        position = new Vector3(__instance.tr.position.x + randA, __instance.tr.position.y + randB, __instance.tr.position.z);
 
                         break;
                     case "E":
-                        position = new Vector3(__instance.tr.position.x + 0.16f, __instance.tr.position.y + Random.Range(-0.16f, 0.16f), __instance.tr.position.z);
+                        position = new Vector3(__instance.tr.position.x + randB, __instance.tr.position.y + randA, __instance.tr.position.z);
 
                         break;
 
                     case "S":
-                        position = new Vector3(__instance.tr.position.x + Random.Range(-0.16f, 0.16f), __instance.tr.position.y - 0.16f, __instance.tr.position.z);
+                        position = new Vector3(__instance.tr.position.x + randA, __instance.tr.position.y - randB, __instance.tr.position.z);
 
                         break;
                     case "W":
-                        position = new Vector3(__instance.tr.position.x - 0.16f, __instance.tr.position.y + Random.Range(-0.16f, 0.16f), __instance.tr.position.z);
+                        position = new Vector3(__instance.tr.position.x - randB, __instance.tr.position.y + randA, __instance.tr.position.z);
 
                         break;
                 }

@@ -289,7 +289,7 @@ namespace BunnyMod.Content
             Charmed.CanSwap = true;
             Charmed.Conflicting.AddRange(cTrait.Luck);
             Charmed.Conflicting.Remove(cTrait.Charmed);
-            Charmed.CostInCharacterCreation = 3;
+            Charmed.CostInCharacterCreation = 4;
             Charmed.IsActive = true;
             Charmed.Upgrade = cTrait.Charmed_2;
 
@@ -302,7 +302,7 @@ namespace BunnyMod.Content
             Charmed_2.CanSwap = true;
             Charmed_2.Conflicting.AddRange(cTrait.Luck);
             Charmed_2.Conflicting.Remove(cTrait.Charmed_2);
-            Charmed_2.CostInCharacterCreation = 6;
+            Charmed_2.CostInCharacterCreation = 8;
             Charmed_2.Upgrade = null;
 
             CustomTrait Cursed = RogueLibs.CreateCustomTrait(cTrait.Cursed, true,

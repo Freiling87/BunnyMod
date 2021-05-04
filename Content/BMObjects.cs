@@ -85,11 +85,6 @@ namespace BunnyMod.Content
 
             t = vNameType.Dialogue;
             CustomName machineBusy = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
-            CustomName slotMachineJackpot_1 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Jackpot!"));
-            CustomName slotMachineJackpot_2 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
-            CustomName slotMachineJackpot_3 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
-            CustomName slotMachineJackpot_4 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
-            CustomName slotMachineJackpot_5 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
 
             t = vNameType.Interface;
             CustomName dispenseIce = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
@@ -99,6 +94,13 @@ namespace BunnyMod.Content
             CustomName slotMachine_Play1 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay1, t, new CustomNameInfo("Play"));
             CustomName slotMachine_Play100 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
             CustomName stealItem = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
+
+            t = vNameType.StatusEffect;
+            CustomName slotMachineJackpot_1 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Jackpot!"));
+            CustomName slotMachineJackpot_2 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
+            CustomName slotMachineJackpot_3 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+            CustomName slotMachineJackpot_4 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
+            CustomName slotMachineJackpot_5 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
         }
         #endregion
 

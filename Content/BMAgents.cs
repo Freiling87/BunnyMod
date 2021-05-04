@@ -849,7 +849,7 @@ namespace BunnyMod.Content
 				agent.hiddenInObject = hiddenInObject;
 				hiddenInObject.agentHiding = agent;
 				
-				if (objName == vObject.Bush)
+				if (objName == vObject.Bush || objName == vObject.TableBig)
 					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
 				else
 					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y - 0.24f);

@@ -355,6 +355,7 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "HasLOSBullet", g, "BulletHitbox_HasLOSBullet", new Type[1] { typeof(PlayfieldObject) });
+			Prefix(t, "HitObject", g, "BulletHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
 		}
 		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result, ref RaycastHit2D[] ___hitsAlloc) // Prefix
 		{
@@ -382,6 +383,17 @@ namespace BunnyMod.Content
 
 				return false;
 			}
+
+			return true;
+		}
+		public static bool BulletHitbox_HitObject(GameObject hitObject, bool fromClient, BulletHitbox __instance) // Prefix
+		{
+			// Stealth Bastard Deluxe Shoot past HiddenInObject
+
+			if (__instance.myBullet.agent != null &&
+				__instance.myBullet.agent.hiddenInObject != null &&
+				hitObject == __instance.myBullet.agent.hiddenInObject)
+				return false;
 
 			return true;
 		}
@@ -1013,36 +1025,13 @@ namespace BunnyMod.Content
 						bool doubleTap = false;
 						bool sniped = false;
 						bool hidden = (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null));
-						bool invisible = damagerAgent.invisible;
+						bool invisible = (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+											hidden);
 						bool hasLOSBehind = damagedAgent.movement.HasLOSObjectBehind(damagerAgent);
 						bool hasLOSAgent = damagedAgent.movement.HasLOSAgent(damagerAgent);
 						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
-
-						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
-							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible) || damagedAgent.sleeping &&
-							distance <= 0.96f)
-						{
-							headShot = true;
-							doubleTap = true;
-						}
-
 						Bullet bullet = (Bullet)damagerObject;
 						string wepName = bullet.cameFromWeapon;
-
-						BMLog("\twepName: " + wepName);
-
-						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
-							wepName == vItem.Revolver &&
-							((((!hasLOSAgent || hidden || invisible) || damagedAgent.sleeping) &&
-							distance >= 4.00f)) ||
-							distance >= 8.00f)
-						{
-							headShot = true;
-							sniped = true;
-						}
-
-						if (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null))
-							hidden = true;
 
 						BMLog("\theadshot:\t" + headShot);
 						BMLog("\tdoubleTap:\t" + doubleTap);
@@ -1052,6 +1041,25 @@ namespace BunnyMod.Content
 						BMLog("\tdistance:\t" + distance);
 						BMLog("\tHasLOSBehind:\t" + hasLOSBehind);
 						BMLog("\tHasLOSAgent:\t" + hasLOSAgent);
+						BMLog("\twepName: " + wepName);
+
+						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
+							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible || damagedAgent.sleeping) &&
+							distance <= 0.96f)
+						{
+							headShot = true;
+							doubleTap = true;
+						}
+
+						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
+							wepName == vItem.Revolver &&
+							(!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && 
+							distance >= 4.00f ||
+							distance >= 8.00f)
+						{
+							headShot = true;
+							sniped = true;
+						}
 
 						if (headShot)
 						{
@@ -1074,8 +1082,7 @@ namespace BunnyMod.Content
 
 									if (doubleTap)
 									{
-										if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
-											hidden)
+										if (invisible)
 										{
 											dmg *= 10f;
 											damagerAgent.melee.successfullyBackstabbed = true;

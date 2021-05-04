@@ -5565,6 +5565,8 @@ namespace BunnyMod.Content
 		#region SpawnerFloor
 		public void SpawnerFloor_00()
 		{
+			Type t = typeof(SpawnerFloor);
+			Type g = GetType();
 		}
 		#endregion
 		#region SpawnerObject

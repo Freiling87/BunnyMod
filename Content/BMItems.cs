@@ -52,13 +52,114 @@ namespace BunnyMod.Content
         #region InvDatabase
         public void InvDatabase_00()
         {
-            Prefix(typeof(InvDatabase), "DetermineIfCanUseWeapon", GetType(), "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
-            Prefix(typeof(InvDatabase), "EquipArmor", GetType(), "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "EquipArmorHead", GetType(), "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "EquipWeapon", GetType(), "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
-            Prefix(typeof(InvDatabase), "SubtractFromItemCount", GetType(), "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
+            Type t = typeof(InvDatabase);
+            Type g = GetType();
+
+            Prefix(t, "ChooseWeapon", g, "InvDatabase_ChooseWeapon", new Type[1] { typeof(bool) });
+            Prefix(t, "DetermineIfCanUseWeapon", g, "InvDatabase_DetermineIfCanUseWeapon", new Type[1] { typeof(InvItem) });
+            Prefix(t, "EquipArmor", g, "InvDatabase_EquipArmor", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(t, "EquipArmorHead", g, "InvDatabase_EquipArmorHead", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(t, "EquipWeapon", g, "InvDatabase_EquipWeapon", new Type[2] { typeof(InvItem), typeof(bool) });
+            Prefix(t, "SubtractFromItemCount", g, "InvDatabase_SubtractFromItemCount_c", new Type[3] { typeof(int), typeof(int), typeof(bool) });
+            Prefix(t, "SubtractFromItemCount", g, "InvDatabase_SubtractFromItemCount_d", new Type[3] { typeof(InvItem), typeof(int), typeof(bool) });
         }
+        public static bool InvDatabase_ChooseWeapon(bool noGuns, InvDatabase __instance) // Prefix
+		{
+            if (BMTraits.DoesPlayerHaveTraitFromList(__instance.agent, cTrait.LimitWeapons))
+			{
+                Agent agent = __instance.agent;
+
+                if (__instance.agent.isPlayer > 0)
+                    __instance.UpdateWeaponList();
+                
+                InvItem invItem = null;
+                InvItem invItem2 = null;
+                float num = 0f;
+                float num2 = 0f;
+                bool flag = false;
+                bool noWeapons = noGuns;
+                bool flag3 = false;
+                bool noLoud = false;
+                
+                if (agent.statusEffects.hasTrait(vTrait.StubbyFingers))
+                    noGuns = true;
+                
+                if (agent.challengedToFight > 0)
+                    noGuns = true;
+                
+                if (agent.statusEffects.hasTrait(vTrait.Pacifist))
+                {
+                    noWeapons = true;
+                    flag3 = true;
+                }
+                
+                if (agent.statusEffects.hasTrait(vTrait.SausageFingers))
+                {
+                    noGuns = true;
+                    flag = true;
+                }
+                
+                if (agent.statusEffects.hasTrait(vTrait.Harmless))
+                {
+                    noGuns = true;
+                    flag = true;
+                }
+                
+                if (agent.statusEffects.hasTrait(vTrait.NearHarmless))
+                {
+                    noGuns = true;
+                    flag = true;
+                }
+
+                if (agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
+                    noLoud = true;
+
+                foreach (InvItem invItem3 in __instance.InvItemList)
+                {
+                    BMLog("\titem: " + invItem3.invItemName);
+                    BMLog("\tLoud: " + vItem.loud.Contains(invItem3.invItemName));
+                    foreach (string a in invItem3.contents)
+                        BMLog("\tContains: " + invItem3.contents[invItem3.contents.IndexOf(a)]);
+
+                    if (invItem3.itemType == "WeaponProjectile" && 
+                        invItem3.hierarchy2 > num && 
+                        (!noGuns || invItem3.Categories.Contains("NotRealWeapons")) && 
+                        (!noWeapons || invItem3.Categories.Contains("NonViolent")) && 
+                        (!noLoud || (vItem.loud.Contains(invItem3.invItemName) && !invItem3.contents.Contains(vItem.Silencer))) &&
+                        invItem3.invItemCount > 0 && 
+                        (!invItem3.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
+                        (__instance.agent.isPlayer <= 0 || !(invItem3.itemType != __instance.lastEquippedWeaponType)) && 
+                        (!invItem3.dontSelectNPC || __instance.agent.isPlayer != 0))
+                    {
+                        invItem = invItem3;
+                        num = invItem3.hierarchy2;
+                    }
+                
+                    if (invItem3.itemType == "WeaponMelee" && invItem3.hierarchy2 > num2 && 
+                        !flag && 
+                        (!flag3 || invItem3.Categories.Contains("NonViolent")) &&
+                        (!noLoud || (vItem.loud.Contains(invItem3.invItemName) && !invItem3.contents.Contains(vItem.Silencer))) &&
+                        invItem3.invItemCount > 0 && 
+                        (!invItem3.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
+                        (!invItem3.dontSelectNPC || __instance.agent.isPlayer != 0))
+                    {
+                        invItem2 = invItem3;
+                        num2 = invItem3.hierarchy2;
+                    }
+                }
+
+                if (invItem != null && (__instance.agent.isPlayer <= 0 || !(__instance.equippedWeapon.itemType == "WeaponMelee") || __instance.equippedWeapon == __instance.fist) && !__instance.equippedWeapon.Categories.Contains("NonViolent"))
+                    __instance.EquipWeapon(invItem);
+                else if (invItem2 != null)
+                    __instance.EquipWeapon(invItem2);
+                else 
+                    __instance.EquipWeapon(__instance.fist);
+
+                return false;
+			}
+
+            return true;
+		}
         public static bool InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Prefix
         {
             //TODO: Verify non-equipped items like Time Bomb.

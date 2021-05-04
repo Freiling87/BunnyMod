@@ -365,6 +365,8 @@ namespace BunnyMod.Content
             Reinforcements_2 = "Reinforcements2",
             SharpOnly = "SharpOnly",
             SmoothBrained = "SmoothBrained",
+            SpectralStrikes = "SpectralStrikes",
+            SpectralStrikes_2 = "SpectralStrikes2",
             Sniper = "Sniper",
             StealthBastardDeluxe = "StealthBastardDeluxe",
             TamperTantrum = "TamperTantrum",

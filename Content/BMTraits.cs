@@ -47,7 +47,32 @@ namespace BunnyMod.Content
             DebugTrait.CanSwap = false;
             DebugTrait.CostInCharacterCreation = 0;
             DebugTrait.IsActive = true;
-            #region Combat
+            #region Combat - Melee 
+            CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait(cTrait.SpectralStrikes, true,
+                new CustomNameInfo("000: Spectral Strikes"),
+                new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Damage to all Undead increased"));
+            SpectralStrikes.Available = true;
+            SpectralStrikes.AvailableInCharacterCreation = true;
+            SpectralStrikes.CanRemove = false;
+            SpectralStrikes.CanSwap = true;
+            SpectralStrikes.Conflicting.AddRange(new string[] { });
+            SpectralStrikes.CostInCharacterCreation = 2;
+            SpectralStrikes.IsActive = true;
+            SpectralStrikes.Upgrade = cTrait.SpectralStrikes_2;
+
+            CustomTrait SpectralStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.SpectralStrikes_2, true,
+                new CustomNameInfo("000: Spectral Strikes +"),
+                new CustomNameInfo("- You can hit Ghosts with your Melee & Unarmed attacks\n- Damage to all Undead increased"));
+            SpectralStrikes_2.Available = true;
+            SpectralStrikes_2.AvailableInCharacterCreation = true;
+            SpectralStrikes_2.CanRemove = false;
+            SpectralStrikes_2.CanSwap = true;
+            SpectralStrikes_2.Conflicting.AddRange(new string[] { });
+            SpectralStrikes_2.CostInCharacterCreation = 5;
+            SpectralStrikes_2.IsActive = true;
+            SpectralStrikes_2.Upgrade = null;
+            #endregion
+            #region Combat - Ranged
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,
                 new CustomNameInfo("000: Ballistician"),
                 new CustomNameInfo("You look around you, and all you see is trajectories.\n\nYour bullets fly faster, further & harder."));

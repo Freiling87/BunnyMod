@@ -690,7 +690,7 @@ namespace BunnyMod.Content
             Reinforcements.CanRemove = false;
             Reinforcements.CanSwap = true;
             Reinforcements.Conflicting.AddRange(new string[] { cTrait.Reinforcements_2 });
-            Reinforcements.CostInCharacterCreation = 5;
+            Reinforcements.CostInCharacterCreation = 4;
             Reinforcements.IsActive = true;
             Reinforcements.Upgrade = cTrait.Reinforcements_2;
 
@@ -702,7 +702,7 @@ namespace BunnyMod.Content
             Reinforcements_2.CanRemove = false;
             Reinforcements_2.CanSwap = true;
             Reinforcements_2.Conflicting.AddRange(new string[] { cTrait.Reinforcements });
-            Reinforcements_2.CostInCharacterCreation = 10;
+            Reinforcements_2.CostInCharacterCreation = 8;
             Reinforcements_2.IsActive = true;
             Reinforcements_2.Upgrade = null;
             #endregion

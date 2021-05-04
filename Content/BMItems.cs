@@ -21,6 +21,7 @@ namespace BunnyMod.Content
         public void Awake()
         {
             InitializeItems();
+            InitializeNames();
 
             InvDatabase_00();
             InvItem_00();

@@ -29,6 +29,7 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			BasicFloor_00();
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
@@ -134,6 +135,21 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
+		#region BasicFloor
+		public void BasicFloor_00()
+		{
+			Type t = typeof(BasicFloor);
+			Type g = GetType();
+
+			Prefix(t, "Spawn", g, "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkreal) // Prefix
+		{
+			floorName = "Ice";
+
+			return true;
+		}
+		#endregion
 		#region LoadLevel
 		public void LoadLevel_00()
 		{

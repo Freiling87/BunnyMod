@@ -409,7 +409,7 @@ namespace BunnyMod.Content
                         xpModifier = 0.75f;
                     else if (___agent.statusEffects.hasTrait(cTrait.MoronTheMerrier))
                         xpModifier = 0.50f;
-                    else if (___agent.statusEffects.hasTrait(cTrait.Prodigy))
+                    else if (___agent.statusEffects.hasTrait(cTrait.Brainiac))
                         xpModifier = 4.00f;
                 }
                 else if (xpReward < 0)

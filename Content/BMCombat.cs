@@ -54,6 +54,8 @@ namespace BunnyMod.Content
 				baseAmt = 0.50f;
 			else if (GC.challenges.Contains(cChallenge.BoringPhysics))
 				baseAmt = 0.10f;
+			else if (GC.challenges.Contains(cChallenge.WallWallopWorld))
+				baseAmt = 3.00f;
 
 			return baseAmt;
 		}
@@ -1018,13 +1020,19 @@ namespace BunnyMod.Content
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible) || damagedAgent.sleeping &&
-							distance <= 1.28f)
+							distance <= 0.96f)
 						{
 							headShot = true;
 							doubleTap = true;
 						}
 
+						Bullet bullet = (Bullet)damagerObject;
+						string wepName = bullet.cameFromWeapon;
+
+						BMLog("\twepName: " + wepName);
+
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
+							wepName == vItem.Revolver &&
 							((((!hasLOSAgent || hidden || invisible) || damagedAgent.sleeping) &&
 							distance >= 4.00f)) ||
 							distance >= 8.00f)

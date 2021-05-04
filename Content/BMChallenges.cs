@@ -22,21 +22,6 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeChallenges()
 		{
-			#region Combat
-			CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
-				new CustomNameInfo("Save The Walls"),
-				new CustomNameInfo("There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n-Knockback reduced globally by 50%."));
-			SaveTheWalls.Available = true;
-			SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback });
-			SaveTheWalls.IsActive = false;
-
-			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
-				new CustomNameInfo("Boring Physics"),
-				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback reduced globally by 90%."));
-			BoringPhysics.Available = true;
-			BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback });
-			BoringPhysics.IsActive = false;
-			#endregion
 			#region Floors & Features
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
 				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
@@ -66,7 +51,55 @@ namespace BunnyMod.Content
 			TransitExperiment.Conflicting.AddRange(cChallenge.AffectsFloors);
 			TransitExperiment.IsActive = false;
 			#endregion
-			#region Map Generation Overhauls
+			#region Knockback
+			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
+				new CustomNameInfo("Boring Physics"),
+				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback set to 10%"));
+			BoringPhysics.Available = true;
+			BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback });
+			BoringPhysics.IsActive = false;
+
+			CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
+				new CustomNameInfo("Save The Walls"),
+				new CustomNameInfo("There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n-Knockback set to 50%."));
+			SaveTheWalls.Available = true;
+			SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback });
+			SaveTheWalls.IsActive = false;
+
+			CustomMutator WallWallopWorld = RogueLibs.CreateCustomMutator(cChallenge.WallWallopWorld, true,
+				new CustomNameInfo("Wall Wallop World"),
+				new CustomNameInfo("Someone - not naming names here, but you know who you are - put a bunch of Muscly Pills onto the Fud Factory conveyor belt. And now we all have to suffer for it. Thanks a lot.\n\n- Knockback set to 300%"));
+			#endregion
+			#region Map Size
+			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
+				new CustomNameInfo("MapSize: A City for Ants?!"),
+				new CustomNameInfo("Yes, that is indeed what it is, figuratively speaking."));
+			ACityForAnts.Available = true;
+			ACityForAnts.Conflicting.AddRange(cChallenge.MapSize);
+			ACityForAnts.IsActive = false;
+
+			CustomMutator Claustropolis = RogueLibs.CreateCustomMutator(cChallenge.Claustropolis, true,
+				new CustomNameInfo("MapSize: Claustrophobia"),
+				new CustomNameInfo("Damn, this city is cramped! Who's Claus, anyway?"));
+			Claustropolis.Available = true;
+			Claustropolis.Conflicting.AddRange(cChallenge.MapSize);
+			Claustropolis.IsActive = false;
+
+			CustomMutator Megalopolis = RogueLibs.CreateCustomMutator(cChallenge.Megalopolis, true,
+				new CustomNameInfo("MapSize: Megalopolis"),
+				new CustomNameInfo("Damn, this town has gotten big. You remember when it was just a small Mega-Arcology. Now it's a Mega-Mega-Arcology."));
+			Megalopolis.Available = true;
+			Megalopolis.Conflicting.AddRange(cChallenge.MapSize);
+			Megalopolis.IsActive = false;
+
+			CustomMutator Ultrapolis = RogueLibs.CreateCustomMutator(cChallenge.Ultrapolis, true,
+				new CustomNameInfo("MapSize: Ultrapolis"),
+				new CustomNameInfo("You get vertigo when you look up. This city is MASSIVE."));
+			Ultrapolis.Available = true;
+			Ultrapolis.Conflicting.AddRange(cChallenge.MapSize);
+			Ultrapolis.IsActive = false;
+			#endregion
+			#region Overhauls
 			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
 				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
@@ -97,35 +130,6 @@ namespace BunnyMod.Content
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
 			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
 			PoliceState.IsActive = false;
-			#endregion
-			#region Map Size
-			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
-				new CustomNameInfo("MapSize: A City for Ants?!"),
-				new CustomNameInfo("Yes, that is indeed what it is, figuratively speaking."));
-			ACityForAnts.Available = true;
-			ACityForAnts.Conflicting.AddRange(cChallenge.MapSize);
-			ACityForAnts.IsActive = false;
-
-			CustomMutator Claustropolis = RogueLibs.CreateCustomMutator(cChallenge.Claustropolis, true,
-				new CustomNameInfo("MapSize: Claustrophobia"),
-				new CustomNameInfo("Damn, this city is cramped! Who's Claus, anyway?"));
-			Claustropolis.Available = true;
-			Claustropolis.Conflicting.AddRange(cChallenge.MapSize);
-			Claustropolis.IsActive = false;
-
-			CustomMutator Megalopolis = RogueLibs.CreateCustomMutator(cChallenge.Megalopolis, true,
-				new CustomNameInfo("MapSize: Megalopolis"),
-				new CustomNameInfo("Damn, this town has gotten big. You remember when it was just a small Mega-Arcology. Now it's a Mega-Mega-Arcology."));
-			Megalopolis.Available = true;
-			Megalopolis.Conflicting.AddRange(cChallenge.MapSize);
-			Megalopolis.IsActive = false;
-
-			CustomMutator Ultrapolis = RogueLibs.CreateCustomMutator(cChallenge.Ultrapolis, true,
-				new CustomNameInfo("MapSize: Ultrapolis"),
-				new CustomNameInfo("You get vertigo when you look up. This city is MASSIVE."));
-			Ultrapolis.Available = true;
-			Ultrapolis.Conflicting.AddRange(cChallenge.MapSize);
-			Ultrapolis.IsActive = false;
 			#endregion
 			#region Population
 			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cChallenge.GhostTown, true,

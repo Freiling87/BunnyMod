@@ -80,20 +80,20 @@ namespace BunnyMod.Content
             DoubleTapper.CanRemove = false;
             DoubleTapper.CanSwap = true;
             DoubleTapper.Conflicting.AddRange(new string[] { vTrait.Loud });
-            DoubleTapper.CostInCharacterCreation = 7;
+            DoubleTapper.CostInCharacterCreation = 8;
             DoubleTapper.Recommendations.Add(vSpecialAbility.Camouflage);
             DoubleTapper.IsActive = true;
             DoubleTapper.Upgrade = null;
 
             CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
                 new CustomNameInfo("Sniper"),
-                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, bullet hits on unaware targets deal massive damage\n- Bullet range increased"));
+                new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, Revolver hits on unaware targets deal massive damage\n- Bullet range increased by ~60%"));
             Sniper.Available = true;
             Sniper.AvailableInCharacterCreation = true;
             Sniper.CanRemove = false;
             Sniper.CanSwap = true;
             Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
-            Sniper.CostInCharacterCreation = 8;
+            Sniper.CostInCharacterCreation = 4;
             Sniper.Recommendations.Add(cTrait.EagleEyes);
             Sniper.IsActive = true;
             Sniper.Upgrade = null;
@@ -210,6 +210,20 @@ namespace BunnyMod.Content
             FatHead.Upgrade = null;
             #endregion
             #region Experience Gain Rate
+            CustomTrait Brainiac = RogueLibs.CreateCustomTrait(cTrait.Brainiac, true,
+                new CustomNameInfo("000: Brainiac"),
+                new CustomNameInfo("You have a ton of potential, and pretty much nothing else. Hopefully you live past level 1. We're rooting for you, buddy.\n\n-XP gain set to 400%"));
+            Brainiac.Available = true;
+            Brainiac.AvailableInCharacterCreation = true;
+            Brainiac.CanRemove = false;
+            Brainiac.CanSwap = false;
+            Brainiac.Conflicting.AddRange(cTrait.ExperienceRate);
+            Brainiac.Conflicting.AddRange(vTrait.ExperienceRate);
+            Brainiac.Conflicting.Remove(cTrait.Brainiac);
+            Brainiac.CostInCharacterCreation = 40;
+            Brainiac.IsActive = true;
+            Brainiac.Upgrade = null;
+
             CustomTrait DimBulb = RogueLibs.CreateCustomTrait(cTrait.DimBulb, true,
                 new CustomNameInfo("Dim Bulb"),
                 new CustomNameInfo("You have more money than sense. And buddy, you're broke.\n\n- XP gain set to 75%"));
@@ -237,20 +251,6 @@ namespace BunnyMod.Content
             MoronTheMerrier.CostInCharacterCreation = -20;
             MoronTheMerrier.IsActive = true;
             MoronTheMerrier.Upgrade = null;
-
-            CustomTrait Prodigy = RogueLibs.CreateCustomTrait(cTrait.Prodigy, true,
-                new CustomNameInfo("000: Prodigy"),
-                new CustomNameInfo("You have a ton of potential, and pretty much nothing else. Hopefully you live past level 1. We're rooting for you, buddy.\n\n-XP gain set to 400%"));
-            Prodigy.Available = true;
-            Prodigy.AvailableInCharacterCreation = true;
-            Prodigy.CanRemove = false;
-            Prodigy.CanSwap = false;
-            Prodigy.Conflicting.AddRange(cTrait.ExperienceRate);
-            Prodigy.Conflicting.AddRange(vTrait.ExperienceRate);
-            Prodigy.Conflicting.Remove(cTrait.Prodigy);
-            Prodigy.CostInCharacterCreation = 40;
-            Prodigy.IsActive = true;
-            Prodigy.Upgrade = null;
 
             CustomTrait SmoothBrained = RogueLibs.CreateCustomTrait(cTrait.SmoothBrained, true,
                 new CustomNameInfo("Smooth-Brained"),

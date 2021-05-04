@@ -164,6 +164,7 @@ namespace BunnyMod.Content
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
             UnpaidInternship = "UnpaidInternship",
+            WallWallopWorld = "WallWallopWorld",
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 
@@ -183,6 +184,12 @@ namespace BunnyMod.Content
             SunkenCity,
             TransitExperiment
         };
+        public static List<string> Knockback = new List<string>()
+        {
+            BoringPhysics,
+            SaveTheWalls,
+            WallWallopWorld
+		};
         public static List<string> Leashes = new List<string>()
         {
             RoaminOrgy,
@@ -351,7 +358,7 @@ namespace BunnyMod.Content
             Polarizing = "Polarizing",
             Polarizing_2 = "Polarizing2",
             Priors = "Priors",
-            Prodigy = "Prodigy",
+            Brainiac = "Prodigy",
             RATS = "RATS",
             RATS_2 = "RATS2",
             Reinforcements = "Reinforcements",

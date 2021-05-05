@@ -67,7 +67,21 @@ namespace BunnyMod.Content
 			Type t = typeof(Bullet);
 			Type g = GetType();
 
+			Postfix(t, "RealAwake", g, "Bullet_RealAwake", new Type[0] { });
 			Postfix(t, "SetupBullet", g, "Bullet_SetupBullet", new Type[0] { });
+		}
+		public static Dictionary<PlayfieldObject, string> cameFromGunType = new Dictionary<PlayfieldObject, string>();
+		public static void Bullet_RealAwake(Bullet __instance) // Postfix
+		{
+			BMLog("Bullet_RealAwake");
+
+			BMHeaderTools.AddDictionary(cameFromGunType, __instance, __instance.agent.weapon);
+		}
+		public static void Bullet_DestroyMeLate(Bullet __instance) // Postfix
+		{
+			BMLog("Bullet_DestroyMeLate");
+
+			cameFromGunType.Remove(__instance);
 		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{

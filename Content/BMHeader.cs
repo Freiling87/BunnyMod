@@ -48,9 +48,34 @@ namespace BunnyMod.Content
 			ConsoleMessage.LogMessage(logMessage);
 	}
 
-	public static class BunnyHeaderTools
+	public static class BMHeaderTools
 	{
-		public static T GetMethodWithoutOverrides<T>(this MethodInfo method, object callFrom)
+        public static GameController GC => GameController.gameController;
+        public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
+
+        public static void AddDictionary(Dictionary<PlayfieldObject, bool> dict, PlayfieldObject objectReal, bool defaultValue)
+        {
+            BMLog("AddDictionaryBool");
+
+            // May need to force types here
+
+            if (!dict.ContainsKey(objectReal))
+                dict.Add(objectReal, defaultValue);
+            else
+                dict[objectReal] = defaultValue;
+        }
+        public static void AddDictionary(Dictionary<PlayfieldObject, string> dict, PlayfieldObject objectReal, string defaultValue)
+        {
+            BMLog("AddDictionary");
+
+            // May need to force types here
+
+            if (!dict.ContainsKey(objectReal))
+                dict.Add(objectReal, defaultValue);
+            else
+                dict[objectReal] = defaultValue;
+        }
+        public static T GetMethodWithoutOverrides<T>(this MethodInfo method, object callFrom)
 			where T : Delegate
 		{
 			IntPtr ptr = method.MethodHandle.GetFunctionPointer();
@@ -71,7 +96,6 @@ namespace BunnyMod.Content
 				await Task.Delay(interval);
 			}
 		}
-
 		public static void Set(this object obj, params Func<string, object>[] hash)
 		{
 			foreach (Func<string, object> member in hash)

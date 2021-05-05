@@ -106,17 +106,7 @@ namespace BunnyMod.Content
         #endregion
 
         #region Custom
-        public static void AddDictionaryBool (Dictionary<ObjectReal, bool> dict, ObjectReal objectReal, bool defaultValue)
-        {
-            BMLog("AddDictionaryBool");
 
-            // May need to force types here
-
-            if (!dict.ContainsKey(objectReal))
-                dict.Add(objectReal, defaultValue);
-            else
-                dict[objectReal] = false;
-        }
         public static void CorrectButtonCosts(ObjectReal objectReal)
         {
             // TODO: This will only catch one tamper operation per object
@@ -356,7 +346,7 @@ namespace BunnyMod.Content
 
                     __instance.timer = 5f;
                     __instance.timeCountdownClock = (int)__instance.timer;
-                    BunnyHeaderTools.InvokeRepeating(Stove_Variables[(Stove)__instance], "Countdown", 0.01f, 1f);
+                    BMHeaderTools.InvokeRepeating(Stove_Variables[(Stove)__instance], "Countdown", 0.01f, 1f);
 
                     __instance.interactable = false;
                     Stove_Variables[(Stove)__instance].savedDamagerObject = damagerObject;
@@ -2335,8 +2325,8 @@ namespace BunnyMod.Content
             Prefix(t, "PressedButton", g, "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
             Postfix(t, "SetVars", g, "SlotMachine_SetVars", new Type[0] { });
         }
-        public static Dictionary<ObjectReal, bool> SlotMachineHacked = new Dictionary<ObjectReal, bool>();
-        public static Dictionary<ObjectReal, bool> SlotMachinePlayingSound = new Dictionary<ObjectReal, bool>();
+        public static Dictionary<PlayfieldObject, bool> SlotMachineHacked = new Dictionary<PlayfieldObject, bool>();
+        public static Dictionary<PlayfieldObject, bool> SlotMachinePlayingSound = new Dictionary<PlayfieldObject, bool>();
         public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
@@ -2579,8 +2569,8 @@ namespace BunnyMod.Content
         }
         public static void SlotMachine_SetVars(SlotMachine __instance) // Postfix
 		{
-            AddDictionaryBool(SlotMachinePlayingSound, __instance, false);
-            AddDictionaryBool(SlotMachineHacked, __instance, false);
+            BMHeaderTools.AddDictionary(SlotMachinePlayingSound, __instance, false);
+            BMHeaderTools.AddDictionary(SlotMachineHacked, __instance, false);
         }
         public static void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
         {
@@ -3023,11 +3013,11 @@ namespace BunnyMod.Content
 		{
             Postfix(typeof(VendorCart), "SetVars", GetType(), "VendorCart_SetVars", new Type[0] { });
 		}
-        public static Dictionary<ObjectReal, bool> VendorCartStolenFrom = new Dictionary<ObjectReal, bool>();
+        public static Dictionary<PlayfieldObject, bool> VendorCartStolenFrom = new Dictionary<PlayfieldObject, bool>();
         public static void VendorCart_SetVars(VendorCart __instance) // Postfix
 		{
             __instance.interactable = true;
-            AddDictionaryBool(VendorCartStolenFrom, __instance, false);
+            BMHeaderTools.AddDictionary(VendorCartStolenFrom, __instance, false);
 		}
         public static void VendorCart_Steal(VendorCart __instance) // Non-Patch
 		{

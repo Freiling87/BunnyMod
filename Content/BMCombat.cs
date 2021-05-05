@@ -70,18 +70,18 @@ namespace BunnyMod.Content
 			Postfix(t, "RealAwake", g, "Bullet_RealAwake", new Type[0] { });
 			Postfix(t, "SetupBullet", g, "Bullet_SetupBullet", new Type[0] { });
 		}
-		public static Dictionary<PlayfieldObject, string> cameFromGunType = new Dictionary<PlayfieldObject, string>();
+		public static Dictionary<PlayfieldObject, string> bulletWeapon = new Dictionary<PlayfieldObject, string>();
 		public static void Bullet_RealAwake(Bullet __instance) // Postfix
 		{
 			BMLog("Bullet_RealAwake");
 
-			BMHeaderTools.AddDictionary(cameFromGunType, __instance, __instance.agent.weapon);
+			BMHeaderTools.AddDictionary(bulletWeapon, __instance, __instance.agent.weapon);
 		}
 		public static void Bullet_DestroyMeLate(Bullet __instance) // Postfix
 		{
 			BMLog("Bullet_DestroyMeLate");
 
-			cameFromGunType.Remove(__instance);
+			bulletWeapon.Remove(__instance);
 		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
@@ -2122,7 +2122,7 @@ namespace BunnyMod.Content
 						BMLog("\tdistance:\t" + distance);
 						BMLog("\tHasLOSBehind:\t" + hasLOSBehind);
 						BMLog("\tHasLOSAgent:\t" + hasLOSAgent);
-						BMLog("\twepName: " + wepName);
+						BMLog("\twepName: " + bulletWeapon[damagerObject]);
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible || damagedAgent.sleeping) &&
@@ -2133,7 +2133,7 @@ namespace BunnyMod.Content
 						}
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
-							wepName == vItem.Revolver &&
+							bulletWeapon[damagerObject] == vItem.Revolver &&
 							(!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && 
 							distance >= 4.00f ||
 							distance >= 8.00f)

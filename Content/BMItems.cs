@@ -33,20 +33,20 @@ namespace BunnyMod.Content
         }
         public static void InitializeNames()
         {
-            string t;
+			string t;
 
-            t = vNameType.Dialogue;
-            CustomName AfraidOfLoudNoises = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises, t, new CustomNameInfo("I can't use that! It's too loooooud."));
-            CustomName AfraidOfLoudNoises2 = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises2, t, new CustomNameInfo("But that'll hurt my delicate little ears!"));
-            CustomName Carnivore = RogueLibs.CreateCustomName(cDialogue.Carnivore, t, new CustomNameInfo("No! Me want meat!"));
-            CustomName DAREdevil = RogueLibs.CreateCustomName(cDialogue.DAREdevil, t, new CustomNameInfo("Nope, my body is a temple!"));
-            CustomName DrawNoBlood = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood, t, new CustomNameInfo("Mommy says I can't use sharp things!"));
-            CustomName DrawNoBlood2 = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood2, t, new CustomNameInfo("I swore to draw no blood... unless I remove __instance trait first."));
-            CustomName FatassCantWear = RogueLibs.CreateCustomName(cDialogue.FatassCantWear, t, new CustomNameInfo("I'm too fuckin' fat to wear __instance!"));
-            CustomName FatheadCantWear = RogueLibs.CreateCustomName(cDialogue.FatHeadCantWear, t, new CustomNameInfo("Owie! __instance is too tight for my big, fat, stupid, ugly head!"));
-            CustomName FriendOfBill = RogueLibs.CreateCustomName(cDialogue.FriendOfBill, t, new CustomNameInfo("Today, I choose not to drink."));
-            CustomName SharpOnly = RogueLibs.CreateCustomName(cDialogue.SharpOnly, t, new CustomNameInfo("I need a sharper tool for __instance work."));
-            CustomName Vegetarian = RogueLibs.CreateCustomName(cDialogue.Vegetarian, t, new CustomNameInfo("Meat is murder!"));
+			t = vNameType.StatusEffect;
+			_ = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises, t, new CustomNameInfo("I can't use that! It's too loooooud."));
+			_ = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises2, t, new CustomNameInfo("But that'll hurt my delicate little ears!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.Carnivore, t, new CustomNameInfo("No! Me want meat!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.DAREdevil, t, new CustomNameInfo("Nope, my body is a temple!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood, t, new CustomNameInfo("Mommy says I can't use sharp things!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood2, t, new CustomNameInfo("I swore to draw no blood... unless I remove this trait first."));
+            _ = RogueLibs.CreateCustomName(cDialogue.FatassCantWear, t, new CustomNameInfo("I'm too fuckin' fat to wear this!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.FatHeadCantWear, t, new CustomNameInfo("Owie! This is too tight for my big, fat, stupid, ugly head!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.FriendOfBill, t, new CustomNameInfo("Today, I choose not to drink."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SharpOnly, t, new CustomNameInfo("I need a sharper tool for this work."));
+            _ = RogueLibs.CreateCustomName(cDialogue.Vegetarian, t, new CustomNameInfo("Meat is murder!"));
         }
         #endregion
 

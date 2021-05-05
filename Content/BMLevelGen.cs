@@ -56,37 +56,6 @@ namespace BunnyMod.Content
 
 			return vanilla;
 		}
-		public static string GetFloorTileGroup()
-		{
-			string curMutator = "";
-
-			foreach (string mutator in cChallenge.AffectsFloors)
-				if (GC.challenges.Contains(mutator))
-					curMutator = mutator;
-
-			//ArcologyEcology,
-   //         CityOfSteel,
-   //         GreenLiving,
-   //         Panoptikopolis,
-   //         ShantyTown,
-   //         SpelunkyDory,
-   //         SunkenCity,
-   //         TransitExperiment,
-
-			switch (curMutator)
-			{
-				case cChallenge.ArcologyEcology:
-					return vFloorTileGroup.Park;
-				case cChallenge.GreenLiving:
-					return vFloorTileGroup.Park;
-				case cChallenge.SunkenCity:
-					return vFloorTileGroup.Water;
-				case cChallenge.TransitExperiment:
-					return vFloorTileGroup.Ice;
-				default:
-					return vFloorTileGroup.Building;
-			}
-		}
 		public static string GetWallMutator()
 		{
 			foreach (string mutator in GC.challenges)
@@ -176,15 +145,15 @@ namespace BunnyMod.Content
 		}
 		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
-			if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+			if (GC.challenges.Contains(cChallenge.SpelunkyDory)) //
 				floorName = vFloor.CaveFloor; 
-			else if (GC.challenges.Contains(cChallenge.ShantyTown))
+			else if (GC.challenges.Contains(cChallenge.ShantyTown)) //
 				floorName = vFloor.WoodSlats;
-			else if (GC.challenges.Contains(cChallenge.CityOfSteel))
+			else if (GC.challenges.Contains(cChallenge.CityOfSteel)) // N
 				floorName = vFloor.MetalFloor;
-			else if (GC.challenges.Contains(cChallenge.GreenLiving))
+			else if (GC.challenges.Contains(cChallenge.GreenLiving)) //
 				floorName = vFloor.DirtFloor;
-			else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+			else if (GC.challenges.Contains(cChallenge.Panoptikopolis)) //
 				floorName = vFloor.CleanTiles;
 
 			return true;
@@ -197,7 +166,6 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "CreateInitialMap", g, "LoadLevel_CreateInitialMap", new Type[0] { });
-			Prefix(t, "FillFloors", g, "LoadLevel_FillFloors", new Type[0] { });
 			Prefix(t, "loadStuff2", g, "LoadLevel_loadStuff2_Prefix", new Type[0] { });
 			Prefix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
@@ -1170,84 +1138,6 @@ namespace BunnyMod.Content
 
 			return false;
 		}
-		public static bool LoadLevel_FillFloors_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapFloors2) // Prefix
-		{
-			if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-			{
-				__result = LoadLevel_FillFloors_Replacement(__instance, ___tilemapFloors2);
-
-				return false;
-			}
-
-			return true;
-		}
-		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Non-Patch
-		{
-			float maxChunkTime = 0.02f;
-			float realtimeSinceStartup = Time.realtimeSinceStartup;
-			int triesCount = 0;
-			int num;
-
-			for (int i2 = 0; i2 < __instance.levelSizeAxis; i2 = num + 1)
-			{
-				for (int j2 = 0; j2 < __instance.levelSizeAxis; j2 = num + 1)
-				{
-					num = triesCount;
-					triesCount = num + 1;
-					int num2 = i2 * 16;
-					int num3 = i2 * 16 + 16;
-					int num4 = 160 - j2 * 16;
-					int num5 = 160 - j2 * 16 - 16;
-
-					for (int k = num2; k < num3; k++)
-					{
-						for (int l = num4; l > num5; l--)
-						{
-							__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
-							int tile = 0;
-							string floorTileGroup = vFloorTileGroup.Building; // Homebase is default
-
-							if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-								floorTileGroup = GetFloorTileGroup();
-							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
-							{
-								if (GC.levelTheme == 0)
-									floorTileGroup = vFloorTileGroup.Slums;
-								else if (GC.levelTheme == 1)
-									floorTileGroup = vFloorTileGroup.Industrial;
-								else if (GC.levelTheme == 2)
-									floorTileGroup = vFloorTileGroup.Park;
-								else if (GC.levelTheme == 3)
-									floorTileGroup = vFloorTileGroup.Downtown;
-								else if (GC.levelTheme == 4)
-									floorTileGroup = vFloorTileGroup.Uptown;
-								else if (GC.levelTheme == 5)
-									floorTileGroup = vFloorTileGroup.MayorVillage;
-							}
-							
-							tile = int.Parse(GC.rnd.RandomSelect(floorTileGroup, "RandomFloorsWalls"));
-							
-							___tilemapFloors2.SetTile(k, l - 1, 0, tile);
-						}
-					}
-
-					if (Time.realtimeSinceStartup - realtimeSinceStartup > maxChunkTime)
-					{
-						yield return null;
-						realtimeSinceStartup = Time.realtimeSinceStartup;
-					}
-
-					Random.InitState(__instance.randomSeedNum + triesCount);
-					num = j2;
-				}
-
-				num = i2;
-			}
-
-			__instance.allChunksFilled = true;
-
-			yield break;
-		}
 		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance) // Prefix
 		{
 			BMLog("LoadLevel_loadStuff2_Prefix");
@@ -1264,16 +1154,16 @@ namespace BunnyMod.Content
 			BMLog("LoadLevel_SetupMore3_3_Prefix");
 
 			// Structure advised by Abbysssal for patch-replacing IEnumerators.
-			__result = LoadLevel_SetupMore3_3_Replacement(__instance, ___tilemapFloors4, ___minimap);
+			__result = LoadLevel_SetupMore3_3_Prefix_Replacement(__instance, ___tilemapFloors4, ___minimap);
 
 			return false;
 		}
-		public static IEnumerator LoadLevel_SetupMore3_3_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors4, Minimap ___minimap) // Non-Patch
+		public static IEnumerator LoadLevel_SetupMore3_3_Prefix_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors4, Minimap ___minimap) // Non-Patch
 		{
 			// Level Features
 			// Level Roamers
 
-			BMLog("LoadLevel_SetupMore3_3_Replacement");
+			BMLog("LoadLevel_SetupMore3_3_Prefix_Replacement");
 
 			Random.InitState(__instance.randomSeedNum);
 			float maxChunkTime = 0.02f;
@@ -1300,7 +1190,7 @@ namespace BunnyMod.Content
 					if (GC.customLevel)
 						__instance.hasLakes = __instance.customLevel.levelFeatures.Contains("Lake");
 
-					if (GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.SpelunkyDory))
+					if (GC.challenges.Contains(cChallenge.ArcologyEcology))
 						__instance.hasLakes = true;
 
 					if (__instance.hasLakes)
@@ -3965,8 +3855,6 @@ namespace BunnyMod.Content
 									ambience = vAmbience.Park;
 								else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 									ambience = vAmbience.Cave;
-								else if (GC.challenges.Contains(cChallenge.GhostTown))
-									ambience = vAmbience.Graveyard;
 								break;
 						}
 
@@ -5634,6 +5522,7 @@ namespace BunnyMod.Content
 				}
 			}
 		}
+		//
 		public static void LoadLevel_SetupMore5_2(LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore5_2");

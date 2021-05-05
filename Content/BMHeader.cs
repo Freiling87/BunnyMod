@@ -182,13 +182,8 @@ namespace BunnyMod.Content
         public static List<string> AffectsFloors = new List<string>()
         {
             ArcologyEcology,
-            CityOfSteel,
-            GreenLiving,
-            Panoptikopolis,
-            ShantyTown,
-            SpelunkyDory,
             SunkenCity,
-            TransitExperiment,
+            TransitExperiment
         };
         public static List<string> Knockback = new List<string>()
         {

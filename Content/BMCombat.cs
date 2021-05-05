@@ -1515,56 +1515,12 @@ namespace BunnyMod.Content
 			Type t = typeof(Movement);
 			Type g = GetType();
 
-			Prefix(t, "FindKnockBackStrength", g, "Movement_FindKnockBackStrength", new Type[1] { typeof(float) });
+			Postfix(t, "FindKnockBackStrength", g, "Movement_FindKnockBackStrength", new Type[1] { typeof(float) });
 		}
-		public static bool Movement_FindKnockBackStrength(float strength, ref float __result, Movement __instance, Agent ___agent) // Prefix
+		public static void Movement_FindKnockBackStrength(float strength, ref float __result) // Postfix
 		{
-			if (GC.challenges.Contains(cChallenge.BoringPhysics))
-			{
-				float max = 360f;
-
-				if (___agent == null)
-				{
-					__result = Mathf.Clamp(strength, 0f, max);
-					
-					return false;
-				}
-				
-				bool flag = false;
-				
-				if (___agent.dead && !___agent.justDied)
-					flag = true;
-				
-				float baseAmt;
-				
-				if (___agent.statusEffects.hasTrait("KnockbackMore") && !flag)
-					baseAmt = Mathf.Clamp(strength * 1.50f, 0f, max);
-				else if (___agent.statusEffects.hasTrait("KnockbackLess") && !flag)
-					baseAmt = Mathf.Clamp(strength / 1.50f, 0f, max);
-				else if (___agent.statusEffects.hasTrait("KnockbackLess2") && !flag)
-					baseAmt = Mathf.Clamp(strength / 2.00f, 0f, max);
-				else
-					baseAmt = Mathf.Clamp(strength, 0f, max);
-				
-				baseAmt = Mathf.Clamp(baseAmt * GetGlobalKnockBackMultiplier(), 0f, max);
-				
-				if (___agent.disappeared)
-					baseAmt = 0f;
-				
-				if (___agent.mechEmpty)
-					baseAmt = 0f;
-				
-				if (___agent.oma.bodyGuarded && ___agent.dead && !___agent.fellInHole && !___agent.justDied)
-					baseAmt = 0f;
-
-				baseAmt *= 0.1f;
-				
-				__result = baseAmt;
-
-				return false;
-			}
-
-			return true;
+			if (BMChallenges.IsChallengeFromListActive(cChallenge.Knockback))
+				__result *= GetGlobalKnockBackMultiplier();
 		}
 		#endregion
 		#region PlayfieldObject

@@ -66,8 +66,12 @@ namespace BunnyMod.Content
         }
         public static bool InvDatabase_ChooseWeapon(bool noGuns, InvDatabase __instance) // Prefix
 		{
+            BMLog("InvDatabase_Chooseweapon");
+
             if (BMTraits.DoesPlayerHaveTraitFromList(__instance.agent, cTrait.LimitWeapons))
 			{
+                BMLog("\tTrait found");
+
                 Agent agent = __instance.agent;
 
                 if (__instance.agent.isPlayer > 0)
@@ -161,25 +165,29 @@ namespace BunnyMod.Content
 
             return true;
 		}
-        public static bool InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Prefix
+        public static bool InvDatabase_DetermineIfCanUseWeapon(InvItem item, InvDatabase __instance, ref bool __result) // Replacement
         {
             //TODO: Verify non-equipped items like Time Bomb.
-            //TODO: Add Item.Categories for types above for mod compatibility
-            //TODO: Convert all uses of Lists to Category checks
 
-            if
-            (
-                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && vItem.piercing.Contains(item.invItemName)) ||
-                (__instance.agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && (vItem.loud.Contains(item.invItemName) && !item.contents.Contains(vItem.Silencer))) ||
-                (__instance.agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && vItem.piercing.Contains(item.invItemName))
-            )
-            {
-                __result = false;
+            BMLog("InvDatabase_DetermineIfCanUseWeapon");
+            BMLog("\tItem: " + item.invItemName);
+            BMLog("\tSharp: " + vItem.piercing.Contains(item.invItemName));
+            BMLog("\tLoud: " + vItem.loud.Contains(item.invItemName));
 
-                return false;
-            }
+            Agent agent = __instance.agent;
+            bool fist = (item.invItemName == vItem.Fist);
 
-            return true;
+            __result = (
+                (!(item.itemType == "WeaponProjectile") || !agent.statusEffects.hasTrait(vTrait.StubbyFingers) || item.Categories.Contains("NotRealWeapons")) && 
+                (fist || item.Categories.Contains("NonViolent") || item.Categories.Contains("NotRealWeapons") || !agent.statusEffects.hasTrait(vTrait.Pacifist)) && 
+                (fist || !agent.statusEffects.hasTrait(vTrait.SausageFingers)) && 
+                (fist || !agent.statusEffects.hasTrait(vTrait.Harmless)) && 
+                (fist || !agent.statusEffects.hasTrait(vTrait.NearHarmless)) &&
+                (!vItem.piercing.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.DrawNoBlood)) &&
+                (!vItem.loud.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises)) ) || 
+                (agent.isPlayer != 0 && !agent.localPlayer);
+
+            return false;
         }
         public static bool InvDatabase_EquipArmor(InvItem item, bool sfx, InvDatabase __instance) // Prefix
         {

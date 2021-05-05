@@ -106,6 +106,17 @@ namespace BunnyMod.Content
         #endregion
 
         #region Custom
+        public static void AddDictionaryBool (Dictionary<ObjectReal, bool> dict, ObjectReal objectReal, bool defaultValue)
+        {
+            BMLog("AddDictionaryBool");
+
+            // May need to force types here
+
+            if (!dict.ContainsKey(objectReal))
+                dict.Add(objectReal, defaultValue);
+            else
+                dict[objectReal] = false;
+        }
         public static void CorrectButtonCosts(ObjectReal objectReal)
         {
             // TODO: This will only catch one tamper operation per object
@@ -258,7 +269,7 @@ namespace BunnyMod.Content
                 __instance.buttons.Add(cButtonText.HideInContainer);
                 __instance.buttons.Add(cButtonText.OpenContainer);
             }
-            else if (__instance is VendorCart)
+            else if (__instance is VendorCart && VendorCartStolenFrom[__instance] == false)
                 __instance.buttons.Add(cButtonText.StealItem);
         }
         public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
@@ -323,7 +334,7 @@ namespace BunnyMod.Content
 
                 __instance.ShowObjectButtons();
             }
-            else if (__instance is VendorCart)
+            else if (__instance is VendorCart && VendorCartStolenFrom[__instance] == false)
                 __instance.ShowObjectButtons();
 
             __instance.playerInvDatabase = agent.GetComponent<InvDatabase>();
@@ -2312,8 +2323,6 @@ namespace BunnyMod.Content
         // If PoliceState, alert if any Guilty detected
         #endregion
         #region SlotMachine
-        static public Dictionary<SlotMachine, bool> jackpotPlaying = new Dictionary<SlotMachine, bool>();
-        static public Dictionary<SlotMachine, bool> jackpotHacked = new Dictionary<SlotMachine, bool>();
         public void SlotMachine_00()
         {
             Type t = typeof(SlotMachine);
@@ -2326,6 +2335,8 @@ namespace BunnyMod.Content
             Prefix(t, "PressedButton", g, "SlotMachine_PressedButton", new Type[2] { typeof(string), typeof(int) });
             Postfix(t, "SetVars", g, "SlotMachine_SetVars", new Type[0] { });
         }
+        public static Dictionary<ObjectReal, bool> SlotMachineHacked = new Dictionary<ObjectReal, bool>();
+        public static Dictionary<ObjectReal, bool> SlotMachinePlayingSound = new Dictionary<ObjectReal, bool>();
         public static bool SlotMachine_DetermineButtons(SlotMachine __instance) // Replacement
         {
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
@@ -2437,7 +2448,7 @@ namespace BunnyMod.Content
         }
         public static bool SlotMachine_Interact(Agent agent, SlotMachine __instance) // Prefix
 		{
-            if (jackpotPlaying[__instance])
+            if (SlotMachinePlayingSound[__instance])
             {
                 agent.SayDialogue(cDialogue.MachineBusy);
                 GC.audioHandler.Play(__instance, vAudioClip.CantDo);
@@ -2449,7 +2460,7 @@ namespace BunnyMod.Content
 		}
         public static bool SlotMachine_InteractFar(Agent agent, SlotMachine __instance) // Prefix
         {
-            if (jackpotPlaying[__instance])
+            if (SlotMachinePlayingSound[__instance])
             {
                 agent.SayDialogue(cDialogue.MachineBusy);
                 GC.audioHandler.Play(__instance, vAudioClip.CantDo);
@@ -2461,7 +2472,7 @@ namespace BunnyMod.Content
         }
         public static async void SlotMachine_Jackpot(int payout, SlotMachine __instance) // Non-Patch
         {
-            bool hacked = jackpotHacked[__instance];
+            bool hacked = SlotMachineHacked[__instance];
             int cashDropIncrement = payout / 10;
             GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
             GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
@@ -2510,7 +2521,7 @@ namespace BunnyMod.Content
                     GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "StopMusicClient");
             }
 
-            jackpotPlaying[__instance] = false;
+            SlotMachinePlayingSound[__instance] = false;
 
             yield break;
         }
@@ -2518,13 +2529,13 @@ namespace BunnyMod.Content
 		{
             float jukeboxTimer = 1f;
 
-            while (jackpotPlaying[__instance])
+            while (SlotMachinePlayingSound[__instance])
             {
                 jukeboxTimer -= Time.deltaTime;
 
                 if (jukeboxTimer <= 0f)
                 {
-                    if (jackpotHacked[__instance])
+                    if (SlotMachineHacked[__instance])
                         GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false).distraction = true;
 
                     jukeboxTimer = 1f;
@@ -2558,7 +2569,7 @@ namespace BunnyMod.Content
             }
             else if (buttonText == cButtonText.SlotMachineHackJackpot)
 			{
-                jackpotHacked[__instance] = true;
+                SlotMachineHacked[__instance] = true;
                 SlotMachine_Jackpot(10, __instance);
             }
             else
@@ -2568,15 +2579,8 @@ namespace BunnyMod.Content
         }
         public static void SlotMachine_SetVars(SlotMachine __instance) // Postfix
 		{
-            if (!jackpotPlaying.ContainsKey(__instance))
-                jackpotPlaying.Add(__instance, false);
-            else
-                jackpotPlaying[__instance] = false;
-
-            if (!jackpotHacked.ContainsKey(__instance))
-                jackpotHacked.Add(__instance, false);
-            else
-                jackpotHacked[__instance] = false;
+            AddDictionaryBool(SlotMachinePlayingSound, __instance, false);
+            AddDictionaryBool(SlotMachineHacked, __instance, false);
         }
         public static void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
         {
@@ -3019,19 +3023,22 @@ namespace BunnyMod.Content
 		{
             Postfix(typeof(VendorCart), "SetVars", GetType(), "VendorCart_SetVars", new Type[0] { });
 		}
+        public static Dictionary<ObjectReal, bool> VendorCartStolenFrom = new Dictionary<ObjectReal, bool>();
         public static void VendorCart_SetVars(VendorCart __instance) // Postfix
 		{
             __instance.interactable = true;
+            AddDictionaryBool(VendorCartStolenFrom, __instance, false);
 		}
         public static void VendorCart_Steal(VendorCart __instance) // Non-Patch
 		{
             InvItem invItem = __instance.objectInvDatabase.InvItemList[0];
 
             invItem.ItemSetup(true);
-            invItem.invItemCount = invItem.rewardCount;
+            invItem.invItemCount = GC.Choose<int>(1, 1, 2, 2, 2, 2, 3, 3);
             invItem.ShowPickingUpText(__instance.interactingAgent);
             __instance.interactingAgent.inventory.AddItem(invItem);
             __instance.objectInvDatabase.DestroyAllItems();
+            VendorCartStolenFrom[__instance] = true;
             __instance.StopInteraction();
 		}
 		#endregion

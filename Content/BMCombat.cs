@@ -637,7 +637,7 @@ namespace BunnyMod.Content
 						}
 
 					if (hittingAgent != hitAgent && 
-						!(hitAgent.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2)) 
+						!(hitAgent.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2)) 
 						&& !hitAgent.fellInHole && !GC.cinematic && __instance.HasLOSMelee(hitAgent))
 					{
 						__instance.objectList.Add(hitAgent.melee.meleeHitbox.gameObject);
@@ -704,7 +704,8 @@ namespace BunnyMod.Content
 							
 							hittingAgent.relationships.FollowerAlert(hitAgent);
 							
-							if (hitAgent.statusEffects.hasTrait("AttacksDamageAttacker2") && !(hittingAgent.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2)))
+							if (hitAgent.statusEffects.hasTrait("AttacksDamageAttacker2") && 
+								!(hittingAgent.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2)))
 							{
 								int myChance = hitAgent.DetermineLuck(20, "AttacksDamageAttacker", true);
 							
@@ -1036,7 +1037,7 @@ namespace BunnyMod.Content
 							hittingAgent.objectMult.CallRpcMeleeHitObjectFake(agent4.objectNetID);
 						
 						if (!hittingAgent.ghost && 
-							!(agent4.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2)))
+							!(agent4.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && !hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2)))
 						{
 							if (invItem.invItemName != "Fist" && agent4.inventory.equippedWeapon.invItemName == "Fist")
 							{
@@ -1316,7 +1317,7 @@ namespace BunnyMod.Content
 
 			Agent hittingAgent = __instance.myMelee.agent;
 
-			if (hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) || hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2))
+			if (hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) || hittingAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2))
 			{
 				InvItem invItem = null;
 
@@ -1548,7 +1549,9 @@ namespace BunnyMod.Content
 
 			// Ballistician
 			// Double-Tapper
+			// Infernal Strikes
 			// Sniper
+			// Spectral Strikes
 
 			BMLog("PlayfieldObject_FindDamage");
 
@@ -1972,7 +1975,6 @@ namespace BunnyMod.Content
 
 			bool playerDamagedByNpc = false;
 
-			#region Section 2
 			if (flag2)
 			{
 				if (damagerAgent.isPlayer != 0 && !damagerAgent.localPlayer)
@@ -1981,6 +1983,8 @@ namespace BunnyMod.Content
 				if (instanceIsAgent && damagedAgent.isPlayer != 0 && damagerAgent.isPlayer != 0 && !GC.pvp)
 					flag6 = false;
 			}
+
+			#region Section 2
 			if (type == "Melee")
 			{
 				if (damagerAgent.statusEffects.hasTrait("Strength"))
@@ -1994,6 +1998,25 @@ namespace BunnyMod.Content
 				
 				if (damagerAgent.statusEffects.hasTrait("Withdrawal"))
 					dmg *= 0.75f;
+
+				BMLog("\tdamagedAgent Name: " + damagedAgent.agentName);
+				string invItemName = damagerAgent.inventory.equippedWeapon.invItemName;
+
+				// Spectral Strikes & Infernal Strikes
+				if (vAgent.Undead.Contains(damagedAgent.agentName))
+				{
+					if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && invItemName == vItem.Fist)
+						dmg *= 1.50f;
+					else if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.BaseballBat)
+						dmg *= 2.00f;
+				}
+				else
+				{
+					if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes) && invItemName == vItem.Fist)
+						dmg *= 1.25f;
+					else if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.Axe)
+						dmg *= 1.50f;
+				}
 			
 				if (damagerAgent.melee.specialLunge)
 				{

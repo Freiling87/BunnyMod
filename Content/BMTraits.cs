@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using RogueLibsCore;
+using System;
 using System.Collections.Generic;
-using System.Reflection;
-
-using BepInEx;
-using HarmonyLib;
-using UnityEngine;
-using RogueLibsCore;
-
-using Random = UnityEngine.Random;
-using UnityEngine.Networking;
 using System.Linq;
 
 /*
@@ -23,11 +14,11 @@ using System.Linq;
 
 namespace BunnyMod.Content
 {
-    #region Enums
+	#region Enums
 
-    #endregion
+	#endregion
 
-    public class BMTraits
+	public class BMTraits
     {
         public static GameController GC => GameController.gameController;
         public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
@@ -47,30 +38,54 @@ namespace BunnyMod.Content
             DebugTrait.CanSwap = false;
             DebugTrait.CostInCharacterCreation = 0;
             DebugTrait.IsActive = true;
-            #region Combat - Melee 
-            CustomTrait SpectralStrikes = RogueLibs.CreateCustomTrait(cTrait.SpectralStrikes, true,
+            #region Combat - Melee
+            CustomTrait BlessedStrikes = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes, true,
                 new CustomNameInfo("000: Spectral Strikes"),
-                new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Damage to all Undead increased"));
-            SpectralStrikes.Available = true;
-            SpectralStrikes.AvailableInCharacterCreation = true;
-            SpectralStrikes.CanRemove = false;
-            SpectralStrikes.CanSwap = true;
-            SpectralStrikes.Conflicting.AddRange(new string[] { });
-            SpectralStrikes.CostInCharacterCreation = 2;
-            SpectralStrikes.IsActive = true;
-            SpectralStrikes.Upgrade = cTrait.SpectralStrikes_2;
+                new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Melee damage to all Undead increased 50%"));
+            BlessedStrikes.Available = true;
+            BlessedStrikes.AvailableInCharacterCreation = true;
+            BlessedStrikes.CanRemove = false;
+            BlessedStrikes.CanSwap = true;
+            BlessedStrikes.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
+            BlessedStrikes.CostInCharacterCreation = 2;
+            BlessedStrikes.IsActive = true;
+            BlessedStrikes.Upgrade = cTrait.BlessedStrikes_2;
 
-            CustomTrait SpectralStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.SpectralStrikes_2, true,
+            CustomTrait BlessedStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes_2, true,
                 new CustomNameInfo("000: Spectral Strikes +"),
-                new CustomNameInfo("- You can hit Ghosts with your Melee & Unarmed attacks\n- Damage to all Undead increased"));
-            SpectralStrikes_2.Available = true;
-            SpectralStrikes_2.AvailableInCharacterCreation = true;
-            SpectralStrikes_2.CanRemove = false;
-            SpectralStrikes_2.CanSwap = true;
-            SpectralStrikes_2.Conflicting.AddRange(new string[] { });
-            SpectralStrikes_2.CostInCharacterCreation = 5;
-            SpectralStrikes_2.IsActive = true;
-            SpectralStrikes_2.Upgrade = null;
+                new CustomNameInfo("- You can hit Ghosts with your Unarmed &  attacks\n- Melee damage to all Undead increased 100%"));
+            BlessedStrikes_2.Available = true;
+            BlessedStrikes_2.AvailableInCharacterCreation = true;
+            BlessedStrikes_2.CanRemove = false;
+            BlessedStrikes_2.CanSwap = true;
+            BlessedStrikes_2.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
+            BlessedStrikes_2.CostInCharacterCreation = 5;
+            BlessedStrikes_2.IsActive = true;
+            BlessedStrikes_2.Upgrade = null;
+
+            CustomTrait InfernalStrikes = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes, true,
+                new CustomNameInfo("000: Infernal Strikes"),
+                new CustomNameInfo("-You can hit Ghosts with your Unarmed attacks\n- Melee damage to all non-Undead increased 25%"));
+            InfernalStrikes.Available = true;
+            InfernalStrikes.AvailableInCharacterCreation = true;
+            InfernalStrikes.CanRemove = false;
+            InfernalStrikes.CanSwap = true;
+            InfernalStrikes.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
+            InfernalStrikes.CostInCharacterCreation = 6;
+            InfernalStrikes.IsActive = true;
+            InfernalStrikes.Upgrade = cTrait.InfernalStrikes_2;
+
+            CustomTrait InfernalStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes_2, true,
+                new CustomNameInfo("000: Infernal Strikes"),
+                new CustomNameInfo("-You can hit Ghosts with your Unarmed attacks\n- Melee damage to all non-Undead increased 25%"));
+            InfernalStrikes_2.Available = true;
+            InfernalStrikes_2.AvailableInCharacterCreation = true;
+            InfernalStrikes_2.CanRemove = false;
+            InfernalStrikes_2.CanSwap = true;
+            InfernalStrikes_2.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
+            InfernalStrikes_2.CostInCharacterCreation = 12;
+            InfernalStrikes_2.IsActive = true;
+            InfernalStrikes_2.Upgrade = null;
             #endregion
             #region Combat - Ranged
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,

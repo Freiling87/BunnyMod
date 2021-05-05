@@ -22,7 +22,7 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeChallenges()
 		{
-			#region Floors & Features
+			#region Floor Exteriors & Features
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
 				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
 				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
@@ -51,24 +51,63 @@ namespace BunnyMod.Content
 			TransitExperiment.Conflicting.AddRange(cChallenge.AffectsFloors);
 			TransitExperiment.IsActive = false;
 			#endregion
+			#region Floor Interiors & Walls
+			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
+				new CustomNameInfo("Construction: City Of Steel"),
+				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
+			CityOfSteel.Available = true;
+			CityOfSteel.Conflicting.AddRange(cChallenge.Walls);
+			CityOfSteel.IsActive = false;
+
+			CustomMutator GreenLiving = RogueLibs.CreateCustomMutator(cChallenge.GreenLiving, true,
+				new CustomNameInfo("Construction: Green Living"),
+				new CustomNameInfo("The Mayor has retrofitted most buildings to eco-friendly plant-based construction. Caterpillars crawl on your face while you sleep, but the air is mighty fresh!"));
+			GreenLiving.Available = true;
+			GreenLiving.Conflicting.AddRange(cChallenge.Walls);
+			GreenLiving.IsActive = false;
+
+			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
+				new CustomNameInfo("Construction: Panoptikopolis"),
+				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
+			Panoptikopolis.Available = true;
+			Panoptikopolis.Conflicting.AddRange(cChallenge.Walls);
+			Panoptikopolis.IsActive = false;
+
+			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
+				new CustomNameInfo("Construction: Shanty Town"),
+				new CustomNameInfo("Looks like we're short on Steel.\n\nHard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
+			ShantyTown.Available = true;
+			ShantyTown.Conflicting.AddRange(cChallenge.Walls);
+			ShantyTown.IsActive = false;
+
+			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
+				new CustomNameInfo("Construction: Spelunky Dory"),
+				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
+			SpelunkyDory.Available = true;
+			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);
+			SpelunkyDory.IsActive = false;
+			#endregion
 			#region Knockback
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
-				new CustomNameInfo("Boring Physics"),
+				new CustomNameInfo("Knockback: Boring Physics"),
 				new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback set to 10%"));
 			BoringPhysics.Available = true;
-			BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback });
+			BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
 			BoringPhysics.IsActive = false;
 
 			CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
-				new CustomNameInfo("Save The Walls"),
+				new CustomNameInfo("Knockback: Save The Walls"),
 				new CustomNameInfo("There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n-Knockback set to 50%."));
 			SaveTheWalls.Available = true;
-			SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback });
+			SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
 			SaveTheWalls.IsActive = false;
 
 			CustomMutator WallWallopWorld = RogueLibs.CreateCustomMutator(cChallenge.WallWallopWorld, true,
-				new CustomNameInfo("Wall Wallop World"),
+				new CustomNameInfo("Knockback: Wall Wallop World"),
 				new CustomNameInfo("Someone - not naming names here, but you know who you are - put a bunch of Muscly Pills onto the Fud Factory conveyor belt. And now we all have to suffer for it. Thanks a lot.\n\n- Knockback set to 300%"));
+			WallWallopWorld.Available = true;
+			WallWallopWorld.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, cChallenge.SaveTheWalls, vChallenge.BigKnockback });
+			WallWallopWorld.IsActive = false;
 			#endregion
 			#region Map Size
 			CustomMutator ACityForAnts = RogueLibs.CreateCustomMutator(cChallenge.ACityForAnts, true,
@@ -213,42 +252,6 @@ namespace BunnyMod.Content
 			YoungMenIntheNeighborhood.Available = true;
 			YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
 			YoungMenIntheNeighborhood.IsActive = false;
-			#endregion
-			#region Walls
-			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
-				new CustomNameInfo("Construction: City Of Steel"),
-				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
-			CityOfSteel.Available = true;
-			CityOfSteel.Conflicting.AddRange(cChallenge.Walls);
-			CityOfSteel.IsActive = false;
-
-			CustomMutator GreenLiving = RogueLibs.CreateCustomMutator(cChallenge.GreenLiving, true,
-				new CustomNameInfo("Construction: Green Living"),
-				new CustomNameInfo("The Mayor has retrofitted most buildings to eco-friendly plant-based construction. Caterpillars crawl on your face while you sleep, but the air is mighty fresh!"));
-			GreenLiving.Available = true;
-			GreenLiving.Conflicting.AddRange(cChallenge.Walls);
-			GreenLiving.IsActive = false;
-
-			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
-				new CustomNameInfo("Construction: Panoptikopolis"),
-				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
-			Panoptikopolis.Available = true;
-			Panoptikopolis.Conflicting.AddRange(cChallenge.Walls);
-			Panoptikopolis.IsActive = false;
-
-			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
-				new CustomNameInfo("Construction: Shanty Town"),
-				new CustomNameInfo("Looks like we're short on Steel.\n\nHard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
-			ShantyTown.Available = true;
-			ShantyTown.Conflicting.AddRange(cChallenge.Walls);
-			ShantyTown.IsActive = false;
-
-			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
-				new CustomNameInfo("Construction: Spelunky Dory"),
-				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
-			SpelunkyDory.Available = true;
-			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);
-			SpelunkyDory.IsActive = false;
 			#endregion
 		}
 

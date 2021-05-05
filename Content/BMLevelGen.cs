@@ -143,9 +143,18 @@ namespace BunnyMod.Content
 
 			Prefix(t, "Spawn", g, "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 		}
-		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkreal) // Prefix
+		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
-			floorName = "Ice";
+			if (GC.challenges.Contains(cChallenge.SpelunkyDory)) //
+				floorName = vFloor.CaveFloor; 
+			else if (GC.challenges.Contains(cChallenge.ShantyTown)) //
+				floorName = vFloor.WoodSlats;
+			else if (GC.challenges.Contains(cChallenge.CityOfSteel)) // N
+				floorName = vFloor.MetalFloor;
+			else if (GC.challenges.Contains(cChallenge.GreenLiving)) //
+				floorName = vFloor.DirtFloor;
+			else if (GC.challenges.Contains(cChallenge.Panoptikopolis)) //
+				floorName = vFloor.CleanTiles;
 
 			return true;
 		}

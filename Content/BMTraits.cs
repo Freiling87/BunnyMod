@@ -177,6 +177,7 @@ namespace BunnyMod.Content
             Carnivore.Conflicting.Add(vTrait.BananaLover);
             Carnivore.Conflicting.AddRange(cTrait.LimitFood);
             Carnivore.Conflicting.AddRange(vTrait.LimitFood);
+            Carnivore.Conflicting.Remove(cTrait.Carnivore);
             Carnivore.CostInCharacterCreation = -1;
             Carnivore.IsActive = true;
             Carnivore.Upgrade = null;
@@ -191,6 +192,7 @@ namespace BunnyMod.Content
             Vegetarian.Conflicting.Add(vTrait.Zombiism);
             Vegetarian.Conflicting.AddRange(cTrait.LimitFood);
             Vegetarian.Conflicting.AddRange(vTrait.LimitFood);
+            Vegetarian.Conflicting.Remove(cTrait.Vegetarian);
             Vegetarian.CostInCharacterCreation = -1;
             Vegetarian.IsActive = true;
             Vegetarian.Upgrade = null;
@@ -205,6 +207,7 @@ namespace BunnyMod.Content
             AfraidOfLoudNoises.CanSwap = true;
             AfraidOfLoudNoises.Conflicting.AddRange(new string[] { cTrait.DrawNoBlood });
             AfraidOfLoudNoises.Conflicting.AddRange(vTrait.LimitWeapons);
+            AfraidOfLoudNoises.Conflicting.Remove(cTrait.AfraidOfLoudNoises);
             AfraidOfLoudNoises.CostInCharacterCreation = -4;
             AfraidOfLoudNoises.IsActive = true;
             AfraidOfLoudNoises.Upgrade = null;
@@ -649,7 +652,7 @@ namespace BunnyMod.Content
             Priors.Upgrade = null;
 
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait(cTrait.VeiledThreats, true,
-                new CustomNameInfo("000: Veiled Threats", "", "", "", "", "Скрытое давление", "", ""),
+                new CustomNameInfo("Veiled Threats", "", "", "", "", "Скрытое давление", "", ""),
                 new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile.", "", "", "", "", "Когда вы пытаетесь угрожать, подкупить, грабить если ваша цель откажется, то она будет раздражена, а не враждебна.", "", ""));
             VeiledThreats.Available = true;
             VeiledThreats.AvailableInCharacterCreation = true;

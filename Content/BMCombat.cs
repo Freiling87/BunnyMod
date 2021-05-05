@@ -56,7 +56,7 @@ namespace BunnyMod.Content
 			else if (GC.challenges.Contains(cChallenge.BoringPhysics))
 				baseAmt = 0.10f;
 			else if (GC.challenges.Contains(cChallenge.WallWallopWorld))
-				baseAmt = 3.00f;
+				baseAmt = 5.00f;
 
 			return baseAmt;
 		}

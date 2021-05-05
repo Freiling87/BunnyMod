@@ -1358,103 +1358,140 @@ namespace BunnyMod.Content
 
 			Agent hittingAgent = __instance.myMelee.agent;
 
-			if ((hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) || hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2)) && 
-				(hitObject.CompareTag("AgentSprite") || hitObject.CompareTag("MeleeHitbox")))
+			if (hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes) || hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes_2))
 			{
 				InvItem invItem = null;
 
 				try
 				{
-					invItem = __instance.myMelee.agent.inventory.equippedWeapon;
+					invItem = hittingAgent.inventory.equippedWeapon;
 
-					if (__instance.myMelee.agent.inventory.equippedWeapon.itemType == "WeaponProjectile")
-						invItem = __instance.myMelee.agent.inventory.fist;
+					if (hittingAgent.inventory.equippedWeapon.itemType == "WeaponProjectile")
+						invItem = hittingAgent.inventory.fist;
 				}
 				catch { }
 				
-				if (hitObject.CompareTag("AgentSprite"))
+				if (hitObject.CompareTag("ObjectRealSprite"))
+				{
+					ObjectReal objectReal;
+					
+					if (hitObject.name.Contains("ExtraSprite"))
+						objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
+					else
+						objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
+					
+					if (__instance.myMelee.recentFakeHitObjects.Contains(objectReal.go))
+						return false;
+					
+					if (objectReal.damagedAmount < objectReal.damageThreshold && !objectReal.damageAccumulates)
+					{
+						if (objectReal.noMetallicSound)
+						{
+							GC.audioHandler.Play(objectReal, "BulletHitWall");
+					
+							return false;
+						}
+
+						GC.audioHandler.Play(objectReal, "BulletHitIndestructibleObject");
+						
+						return false;
+					}
+					else if (!objectReal.noDamageSound)
+					{
+						if (objectReal.specialDamageSound != "" && objectReal.specialDamageSound != null)
+						{
+							GC.audioHandler.Play(hittingAgent, objectReal.specialDamageSound);
+						
+							return false;
+						}
+
+						GC.audioHandler.Play(hittingAgent, "BulletHitObject");
+						
+						return false;
+					}
+				}
+				else if (hitObject.CompareTag("AgentSprite"))
 				{
 					if (__instance.myMelee.fakeHitAgent)
 						return false;
 					
-					Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
+					Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
 					
-					if (__instance.myMelee.recentFakeHitObjects.Contains(hitAgent.go))
+					if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
 						return false;
 					
-					if ((hitAgent.ghost && !hittingAgent.statusEffects.hasTrait(cTrait.SpectralStrikes)) || 
-						hitAgent.hologram || 
-						hitAgent.objectAgent)
+					if (agent.hologram || agent.objectAgent)
 						return false;
 					
 					bool flag = false;
 					
 					if (invItem.hitSoundType == "Cut")
 					{
-						if (hitAgent.damagedAmount < 12)
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutSmall");
+						if (agent.damagedAmount < 12)
+							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentCutSmall");
 						else
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentCutLarge");
-						
+							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentCutLarge");
+					
 						flag = true;
 					}
-					if (hitAgent.damagedAmount < 10)
+
+					if (agent.damagedAmount < 10)
 					{
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-						
+					
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
-									GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+									GC.audioHandler.Play(hittingAgent, "MeleeHitAgentSmall");
 								else
-									GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+									GC.audioHandler.Play(hittingAgent, "WerewolfSlash");
 							}
 							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentSmall");
+								GC.audioHandler.Play(hittingAgent, "MeleeHitAgentSmall");
 						}
 
-						if (hitAgent.damagedAmount > 0)
+						if (agent.damagedAmount > 0)
 						{
-							if (hitAgent.inhuman || hitAgent.mechFilled || hitAgent.mechEmpty)
-								GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+							if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+								GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 							else
-								GC.spawnerMain.SpawnParticleEffect("BloodHit", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+								GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						}
 						else
-							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						
-						if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (hitAgent.isPlayer > 0 && hitAgent.localPlayer))
+						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(1);
 						
 							return false;
 						}
 					}
-					else if (hitAgent.damagedAmount < 15)
+					else if (agent.damagedAmount < 15)
 					{
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-
+							
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
-									GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+									GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 								else
-									GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+									GC.audioHandler.Play(hittingAgent, "WerewolfSlash");
 							}
 							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+								GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 						}
-						
-						if (hitAgent.inhuman || hitAgent.mechFilled || hitAgent.mechEmpty)
-							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
+						if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						else
-							GC.spawnerMain.SpawnParticleEffect("BloodHitMed", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+							GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						
-						if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (hitAgent.isPlayer > 0 && hitAgent.localPlayer))
+						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(2);
 						
@@ -1466,26 +1503,26 @@ namespace BunnyMod.Content
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-
+							
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
-									GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+									GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 								else
-									GC.audioHandler.Play(__instance.myMelee.agent, "WerewolfSlash");
+									GC.audioHandler.Play(hittingAgent, "WerewolfSlash");
 							}
 							else
-								GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+								GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 							
-							GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitAgentLarge");
+							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 						}
-
-						if (hitAgent.inhuman || hitAgent.mechFilled || hitAgent.mechEmpty)
-							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						else
-							GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", hitAgent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						
-						if ((__instance.myMelee.agent.isPlayer > 0 && __instance.myMelee.agent.localPlayer) || (hitAgent.isPlayer > 0 && hitAgent.localPlayer))
+						if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+						else
+							GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+						
+						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(3);
 						
@@ -1493,23 +1530,35 @@ namespace BunnyMod.Content
 						}
 					}
 				}
+				else if (hitObject.CompareTag("ItemImage"))
+				{
+					GC.audioHandler.Play(hittingAgent, "BulletHitWall");
+					
+					if (hittingAgent.isPlayer > 0 && hittingAgent.localPlayer)
+					{
+						GC.ScreenShake(0.1f, 80f, hittingAgent.tr.position, hittingAgent);
+						GC.FreezeFrames(0);
+					
+						return false;
+					}
+				}
 				else if (hitObject.CompareTag("MeleeHitbox"))
 				{
 					Agent agent2 = hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee.agent;
-
+					
 					if (__instance.myMelee.recentFakeHitObjects.Contains(agent2.go))
 						return false;
 					
 					if (invItem.hitSoundType == "Cut" || agent2.inventory.equippedWeapon.hitSoundType == "Cut")
 					{
-						GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitMeleeBlade");
+						GC.audioHandler.Play(hittingAgent, "MeleeHitMeleeBlade");
 					
 						return false;
 					}
 
-					GC.audioHandler.Play(__instance.myMelee.agent, "MeleeHitMelee");
+					GC.audioHandler.Play(hittingAgent, "MeleeHitMelee");
 				}
-
+				
 				return false;
 			}
 

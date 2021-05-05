@@ -535,7 +535,7 @@ namespace BunnyMod.Content
             Thief = "Thief",
             UpperCruster = "UpperCruster",
             Vampire = "Vampire",
-            WerewolfB = "WerewolfB",
+            Werewolf = "WerewolfB",
             Worker = "Worker",
             Wrestler = "Wrestler",
             Zombie = "Zombie";
@@ -553,6 +553,27 @@ namespace BunnyMod.Content
             Cop,
             CopBot,
             SuperCop,
+        };
+        public static List<string> Nonhuman = new List<string>()
+        {
+            Gorilla,
+            Ghost,
+            Werewolf,
+            Vampire,
+            Zombie,
+        };
+        public static List<string> Supernatural = new List<string>()
+        {
+            Ghost,
+            Werewolf,
+            Vampire,
+            Zombie,
+        };
+        public static List<string> Undead = new List<string>()
+        {
+            Ghost,
+            Vampire,
+            Zombie
         };
     }
     public static class vAgentGoal // Vanilla Agent Goals

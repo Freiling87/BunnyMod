@@ -81,26 +81,27 @@ namespace BunnyMod.Content
         }
         public static void Initialize_Names()
         {
-            string t;
+			string t;
 
-            t = vNameType.Dialogue;
-            CustomName machineBusy = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
+			t = vNameType.Dialogue;
+			_ = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
 
-            t = vNameType.Interface;
-            CustomName dispenseIce = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
-            CustomName grillFudPaid = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
-            CustomName hideInContainer = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
-            CustomName openContainer = RogueLibs.CreateCustomName(cButtonText.OpenContainer, t, new CustomNameInfo("Open container"));
-            CustomName slotMachine_Play1 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay1, t, new CustomNameInfo("Play"));
-            CustomName slotMachine_Play100 = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
-            CustomName stealItem = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
+			t = vNameType.Interface;
+			_ = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
+			_ = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
+            _ = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
+            _ = RogueLibs.CreateCustomName(cButtonText.OpenContainer, t, new CustomNameInfo("Open container"));
+            _ = RogueLibs.CreateCustomName(cButtonText.SlotMachineHackJackpot, t, new CustomNameInfo("Penny-Slot Jackpot Promotion"));
+            _ = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay1, t, new CustomNameInfo("Play"));
+            _ = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
+            _ = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
 
             t = vNameType.StatusEffect;
-            CustomName slotMachineJackpot_1 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Jackpot!"));
-            CustomName slotMachineJackpot_2 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
-            CustomName slotMachineJackpot_3 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
-            CustomName slotMachineJackpot_4 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
-            CustomName slotMachineJackpot_5 = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
         }
         #endregion
 
@@ -2312,6 +2313,7 @@ namespace BunnyMod.Content
         #endregion
         #region SlotMachine
         static public Dictionary<SlotMachine, bool> jackpotPlaying = new Dictionary<SlotMachine, bool>();
+        static public Dictionary<SlotMachine, bool> jackpotHacked = new Dictionary<SlotMachine, bool>();
         public void SlotMachine_00()
         {
             Type t = typeof(SlotMachine);
@@ -2333,6 +2335,8 @@ namespace BunnyMod.Content
             {
                 if (__instance.advantage == 0)
                     __instance.buttons.Add("IncreaseSlotMachineOdds");
+
+                __instance.buttons.Add(cButtonText.SlotMachineHackJackpot);
 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                     __instance.buttons.Add("HackExplode");
@@ -2368,20 +2372,37 @@ namespace BunnyMod.Content
 
             __instance.IncreaseNumPlays();
             __instance.objectInvDatabase.money.invItemCount += gambleAmt;
+            int advantage = __instance.interactingAgent.DetermineLuck(__instance.advantage, "SlotMachine", true);
+            int payoutMult;
+            int result = 1000 - Mathf.Clamp(Random.Range(1, 1000) + advantage, 1, 1000);
 
-            int advantage = 45;
-            advantage += __instance.advantage;
+            BMLog("\tresult: " + result);
 
-            advantage = __instance.interactingAgent.DetermineLuck(advantage, "SlotMachine", true);
+            if (result == 0)
+                payoutMult = 64;
+            else if (result <= 8)
+                payoutMult = 16;
+            else if (result <= 32)
+                payoutMult = 8;
+            else if (result <= 64)
+                payoutMult = 4;
+            else if (result <= 128)
+                payoutMult = 2;
+            else
+                payoutMult = 0;
 
-            if (Random.Range(1, 625) == 1 || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
+            BMLog("\tpayoutMult: " + payoutMult);
+
+            int payout = gambleAmt * payoutMult;
+
+            BMLog("\tpayout: " + payout);
+
+            if (payoutMult == 64 || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
+                SlotMachine_Jackpot(payout, __instance);
+            else if (payoutMult > 0)
             {
-                SlotMachine_Jackpot(gambleAmt * 10, __instance);
-            }
-            else if (GC.percentChance(advantage - 1))
-            {
-                __instance.interactingAgent.inventory.AddItem("Money", gambleAmt * 2);
-                __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, gambleAmt * 2);
+                __instance.interactingAgent.inventory.AddItem("Money", payout);
+                __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, payout);
                 __instance.interactingAgent.SayDialogue("SlotMachineWon");
                 __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
                 GC.audioHandler.Play(__instance, "Win");
@@ -2393,6 +2414,24 @@ namespace BunnyMod.Content
             }
 
             __instance.StopInteraction();
+
+            return false;
+        }
+        public static bool SlotMachine_IncreaseSlotMachineOdds(Agent causerAgent, SlotMachine __instance) // Replacement
+		{
+            if (GC.serverPlayer)
+            {
+                __instance.advantage = 50;
+
+                if ((!causerAgent.oma.superSpecialAbility || !(causerAgent.agentName == "Hacker")) && !causerAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+                {
+                    __instance.hackable = false;
+
+                    return false;
+                }
+            }
+            else
+                __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "IncreaseSlotMachineOdds");
 
             return false;
         }
@@ -2422,6 +2461,7 @@ namespace BunnyMod.Content
         }
         public static async void SlotMachine_Jackpot(int payout, SlotMachine __instance) // Non-Patch
         {
+            bool hacked = jackpotHacked[__instance];
             int cashDropIncrement = payout / 10;
             GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
             GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
@@ -2431,10 +2471,11 @@ namespace BunnyMod.Content
 
             for (int i = 1; i <= 100; i++)
             {
+                GC.audioHandler.Play(__instance, vAudioClip.Win);
+
                 if (i % 5 == 0)
 				{
                     __instance.PlayAnim(vAnimation.MachineOperate, __instance.interactingAgent);
-                    GC.audioHandler.Play(__instance, vAudioClip.Win);
 
                     if (i % 10 == 0)
                     {
@@ -2483,7 +2524,9 @@ namespace BunnyMod.Content
 
                 if (jukeboxTimer <= 0f)
                 {
-                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false).distraction = true;
+                    if (jackpotHacked[__instance])
+                        GC.spawnerMain.SpawnNoise(__instance.tr.position, 3f, __instance, "Attract", __instance.interactingAgent, false).distraction = true;
+
                     jukeboxTimer = 1f;
                 }
 
@@ -2497,7 +2540,7 @@ namespace BunnyMod.Content
             MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
-            if (buttonText == "Play1")
+            if (buttonText == cButtonText.SlotMachinePlay1)
                 __instance.Gamble(1);
             else if (buttonText == "Play5")
                 __instance.Gamble(5);
@@ -2505,13 +2548,18 @@ namespace BunnyMod.Content
                 __instance.Gamble(20);
             else if (buttonText == "Play50")
                 __instance.Gamble(50);
-            else if (buttonText == "Play100")
+            else if (buttonText == cButtonText.SlotMachinePlay100)
                 __instance.Gamble(100);
-            else if (buttonText != "IncreaseSlotMachineOdds")
+            else if (buttonText == "IncreaseSlotMachineOdds")
             {
                 GC.audioHandler.Play(__instance.interactingAgent, "Success");
                 __instance.IncreaseSlotMachineOdds(__instance.interactingAgent);
                 __instance.StopInteraction();
+            }
+            else if (buttonText == cButtonText.SlotMachineHackJackpot)
+			{
+                jackpotHacked[__instance] = true;
+                SlotMachine_Jackpot(10, __instance);
             }
             else
                 __instance.StopInteraction();
@@ -2524,7 +2572,12 @@ namespace BunnyMod.Content
                 jackpotPlaying.Add(__instance, false);
             else
                 jackpotPlaying[__instance] = false;
-		}
+
+            if (!jackpotHacked.ContainsKey(__instance))
+                jackpotHacked.Add(__instance, false);
+            else
+                jackpotHacked[__instance] = false;
+        }
         public static void SlotMachine_SpitOutMoney(int amount, SlotMachine __instance) // Non-Patch
         {
             if (GC.serverPlayer)

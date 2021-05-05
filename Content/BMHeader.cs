@@ -126,6 +126,7 @@ namespace BunnyMod.Content
             GrillFudPaid = "GrillFudPaid",
             HideInContainer = "HideInContainer",
             OpenContainer = "OpenContainer",
+            SlotMachineHackJackpot = "SlotMachineHackJackpot",
             SlotMachinePlay1 = "Play1",
             SlotMachinePlay100 = "Play100",
             StealItem = "StealItem";

@@ -106,7 +106,6 @@ namespace BunnyMod.Content
         #endregion
 
         #region Custom
-
         public static void CorrectButtonCosts(ObjectReal objectReal)
         {
             // TODO: This will only catch one tamper operation per object
@@ -1000,10 +999,14 @@ namespace BunnyMod.Content
         #region Door
         public void Door_00()
         {
-            Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
-            Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
-            Postfix(typeof(Door), "FreePrisonerPointsIfNotDead", GetType(), "Door_FreePrisonerPointsIfNotDead", new Type[2] { typeof(Agent), typeof(List<Agent>) });
-            Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
+            Type t = typeof(Door);
+            Type g = GetType();
+
+            Prefix(t, "CloseDoor", g, "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
+            Postfix(t, "DetermineButtons", g, "Door_DetermineButtons", new Type[0] { });
+            Postfix(t, "FreePrisonerPointsIfNotDead", g, "Door_FreePrisonerPointsIfNotDead", new Type[2] { typeof(Agent), typeof(List<Agent>) });
+            Prefix(t, "OpenDoor", g, "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
+            Prefix(t, "Unlock", g, "Door_Unlock", new Type[0] { });
         }
         public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
         {
@@ -1382,6 +1385,70 @@ namespace BunnyMod.Content
             yield return new WaitForSeconds(0.02f);
 
             yield break;
+        }
+        public static bool Door_Unlock(Door __instance, bool ___destroyingDoor) // Replacement
+		{
+            // Stealth Bastard Deluxe silent door opening
+
+            if (GC.serverPlayer || GC.clientControlling)
+            {
+                __instance.locked = false;
+
+                if (__instance.prisonDoor > 0 && !__instance.open)
+                {
+                    __instance.graphUpdateScene.setTag = 2;
+                    __instance.graphUpdateScene.Apply();
+                }
+                
+                if (__instance.interactingAgent != null && !__instance.boughtKeyInChunk && !__instance.interactingAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+                    __instance.StartCoroutine(__instance.delayedOwnCheck(__instance.interactingAgent));
+                
+                if (!___destroyingDoor)
+                {
+                    if (__instance.direction == "N" || __instance.direction == "S")
+                    {
+                        if (__instance.doorType == "Hard")
+                            __instance.SetObjectSprite("DoorHard");
+                        else
+                            __instance.SetObjectSprite("Door");
+                    }
+                    else if (__instance.direction == "E" || __instance.direction == "W")
+                    {
+                        if (__instance.doorType == "Hard")
+                            __instance.SetObjectSprite("DoorHardNS");
+                        else
+                            __instance.SetObjectSprite("DoorNS");
+                    }
+
+                    if (__instance.doorType == "Hard")
+                        __instance.ChangeObjectRealName(GC.nameDB.GetName(__instance.objectName, "Object"), GC.nameDB.GetName("DoorHard", "Object"));
+                    else
+                        __instance.ChangeObjectRealName(GC.nameDB.GetName(__instance.objectName, "Object"));
+                }
+
+                GC.playerAgent.SetCheckUseWithItemsAgain(__instance);
+                GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "AllowImmediateInteractions");
+                
+                if (GC.serverPlayer && GC.multiplayerMode)
+                {
+                    GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "UnlockFromHost");
+
+                    return false;
+                }
+            }
+            else if (!___destroyingDoor)
+            {
+                if (__instance.interactingAgent != null)
+                {
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "Unlock");
+                    
+                    return false;
+                }
+
+                GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "Unlock");
+            }
+
+            return false;
         }
         #endregion
         #region Elevator

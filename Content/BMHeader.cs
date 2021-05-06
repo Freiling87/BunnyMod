@@ -339,7 +339,8 @@ namespace BunnyMod.Content
         public const string
             BrokenWindows = "BrokenWindows",
             Fountains = "Fountains",
-            Litter = "Litter";
+            Litter = "Litter",
+            PublicSecurityCams = "PublicSecurityCams";
 	}
     public static class cObject
 	{

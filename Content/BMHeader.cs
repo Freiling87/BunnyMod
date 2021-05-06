@@ -165,6 +165,7 @@ namespace BunnyMod.Content
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",
             DoublePlyRewards = "DoublePlyRewards",
+            FountainTest = "FountainTest",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
             HomesickAndTired = "HomesickandTired",

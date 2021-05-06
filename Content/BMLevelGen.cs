@@ -3392,7 +3392,7 @@ namespace BunnyMod.Content
 					if (GC.levelTheme != 2 && GC.challenges.Contains("MixedUpLevels"))
 						GC.percentChance(33);
 
-					if (false)
+					if (GC.challenges.Contains(cChallenge.FountainTest))
 					{
 						Debug.Log("Loading Fountains");
 						int numObjects = 1;

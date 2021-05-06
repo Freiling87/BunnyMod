@@ -30,6 +30,13 @@ namespace BunnyMod.Content
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
 			ArcologyEcology.IsActive = false;
 
+			CustomMutator FountainTest = RogueLibs.CreateCustomMutator(cChallenge.FountainTest, true,
+				new CustomNameInfo("000: FountainTest"),
+				new CustomNameInfo("Test"));
+			FountainTest.Available = true;
+			FountainTest.Conflicting.AddRange(new string[] { });
+			FountainTest.IsActive = false;
+
 			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
 				new CustomNameInfo("Skyway District"),
 				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be."));

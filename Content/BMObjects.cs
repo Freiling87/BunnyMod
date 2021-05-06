@@ -1002,6 +1002,7 @@ namespace BunnyMod.Content
         {
             Prefix(typeof(Door), "CloseDoor", GetType(), "Door_CloseDoor", new Type[2] { typeof(Agent), typeof(bool) });
             Postfix(typeof(Door), "DetermineButtons", GetType(), "Door_DetermineButtons", new Type[0] { });
+            Postfix(typeof(Door), "FreePrisonerPointsIfNotDead", GetType(), "Door_FreePrisonerPointsIfNotDead", new Type[2] { typeof(Agent), typeof(List<Agent>) });
             Prefix(typeof(Door), "OpenDoor", GetType(), "Door_OpenDoor", new Type[2] { typeof(Agent), typeof(bool) });
         }
         public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
@@ -1156,6 +1157,21 @@ namespace BunnyMod.Content
             if (__instance.buttons.Any())
                 CorrectButtonCosts(__instance);
         }
+        public static void Door_FreePrisonerPointsIfNotDead(Agent myAgent, List<Agent> myFreedAgents) // Postfix
+		{
+            // VeryHardOnYourself
+
+            if (myAgent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+            {
+                bool someFreed = false;
+
+                for (int i = 0; i < myFreedAgents.Count; i++)
+                    if (!myFreedAgents[i].dead || myFreedAgents[i].teleporting)
+                        return;
+
+                myAgent.skillPoints.AddPoints(cSkillPoints.NoPrisonersSurvived);
+            }
+		}
         public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
         {
             BMLog("Door_OpenDoor");

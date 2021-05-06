@@ -346,6 +346,20 @@ namespace BunnyMod.Content
             vObject.TrashCan
         };
 	}
+    public static class cSkillPoints // Custom Skill Points
+	{
+        public const string
+            BQMalusDowntown = "BQMalusDowntown",
+            BQMalusFloor = "BQMalusFloor",
+            BQMalusGame = "BQMalusGame",
+            BQMalusIndustrial = "BQMalusIndustrial",
+            BQMalusPark = "BQMalusPark",
+            BQMalusSlums = "BQMalusSlums",
+            BQMalusUptown = "BQMalusUptown",
+            ElectabilityMalus = "ElectabilityMalus",
+            NoPrisonersSurvived = "NoPrisonersSurvived",
+            StoleNone = "StoleNone";
+    }
     public static class cTrait // Custom Traits
     {
         public const string

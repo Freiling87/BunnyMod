@@ -311,13 +311,13 @@ namespace BunnyMod.Content
 
             CustomTrait VeryHardOnYourself = RogueLibs.CreateCustomTrait(cTrait.VeryHardOnYourself, true,
                 new CustomNameInfo("Very Hard-On Yourself"),
-                new CustomNameInfo("You were a rigid pianist for years: Any time you commited a boner or a cock-up, you would ejaculate in frustration. Your life was seemin' saturated, so you thought you'd come to the Resistance. They appreciate your perfectionism - the hardest job for you to swallow is a wrecked one.\n\nAny XP loss you incur is doubled.\n\nPenis"));
+                new CustomNameInfo("You were a rigid pianist for years: Any time you commited a boner or a cock-up, you would ejaculate in frustration. Your life was seemin' saturated, so you thought you'd come to the Resistance. They appreciate your perfectionism - the hardest job for you to swallow is a wrecked one.\n\n- Anytime you miss an XP bonus, suffer a penalty\n- Any negative XP is doubled\n\nPenis"));
             VeryHardOnYourself.Available = true;
             VeryHardOnYourself.AvailableInCharacterCreation = true;
             VeryHardOnYourself.CanRemove = true;
             VeryHardOnYourself.CanSwap = false;
             VeryHardOnYourself.Conflicting.AddRange(new string[] { cTrait.SmoothBrained });
-            VeryHardOnYourself.CostInCharacterCreation = -1;
+            VeryHardOnYourself.CostInCharacterCreation = -6;
             VeryHardOnYourself.Prerequisites.AddRange(new string[] { vTrait.TheLaw, vTrait.Extortionist });
             VeryHardOnYourself.IsActive = true;
             VeryHardOnYourself.Upgrade = null;

@@ -76,21 +76,8 @@ namespace BunnyMod.Content
 			Type t = typeof(Bullet);
 			Type g = GetType();
 
-			Postfix(t, "RealAwake", g, "Bullet_RealAwake", new Type[0] { });
 			Postfix(t, "SetupBullet", g, "Bullet_SetupBullet", new Type[0] { });
-		}
-		public static Dictionary<PlayfieldObject, string> bulletWeapon = new Dictionary<PlayfieldObject, string>();
-		public static void Bullet_RealAwake(Bullet __instance) // Postfix
-		{
-			BMLog("Bullet_RealAwake");
-
-			BMHeaderTools.AddDictionary(bulletWeapon, __instance, __instance.agent.weapon);
-		}
-		public static void Bullet_DestroyMeLate(Bullet __instance) // Postfix
-		{
-			BMLog("Bullet_DestroyMeLate");
-
-			bulletWeapon.Remove(__instance);
+			Prefix(t, "LateUpdateBullet", g, "Bullet_LateUpdateBullet", new Type[0] { });
 		}
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
@@ -1119,12 +1106,12 @@ namespace BunnyMod.Content
 						if ((hittingAgent.statusEffects.hasTrait("ChanceToKnockWeapons") || hittingAgent.statusEffects.hasTrait("KnockWeapons")) && GC.serverPlayer && agent4.isPlayer == 0 && agent4.inventory.equippedWeapon.invItemName != "Fist" && !agent4.warZoneAgent)
 						{
 							int myChance4 = 15;
-							bool flag7 = hittingAgent.statusEffects.hasTrait("KnockWeapons");
+							bool knockWeapons = hittingAgent.statusEffects.hasTrait("KnockWeapons");
 						
-							if (!flag7)
+							if (!knockWeapons)
 								myChance4 = hittingAgent.DetermineLuck(15, "ChanceToKnockWeapons", true);
 							
-							if (GC.percentChance(myChance4) || flag7)
+							if (GC.percentChance(myChance4) || knockWeapons)
 							{
 								InvItem invItem3 = agent4.inventory.FindItem(agent4.inventory.equippedWeapon.invItemName);
 								agent4.inventory.DestroyItem(invItem3);
@@ -2145,7 +2132,6 @@ namespace BunnyMod.Content
 						bool hasLOSAgent = damagedAgent.movement.HasLOSAgent(damagerAgent);
 						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
 						Bullet bullet = (Bullet)damagerObject;
-						string wepName = bullet.cameFromWeapon;
 
 						BMLog("\theadshot:\t" + headShot);
 						BMLog("\tdoubleTap:\t" + doubleTap);
@@ -2155,7 +2141,7 @@ namespace BunnyMod.Content
 						BMLog("\tdistance:\t" + distance);
 						BMLog("\tHasLOSBehind:\t" + hasLOSBehind);
 						BMLog("\tHasLOSAgent:\t" + hasLOSAgent);
-						BMLog("\twepName: " + bulletWeapon[damagerObject]);
+						BMLog("\twepName: " + bullet.cameFromWeapon);
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
 							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible || damagedAgent.sleeping) &&
@@ -2166,7 +2152,7 @@ namespace BunnyMod.Content
 						}
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
-							bulletWeapon[damagerObject] == vItem.Revolver &&
+							bullet.cameFromWeapon == vItem.Revolver &&
 							(!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && 
 							distance >= 4.00f ||
 							distance >= 8.00f)

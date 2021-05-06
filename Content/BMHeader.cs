@@ -580,6 +580,12 @@ namespace BunnyMod.Content
             Mobster,
             Thief,
         };
+        public static List<string> Evil = new List<string>()
+        {
+            ShapeShifter,
+            Vampire,
+            Zombie
+        };
         public static List<string> LawEnforcement = new List<string>()
         {
             Cop,
@@ -588,8 +594,13 @@ namespace BunnyMod.Content
         };
         public static List<string> Nonhuman = new List<string>()
         {
+            Alien,
+            CopBot,
             Gorilla,
             Ghost,
+            Robot,
+            RobotPlayer,
+            ShapeShifter,
             Werewolf,
             Vampire,
             Zombie,

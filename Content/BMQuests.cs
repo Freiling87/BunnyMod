@@ -53,6 +53,9 @@ namespace BunnyMod.Content
         }
         public static bool Quests_GetLevelExitChallengeItem(Quests __instance, ref InvItem __result) // Prefix
 		{
+            // DoublePlyRewards
+            // UnpaidInternship
+
             bool flag = false;
             string item = "";
 

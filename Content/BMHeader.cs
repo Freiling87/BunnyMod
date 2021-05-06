@@ -268,15 +268,15 @@ namespace BunnyMod.Content
     public static class cDialogue // Custom Dialogue
 	{
         public const string
-            AfraidOfLoudNoises = "AfraidOfLoudNoises",
-            AfraidOfLoudNoises2 = "AfraidOfLoudNoises2",
-            Carnivore = "Carnivore",
-            DAREdevil = "DAREdevil",
-            DrawNoBlood = "DrawNoBlood",
-            DrawNoBlood2 = "DrawNoBlood2",
-            FatassCantWear = "FatassCantWear",
-            FatHeadCantWear = "FatHeadCantWear",
-            FriendOfBill = "FriendOfBill",
+            CantUseLoud = "AfraidOfLoudNoises",
+            CantUseLoud_2 = "AfraidOfLoudNoises2",
+            CantEatNonvegetarian = "Carnivore",
+            CantUseDrug = "DAREdevil",
+            CantUseSharp = "DrawNoBlood",
+            CantUseSharp_2 = "DrawNoBlood2",
+            CantWearArmor = "FatassCantWear",
+            CantWearHeadgear = "FatHeadCantWear",
+            CantDrinkAlcohol = "FriendOfBill",
             MachineBusy = "MachineBusy",
             MSA_CD_CantDo1 = "MSA_CD_CantDo1",
             MSA_CD_CantDo2 = "MSA_CD_CantDo2",
@@ -326,14 +326,13 @@ namespace BunnyMod.Content
             MSA_TB_Recharge2 = "MSA_TB_Recharge2",
             MSA_TB_Recharge3 = "MSA_TB_Recharge3",
             MSA_TB_Recharge4 = "MSA_TB_Recharge4",
-            SharpOnly = "SharpOnly",
+            CantUseBlunt = "SharpOnly",
             SlotMachineJackpot_1 = "SlotMachineJackpot_1",
             SlotMachineJackpot_2 = "SlotMachineJackpot_2",
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
             SlotMachineJackpot_4 = "SlotMachineJackpot_4",
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
-            Vegetarian = "Vegetarian",
-            VeiledThreats = "VeiledThreats";
+            CantEatMeat = "Vegetarian";
     }
     public static class cObject
 	{

@@ -36,17 +36,17 @@ namespace BunnyMod.Content
 			string t;
 
 			t = vNameType.StatusEffect;
-			_ = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises, t, new CustomNameInfo("I can't use that! It's too loooooud."));
-			_ = RogueLibs.CreateCustomName(cDialogue.AfraidOfLoudNoises2, t, new CustomNameInfo("But that'll hurt my delicate little ears!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.Carnivore, t, new CustomNameInfo("No! Me want meat!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.DAREdevil, t, new CustomNameInfo("Nope, my body is a temple!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood, t, new CustomNameInfo("Mommy says I can't use sharp things!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.DrawNoBlood2, t, new CustomNameInfo("I swore to draw no blood... unless I remove this trait first."));
-            _ = RogueLibs.CreateCustomName(cDialogue.FatassCantWear, t, new CustomNameInfo("I'm too fuckin' fat to wear this!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.FatHeadCantWear, t, new CustomNameInfo("Owie! This is too tight for my big, fat, stupid, ugly head!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.FriendOfBill, t, new CustomNameInfo("Today, I choose not to drink."));
-            _ = RogueLibs.CreateCustomName(cDialogue.SharpOnly, t, new CustomNameInfo("I need a sharper tool for this work."));
-            _ = RogueLibs.CreateCustomName(cDialogue.Vegetarian, t, new CustomNameInfo("Meat is murder!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantDrinkAlcohol, t, new CustomNameInfo("Today, I choose not to drink."));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantEatMeat, t, new CustomNameInfo("Meat is murder!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantEatNonvegetarian, t, new CustomNameInfo("No! Me want meat!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantUseDrug, t, new CustomNameInfo("Nope, my body is a temple!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantUseLoud, t, new CustomNameInfo("I can't use that! It's too loooooud."));
+			_ = RogueLibs.CreateCustomName(cDialogue.CantUseLoud_2, t, new CustomNameInfo("But that'll hurt my delicate little ears!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantUseBlunt, t, new CustomNameInfo("I need a sharper tool for this work."));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantUseSharp, t, new CustomNameInfo("Mommy says I can't use sharp things!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantUseSharp_2, t, new CustomNameInfo("I swore to draw no blood... unless I remove this trait first."));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantWearArmor, t, new CustomNameInfo("I'm too fuckin' fat to wear this!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantWearHeadgear, t, new CustomNameInfo("Owie! This is too tight for my big, fat, stupid, ugly head!"));
         }
         #endregion
 
@@ -193,7 +193,7 @@ namespace BunnyMod.Content
         {
             if (item.isArmor && __instance.agent.statusEffects.hasTrait(cTrait.Fatass))
             {
-                __instance.agent.SayDialogue(cDialogue.FatassCantWear);
+                __instance.agent.SayDialogue(cDialogue.CantWearArmor);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -205,7 +205,7 @@ namespace BunnyMod.Content
         {
             if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait(cTrait.FatHead))
             {
-                __instance.agent.SayDialogue(cDialogue.FatHeadCantWear);
+                __instance.agent.SayDialogue(cDialogue.CantWearHeadgear);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -222,21 +222,21 @@ namespace BunnyMod.Content
 
             if (agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Piercing"))
             {
-                agent.SayDialogue(cDialogue.DrawNoBlood);
+                agent.SayDialogue(cDialogue.CantUseSharp);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
-                agent.SayDialogue(cDialogue.AfraidOfLoudNoises);
+                agent.SayDialogue(cDialogue.CantUseLoud);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
             }
             else if (agent.statusEffects.hasTrait(cTrait.SharpOnly) && item.Categories.Contains("Blunt"))
             {
-                agent.SayDialogue(cDialogue.SharpOnly);
+                agent.SayDialogue(cDialogue.CantUseBlunt);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -328,32 +328,32 @@ namespace BunnyMod.Content
 
             if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
-                agent.SayDialogue(cDialogue.FriendOfBill);
+                agent.SayDialogue(cDialogue.CantDrinkAlcohol);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
-                agent.SayDialogue(cDialogue.DAREdevil);
+                agent.SayDialogue(cDialogue.CantUseDrug);
                 cantDoFlag = true;
             }
             else if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait(cTrait.Vegetarian))
             {
-                agent.SayDialogue(cDialogue.Vegetarian);
+                agent.SayDialogue(cDialogue.CantEatMeat);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait(cTrait.Carnivore))
             {
-                agent.SayDialogue(cDialogue.Carnivore);
+                agent.SayDialogue(cDialogue.CantEatNonvegetarian);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Loud") && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
             {
-                agent.SayDialogue(cDialogue.AfraidOfLoudNoises2);
+                agent.SayDialogue(cDialogue.CantUseLoud_2);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Piercing") && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
             {
-                agent.SayDialogue(cDialogue.DrawNoBlood2);
+                agent.SayDialogue(cDialogue.CantUseSharp_2);
                 cantDoFlag = true;
             }
 
@@ -394,22 +394,22 @@ namespace BunnyMod.Content
             {
                 if (vItem.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
                 {
-                    agent.SayDialogue(cDialogue.FriendOfBill);
+                    agent.SayDialogue(cDialogue.CantDrinkAlcohol);
                     goto terminus;
                 }
                 else if (vItem.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
                 {
-                    agent.SayDialogue(cDialogue.DAREdevil);
+                    agent.SayDialogue(cDialogue.CantUseDrug);
                     goto terminus;
                 }
                 else if (vItem.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Vegetarian))
                 {
-                    agent.SayDialogue(cDialogue.Vegetarian);
+                    agent.SayDialogue(cDialogue.CantEatMeat);
                     goto terminus;
                 }
                 else if (vItem.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Carnivore))
                 {
-                    agent.SayDialogue(cDialogue.Carnivore);
+                    agent.SayDialogue(cDialogue.CantEatNonvegetarian);
                     goto terminus;
                 }
             }
@@ -417,13 +417,13 @@ namespace BunnyMod.Content
             {
                 if (vItem.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
                 {
-                    agent.SayDialogue(cDialogue.AfraidOfLoudNoises2);
+                    agent.SayDialogue(cDialogue.CantUseLoud_2);
                     goto terminus;
                 }
 
                 if (vItem.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
                 {
-                    agent.SayDialogue(cDialogue.DrawNoBlood2);
+                    agent.SayDialogue(cDialogue.CantUseSharp_2);
                     goto terminus;
                 }
             }

@@ -1638,30 +1638,29 @@ namespace BunnyMod.Content
 
                 if (objectReal == __instance)
                     continue;
-                else if (objectReal.objectName == vObject.Manhole)
+                else if (objectReal is Manhole)
                 {
                     Manhole manhole = (Manhole)objectReal;
 
                     if (manhole.opened)
                         exits.Add(objectReal);
                 }
-                else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
-                    if (objectReal.destroyed)
+                else if (objectReal is Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
+                    if (!objectReal.destroyed)
                         exits.Add(objectReal);
             }
 
             ObjectReal exit = __instance;
 
             if (exits.Count > 0)
-                exit = exits[Random.Range(0, exits.Count)];
+                exit = exits[Random.Range(0, exits.Count - 1)];
 
             Vector3 exitSpot = Vector3.zero;
 
             if (exit is Manhole)
             {
                 exitSpot = exit.curPosition;
-                Vector2 offset = Random.insideUnitCircle.normalized;
-                agent.Teleport((Vector2)exitSpot + offset, exit.objectName == vObject.Manhole, false);
+                agent.Teleport((Vector2)exitSpot + Random.insideUnitCircle.normalized, true, true);
                 GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
 
             }
@@ -1708,14 +1707,14 @@ namespace BunnyMod.Content
 
                 if (objectReal == __instance)
                     continue;
-                else if (objectReal.objectName == vObject.Manhole)
+                else if (objectReal is Manhole)
                 {
                     Manhole manhole = (Manhole)objectReal;
 
                     if (manhole.opened)
                         exits.Add(objectReal);
                 }
-                else if (objectReal.objectName == vObject.Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
+                else if (objectReal is Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
                     if (!objectReal.destroyed)
                         exits.Add(objectReal);
             }
@@ -1723,7 +1722,7 @@ namespace BunnyMod.Content
             ObjectReal exit = __instance;
 
             if (exits.Count > 0)
-                exit = exits[Random.Range(0, exits.Count)];
+                exit = exits[Random.Range(0, exits.Count - 1)];
 
             GC.audioHandler.Play(agent, "ToiletTeleportIn");
             agent.toiletTeleporting = true;
@@ -1733,8 +1732,7 @@ namespace BunnyMod.Content
             if (exit is Manhole)
             {
                 exitSpot = exit.curPosition;
-                Vector2 offset = Random.insideUnitCircle.normalized;
-                agent.Teleport((Vector2)exitSpot + offset, exit.objectName == vObject.Manhole, false);
+                agent.Teleport((Vector2)exitSpot + Random.insideUnitCircle.normalized, true, false);
                 GC.spawnerMain.SpawnExplosion((PlayfieldObject)exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
 
             }
@@ -2881,17 +2879,16 @@ namespace BunnyMod.Content
                     {
                         ObjectReal exitCandidate = GC.objectRealList[i];
 
-                        if ((exitCandidate.objectName == vObject.Toilet || exitCandidate.objectName == vObject.Manhole) && 
-                            exitCandidate != __instance && !exitCandidate.destroyed && exitCandidate.startingChunk != __instance.startingChunk)
+                        if (exitCandidate != __instance && !exitCandidate.destroyed && exitCandidate.startingChunk != __instance.startingChunk)
                         {
-                            if (exitCandidate.objectName == vObject.Manhole)
+                            if (exitCandidate is Manhole)
                             {
                                 Manhole manhole = (Manhole)exitCandidate;
 
                                 if (manhole.opened)
                                     exits.Add(exitCandidate);
                             }
-							else
+							else if (exitCandidate is Toilet)
                                 exits.Add(exitCandidate);
                         }
                     }
@@ -2901,17 +2898,16 @@ namespace BunnyMod.Content
                         {
                             ObjectReal exitCandidate = GC.objectRealList[j];
 
-                            if ((exitCandidate.objectName == vObject.Toilet || exitCandidate.objectName == vObject.Manhole) 
-                                && exitCandidate != __instance && !exitCandidate.destroyed)
+                            if (exitCandidate != __instance && !exitCandidate.destroyed)
                             {
-                                if (exitCandidate.objectName == vObject.Manhole)
+                                if (exitCandidate is Manhole)
                                 {
                                     Manhole manhole = (Manhole)exitCandidate;
 
                                     if (manhole.opened)
                                         exits.Add(exitCandidate);
                                 }
-                                else
+                                else if (exitCandidate is Toilet)
                                     exits.Add(exitCandidate);
                             }
                         }
@@ -2919,7 +2915,7 @@ namespace BunnyMod.Content
                     ObjectReal exit = __instance;
 
                     if (exits.Count > 0)
-                        exit = exits[Random.Range(0, exits.Count)];
+                        exit = exits[Random.Range(0, exits.Count - 1)];
 
                     Vector3 exitSpot = Vector3.zero;
                     string direction = exit.direction;

@@ -2163,7 +2163,7 @@ namespace BunnyMod.Content
 						spawnedInChunks = null;
 					}
 					#endregion
-					#region Cave wall outcroppings for SpelunkyDory
+					#region Mod - Cave Wall Outcroppings
 					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 					{
 						Debug.Log("Loading SpelunkyDory Cave Wall Outcroppings");
@@ -2334,8 +2334,14 @@ namespace BunnyMod.Content
 						spawnedCount = null;
 					}
 					#endregion
-					#region Public Security Cams for Police State
+					#region Mod - Public Security Cams
+
+					bool hasPublicSecurityCams = false;
+
 					if (GC.challenges.Contains(cChallenge.PoliceState))
+						hasPublicSecurityCams = true;
+
+					if (hasPublicSecurityCams)
 					{
 						BMLog("Loading Public Security Cams");
 
@@ -2560,6 +2566,103 @@ namespace BunnyMod.Content
 
 						spawnedInChunks = null;
 					}
+					#endregion
+					#region Mod - Litter
+					bool hasLitter = false;
+
+					if (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || GC.levelTheme == 3 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+						hasLitter = true;
+
+					if (GC.customLevel)
+						hasLitter = __instance.customLevel.levelFeatures.Contains(cLevelFeature.Litter);
+
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
+						hasLitter = false;
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasLitter = true;
+
+					if (true)
+					{
+						Debug.Log("Loading Litter");
+						int numObjects = (int)((float)Random.Range(48, 64) * __instance.levelSizeModifier);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector17 = Vector2.zero;
+							int num42 = 0;
+
+							do
+							{
+								vector17 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								if (vector17 != Vector2.zero)
+								{
+									if (GC.tileInfo.WaterNearby(vector17))
+										vector17 = Vector2.zero;
+
+									if (GC.tileInfo.IceNearby(vector17))
+										vector17 = Vector2.zero;
+
+									if (GC.tileInfo.BridgeNearby(vector17))
+										vector17 = Vector2.zero;
+								}
+
+								num42++;
+							}
+							while ((vector17 == Vector2.zero || Vector2.Distance(vector17, GC.playerAgent.tr.position) < 5f) && num42 < 100);
+
+							if (vector17 != Vector2.zero)
+							{
+								BMLog("Spawning Litter");
+
+								if (GC.percentChance(5))
+									//	GC.spawnerMain.spawnObjectReal(vector17, null, "FlamingBarrel");
+									GC.spawnerMain.SpawnItem(vector17, vItem.BananaPeel);
+								else if (GC.percentChance(50))
+									GC.spawnerMain.SpawnWreckagePileWall(vector17, vWall.Wood, false);
+								else
+									GC.spawnerMain.SpawnWreckagePileObject(vector17, vObject.Window, false);
+							}
+								
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - Broken Windows
+					bool hasBrokenWindows = false;
+
+					if (GC.levelTheme == 0 || GC.levelTheme == 1 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+						hasBrokenWindows = true;
+
+					if (GC.customLevel)
+						hasBrokenWindows = __instance.customLevel.levelFeatures.Contains(cLevelFeature.BrokenWindows);
+
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
+						hasBrokenWindows = false;
+					else if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasBrokenWindows = true;
+
+					if (true)
+					{
+						BMLog("Breaking Windows");
+
+						foreach (ObjectReal objReal in GC.objectRealList)
+							if (objReal is Window && GC.percentChance(100))
+							{
+								Window window = (Window)objReal;
+
+								window.SpecialWindowDestroy(window);
+							}
+					}
+
 					#endregion
 					#region Vendor Carts
 					bool hasVendorCarts = false;
@@ -3388,11 +3491,10 @@ namespace BunnyMod.Content
 						}
 					}
 					#endregion
-					#region Fountains
-					if (GC.levelTheme != 2 && GC.challenges.Contains("MixedUpLevels"))
-						GC.percentChance(33);
+					#region Mod - Fountains
+					bool hasFountains = false;
 
-					if (GC.challenges.Contains(cChallenge.FountainTest))
+					if (true)
 					{
 						Debug.Log("Loading Fountains");
 						int numObjects = 1;

@@ -334,6 +334,13 @@ namespace BunnyMod.Content
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
             CantEatMeat = "Vegetarian";
     }
+    public static class cLevelFeature // Custom Level Features
+	{
+        public const string
+            BrokenWindows = "BrokenWindows",
+            Fountains = "Fountains",
+            Litter = "Litter";
+	}
     public static class cObject
 	{
         public static List<string> HideableSBD = new List<string>()

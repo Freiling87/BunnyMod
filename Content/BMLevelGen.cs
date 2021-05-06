@@ -1335,7 +1335,19 @@ namespace BunnyMod.Content
 							{
 								vector = GC.tileInfo.FindRandLocationGeneral(0.64f);
 
-								if (findingFactoryLake && (((vector.x <= factoryChunk.chunkEdgeE || vector.x >= factoryChunk.chunkEdgeE + __instance.chunkSize) && (vector.x >= factoryChunk.chunkEdgeW || vector.x <= factoryChunk.chunkEdgeW - __instance.chunkSize)) || vector.y <= factoryChunk.chunkEdgeS - __instance.chunkSize || vector.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) && (((vector.y <= factoryChunk.chunkEdgeN || vector.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) && (vector.y >= factoryChunk.chunkEdgeS || vector.y <= factoryChunk.chunkEdgeS - __instance.chunkSize)) || vector.x <= factoryChunk.chunkEdgeW - __instance.chunkSize || vector.x >= factoryChunk.chunkEdgeE + __instance.chunkSize))
+								if (findingFactoryLake && 
+									(((vector.x <= factoryChunk.chunkEdgeE || 
+									vector.x >= factoryChunk.chunkEdgeE + __instance.chunkSize) && 
+									(vector.x >= factoryChunk.chunkEdgeW || 
+									vector.x <= factoryChunk.chunkEdgeW - __instance.chunkSize)) || 
+									vector.y <= factoryChunk.chunkEdgeS - __instance.chunkSize || 
+									vector.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) && 
+									(((vector.y <= factoryChunk.chunkEdgeN || 
+									vector.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) && 
+									(vector.y >= factoryChunk.chunkEdgeS || 
+									vector.y <= factoryChunk.chunkEdgeS - __instance.chunkSize)) || 
+									vector.x <= factoryChunk.chunkEdgeW - __instance.chunkSize || 
+									vector.x >= factoryChunk.chunkEdgeE + __instance.chunkSize))
 									vector = Vector2.zero;
 
 								num++;
@@ -2200,7 +2212,8 @@ namespace BunnyMod.Content
 
 							if (spotCandidate != Vector2.zero)
 							{
-								GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
+								//GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
+								GC.tileInfo.BuildWallTileAtPosition(spotCandidate.x, spotCandidate.y, wallMaterialType.Normal);
 								TileData spotTileData = GC.tileInfo.GetTileData(spotCandidate);
 								spawnedCount.Add(spotTileData.chunkID);
 								Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);

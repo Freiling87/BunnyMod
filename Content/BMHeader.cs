@@ -332,7 +332,8 @@ namespace BunnyMod.Content
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
             SlotMachineJackpot_4 = "SlotMachineJackpot_4",
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
-            CantEatMeat = "Vegetarian";
+            CantEatMeat = "Vegetarian",
+            ThreatenAnnoyed = "ThreatenAnnoyed";
     }
     public static class cLevelFeature // Custom Level Features
 	{

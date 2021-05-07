@@ -1580,7 +1580,7 @@ namespace BunnyMod.Content
 			bool flag8 = false;
 			bool flag9 = false;
 
-			#region Section 1
+			#region Setup
 			if (damagerObject.isAgent)
 			{
 				damagerAgent = damagerObject.GetComponent<Agent>();
@@ -1981,7 +1981,7 @@ namespace BunnyMod.Content
 					flag6 = false;
 			}
 
-			#region Section 2
+			#region Hit types
 			if (type == "Melee")
 			{
 				if (damagerAgent.statusEffects.hasTrait("Strength"))
@@ -1996,13 +1996,12 @@ namespace BunnyMod.Content
 				if (damagerAgent.statusEffects.hasTrait("Withdrawal"))
 					dmg *= 0.75f;
 
-				#region Mod
+				#region Blessed / Infernal Strikes
 				if (instanceIsAgent)
 				{
 					BMLog("\tdamagedAgent Name: " + damagedAgent.agentName);
 					string invItemName = damagerAgent.inventory.equippedWeapon.invItemName;
 
-					// Spectral Strikes & Infernal Strikes
 					if (vAgent.Undead.Contains(damagedAgent.agentName) || vAgent.Evil.Contains(damagedAgent.agentName))
 					{
 						if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && invItemName == vItem.Fist)
@@ -2156,11 +2155,9 @@ namespace BunnyMod.Content
 							doubleTap = true;
 						}
 
-						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) &&
-							bullet.cameFromWeapon == vItem.Revolver &&
-							(!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && 
-							distance >= 4.00f ||
-							distance >= 8.00f)
+						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) && bullet.cameFromWeapon == vItem.Revolver &&
+							(((!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && distance >= 4.00f) ||
+							distance >= 8.00f))
 						{
 							headShot = true;
 							sniped = true;

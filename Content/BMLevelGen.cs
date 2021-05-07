@@ -2042,6 +2042,13 @@ namespace BunnyMod.Content
 							if (vector7 != Vector2.zero)
 							{
 								GC.spawnerMain.spawnObjectReal(vector7, null, "TrashCan").ShiftTowardWalls();
+
+								if (GC.percentChance(1)) // Mod
+									GC.spawnerMain.SpawnItem(new Vector2(vector7.x + Random.RandomRange(-0.32f, 0.32f), vector7.y+Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
+
+								while (GC.percentChance(66))
+									GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector7.x + Random.RandomRange(-0.48f, 0.48f), vector7.y + Random.Range(-0.48f, 0.48f)), cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
+
 								TileData tileData5 = GC.tileInfo.GetTileData(vector7);
 								spawnedInChunks.Add(tileData5.chunkID);
 								bool flag8 = true;
@@ -2278,7 +2285,8 @@ namespace BunnyMod.Content
 
 									if (isSpotAcceptable && leftOfSpot != Vector2.zero)
 									{
-										GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
+										//GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
+										GC.tileInfo.BuildWallTileAtPosition(spotCandidate.x, spotCandidate.y, wallMaterialType.Normal);
 										itemCountIterator = numObjects;
 										numObjects = itemCountIterator + 1;
 									}
@@ -2613,17 +2621,7 @@ namespace BunnyMod.Content
 							while ((vector17 == Vector2.zero || Vector2.Distance(vector17, GC.playerAgent.tr.position) < 5f) && num42 < 100);
 
 							if (vector17 != Vector2.zero)
-							{
-								BMLog("Spawning Litter");
-
-								if (GC.percentChance(5))
-									//	GC.spawnerMain.spawnObjectReal(vector17, null, "FlamingBarrel");
-									GC.spawnerMain.SpawnItem(vector17, vItem.BananaPeel);
-								else if (GC.percentChance(50))
-									GC.spawnerMain.SpawnWreckagePileWall(vector17, vWall.Wood, false);
-								else
-									GC.spawnerMain.SpawnWreckagePileObject(vector17, vObject.Window, false);
-							}
+								GC.spawnerMain.SpawnWreckagePileObject(vector17, GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter), false);
 								
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -2650,19 +2648,20 @@ namespace BunnyMod.Content
 					else if (GC.challenges.Contains(cChallenge.AnCapistan))
 						hasBrokenWindows = true;
 
-					if (true)
+					if (hasBrokenWindows) 
 					{
 						BMLog("Breaking Windows");
 
+						List<Window> breakUs = new List<Window>();
+
 						foreach (ObjectReal objReal in GC.objectRealList)
-							if (objReal is Window && GC.percentChance(100))
-							{
-								Window window = (Window)objReal;
+							if (objReal is Window && GC.percentChance(2))
+								breakUs.Add((Window)objReal);
 
-								window.SpecialWindowDestroy(window);
-							}
+						if (breakUs.Count > 0)
+							foreach (Window window in breakUs)
+								window.DamagedObject(window, 0f);
 					}
-
 					#endregion
 					#region Vendor Carts
 					bool hasVendorCarts = false;
@@ -3366,6 +3365,9 @@ namespace BunnyMod.Content
 							if (vector17 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector17, null, "FlamingBarrel");
 
+							while (GC.percentChance(66))
+								GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector17.x + Random.RandomRange(-0.16f, 0.16f), vector17.y + Random.Range(-0.16f, 0.16f)), cObject.WreckageOrganic.RandomElement(), GC.percentChance(95));
+
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
 								yield return null;
@@ -3480,6 +3482,9 @@ namespace BunnyMod.Content
 							if (vector19 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector19, null, "Barbecue");
 
+							while (GC.percentChance(66))
+								GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector19.x + Random.RandomRange(-0.32f, 0.32f), vector19.y + Random.Range(-0.32f, 0.32f)), cObject.WreckageOrganic.RandomElement(), GC.percentChance(95));
+
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
 								yield return null;
@@ -3494,7 +3499,7 @@ namespace BunnyMod.Content
 					#region Mod - Fountains
 					bool hasFountains = false;
 
-					if (true)
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Fountains))
 					{
 						Debug.Log("Loading Fountains");
 						int numObjects = 1;
@@ -3575,6 +3580,9 @@ namespace BunnyMod.Content
 							if (vector21 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector21, null, "Tree");
 
+							while (GC.percentChance(75))
+								GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector21.x + Random.RandomRange(-0.64f, 0.64f), vector21.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
 								yield return null;
@@ -3629,6 +3637,9 @@ namespace BunnyMod.Content
 							if (vector22 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector22, null, "Boulder");
 
+							while (GC.percentChance(75))
+								GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector22.x + Random.RandomRange(-0.64f, 0.64f), vector22.y + Random.Range(-0.64f, 0.64f)), vObject.FlamingBarrel, false);
+
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
 								yield return null;
@@ -3655,6 +3666,9 @@ namespace BunnyMod.Content
 
 							if (vector23 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector23, null, "BoulderSmall");
+
+							while (GC.percentChance(66))
+								GC.spawnerMain.SpawnWreckagePileObject(new Vector2(vector23.x + Random.RandomRange(-0.32f, 0.32f), vector23.y + Random.Range(-0.32f, 0.32f)), vObject.FlamingBarrel, false);
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -3735,7 +3749,12 @@ namespace BunnyMod.Content
 
 						for (int num53 = 0; num53 < GC.objectRealList.Count; num53++)
 							if (GC.objectRealList[num53].objectName == "Bush")
+							{
+								while (GC.percentChance(66))
+									GC.spawnerMain.SpawnWreckagePileObject(new Vector2(GC.objectRealList[num53].curPosition.x + Random.RandomRange(-0.64f, 0.64f), GC.objectRealList[num53].curPosition.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+
 								bushList.Add((Bush)GC.objectRealList[num53]);
+							}
 
 						for (int i = 0; i < bigTries; i = num2 + 1)
 						{

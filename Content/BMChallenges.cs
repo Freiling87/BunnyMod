@@ -94,6 +94,28 @@ namespace BunnyMod.Content
 			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);
 			SpelunkyDory.IsActive = false;
 			#endregion
+			#region Level Features
+			CustomMutator BadNeighborhoods = RogueLibs.CreateCustomMutator(cChallenge.BadNeighborhoods, true,
+				new CustomNameInfo("Features: Bad Neighborhoods"),
+				new CustomNameInfo("This place sure went to shit, didn't it?\n\n- Small chance for any given window to start out broken."));
+			BadNeighborhoods.Available = true;
+			BadNeighborhoods.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.MACITS });
+			BadNeighborhoods.IsActive = false;
+
+			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
+				new CustomNameInfo("Features: Litter-aly the Worst"),
+				new CustomNameInfo("Civic Pride must have went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
+			LitteralyTheWorst.Available = true;
+			LitteralyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
+			LitteralyTheWorst.IsActive = false;
+
+			CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
+				new CustomNameInfo("Features: Floral-er Flora"),
+				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes and treets. Looks nice.\n- May be a performance strain for plebs."));
+			FloralerFlora.Available = true;
+			FloralerFlora.Conflicting.AddRange(new string[] { });
+			FloralerFlora.IsActive = false;
+			#endregion
 			#region Knockback
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
 				new CustomNameInfo("Knockback: Boring Physics"),

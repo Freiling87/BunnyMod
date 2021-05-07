@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Light2D;
 using RogueLibsCore;
 using System;
 using System.Collections;
@@ -156,7 +157,7 @@ namespace BunnyMod.Content
         }
         #endregion
 
-        #region Base Classes
+        #region Base Classes & Spawners
         #region ObjectReal
         public void ObjectReal_00()
         {
@@ -640,12 +641,127 @@ namespace BunnyMod.Content
             else
                 return false;
         }
-        #endregion
-        #endregion
+		#endregion
+		#region SpawnerMain
+        public void SpawnerMain_00()
+		{
+            Type t = typeof(SpawnerMain);
+            Type g = GetType();
 
-        #region Objects
-        #region Alarm Button
-        public void AlarmButton_00()
+            Postfix(t, "spawnObjectReal", g, "SpawnerMain_spawnObjectReal", new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
+		}
+        public static void SpawnerMain_spawnObjectReal(Vector3 objectPos, PlayfieldObject objectSource, string objectType, string myDir, WorldDataObject worldDataObjects, int worldDataElementPosition, SpawnerMain __instance) // Postfix
+		{
+            // LitterallyTheWorst
+            // FloralerFlora
+
+            BMLog("SpawnerMain_spawnObjectReal");
+            BMLog("\tobjectType: " + objectType);
+
+            float offsetSize = 9999f;
+            string particleType = null;
+            int iteratorChance = 0;
+            int a = GC.levelTheme; // 0 = Home Base, 5 = Mayor Village
+            Vector2 loc = objectPos;
+            int chance = 100;
+
+            if (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode)
+                switch (objectType)
+                {
+                    case vObject.Bush:
+                        while (GC.percentChance(chance))
+                        {
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            chance -= 20;
+                        }
+
+                        break;
+                    case vObject.KillerPlant:
+                        while (GC.percentChance(chance))
+                        {
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            chance -= 20;
+                        }
+
+                        break;
+                    case vObject.Tree:
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            chance -= 10;
+                        }
+
+                        break;
+                }
+
+            if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || BMHeader.debugMode)
+                switch (objectType)
+                {
+                    case vObject.ATMMachine:
+                        while (GC.percentChance(chance))
+                        {
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.Lamp, false);
+                            chance -= 10;
+                        }
+
+                        break;
+                    case vObject.Barbecue:
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, true);
+                            chance -= 20;
+                        }
+
+                        break;
+                    case vObject.Boulder:
+                        while (GC.percentChance(1))
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vItem.Rock);
+
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.FlamingBarrel, false);
+                            chance -= 10;
+                        }
+
+                        break;
+                    case vObject.BoulderSmall:
+                        while (GC.percentChance(1))
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.Rock);
+
+                        while (GC.percentChance(chance))
+                        {
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.FlamingBarrel, false);
+                            chance -= 10;
+                        }
+
+                        break;
+                    case vObject.FlamingBarrel:
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vObject.Bush, true);
+                            chance -= 20; 
+                        }
+
+                        break;
+                    case vObject.TrashCan:
+                        while (GC.percentChance(1))
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
+
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
+                            chance -= 10;
+                        }
+
+                        break;
+				}
+		}
+		#endregion
+		#endregion
+
+		#region Objects
+		#region Alarm Button
+		public void AlarmButton_00()
         {
             Prefix(typeof(AlarmButton), "DetermineButtons", GetType(), "AlarmButton_DetermineButtons", new Type[0] { });
             Prefix(typeof(AlarmButton), "DoLockdown", GetType(), "AlarmButton_DoLockdown", new Type[1] { typeof(bool) });

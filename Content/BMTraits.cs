@@ -39,53 +39,53 @@ namespace BunnyMod.Content
             DebugTrait.CostInCharacterCreation = 0;
             DebugTrait.IsActive = true;
             #region Combat - Melee
-            CustomTrait BlessedStrikes = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes, true,
-                new CustomNameInfo("000: Blessed Strikes"),
-                new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Melee damage to all Undead increased 50%"));
-            BlessedStrikes.Available = true;
-            BlessedStrikes.AvailableInCharacterCreation = true;
-            BlessedStrikes.CanRemove = false;
-            BlessedStrikes.CanSwap = true;
-            BlessedStrikes.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
-            BlessedStrikes.CostInCharacterCreation = 2;
-            BlessedStrikes.IsActive = true;
-            BlessedStrikes.Upgrade = cTrait.BlessedStrikes_2;
+            //CustomTrait BlessedStrikes = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes, true,
+            //    new CustomNameInfo("000: Blessed Strikes"),
+            //    new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Melee damage to all Undead increased 50%"));
+            //BlessedStrikes.Available = true;
+            //BlessedStrikes.AvailableInCharacterCreation = true;
+            //BlessedStrikes.CanRemove = false;
+            //BlessedStrikes.CanSwap = true;
+            //BlessedStrikes.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
+            //BlessedStrikes.CostInCharacterCreation = 2;
+            //BlessedStrikes.IsActive = true;
+            //BlessedStrikes.Upgrade = cTrait.BlessedStrikes_2;
 
-            CustomTrait BlessedStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes_2, true,
-                new CustomNameInfo("000: Blessed Strikes +"),
-                new CustomNameInfo("- You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all Undead increased 100%"));
-            BlessedStrikes_2.Available = true;
-            BlessedStrikes_2.AvailableInCharacterCreation = true;
-            BlessedStrikes_2.CanRemove = false;
-            BlessedStrikes_2.CanSwap = true;
-            BlessedStrikes_2.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
-            BlessedStrikes_2.CostInCharacterCreation = 5;
-            BlessedStrikes_2.IsActive = true;
-            BlessedStrikes_2.Upgrade = null;
+            //CustomTrait BlessedStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes_2, true,
+            //    new CustomNameInfo("000: Blessed Strikes +"),
+            //    new CustomNameInfo("- You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all Undead increased 100%"));
+            //BlessedStrikes_2.Available = true;
+            //BlessedStrikes_2.AvailableInCharacterCreation = true;
+            //BlessedStrikes_2.CanRemove = false;
+            //BlessedStrikes_2.CanSwap = true;
+            //BlessedStrikes_2.Conflicting.AddRange(new string[] { cTrait.InfernalStrikes, cTrait.InfernalStrikes_2 });
+            //BlessedStrikes_2.CostInCharacterCreation = 5;
+            //BlessedStrikes_2.IsActive = true;
+            //BlessedStrikes_2.Upgrade = null;
 
-            CustomTrait InfernalStrikes = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes, true,
-                new CustomNameInfo("000: Infernal Strikes"),
-                new CustomNameInfo("-You can hit Ghosts with your Unarmed attacks\n- Melee damage to all non-Undead increased 25%"));
-            InfernalStrikes.Available = true;
-            InfernalStrikes.AvailableInCharacterCreation = true;
-            InfernalStrikes.CanRemove = false;
-            InfernalStrikes.CanSwap = true;
-            InfernalStrikes.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
-            InfernalStrikes.CostInCharacterCreation = 6;
-            InfernalStrikes.IsActive = true;
-            InfernalStrikes.Upgrade = cTrait.InfernalStrikes_2;
+            //CustomTrait InfernalStrikes = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes, true,
+            //    new CustomNameInfo("000: Infernal Strikes"),
+            //    new CustomNameInfo("-You can hit Ghosts with your Unarmed attacks\n- Melee damage to all non-Undead increased 25%"));
+            //InfernalStrikes.Available = true;
+            //InfernalStrikes.AvailableInCharacterCreation = true;
+            //InfernalStrikes.CanRemove = false;
+            //InfernalStrikes.CanSwap = true;
+            //InfernalStrikes.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
+            //InfernalStrikes.CostInCharacterCreation = 6;
+            //InfernalStrikes.IsActive = true;
+            //InfernalStrikes.Upgrade = cTrait.InfernalStrikes_2;
 
-            CustomTrait InfernalStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes_2, true,
-                new CustomNameInfo("000: Infernal Strikes +"),
-                new CustomNameInfo("-You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all non-Undead increased 50%"));
-            InfernalStrikes_2.Available = true;
-            InfernalStrikes_2.AvailableInCharacterCreation = true;
-            InfernalStrikes_2.CanRemove = false;
-            InfernalStrikes_2.CanSwap = true;
-            InfernalStrikes_2.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
-            InfernalStrikes_2.CostInCharacterCreation = 12;
-            InfernalStrikes_2.IsActive = true;
-            InfernalStrikes_2.Upgrade = null;
+            //CustomTrait InfernalStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes_2, true,
+            //    new CustomNameInfo("000: Infernal Strikes +"),
+            //    new CustomNameInfo("-You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all non-Undead increased 50%"));
+            //InfernalStrikes_2.Available = true;
+            //InfernalStrikes_2.AvailableInCharacterCreation = true;
+            //InfernalStrikes_2.CanRemove = false;
+            //InfernalStrikes_2.CanSwap = true;
+            //InfernalStrikes_2.Conflicting.AddRange(new string[] { cTrait.BlessedStrikes, cTrait.BlessedStrikes_2 });
+            //InfernalStrikes_2.CostInCharacterCreation = 12;
+            //InfernalStrikes_2.IsActive = true;
+            //InfernalStrikes_2.Upgrade = null;
             #endregion
             #region Combat - Ranged
             CustomTrait Ballistician = RogueLibs.CreateCustomTrait(cTrait.Ballistician, true,

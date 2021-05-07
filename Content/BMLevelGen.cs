@@ -2213,7 +2213,6 @@ namespace BunnyMod.Content
 
 							if (spotCandidate != Vector2.zero)
 							{
-								//GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
 								GC.tileInfo.BuildWallTileAtPosition(spotCandidate.x, spotCandidate.y, wallMaterialType.Normal);
 								TileData spotTileData = GC.tileInfo.GetTileData(spotCandidate);
 								spawnedCount.Add(spotTileData.chunkID);
@@ -2279,7 +2278,6 @@ namespace BunnyMod.Content
 
 									if (isSpotAcceptable && leftOfSpot != Vector2.zero)
 									{
-										//GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.Altar).ShiftTowardWalls(); // Using Altars to test this.
 										GC.tileInfo.BuildWallTileAtPosition(spotCandidate.x, spotCandidate.y, wallMaterialType.Normal);
 										itemCountIterator = numObjects;
 										numObjects = itemCountIterator + 1;

@@ -20,6 +20,8 @@ namespace BunnyMod.Content
 		public const string pluginName = "Bunny Mod";
 		public const string pluginVersion = "1.4.0";
 
+        public static bool debugMode = true;
+
 		public static ManualLogSource ConsoleMessage;
 		public static GameController GC => GameController.gameController;
 		public static BaseUnityPlugin MainInstance;
@@ -268,15 +270,15 @@ namespace BunnyMod.Content
     public static class cDialogue // Custom Dialogue
 	{
         public const string
-            CantUseLoud = "AfraidOfLoudNoises",
-            CantUseLoud_2 = "AfraidOfLoudNoises2",
-            CantEatNonvegetarian = "Carnivore",
-            CantUseDrug = "DAREdevil",
-            CantUseSharp = "DrawNoBlood",
-            CantUseSharp_2 = "DrawNoBlood2",
-            CantWearArmor = "FatassCantWear",
-            CantWearHeadgear = "FatHeadCantWear",
-            CantDrinkAlcohol = "FriendOfBill",
+            CantUseLoud = "CantUseLoud",
+            CantUseLoud_2 = "CantUseLoud_2",
+            CantEatNonvegetarian = "CantEatNonvegetarian",
+            CantUseDrug = "CantUseDrug",
+            CantUseSharp = "CantUseSharp",
+            CantUseSharp_2 = "CantUseSharp_2",
+            CantWearArmor = "CantWearArmor",
+            CantWearHeadgear = "CantWearHeadgear",
+            CantDrinkAlcohol = "CantDrinkAlcohol",
             MachineBusy = "MachineBusy",
             MSA_CD_CantDo1 = "MSA_CD_CantDo1",
             MSA_CD_CantDo2 = "MSA_CD_CantDo2",
@@ -326,7 +328,7 @@ namespace BunnyMod.Content
             MSA_TB_Recharge2 = "MSA_TB_Recharge2",
             MSA_TB_Recharge3 = "MSA_TB_Recharge3",
             MSA_TB_Recharge4 = "MSA_TB_Recharge4",
-            CantUseBlunt = "SharpOnly",
+            CantUseBlunt = "CantUseBlunt",
             SlotMachineJackpot_1 = "SlotMachineJackpot_1",
             SlotMachineJackpot_2 = "SlotMachineJackpot_2",
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
@@ -352,6 +354,19 @@ namespace BunnyMod.Content
             vObject.PoolTable,
             vObject.TableBig,
             vObject.TrashCan
+        };
+        public static List<string> WreckageMisc = new List<string>()
+        {
+            vObject.BarStool,
+            vObject.Lamp,
+            vObject.Shelf,
+        };
+        public static List<string> WreckageOrganic = new List<string>() // All should have gibs with visible burn
+        {
+            vObject.Chair,
+            vObject.Shelf,
+            vObject.Table,
+            vObject.TableBig,
         };
 	}
     public static class cSkillPoints // Custom Skill Points

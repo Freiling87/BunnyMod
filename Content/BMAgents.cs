@@ -752,7 +752,12 @@ namespace BunnyMod.Content
 					if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
 						___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant_2) ||
 						(___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
-						newRel = vRelationship.Annoyed;
+					{
+						if (roll <= 5)
+							newRel = vRelationship.Hateful;
+						else
+							newRel = vRelationship.Annoyed;
+					}
 					else if (___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.Criminal.Contains(otherAgent.agentName))
 						newRel = vRelationship.Friendly;
 					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
@@ -778,16 +783,10 @@ namespace BunnyMod.Content
 
 					roll = Random.Range(0, 100);
 
-					if (___agent.statusEffects.hasTrait(cTrait.Domineering))
-					{
-						if (roll <= 5)
-							newRel = vRelationship.Submissive;
-					}
-					else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2))
-					{
-						if (roll <= 10)
-							newRel = vRelationship.Submissive;
-					}
+					if (___agent.statusEffects.hasTrait(cTrait.Domineering) && roll <= 5)
+						newRel = vRelationship.Submissive;
+					else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2) && roll <= 10)
+						newRel = vRelationship.Submissive;
 
 					if (otherAgent.agentName == vAgent.ResistanceLeader)
 						newRel = vRelationship.Aligned;

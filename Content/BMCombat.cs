@@ -89,8 +89,8 @@ namespace BunnyMod.Content
 					__instance.speed = Mathf.Min(65, __instance.speed * 3);
 				}
 				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-					__instance.speed = 40;
-				// Lowest bad number: 45
+					__instance.speed = 37;
+				// Lowest bad number: 40? Not sure, extreme range
 				// Highest good number: 35
 			}
 		}

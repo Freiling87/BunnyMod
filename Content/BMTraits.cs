@@ -662,7 +662,7 @@ namespace BunnyMod.Content
             Priors.CanRemove = true;
             Priors.CanSwap = true;
             Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
-            Priors.CostInCharacterCreation = -1;
+            Priors.CostInCharacterCreation = -2;
             Priors.IsActive = true;
             Priors.Upgrade = null;
 

@@ -184,7 +184,7 @@ namespace BunnyMod.Content
                 (fist || !agent.statusEffects.hasTrait(vTrait.Harmless)) && 
                 (fist || !agent.statusEffects.hasTrait(vTrait.NearHarmless)) &&
                 (!vItem.piercing.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.DrawNoBlood)) &&
-                (!vItem.loud.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises)) ) || 
+                (!vItem.loud.Contains(item.invItemName) || item.contents.Contains(vItem.Silencer) || !agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises)) ) || 
                 (agent.isPlayer != 0 && !agent.localPlayer);
 
             return false;

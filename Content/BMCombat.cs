@@ -89,9 +89,9 @@ namespace BunnyMod.Content
 					__instance.speed = Mathf.Min(65, __instance.speed * 3);
 				}
 				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-					__instance.speed = 35;
+					__instance.speed = 40;
 				// Lowest bad number: 45
-				// Highest good number: 30
+				// Highest good number: 35
 			}
 		}
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
@@ -1996,25 +1996,30 @@ namespace BunnyMod.Content
 				if (damagerAgent.statusEffects.hasTrait("Withdrawal"))
 					dmg *= 0.75f;
 
-				BMLog("\tdamagedAgent Name: " + damagedAgent.agentName);
-				string invItemName = damagerAgent.inventory.equippedWeapon.invItemName;
+				#region Mod
+				if (instanceIsAgent)
+				{
+					BMLog("\tdamagedAgent Name: " + damagedAgent.agentName);
+					string invItemName = damagerAgent.inventory.equippedWeapon.invItemName;
 
-				// Spectral Strikes & Infernal Strikes
-				if (vAgent.Undead.Contains(damagedAgent.agentName) || vAgent.Evil.Contains(damagedAgent.agentName))
-				{
-					if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && invItemName == vItem.Fist)
-						dmg *= 1.50f;
-					else if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.BaseballBat)
-						dmg *= 2.00f;
+					// Spectral Strikes & Infernal Strikes
+					if (vAgent.Undead.Contains(damagedAgent.agentName) || vAgent.Evil.Contains(damagedAgent.agentName))
+					{
+						if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes) && invItemName == vItem.Fist)
+							dmg *= 1.50f;
+						else if (damagerAgent.statusEffects.hasTrait(cTrait.BlessedStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.BaseballBat)
+							dmg *= 2.00f;
+					}
+					else if (!vAgent.Nonhuman.Contains(damagedAgent.agentName)) // Non-Undead, non-Robot
+					{
+						if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes) && invItemName == vItem.Fist)
+							dmg *= 1.25f;
+						else if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.Axe)
+							dmg *= 1.50f;
+					}
 				}
-				else if (!vAgent.Nonhuman.Contains(damagedAgent.agentName)) // Non-Undead, non-Robot
-				{
-					if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes) && invItemName == vItem.Fist)
-						dmg *= 1.25f;
-					else if (damagerAgent.statusEffects.hasTrait(cTrait.InfernalStrikes_2) && invItemName == vItem.Fist || invItemName == vItem.Axe)
-						dmg *= 1.50f;
-				}
-			
+				#endregion
+
 				if (damagerAgent.melee.specialLunge)
 				{
 					if (damagerAgent.agentName == "WerewolfB")

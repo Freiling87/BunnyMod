@@ -31,7 +31,7 @@ namespace BunnyMod.Content
 		public static void InitializeNames()
 		{
 			string t = vNameType.Dialogue;
-			CustomName VeiledThreats = RogueLibs.CreateCustomName(cDialogue.VeiledThreats, t, new CustomNameInfo("Did you just... threaten me?"));
+			CustomName VeiledThreats = RogueLibs.CreateCustomName(cDialogue.ThreatenAnnoyed, t, new CustomNameInfo("Did you just... threaten me?"));
 		}
 
 		#region Custom
@@ -306,7 +306,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -352,7 +352,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 				agent.oma.didAsk = true;
@@ -404,7 +404,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 3);
 
@@ -459,7 +459,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -486,7 +486,7 @@ namespace BunnyMod.Content
 					if (!agent.gc.percentChance(myChance))
 					{
 						agent.StopInteraction();
-						agent.SayDialogue(cDialogue.VeiledThreats, true);
+						agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 						agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 						agent.relationships.SetRelHate(interactingAgent, 2);
 						agent.oma.didAsk = true;
@@ -563,7 +563,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -616,7 +616,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -656,7 +656,7 @@ namespace BunnyMod.Content
 					return false;
 				}
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -706,7 +706,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.VeiledThreats, true);
+				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 

@@ -40,7 +40,7 @@ namespace BunnyMod.Content
             DebugTrait.IsActive = true;
             #region Combat - Melee
             CustomTrait BlessedStrikes = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes, true,
-                new CustomNameInfo("000: Spectral Strikes"),
+                new CustomNameInfo("000: Blessed Strikes"),
                 new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Melee damage to all Undead increased 50%"));
             BlessedStrikes.Available = true;
             BlessedStrikes.AvailableInCharacterCreation = true;
@@ -52,7 +52,7 @@ namespace BunnyMod.Content
             BlessedStrikes.Upgrade = cTrait.BlessedStrikes_2;
 
             CustomTrait BlessedStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes_2, true,
-                new CustomNameInfo("000: Spectral Strikes +"),
+                new CustomNameInfo("000: Blessed Strikes +"),
                 new CustomNameInfo("- You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all Undead increased 100%"));
             BlessedStrikes_2.Available = true;
             BlessedStrikes_2.AvailableInCharacterCreation = true;
@@ -76,8 +76,8 @@ namespace BunnyMod.Content
             InfernalStrikes.Upgrade = cTrait.InfernalStrikes_2;
 
             CustomTrait InfernalStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes_2, true,
-                new CustomNameInfo("000: Infernal Strikes"),
-                new CustomNameInfo("-You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all non-Undead increased 25%"));
+                new CustomNameInfo("000: Infernal Strikes +"),
+                new CustomNameInfo("-You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all non-Undead increased 50%"));
             InfernalStrikes_2.Available = true;
             InfernalStrikes_2.AvailableInCharacterCreation = true;
             InfernalStrikes_2.CanRemove = false;

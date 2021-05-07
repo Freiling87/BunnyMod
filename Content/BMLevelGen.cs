@@ -3476,7 +3476,10 @@ namespace BunnyMod.Content
 					#region Mod - Fountains
 					bool hasFountains = false;
 
-					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Fountains))
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Fountains) || GC.challenges.Contains(cChallenge.BroughtBackFountain))
+						hasFountains = true;
+
+					if (hasFountains || BMHeader.debugMode)
 					{
 						Debug.Log("Loading Fountains");
 						int numObjects = 1;

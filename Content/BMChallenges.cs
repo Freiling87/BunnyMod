@@ -30,20 +30,6 @@ namespace BunnyMod.Content
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
 			ArcologyEcology.IsActive = false;
 
-			CustomMutator FountainTest = RogueLibs.CreateCustomMutator(cChallenge.FountainTest, true,
-				new CustomNameInfo("000: FountainTest"),
-				new CustomNameInfo("Test"));
-			FountainTest.Available = true;
-			FountainTest.Conflicting.AddRange(new string[] { });
-			FountainTest.IsActive = false;
-
-			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
-				new CustomNameInfo("Skyway District"),
-				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be."));
-			SkywayDistrict.Available = true;
-			SkywayDistrict.Conflicting.AddRange(new string[] { });
-			SkywayDistrict.IsActive = false;
-
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
 				new CustomNameInfo("000: FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
@@ -97,10 +83,17 @@ namespace BunnyMod.Content
 			#region Level Features
 			CustomMutator BadNeighborhoods = RogueLibs.CreateCustomMutator(cChallenge.BadNeighborhoods, true,
 				new CustomNameInfo("Features: Bad Neighborhoods"),
-				new CustomNameInfo("This place sure went to shit, didn't it?\n\n- Small chance for any given window to start out broken."));
+				new CustomNameInfo("This place sure went to shit, didn't it?\n\n- Small chance for any given window to start out broken"));
 			BadNeighborhoods.Available = true;
 			BadNeighborhoods.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.MACITS });
 			BadNeighborhoods.IsActive = false;
+
+			CustomMutator BroughtBackFountain = RogueLibs.CreateCustomMutator(cChallenge.BroughtBackFountain, true,
+				new CustomNameInfo("000: FountainTest"),
+				new CustomNameInfo("\"He could smell Jack - the intensely familiar odor of cigarettes, musky sweat, and a faint sweetness like grass, and with it the rushing cold of the fountain.\"\n\n- Adds Fountains\n- Purely aesthetic for now"));
+			BroughtBackFountain.Available = true;
+			BroughtBackFountain.Conflicting.AddRange(new string[] { });
+			BroughtBackFountain.IsActive = false;
 
 			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
 				new CustomNameInfo("Features: Litter-aly the Worst"),
@@ -111,10 +104,17 @@ namespace BunnyMod.Content
 
 			CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
 				new CustomNameInfo("Features: Floral-er Flora"),
-				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes and treets. Looks nice.\n- May be a performance strain for plebs."));
+				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes and treets. Looks nice.\n- May be a performance strain for plebs"));
 			FloralerFlora.Available = true;
 			FloralerFlora.Conflicting.AddRange(new string[] { });
 			FloralerFlora.IsActive = false;
+
+			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
+				new CustomNameInfo("Skyway District"),
+				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be"));
+			SkywayDistrict.Available = true;
+			SkywayDistrict.Conflicting.AddRange(new string[] { });
+			SkywayDistrict.IsActive = false;
 			#endregion
 			#region Knockback
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,

@@ -169,7 +169,7 @@ namespace BunnyMod.Content
             Claustropolis = "Claustropolis",
             DoublePlyRewards = "DoublePlyRewards",
             FloralerFlora = "FloralerFlora",
-            FountainTest = "FountainTest",
+            BroughtBackFountain = "FountainTest",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
             HomesickAndTired = "HomesickandTired",

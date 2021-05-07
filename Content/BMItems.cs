@@ -35,7 +35,7 @@ namespace BunnyMod.Content
         {
 			string t;
 
-			t = vNameType.StatusEffect;
+			t = vNameType.Dialogue;
             _ = RogueLibs.CreateCustomName(cDialogue.CantDrinkAlcohol, t, new CustomNameInfo("Today, I choose not to drink."));
             _ = RogueLibs.CreateCustomName(cDialogue.CantEatMeat, t, new CustomNameInfo("Meat is murder!"));
             _ = RogueLibs.CreateCustomName(cDialogue.CantEatNonvegetarian, t, new CustomNameInfo("No! Me want meat!"));

@@ -89,18 +89,11 @@ namespace BunnyMod.Content
 			BadNeighborhoods.IsActive = false;
 
 			CustomMutator BroughtBackFountain = RogueLibs.CreateCustomMutator(cChallenge.BroughtBackFountain, true,
-				new CustomNameInfo("000: FountainTest"),
+				new CustomNameInfo("Features: FountainTest"),
 				new CustomNameInfo("\"He could smell Jack - the intensely familiar odor of cigarettes, musky sweat, and a faint sweetness like grass, and with it the rushing cold of the fountain.\"\n\n- Adds Fountains\n- Purely aesthetic for now"));
 			BroughtBackFountain.Available = true;
 			BroughtBackFountain.Conflicting.AddRange(new string[] { });
 			BroughtBackFountain.IsActive = false;
-
-			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
-				new CustomNameInfo("Features: Litter-aly the Worst"),
-				new CustomNameInfo("Civic Pride must have went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
-			LitteralyTheWorst.Available = true;
-			LitteralyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
-			LitteralyTheWorst.IsActive = false;
 
 			CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
 				new CustomNameInfo("Features: Floral-er Flora"),
@@ -109,9 +102,16 @@ namespace BunnyMod.Content
 			FloralerFlora.Conflicting.AddRange(new string[] { });
 			FloralerFlora.IsActive = false;
 
+			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
+				new CustomNameInfo("Features: Litter-aly the Worst"),
+				new CustomNameInfo("Civic Pride must have went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
+			LitteralyTheWorst.Available = true;
+			LitteralyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
+			LitteralyTheWorst.IsActive = false;
+
 			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
 				new CustomNameInfo("Skyway District"),
-				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be"));
+				new CustomNameInfo("The Canal water Downtown was sold off for a pretty penny, so now there are just deep, empty holes where it used to be. It's a hazard, but the profit was massive!"));
 			SkywayDistrict.Available = true;
 			SkywayDistrict.Conflicting.AddRange(new string[] { });
 			SkywayDistrict.IsActive = false;

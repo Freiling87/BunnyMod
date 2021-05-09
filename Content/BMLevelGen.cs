@@ -2626,7 +2626,7 @@ namespace BunnyMod.Content
 					else if (GC.challenges.Contains(cChallenge.AnCapistan) || GC.challenges.Contains(cChallenge.BadNeighborhoods))
 						hasBrokenWindows = true;
 
-					if (hasBrokenWindows || BMHeader.debugMode) 
+					if (hasBrokenWindows) 
 					{
 						BMLog("Breaking Windows");
 

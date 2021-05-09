@@ -75,7 +75,7 @@ namespace BunnyMod.Content
                 InvItem invItem3 = new InvItem();
                 invItem3.invItemName = item;
                 invItem3.SetupDetails(false);
-                invItem3.invItemCount = 0;
+                invItem3.invItemCount = 1;
                 __instance.questItemsGiven.Add(item);
 
                 __result = invItem3;

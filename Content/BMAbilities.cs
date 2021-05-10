@@ -560,7 +560,7 @@ namespace BunnyMod.Content
 
 			pyromanticJet.Available = true;
 			pyromanticJet.AvailableInCharacterCreation = true;
-			pyromanticJet.CostInCharacterCreation = 8;
+			pyromanticJet.CostInCharacterCreation = 6;
 
 			int pjTimeHeld = 0;
 

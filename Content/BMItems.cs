@@ -169,10 +169,10 @@ namespace BunnyMod.Content
         {
             //TODO: Verify non-equipped items like Time Bomb.
 
-            BMLog("InvDatabase_DetermineIfCanUseWeapon");
-            BMLog("\tItem: " + item.invItemName);
-            BMLog("\tSharp: " + vItem.piercing.Contains(item.invItemName));
-            BMLog("\tLoud: " + vItem.loud.Contains(item.invItemName));
+            //BMLog("InvDatabase_DetermineIfCanUseWeapon");
+            //BMLog("\tItem: " + item.invItemName);
+            //BMLog("\tSharp: " + vItem.piercing.Contains(item.invItemName));
+            //BMLog("\tLoud: " + vItem.loud.Contains(item.invItemName));
 
             Agent agent = __instance.agent;
             bool fist = (item.invItemName == vItem.Fist);

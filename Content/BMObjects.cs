@@ -26,6 +26,7 @@ namespace BunnyMod.Content
 
             ObjectReal_00();
             PlayfieldObject_00();
+            SpawnerMain_00();
 
             AlarmButton_00();
             BathTub_00();
@@ -3224,6 +3225,7 @@ namespace BunnyMod.Content
             __instance.interactingAgent.inventory.AddItem(invItem);
             __instance.objectInvDatabase.DestroyAllItems();
             VendorCartStolenFrom[__instance] = true;
+            __instance.interactable = false;
             __instance.StopInteraction();
 		}
 		#endregion

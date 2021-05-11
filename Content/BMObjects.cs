@@ -98,7 +98,7 @@ namespace BunnyMod.Content
             _ = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
             _ = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
 
-            t = vNameType.StatusEffect;
+            t = vNameType.Dialogue;
             _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
             _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
             _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));

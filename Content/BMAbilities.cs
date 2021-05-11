@@ -31,37 +31,36 @@ namespace BunnyMod.Content
 			string t;
 
 			t = vNameType.Dialogue;
-			CustomName MSA_CD_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo1, t, new CustomNameInfo("I need to take a \"time out!\" Get it? But seriously, my heart will stop."));
-			CustomName MSA_CD_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo2, t, new CustomNameInfo("I'm gonna take the blue pill for a sec."));
-			CustomName MSA_CD_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast1, t, new CustomNameInfo("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp..."));
-			CustomName MSA_CD_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast2, t, new CustomNameInfo("Bullet Time? More like Bullshit Time!"));
-			CustomName MSA_CD_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast3, t, new CustomNameInfo("(Slow Motion Noises)"));
-			CustomName MSA_CD_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("Okay, maybe there is a spoon, I guess. Whatever."));
-			CustomName MSA_CD_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge1, t, new CustomNameInfo("It's Slowing-down-time... time!"));
-			CustomName MSA_PJ_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo1, t, new CustomNameInfo("I'm burned out."));
-			CustomName MSA_PJ_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo2, t, new CustomNameInfo("I don't feel like exploding right now."));
-			CustomName MSA_PJ_Cast1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast1, t, new CustomNameInfo("Die! Burn! Die! Die!"));
-			CustomName MSA_PJ_Cast2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast2, t, new CustomNameInfo("Burn, baby, burn!"));
-			CustomName MSA_PJ_Cast3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast3, t, new CustomNameInfo("BURN-ie 2024!"));
-			CustomName MSA_PJ_Cast4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast4, t, new CustomNameInfo("Yer fired! Get it?"));
-			CustomName MSA_PJ_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast1, t, new CustomNameInfo("Not very stoked right now."));
-			CustomName MSA_PJ_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast2, t, new CustomNameInfo("Haha my skin is melting lol XDDD"));
-			CustomName MSA_PJ_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast3, t, new CustomNameInfo("Flame off! Flame off!"));
-			CustomName MSA_PJ_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast4, t, new CustomNameInfo("I shidded an farded an bursteded into flames."));
-			CustomName MSA_PJ_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge1, t, new CustomNameInfo("Ready to burn!"));
-			CustomName MSA_PJ_Recharge2 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge2, t, new CustomNameInfo("I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do a lot of burning."));
-			CustomName MSA_PJ_Recharge3 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge3, t, new CustomNameInfo("(Laughs maniacally)"));
-			CustomName MSA_PJ_Recharge4 = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge4, t, new CustomNameInfo("Why are the innocent so fun to burn?"));
-
-			CustomName MSA_TB_CantDo1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo1, t, new CustomNameInfo("I need to give it a rest or my head will explode. I've seen it happen."));
-			CustomName MSA_TB_CantDo2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo2, t, new CustomNameInfo("Slow down! Haven't you seen The Fly?"));
-			CustomName MSA_TB_Cast1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast1, t, new CustomNameInfo("Vwip!"));
-			CustomName MSA_TB_Cast2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast2, t, new CustomNameInfo("Nothing personal, kid."));
-			CustomName MSA_TB_Miscast1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast1, t, new CustomNameInfo("I smell burning toast."));
-			CustomName MSA_TB_Miscast2 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast2, t, new CustomNameInfo("Blurgh. (Drool)"));
-			CustomName MSA_TB_Miscast3 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast3, t, new CustomNameInfo("I pink I bust hab a stwoke."));
-			CustomName MSA_TB_Miscast4 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast4, t, new CustomNameInfo("My head a splode."));
-			CustomName MSA_TB_Recharge1 = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Recharge1, t, new CustomNameInfo("Who needs Scotty? I'll beam my damn self up."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo1, t, new CustomNameInfo("I need to take a \"time out!\" Get it? But seriously, my heart will stop."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo2, t, new CustomNameInfo("I'm gonna take the blue pill for a sec."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast1, t, new CustomNameInfo("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp..."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast2, t, new CustomNameInfo("Bullet Time? More like Bullshit Time!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast3, t, new CustomNameInfo("(Slow Motion Noises)"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("Okay, maybe there is a spoon, I guess. Whatever."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge1, t, new CustomNameInfo("It's Slowing-down-time... time!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo1, t, new CustomNameInfo("I'm burned out."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_CantDo2, t, new CustomNameInfo("I don't feel like exploding right now."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast1, t, new CustomNameInfo("Die! Burn! Die! Die!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast2, t, new CustomNameInfo("Burn, baby, burn!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast3, t, new CustomNameInfo("BURN-ie 2024!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Cast4, t, new CustomNameInfo("Yer fired! Get it?"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast1, t, new CustomNameInfo("Not very stoked right now."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast2, t, new CustomNameInfo("Haha my skin is melting lol XDDD"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast3, t, new CustomNameInfo("Flame off! Flame off!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast4, t, new CustomNameInfo("I shidded an farded an bursteded into flames."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge1, t, new CustomNameInfo("Ready to burn!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge2, t, new CustomNameInfo("I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do a lot of burning."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge3, t, new CustomNameInfo("(Laughs maniacally)"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge4, t, new CustomNameInfo("Why are the innocent so fun to burn?"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo1, t, new CustomNameInfo("I need to give it a rest or my head will explode. I've seen it happen."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo2, t, new CustomNameInfo("Slow down! Haven't you seen The Fly?"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast1, t, new CustomNameInfo("Vwip!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast2, t, new CustomNameInfo("Nothing personal, kid."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast1, t, new CustomNameInfo("I smell burning toast."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast2, t, new CustomNameInfo("Blurgh (Drool)"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast3, t, new CustomNameInfo("I pink I bust hab a stwoke."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Miscast4, t, new CustomNameInfo("My head a splode."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Recharge1, t, new CustomNameInfo("Who needs Scotty? I'll beam my damn self up."));
 		}
 
 		#region Magic General

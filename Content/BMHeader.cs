@@ -109,6 +109,11 @@ namespace BunnyMod.Content
 						.SetValue(obj, propertyValue, null);
 			};
 		}
+        public static void SayDialogue (Agent agent, string customNameInfo, string type)
+		{
+            string text = GC.nameDB.GetName(customNameInfo, type);
+            agent.Say(text);
+		}
 	}
 
     public enum DamageType

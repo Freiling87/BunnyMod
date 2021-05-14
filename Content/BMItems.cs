@@ -229,7 +229,7 @@ namespace BunnyMod.Content
             }
             else if (agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises) && item.Categories.Contains("Loud") && !item.contents.Contains("Silencer"))
             {
-                agent.SayDialogue(cDialogue.CantUseLoud);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseLoud, "Dialogue");
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -348,7 +348,7 @@ namespace BunnyMod.Content
             }
             else if (cats.Contains("Loud") && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
             {
-                agent.SayDialogue(cDialogue.CantUseLoud_2);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseLoud, "Dialogue");
                 cantDoFlag = true;
             }
             else if (cats.Contains("Piercing") && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
@@ -417,7 +417,7 @@ namespace BunnyMod.Content
             {
                 if (vItem.loud.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
                 {
-                    agent.SayDialogue(cDialogue.CantUseLoud_2);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantUseLoud, "Dialogue");
                     goto terminus;
                 }
 

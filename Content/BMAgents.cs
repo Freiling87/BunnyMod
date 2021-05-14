@@ -862,9 +862,6 @@ namespace BunnyMod.Content
 					agent.EnableHitboxes(false);
 					agent.agentItemColliderTr.gameObject.SetActive(false);
 				}
-
-				if (agent.statusEffects.hasTrait(cTrait.Sniper) || agent.statusEffects.hasTrait(cTrait.DoubleTapper))
-					hiddenInObject.objectCollider.enabled = false;
 			}
 
 			BMLog("\tA" + a++);
@@ -917,21 +914,24 @@ namespace BunnyMod.Content
 		}
 		public static bool StatusEffects_BecomeNotHidden_Prefix(StatusEffects __instance) // Prefix
 		{
-			// Sniper/Doubletapper Hidden object collision undo
+			// GhillieSuit
 
-			BMLog("SE_BNH_P");
+			BMLog("StatusEffects_BecomeNotHidden_Prefix");
 
-			if (__instance.agent.hiddenInObject is null ||
-				__instance.agent.hiddenInObject.objectCollider is null) 
+			if (__instance.agent.hiddenInObject is null) 
 				return true;
 
 			BMLog("\tA");
 
 			ObjectReal hiddenInObject = __instance.agent.hiddenInObject;
+
 			BMLog("\tA");
+
 			if (!hiddenInObject.objectCollider.enabled && (hiddenInObject is Plant || hiddenInObject is Bathtub))
 				__instance.agent.hiddenInObject.objectCollider.enabled = true;
+
 			BMLog("\tA");
+
 			return true;
 		}
 		public static void StatusEffects_BecomeNotHidden_Postfix(StatusEffects __instance) // Postfix

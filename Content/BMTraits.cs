@@ -125,6 +125,19 @@ namespace BunnyMod.Content
             DoubleTapper.IsActive = true;
             DoubleTapper.Upgrade = null;
 
+            CustomTrait GhillieSuit = RogueLibs.CreateCustomTrait(cTrait.GhillieSuit, true,
+                new CustomNameInfo("000: Ghillie Suit"),
+                new CustomNameInfo("Wow, that's a poncho made of garbage, isn't it? Well, whatever it takes to blend into the urban environment.\n\n- Using a silent ranged weapon while hidden behind a Bush or other object will not remove you from cover."));
+            GhillieSuit.Available = true;
+            GhillieSuit.AvailableInCharacterCreation = true;
+            GhillieSuit.CanRemove = false;
+            GhillieSuit.CanSwap = true;
+            GhillieSuit.Conflicting.AddRange(new string[] { });
+            GhillieSuit.CostInCharacterCreation = 4;
+            GhillieSuit.Recommendations.AddRange(new string[] { });
+            GhillieSuit.IsActive = true;
+            GhillieSuit.Upgrade = null;
+
             CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
                 new CustomNameInfo("Sniper"),
                 new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, Revolver hits on unaware targets deal massive damage\n- Bullet range increased by ~60%"));

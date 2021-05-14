@@ -415,6 +415,7 @@ namespace BunnyMod.Content
             FriendOfBill = "FriendOfBill",
             GenerallyUnpleasant = "GenerallyUnpleasant",
             GenerallyUnpleasant_2 = "GenerallyUnpleasant2",
+            GhillieSuit = "GhillieSuit",
             Haunted = "Haunted",
             InfernalStrikes = "InfernalStrikes",
             InfernalStrikes_2 = "InfernalStrikes2",

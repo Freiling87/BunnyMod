@@ -89,9 +89,9 @@ namespace BunnyMod.Content
 					__instance.speed = Mathf.Min(65, __instance.speed * 3);
 				}
 				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-					__instance.speed = 37;
+					__instance.speed = 39;
 				// Lowest bad number: 40? Not sure, extreme range
-				// Highest good number: 35
+				// Highest good number: 37
 			}
 		}
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
@@ -365,10 +365,13 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "HasLOSBullet", g, "BulletHitbox_HasLOSBullet", new Type[1] { typeof(PlayfieldObject) });
-			Prefix(t, "HitObject", g, "BulletHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
+			Prefix(t, "OnTriggerEnter2D", g, "BulletHitbox_OnTriggerEnter2D", new Type[1] { typeof(Collider2D) });
 		}
 		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result, ref RaycastHit2D[] ___hitsAlloc) // Prefix
 		{
+			// Ballistician
+			// Sniper
+
 			if (__instance.myBullet.agent != null && BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
 			{
 				float maxBulletRange = GetBulletRange(__instance.myBullet.agent);
@@ -396,14 +399,26 @@ namespace BunnyMod.Content
 
 			return true;
 		}
-		public static bool BulletHitbox_HitObject(GameObject hitObject, bool fromClient, BulletHitbox __instance) // Prefix
+		public static bool BulletHitbox_OnTriggerEnter2D(Collider2D other, BulletHitbox __instance) // Prefix
 		{
-			// Stealth Bastard Deluxe Shoot past HiddenInObject
+			// GhillieSuit
 
-			if (__instance.myBullet.agent != null &&
-				__instance.myBullet.agent.hiddenInObject != null &&
-				hitObject == __instance.myBullet.agent.hiddenInObject)
-				return false;
+			BMLog("BulletHitbox_OnTriggerEnter2D");
+			try { BMLog("\tname: " + other.name); } catch { }
+
+			Agent agent = __instance.myBullet.agent;
+
+			if (other.CompareTag("ObjectRealSprite") && agent.statusEffects.hasTrait(cTrait.GhillieSuit))
+			{
+				BMLog("\tObject detected");
+				ObjectReal obj = other.GetComponent<ObjectReal>();
+
+				if (agent.hiddenInObject != null && agent.hiddenInObject == obj)
+				{
+					BMLog("\tObject bypassed");
+					return false;
+				}
+			}
 
 			return true;
 		}

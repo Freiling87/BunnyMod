@@ -93,7 +93,7 @@ namespace BunnyMod.Content
 		{
 			// Eagle Eye activation range
 
-			BMLog("ObjectReal_ObjectRealOnCamera");
+			// BMLog("ObjectReal_ObjectRealOnCamera"); // Drags framerate
 
 			if (!__instance.activeObject || __instance.notRealObject)
 			{

@@ -93,6 +93,8 @@ namespace BunnyMod.Content
 		{
 			// Eagle Eye activation range
 
+			BMLog("ObjectReal_ObjectRealOnCamera");
+
 			if (!__instance.activeObject || __instance.notRealObject)
 			{
 				__instance.onCamera = false;

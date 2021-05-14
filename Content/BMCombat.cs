@@ -96,6 +96,10 @@ namespace BunnyMod.Content
 		}
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
 		{
+			// Bullet Range mods
+
+			BMLog("Bullet_LateUpdateBullet");
+
 			if (Time.timeScale != 0f)
 			{
 				bool flag = true;

@@ -98,14 +98,14 @@ namespace BunnyMod.Content
 		{
 			// Bullet Range mods
 
-			BMLog("Bullet_LateUpdateBullet");
-
 			if (Time.timeScale != 0f)
 			{
 				bool flag = true;
 				Vector2 vector = __instance.tr.position;
+				float maxBulletDistance;
 
-				float maxBulletDistance = GetBulletRange(__instance.agent);
+				try { maxBulletDistance = GetBulletRange(__instance.agent); }
+				catch { maxBulletDistance = 13f; }
 
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 

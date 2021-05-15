@@ -176,16 +176,33 @@ namespace BunnyMod.Content
 		}
 		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
-			if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-				floorName = vFloor.CaveFloor; 
-			else if (GC.challenges.Contains(cChallenge.ShantyTown))
-				floorName = vFloor.WoodSlats;
-			else if (GC.challenges.Contains(cChallenge.CityOfSteel))
-				floorName = vFloor.MetalFloor;
-			else if (GC.challenges.Contains(cChallenge.GreenLiving))
-				floorName = vFloor.DirtFloor;
-			else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
-				floorName = vFloor.CleanTiles;
+			string floorType;
+
+			// Ensure these three lists are mutually exclusive
+
+			if (vFloor.NaturalFloors.Contains(floorName))
+			{
+				if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					floorName = vFloor.CaveFloor;
+			}
+			else if (vFloor.Rugs.Contains(floorName))
+			{
+				if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					floorName = vFloor.Grass;
+			}
+			else if (vFloor.ConstructedFloors.Contains(floorName))
+			{
+				if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					floorName = vFloor.CaveFloor;
+				else if (GC.challenges.Contains(cChallenge.ShantyTown))
+					floorName = vFloor.WoodSlats;
+				else if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					floorName = vFloor.MetalFloor;
+				else if (GC.challenges.Contains(cChallenge.GreenLiving))
+					floorName = vFloor.DirtFloor;
+				else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+					floorName = vFloor.CleanTiles;
+			}
 
 			return true;
 		}

@@ -29,6 +29,7 @@ namespace BunnyMod.Content
             SpawnerMain_00();
 
             AlarmButton_00();
+            ATMMachine_00();
             BathTub_00();
             Crate_00();
             Door_00();
@@ -1088,9 +1089,107 @@ namespace BunnyMod.Content
 
             yield break;
         }
-        #endregion
-        #region Bathtub
-        public void BathTub_00()
+		#endregion
+		#region ATMMachine
+        public void ATMMachine_00()
+		{
+            Type t = typeof(ATMMachine);
+            Type g = GetType();
+
+            Prefix(t, "DetermineButtons", g, "ATMMachine_DetermineButtons", new Type[0] { });
+		}
+        public static bool ATMMachine_DetermineButtons(ATMMachine __instance) // Replacement
+		{
+            // Still vanilla, changed mind about allowing all to pay cops
+
+            MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+            determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                if (!__instance.didSpitOutMoney)
+                    __instance.buttons.Add("SpitOutMoney");
+                
+                if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+                {
+                    __instance.buttons.Add("HackExplode");
+                
+                    return false;
+                }
+            }
+            else
+            {
+                bool flag = false;
+
+                if (__instance.readyForDelivery && (__instance.interactingAgent.inventory.HasItem("CourierPackage") || __instance.interactingAgent.inventory.HasItem("CourierPackageBroken")))
+                {
+                    __instance.buttons.Add("DeliverPackage");
+                    __instance.buttonPrices.Add(0);
+                    __instance.buttonsExtra.Add("");
+                }
+
+                if (!__instance.gc.challenges.Contains("Sandbox") && !__instance.gc.challenges.Contains("SpeedRun") && !__instance.gc.challenges.Contains("SpeedRun2") && !__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
+                {
+                    __instance.buttons.Add("StoreItem");
+                    __instance.buttonPrices.Add(0);
+                    __instance.buttonsExtra.Add("");
+                    flag = true;
+                }
+
+                if (!__instance.specialInvDatabase.isEmpty() && !__instance.gc.challenges.Contains("SpeedRun") && !__instance.gc.challenges.Contains("SpeedRun2") && !__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
+                {
+                    __instance.buttons.Add("RetrieveStoredItem");
+                    __instance.buttonPrices.Add(0);
+                    __instance.buttonsExtra.Add("");
+                    __instance.buttons.Add("DestroyItem");
+                    __instance.buttonPrices.Add(0);
+                    __instance.buttonsExtra.Add("");
+                    flag = true;
+                }
+
+                if (__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt") || __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt2") || __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt3"))
+                {
+                    __instance.buttons.Add("PayBackDebt");
+                    __instance.buttonPrices.Add(__instance.interactingAgent.CalculateDebt());
+                    __instance.buttonsExtra.Add("");
+                    flag = true;
+                }
+
+                if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") || __instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2"))
+                {
+                    __instance.buttons.Add("PayCops");
+
+                    if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1"))
+                        __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops1"));
+                    else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2"))
+                        __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops2"));
+                    
+                    __instance.buttonsExtra.Add("");
+                    flag = true;
+                }
+
+                if (__instance.interactingAgent.bigQuest == "Hobo" && !__instance.gc.loadLevel.LevelContainsMayor())
+                {
+                    __instance.buttons.Add("PutMoneyTowardHome");
+                    __instance.buttonPrices.Add(__instance.determineMoneyCost("PutMoneyTowardHome"));
+                    __instance.buttonsExtra.Add("");
+                    flag = true;
+                }
+
+                __instance.ShowCollectAlienPartButton();
+                
+                if (__instance.CanCollectAlienPart())
+                    flag = true;
+                
+                if (!flag)
+                    __instance.interactingAgent.SayDialogue("NoReasonToUse");
+            }
+
+            return false;
+		}
+		#endregion
+		#region Bathtub
+		public void BathTub_00()
         {
             Postfix(typeof(Bathtub), "SetVars", GetType(), "Bathtub_SetVars", new Type[0] { });
         }

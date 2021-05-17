@@ -1890,7 +1890,7 @@ namespace BunnyMod.Content
             Mustache = "Mustache",
             Null = "None";
     }
-    public static class vFloor // Vanilla Floors
+    public static class vFloor // Vanilla Floor Tiles
 	{
         public const string
             ArenaFloor = "ArenaFloor",
@@ -1947,6 +1947,60 @@ namespace BunnyMod.Content
             Water = "Water",
             WoodClean = "WoodClean",
             WoodSlats = "WoodSlats";
+
+        public static List<string> ConstructedFloors = new List<string>()
+        {
+			ArenaFloor,
+            ArmoryFloor,
+            BankFloor,
+            Bathhouse,
+            BathroomTile,
+            BrickIndoor,
+            Bridge_Unused,
+            CasinoFloor,
+            Checkerboard,
+            Checkerboard2,
+            CleanTiles,
+            CleanTilesRaised,
+            DanceFloor,
+            DanceFloorRaised, 
+            DirtyTiles, 
+            DrugDenFloor,
+            ElectronicPlates,
+            Facility,
+            FactoryFloor,
+            GreyTile_Unused,
+            Gym,
+            HideoutFloor,
+            HospitalFloor,
+            Mall,
+            MetalFloor,
+            MetalPlates,
+            Muted,
+            Normal,
+            OfficeFloor,
+            PoliceStationFloor,
+            PrisonFloor,
+            SmallTiles,
+            SolidPlates,
+            WoodClean,
+            WoodSlats,
+        };
+        public static List<string> NaturalFloors = new List<string>()
+        {
+            CaveFloor,
+            DirtFloor,
+            Grass,
+        };
+        public static List<string> Rugs = new List<string>()
+        {
+            Posh,
+            RugBlue,
+            RugDarkBlue,
+            RugGreen,
+            RugPurple,
+            RugRed,
+        };
     }
     public static class vFloorTileGroup // Vanilla Floor Tile Groups
 	{

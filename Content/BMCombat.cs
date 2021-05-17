@@ -89,9 +89,9 @@ namespace BunnyMod.Content
 					__instance.speed = Mathf.Min(65, __instance.speed * 3);
 				}
 				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
-					__instance.speed = 39;
+					__instance.speed = 40;
 				// Lowest bad number: 40? Not sure, extreme range
-				// Highest good number: 37
+				// Highest good number: 39
 			}
 		}
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
@@ -104,8 +104,15 @@ namespace BunnyMod.Content
 				Vector2 vector = __instance.tr.position;
 				float maxBulletDistance;
 
-				try { maxBulletDistance = GetBulletRange(__instance.agent); }
-				catch { maxBulletDistance = 13f; }
+				if (__instance.bulletType != bulletStatus.Fire &&
+					__instance.bulletType != bulletStatus.Water &&
+					__instance.bulletType != bulletStatus.Water2 &&
+					__instance.bulletType != bulletStatus.LeafBlower &&
+					__instance.bulletType != bulletStatus.ResearchGun &&
+					__instance.bulletType != bulletStatus.FireExtinguisher)
+					maxBulletDistance = GetBulletRange(__instance.agent);
+				else 
+					maxBulletDistance = 13f;
 
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 

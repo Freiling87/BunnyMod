@@ -280,9 +280,9 @@ namespace BunnyMod.Content
 							num++;
 					
 					if (num >= 3)
-						agent.SayDialogue("ThreatenedShakedownLowCash", true);
+						BMHeaderTools.SayDialogue(agent, "ThreatenedShakedownLowCash", vNameType.Dialogue);
 					else
-						agent.SayDialogue("ThreatenedShakedown", true);
+						BMHeaderTools.SayDialogue(agent, "ThreatenedShakedown", vNameType.Dialogue);
 					
 					int shakedownAmount = interactingAgent.objectMult.FindShakedownAmount(num);
 					
@@ -306,7 +306,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -340,7 +340,7 @@ namespace BunnyMod.Content
 						{
 							agent.inventory.DestroyItem(invItem);
 							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
-							agent.SayDialogue("ThreatenedScared", true);
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							agent.killForQuest.boughtItem = true;
 							agent.cantSleep = true;
 							agent.oma.didAsk = true;
@@ -352,7 +352,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 				agent.oma.didAsk = true;
@@ -395,7 +395,7 @@ namespace BunnyMod.Content
 								agent.relationships.SetRel(interactingAgent, "Submissive");
 							
 							__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
-							agent.SayDialogue("ThreatenedScared");
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							GC.audioHandler.Play(interactingAgent, "SelectItem");
 						}
 					}
@@ -404,7 +404,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 3);
 
@@ -452,14 +452,14 @@ namespace BunnyMod.Content
 						agent.relationships.SetRel(interactingAgent, "Submissive");
 					
 					__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
-					agent.SayDialogue("ThreatenedScared");
+					BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 					GC.audioHandler.Play(interactingAgent, "SelectItem");
 
 					return false;
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -478,7 +478,7 @@ namespace BunnyMod.Content
 
 					if (agent.slaveOwners.Count > 0)
 					{
-						agent.SayDialogue("AskLeaveTownSlave");
+						BMHeaderTools.SayDialogue(agent, "AskLeaveTownSlave", vNameType.Dialogue);
 
 						return false;
 					}
@@ -486,7 +486,7 @@ namespace BunnyMod.Content
 					if (!agent.gc.percentChance(myChance))
 					{
 						agent.StopInteraction();
-						agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+						BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 						agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 						agent.relationships.SetRelHate(interactingAgent, 2);
 						agent.oma.didAsk = true;
@@ -494,7 +494,7 @@ namespace BunnyMod.Content
 						return false;
 					}
 
-					agent.SayDialogue("ThreatenedScaredLeaveTown", true);
+					BMHeaderTools.SayDialogue(agent, "ThreatenedScaredLeaveTown", vNameType.Dialogue);
 					agent.wantsToExit = true;
 					float num = Vector2.Distance(agent.transform.position, agent.gc.startingPoint.tr.position);
 					float num2 = Vector2.Distance(agent.transform.position, agent.gc.exitPoint.tr.position);
@@ -553,7 +553,7 @@ namespace BunnyMod.Content
 							agent.inventory.DestroyItem(invItem);
 							agent.objectMult.DestroyInvItemByName(invItem);
 							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
-							agent.SayDialogue("ThreatenedScared", true);
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
 							agent.gc.ending.SetMayorTurnover("ThreatenedMayor");
 						}
@@ -563,7 +563,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -595,7 +595,7 @@ namespace BunnyMod.Content
 						{
 							agent.inventory.DestroyItem(invItem);
 							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
-							agent.SayDialogue("ThreatenedScared", true);
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
 
 							for (int j = 0; j < agent.gc.agentList.Count; j++)
@@ -616,7 +616,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -648,7 +648,7 @@ namespace BunnyMod.Content
 						{
 							agent.inventory.DestroyItem(invItem);
 							interactingAgent.inventory.AddItemAtEmptySlot(invItem, false, false);
-							agent.SayDialogue("ThreatenedScared", true);
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
 						}
 					}
@@ -656,7 +656,7 @@ namespace BunnyMod.Content
 					return false;
 				}
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -697,7 +697,7 @@ namespace BunnyMod.Content
 								agent.relationships.SetRel(interactingAgent, "Submissive");
 							
 							__instance.BecomeSubmissiveWithAlliesAllInChunk(agent, interactingAgent);
-							agent.SayDialogue("ThreatenedScared");
+							BMHeaderTools.SayDialogue(agent, "ThreatenedScared", vNameType.Dialogue);
 							agent.gc.audioHandler.Play(interactingAgent, "SelectItem");
 						}
 					}
@@ -706,7 +706,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				agent.SayDialogue(cDialogue.ThreatenAnnoyed, true);
+				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -1209,7 +1209,7 @@ namespace BunnyMod.Content
 							hurtAgent.challengedToFightAgentID = 0;
 							hurtAgent.challengedToFightAgent = null;
 							hurtAgent.SetFollowing(null);
-							hurtAgent.SayDialogue("NotFair", true);
+							BMHeaderTools.SayDialogue(hurtAgent, "NotFair", vNameType.Dialogue);
 						}
 					}
 					else
@@ -1222,7 +1222,7 @@ namespace BunnyMod.Content
 							hurtAgent.challengedToFightAgentID = 0;
 							hurtAgent.challengedToFightAgent = null;
 							hurtAgent.SetFollowing(null);
-							hurtAgent.SayDialogue("NotFair", true);
+							BMHeaderTools.SayDialogue(hurtAgent, "NotFair", vNameType.Dialogue);
 						}
 					}
 				}
@@ -1344,12 +1344,12 @@ namespace BunnyMod.Content
 
 						if (num3 >= 3)
 						{
-							hurtAgent.SayDialogue("ThreatenedShakedownLowCash", true);
+							BMHeaderTools.SayDialogue(hurtAgent, "ThreatenedShakedownLowCash", vNameType.Dialogue);
 						
 							break;
 						}
 
-						hurtAgent.SayDialogue("SubmitShakedowner", true);
+						BMHeaderTools.SayDialogue(hurtAgent, "SubmitShakedowner", vNameType.Dialogue);
 
 						break;
 					}

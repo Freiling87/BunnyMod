@@ -193,7 +193,7 @@ namespace BunnyMod.Content
         {
             if (item.isArmor && __instance.agent.statusEffects.hasTrait(cTrait.Fatass))
             {
-                __instance.agent.SayDialogue(cDialogue.CantWearArmor);
+                BMHeaderTools.SayDialogue(__instance.agent, cDialogue.CantWearArmor, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -205,7 +205,7 @@ namespace BunnyMod.Content
         {
             if (item.isArmorHead && item != null && __instance.agent.statusEffects.hasTrait(cTrait.FatHead))
             {
-                __instance.agent.SayDialogue(cDialogue.CantWearHeadgear);
+                BMHeaderTools.SayDialogue(__instance.agent, cDialogue.CantWearHeadgear, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -222,7 +222,7 @@ namespace BunnyMod.Content
 
             if (agent.statusEffects.hasTrait(cTrait.DrawNoBlood) && item.Categories.Contains("Piercing"))
             {
-                agent.SayDialogue(cDialogue.CantUseSharp);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseSharp, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -236,7 +236,7 @@ namespace BunnyMod.Content
             }
             else if (agent.statusEffects.hasTrait(cTrait.SharpOnly) && item.Categories.Contains("Blunt"))
             {
-                agent.SayDialogue(cDialogue.CantUseBlunt);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseBlunt, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance.agent, "CantDo");
 
                 return false;
@@ -328,22 +328,22 @@ namespace BunnyMod.Content
 
             if (cats.Contains("Alcohol") && (agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
-                agent.SayDialogue(cDialogue.CantDrinkAlcohol);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantDrinkAlcohol, vNameType.Dialogue);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Drugs") && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
             {
-                agent.SayDialogue(cDialogue.CantUseDrug);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseDrug, vNameType.Dialogue);
                 cantDoFlag = true;
             }
             else if (cats.Contains("NonVegetarian") && agent.statusEffects.hasTrait(cTrait.Vegetarian))
             {
-                agent.SayDialogue(cDialogue.CantEatMeat);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantEatMeat, vNameType.Dialogue);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Vegetarian") && agent.statusEffects.hasTrait(cTrait.Carnivore))
             {
-                agent.SayDialogue(cDialogue.CantEatNonvegetarian);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantEatNonvegetarian, vNameType.Dialogue);
                 cantDoFlag = true;
             }
             else if (cats.Contains("Loud") && agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
@@ -353,7 +353,7 @@ namespace BunnyMod.Content
             }
             else if (cats.Contains("Piercing") && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
             {
-                agent.SayDialogue(cDialogue.CantUseSharp_2);
+                BMHeaderTools.SayDialogue(agent, cDialogue.CantUseSharp_2, vNameType.Dialogue);
                 cantDoFlag = true;
             }
 
@@ -394,22 +394,22 @@ namespace BunnyMod.Content
             {
                 if (vItem.alcohol.Contains(item.invItemName) && ((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
                 {
-                    agent.SayDialogue(cDialogue.CantDrinkAlcohol);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantDrinkAlcohol, vNameType.Dialogue);
                     goto terminus;
                 }
                 else if (vItem.drugs.Contains(item.invItemName) && (agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
                 {
-                    agent.SayDialogue(cDialogue.CantUseDrug);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantUseDrug, vNameType.Dialogue);
                     goto terminus;
                 }
                 else if (vItem.nonVegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Vegetarian))
                 {
-                    agent.SayDialogue(cDialogue.CantEatMeat);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantEatMeat, vNameType.Dialogue);
                     goto terminus;
                 }
                 else if (vItem.vegetarian.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.Carnivore))
                 {
-                    agent.SayDialogue(cDialogue.CantEatNonvegetarian);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantEatNonvegetarian, vNameType.Dialogue);
                     goto terminus;
                 }
             }
@@ -423,7 +423,7 @@ namespace BunnyMod.Content
 
                 if (vItem.piercing.Contains(item.invItemName) && agent.statusEffects.hasTrait(cTrait.DrawNoBlood))
                 {
-                    agent.SayDialogue(cDialogue.CantUseSharp_2);
+                    BMHeaderTools.SayDialogue(agent, cDialogue.CantUseSharp_2, vNameType.Dialogue);
                     goto terminus;
                 }
             }

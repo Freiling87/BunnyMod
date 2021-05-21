@@ -138,7 +138,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_CantDo2
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_CD_DialogueCast(Agent agent) // TODO
 		{
@@ -148,7 +148,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Cast2,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_CD_DialogueMiscast(Agent agent)
 		{
@@ -160,7 +160,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Miscast4,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_CD_DialogueRecharge(Agent agent)
 		{
@@ -169,7 +169,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Recharge1
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		#endregion
 		public static float baseTimeScale;
@@ -492,7 +492,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_CantDo2
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_PJ_DialogueCast(Agent agent) // Not used yet
 		{
@@ -506,7 +506,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Cast4
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_PJ_DialogueMiscast(Agent agent)
 		{
@@ -518,7 +518,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Miscast4,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_PJ_DialogueRecharge(Agent agent)
 		{
@@ -530,7 +530,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Recharge4,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		#endregion
 		public static void MSA_PJ_Initialize()
@@ -836,7 +836,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_CantDo2,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
@@ -852,7 +852,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Cast2,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
@@ -871,7 +871,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Miscast4,
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
@@ -880,7 +880,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Recharge1
 			};
 
-			agent.SayDialogue(dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)]);
+			BMHeaderTools.SayDialogue(agent, dialogue[UnityEngine.Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
 		}
 		#endregion
 		public static void MSA_TB_Initialize()

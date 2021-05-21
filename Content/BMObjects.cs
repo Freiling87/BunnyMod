@@ -214,14 +214,14 @@ namespace BunnyMod.Content
                         __instance.buttonsExtra.Add(" (Burn hands for " + BMTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
                     }
                     else
-                        agent.SayDialogue("CantGrillFud");
+                        BMHeaderTools.SayDialogue(agent, "CantGrillFud", vNameType.Dialogue);
                 }
                 else
                 {
                     if (agent.inventory.HasItem(vItem.CigaretteLighter))
                         __instance.buttons.Add("LightBarbecue");
                     else
-                        agent.SayDialogue("CantOperateBarbecue");
+                        BMHeaderTools.SayDialogue(agent, "CantOperateBarbecue", vNameType.Dialogue);
                 }
             }
             else if (__instance is Manhole)
@@ -1182,7 +1182,7 @@ namespace BunnyMod.Content
                     flag = true;
                 
                 if (!flag)
-                    __instance.interactingAgent.SayDialogue("NoReasonToUse");
+                    BMHeaderTools.SayDialogue(__instance.interactingAgent, "NoReasonToUse", vNameType.Dialogue);
             }
 
             return false;
@@ -1785,7 +1785,7 @@ namespace BunnyMod.Content
                     return false;
                 }
 
-                __instance.interactingAgent.SayDialogue("CantUseFireHydrant");
+                BMHeaderTools.SayDialogue(__instance.interactingAgent, "CantUseFireHydrant", vNameType.Dialogue);
 
                 return false;
             }
@@ -2701,13 +2701,13 @@ namespace BunnyMod.Content
             {
                 __instance.interactingAgent.inventory.AddItem("Money", payout);
                 __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, payout);
-                __instance.interactingAgent.SayDialogue("SlotMachineWon");
+                BMHeaderTools.SayDialogue(__instance.interactingAgent, "SlotMachineWon", vNameType.Dialogue);
                 __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
                 GC.audioHandler.Play(__instance, "Win");
             }
             else
             {
-                __instance.interactingAgent.SayDialogue("SlotMachineLost");
+                BMHeaderTools.SayDialogue(__instance.interactingAgent, "SlotMachineLost", vNameType.Dialogue);
                 GC.audioHandler.Play(__instance, "Fail");
             }
 
@@ -2737,7 +2737,7 @@ namespace BunnyMod.Content
 		{
             if (SlotMachinePlayingSound[__instance])
             {
-                agent.SayDialogue(cDialogue.MachineBusy);
+                BMHeaderTools.SayDialogue(agent, cDialogue.MachineBusy, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance, vAudioClip.CantDo);
 
                 return false;
@@ -2749,7 +2749,7 @@ namespace BunnyMod.Content
         {
             if (SlotMachinePlayingSound[__instance])
             {
-                agent.SayDialogue(cDialogue.MachineBusy);
+                BMHeaderTools.SayDialogue(agent, cDialogue.MachineBusy, vNameType.Dialogue);
                 GC.audioHandler.Play(__instance, vAudioClip.CantDo);
 
                 return false;
@@ -3159,7 +3159,7 @@ namespace BunnyMod.Content
                 }
                 
                 if (!toiletWorking)
-                    __instance.interactingAgent.SayDialogue("ToiletWontGo");
+                    BMHeaderTools.SayDialogue(__instance.interactingAgent, "ToiletWontGo", vNameType.Dialogue);
 
                 return false;
 			}
@@ -3343,7 +3343,7 @@ namespace BunnyMod.Content
 		{
             if (myAgent.statusEffects.hasTrait(vTrait.Bulky))
             {
-                __instance.interactingAgent.SayDialogue("CantFit");
+                BMHeaderTools.SayDialogue(__instance.interactingAgent, "CantFit", vNameType.Dialogue);
                 GC.audioHandler.Play(myAgent, "CantDo");
 
                 __instance.StopInteraction();

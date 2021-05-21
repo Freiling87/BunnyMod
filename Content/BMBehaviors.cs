@@ -108,7 +108,7 @@ namespace BunnyMod.Content
 
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
-				agent.SayDialogue("Bought"); // ←
+				BMHeaderTools.SayDialogue(agent, "Bought", vNameType.Dialogue); // ←
 				GC.audioHandler.Play(interactingAgent, "SelectItem");
 
 				agent.relationships.SetRel(interactingAgent, relStatus);
@@ -132,7 +132,7 @@ namespace BunnyMod.Content
 				agent.objectMult.SetGangMuggingOff();
 				agent.doingMugging = -1;
 
-				agent.SayDialogue("Hobo_Donate_" + relStatus); //
+				BMHeaderTools.SayDialogue(agent, "Hobo_Donate_" + relStatus, vNameType.Dialogue); //
 				InvItem invItem = new InvItem();
 				invItem.invItemName = "Money";
 				invItem.invItemCount = agent.determineMoneyCost("Hobo_GiveMoney1"); // ←
@@ -215,7 +215,7 @@ namespace BunnyMod.Content
 					__instance.AddButton("Hobo_GiveItem", "(Choose)");
 				}
 				else
-					agent.SayDialogue("Interact");
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
 			}
 			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
 			{
@@ -224,7 +224,7 @@ namespace BunnyMod.Content
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
 				else
-					agent.SayDialogue("Interact");
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
 			}
 			return true;
 		}
@@ -239,7 +239,7 @@ namespace BunnyMod.Content
 					if (agent.moneySuccess(buttonPrice))
 						Hobo_MugMoney(agent, interactingAgent, buttonPrice, Hobo_relStatusAfterDonation(agent, interactingAgent, buttonPrice).ToString("f"), buttonText);
 					else
-						agent.SayDialogue("Hobo_CantAfford");
+						BMHeaderTools.SayDialogue(agent, "Hobo_CantAfford", vNameType.Dialogue);
 
 					agent.StopInteraction();
 					return false; // Double-check that these aren't skipping anything important
@@ -257,7 +257,7 @@ namespace BunnyMod.Content
 					if (agent.moneySuccess(buttonPrice))
 						__instance.MugMoney(agent, interactingAgent);
 					else
-						agent.SayDialogue("Gangbanger_CantAfford");
+						BMHeaderTools.SayDialogue(agent, "Gangbanger_CantAfford", vNameType.Dialogue);
 
 					agent.StopInteraction();
 					return false; // Double-check that these aren't skipping anything important
@@ -277,7 +277,7 @@ namespace BunnyMod.Content
 					Hobo_AcceptDonation(agent, interactingAgent, item);
 				else
 				{
-					agent.SayDialogue("Hobo_DontWant");
+					BMHeaderTools.SayDialogue(agent, "Hobo_DontWant", vNameType.Dialogue);
 					GC.audioHandler.Play(interactingAgent, "CantDo");
 				}
 

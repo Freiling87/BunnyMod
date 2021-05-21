@@ -98,6 +98,11 @@ namespace BunnyMod.Content
 		{
 			// Bullet Range mods
 
+			int logger = 0;
+
+			BMLog("Bullet_LateUpdateBullet");
+			BMLog("\tLog: " + logger++);
+
 			if (Time.timeScale != 0f)
 			{
 				bool flag = true;
@@ -114,13 +119,19 @@ namespace BunnyMod.Content
 				else 
 					maxBulletDistance = 13f;
 
+				BMLog("\tLog: " + logger++);
+
 				MethodInfo destroyMe_Base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "DestroyMe", new Type[0] { });
 
 				if (__instance.agent != null && Vector2.Distance(__instance.agent.curPosition, vector) > maxBulletDistance)
 					flag = false;
-				
+
+				BMLog("\tLog: " + logger++);
+
 				if (!GC.splitScreen)
 				{
+					BMLog("\tLog A: " + logger++);
+
 					if (!flag && Vector2.Distance(GC.cameraScript.containerTr.position, vector) > maxBulletDistance)
 					{
 						if (GC.activePooling)
@@ -133,6 +144,8 @@ namespace BunnyMod.Content
 				}
 				else if (!flag)
 				{
+					BMLog("\tLog B: " + logger++);
+
 					if (GC.coopMode)
 					{
 						if (Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance && 
@@ -161,9 +174,13 @@ namespace BunnyMod.Content
 					}
 				}
 
+				BMLog("\tLog: " + logger++);
+
 				Vector3 position = new Vector3(vector.x, vector.y, -2f + (vector.y - 1.28f) * 100f / 100000f);
 				___bulletSpriteTr.position = position;
 				__instance.timeSinceLaunch += Time.deltaTime;
+
+				BMLog("\tLog: " + logger++);
 
 				if (__instance.bulletType == bulletStatus.Fire || 
 					__instance.bulletType == bulletStatus.Water || 
@@ -172,6 +189,8 @@ namespace BunnyMod.Content
 					__instance.bulletType == bulletStatus.ResearchGun || 
 					__instance.bulletType == bulletStatus.FireExtinguisher)
 				{
+					BMLog("\tLog C: " + logger++);
+
 					float num = 0.4f;
 					float num2 = 0.35f;
 
@@ -186,8 +205,12 @@ namespace BunnyMod.Content
 						num2 = 0.55f;
 					}
 
+					BMLog("\tLog: " + logger++);
+
 					if (__instance.timeSinceLaunch >= num2 && !__instance.bulletFireStopped)
 					{
+						BMLog("\tLog D: " + logger++);
+
 						__instance.bulletFireStopped = true;
 
 						if (__instance.particles != null)
@@ -202,6 +225,8 @@ namespace BunnyMod.Content
 					}
 					else if (__instance.timeSinceLaunch >= num)
 					{
+						BMLog("\tLogE: " + logger++);
+
 						__instance.DestroyMe();
 
 						return false;
@@ -417,14 +442,12 @@ namespace BunnyMod.Content
 			BMLog("BulletHitbox_OnTriggerEnter2D");
 			try { BMLog("\tname: " + other.name); } catch { }
 
-			Agent agent = __instance.myBullet.agent;
-
-			if (other.CompareTag("ObjectRealSprite") && agent.statusEffects.hasTrait(cTrait.GhillieSuit))
+			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait(cTrait.GhillieSuit))
 			{
 				BMLog("\tObject detected");
 				ObjectReal obj = other.GetComponent<ObjectReal>();
 
-				if (agent.hiddenInObject != null && agent.hiddenInObject == obj)
+				if (__instance.myBullet.agent.hiddenInObject != null && __instance.myBullet.agent.hiddenInObject == obj)
 				{
 					BMLog("\tObject bypassed");
 					return false;

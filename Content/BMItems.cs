@@ -119,37 +119,37 @@ namespace BunnyMod.Content
                 if (agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))
                     noLoud = true;
 
-                foreach (InvItem invItem3 in __instance.InvItemList)
+                foreach (InvItem itemCandidate in __instance.InvItemList)
                 {
-                    BMLog("\titem: " + invItem3.invItemName);
-                    BMLog("\tLoud: " + vItem.loud.Contains(invItem3.invItemName));
-                    foreach (string a in invItem3.contents)
-                        BMLog("\tContains: " + invItem3.contents[invItem3.contents.IndexOf(a)]);
+                    BMLog("\titem: " + itemCandidate.invItemName);
+                    //BMLog("\tLoud: " + vItem.loud.Contains(itemCandidate.invItemName)); // Works
+                    //foreach (string a in itemCandidate.contents)
+                    //    BMLog("\tContains: " + itemCandidate.contents[itemCandidate.contents.IndexOf(a)]); // Works
 
-                    if (invItem3.itemType == "WeaponProjectile" && 
-                        invItem3.hierarchy2 > num && 
-                        (!noGuns || invItem3.Categories.Contains("NotRealWeapons")) && 
-                        (!noWeapons || invItem3.Categories.Contains("NonViolent")) && 
-                        (!noLoud || (vItem.loud.Contains(invItem3.invItemName) && !invItem3.contents.Contains(vItem.Silencer))) &&
-                        invItem3.invItemCount > 0 && 
-                        (!invItem3.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
-                        (__instance.agent.isPlayer <= 0 || !(invItem3.itemType != __instance.lastEquippedWeaponType)) && 
-                        (!invItem3.dontSelectNPC || __instance.agent.isPlayer != 0))
+                    if (itemCandidate.itemType == "WeaponProjectile" && 
+                        itemCandidate.hierarchy2 > num && 
+                        (!noGuns || itemCandidate.Categories.Contains("NotRealWeapons")) && 
+                        (!noWeapons || itemCandidate.Categories.Contains("NonViolent")) && 
+                        (!noLoud || !(vItem.loud.Contains(itemCandidate.invItemName) || itemCandidate.contents.Contains(vItem.Silencer))) &&
+                        itemCandidate.invItemCount > 0 && 
+                        (!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
+                        (__instance.agent.isPlayer <= 0 || !(itemCandidate.itemType != __instance.lastEquippedWeaponType)) && 
+                        (!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
                     {
-                        invItem = invItem3;
-                        num = invItem3.hierarchy2;
+                        invItem = itemCandidate;
+                        num = itemCandidate.hierarchy2;
                     }
                 
-                    if (invItem3.itemType == "WeaponMelee" && invItem3.hierarchy2 > num2 && 
+                    if (itemCandidate.itemType == "WeaponMelee" && itemCandidate.hierarchy2 > num2 && 
                         !flag && 
-                        (!flag3 || invItem3.Categories.Contains("NonViolent")) &&
-                        (!noLoud || (vItem.loud.Contains(invItem3.invItemName) && !invItem3.contents.Contains(vItem.Silencer))) &&
-                        invItem3.invItemCount > 0 && 
-                        (!invItem3.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
-                        (!invItem3.dontSelectNPC || __instance.agent.isPlayer != 0))
+                        (!flag3 || itemCandidate.Categories.Contains("NonViolent")) &&
+                        (!noLoud || (vItem.loud.Contains(itemCandidate.invItemName) && !itemCandidate.contents.Contains(vItem.Silencer))) &&
+                        itemCandidate.invItemCount > 0 && 
+                        (!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) && 
+                        (!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
                     {
-                        invItem2 = invItem3;
-                        num2 = invItem3.hierarchy2;
+                        invItem2 = itemCandidate;
+                        num2 = itemCandidate.hierarchy2;
                     }
                 }
 

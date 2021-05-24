@@ -376,6 +376,7 @@ namespace BunnyMod.Content
     public static class cSkillPoints // Custom Skill Points
 	{
         public const string
+            AngeredMany = "AngeredMany",
             BQMalusDowntown = "BQMalusDowntown",
             BQMalusFloor = "BQMalusFloor",
             BQMalusGame = "BQMalusGame",
@@ -384,8 +385,9 @@ namespace BunnyMod.Content
             BQMalusSlums = "BQMalusSlums",
             BQMalusUptown = "BQMalusUptown",
             ElectabilityMalus = "ElectabilityMalus",
-            NoPrisonersSurvived = "NoPrisonersSurvived",
-            StoleNone = "StoleNone";
+            FailedToFreePrisoners = "FailedToFreePrisoners",
+            StoleNone = "StoleNone",
+            TookLotsOfDamage = "TookLotsOfDamage";
     }
     public static class cTrait // Custom Traits
     {

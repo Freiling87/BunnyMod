@@ -1903,6 +1903,11 @@ namespace BunnyMod.Content
                     {
                         Manhole_FlushYourself(agent, (Manhole)__instance.GetComponent<ObjectReal>());
 
+                        if (GC.challenges.Contains(vChallenge.LowHealth))
+                            agent.statusEffects.ChangeHealth(-7f);
+                        else
+                            agent.statusEffects.ChangeHealth(-15f);
+
                         return false;
                     }
                 }

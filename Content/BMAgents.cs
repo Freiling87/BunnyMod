@@ -260,6 +260,8 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_Shakedown(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
+			// Veiled Threats
+
 			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
@@ -320,7 +322,7 @@ namespace BunnyMod.Content
 		{
 			// Veiled Threats
 
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!GC.serverPlayer)
 				{
@@ -366,7 +368,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenKey(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) & !veiledThreatsUsed[agent])
 			{
 				if (!GC.serverPlayer)
 				{
@@ -416,7 +420,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenKeyAndSafeCombination(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!GC.serverPlayer)
 				{
@@ -471,7 +477,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenLeaveTown(Agent agent, Agent interactingAgent) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (interactingAgent.gc.serverPlayer)
 				{
@@ -532,7 +540,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenMayor(Agent agent, Agent interactingAgent) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
 				{
@@ -575,7 +585,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenMayorBadge(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
 				{
@@ -628,7 +640,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenMoney(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
 				{
@@ -668,7 +682,9 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_ThreatenSafeCombination(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			// Veiled Threats
+
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
 				{

@@ -25,6 +25,7 @@ namespace BunnyMod.Content
 
 			Agent_00();
 			AgentInteractions_00();
+			ObjectMult_00();
 			Relationships_00();
 			StatusEffects_00();
 		}
@@ -32,6 +33,7 @@ namespace BunnyMod.Content
 		{
 			string t = vNameType.Dialogue;
 			_ = RogueLibs.CreateCustomName(cDialogue.VeiledThreatsAnnoyed, t, new CustomNameInfo("Did you just... threaten me?"));
+			_ = RogueLibs.CreateCustomName(cDialogue.WarlordSubmission, t, new CustomNameInfo("Okay, okay! You're the boss now!"));
 		}
 
 		#region Custom
@@ -715,6 +717,25 @@ namespace BunnyMod.Content
 			return true;
 		}
 		#endregion
+		#region ObjectMult
+		public void ObjectMult_00()
+		{
+			Type t = typeof(ObjectMult);
+			Type g = GetType();
+
+			Prefix(t, "RemoveShakedownPerson", g, "ObjectMult_RemoveShakedownPerson", new Type[2] { typeof(Agent), typeof(int) });
+		}
+		public static bool ObjectMult_RemoveShakedownPerson(Agent shookDownAgent, int shakedownAmount, ObjectMult __instance) // Prefix
+		{
+			// Intercept ShakedownFail XP loss for Warlord if not Extortionist
+
+			if (__instance.agent.statusEffects.hasTrait(cTrait.Warlord) && 
+				!(__instance.agent.statusEffects.hasTrait(vTrait.Extortionist) || (__instance.agent.statusEffects.hasTrait(vTrait.Extortionist_2))))
+				return false;
+
+			return true;
+		}
+		#endregion
 		#region Relationships
 		public void Relationships_00()
 		{
@@ -1326,7 +1347,8 @@ namespace BunnyMod.Content
 					if (shakedowningAgent.statusEffects.hasTrait(cTrait.Warlord))
 						canMakeSubmissive = true;
 
-					if ((shakedowningAgent == hurtAgent.justHitByAgent2 || shakedowningAgent == hurtAgent.justHitByAgent2.employer || canMakeSubmissive) && (shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist) || shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist_2) || shakedowningAgent.statusEffects.hasTrait(cTrait.Warlord)))
+					if ((shakedowningAgent == hurtAgent.justHitByAgent2 || shakedowningAgent == hurtAgent.justHitByAgent2.employer || canMakeSubmissive) && 
+						(shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist) || shakedowningAgent.statusEffects.hasTrait(vTrait.Extortionist_2)))
 					{
 						hurtAgent.relationships.SetRel(shakedowningAgent, vRelationship.Submissive);
 						hurtAgent.agentInteractions.BecomeSubmissiveWithAlliesAllInChunk(hurtAgent, shakedowningAgent);
@@ -1349,6 +1371,15 @@ namespace BunnyMod.Content
 						}
 
 						BMHeaderTools.SayDialogue(hurtAgent, "SubmitShakedowner", vNameType.Dialogue);
+
+						break;
+					}
+					else if ((shakedowningAgent == hurtAgent.justHitByAgent2 || shakedowningAgent == hurtAgent.justHitByAgent2.employer || canMakeSubmissive) && 
+						shakedowningAgent.statusEffects.hasTrait(cTrait.Warlord))
+					{
+						hurtAgent.relationships.SetRel(shakedowningAgent, vRelationship.Submissive);
+
+						BMHeaderTools.SayDialogue(hurtAgent, cDialogue.WarlordSubmission, vNameType.Dialogue);
 
 						break;
 					}

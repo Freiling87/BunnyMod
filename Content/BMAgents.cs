@@ -31,7 +31,7 @@ namespace BunnyMod.Content
 		public static void InitializeNames()
 		{
 			string t = vNameType.Dialogue;
-			CustomName VeiledThreats = RogueLibs.CreateCustomName(cDialogue.ThreatenAnnoyed, t, new CustomNameInfo("Did you just... threaten me?"));
+			_ = RogueLibs.CreateCustomName(cDialogue.VeiledThreatsAnnoyed, t, new CustomNameInfo("Did you just... threaten me?"));
 		}
 
 		#region Custom
@@ -228,11 +228,9 @@ namespace BunnyMod.Content
 		}
 		public static void Agent_Start(Agent __instance) // Postfix
 		{
-			Agent_Remora remora = new Agent_Remora();
-			Agent_Variables[__instance] = remora;
-			remora.agentHost = __instance;
+			veiledThreatsUsed.Add(__instance, false);
 		}
-		public static Dictionary<Agent, Agent_Remora> Agent_Variables = new Dictionary<Agent, Agent_Remora>();
+		public static Dictionary<Agent, bool> veiledThreatsUsed = new Dictionary<Agent, bool>();
 		#endregion
 		#region AgentInteractions
 		public void AgentInteractions_00()
@@ -260,7 +258,7 @@ namespace BunnyMod.Content
 		}
 		public static bool AgentInteractions_Shakedown(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
-			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats))
+			if (interactingAgent.statusEffects.hasTrait(cTrait.VeiledThreats) && !veiledThreatsUsed[agent])
 			{
 				if (!interactingAgent.gc.serverPlayer)
 				{
@@ -306,9 +304,10 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
+				veiledThreatsUsed[agent] = true;
 
 				return false;
 			}
@@ -352,7 +351,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 				agent.oma.didAsk = true;
@@ -404,7 +403,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 3);
 
@@ -459,7 +458,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -486,7 +485,7 @@ namespace BunnyMod.Content
 					if (!agent.gc.percentChance(myChance))
 					{
 						agent.StopInteraction();
-						BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+						BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 						agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 						agent.relationships.SetRelHate(interactingAgent, 2);
 						agent.oma.didAsk = true;
@@ -563,7 +562,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -616,7 +615,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -656,7 +655,7 @@ namespace BunnyMod.Content
 					return false;
 				}
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 
@@ -706,7 +705,7 @@ namespace BunnyMod.Content
 				}
 
 				agent.StopInteraction();
-				BMHeaderTools.SayDialogue(agent, cDialogue.ThreatenAnnoyed, vNameType.Dialogue);
+				BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 				agent.relationships.SetRel(interactingAgent, vRelationship.Annoyed);
 				agent.relationships.SetRelHate(interactingAgent, 2);
 

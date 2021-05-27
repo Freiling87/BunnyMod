@@ -338,7 +338,8 @@ namespace BunnyMod.Content
             SlotMachineJackpot_4 = "SlotMachineJackpot_4",
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
             CantEatMeat = "Vegetarian",
-            ThreatenAnnoyed = "ThreatenAnnoyed";
+            VeiledThreatsAnnoyed = "ThreatenAnnoyed",
+            WarlordSubmission = "WarlordSubmission";
     }
     public static class cLevelFeature // Custom Level Features
 	{
@@ -375,6 +376,7 @@ namespace BunnyMod.Content
     public static class cSkillPoints // Custom Skill Points
 	{
         public const string
+            AngeredMany = "AngeredMany",
             BQMalusDowntown = "BQMalusDowntown",
             BQMalusFloor = "BQMalusFloor",
             BQMalusGame = "BQMalusGame",
@@ -383,8 +385,9 @@ namespace BunnyMod.Content
             BQMalusSlums = "BQMalusSlums",
             BQMalusUptown = "BQMalusUptown",
             ElectabilityMalus = "ElectabilityMalus",
-            NoPrisonersSurvived = "NoPrisonersSurvived",
-            StoleNone = "StoleNone";
+            FailedToFreePrisoners = "FailedToFreePrisoners",
+            StoleNone = "StoleNone",
+            TookLotsOfDamage = "TookLotsOfDamage";
     }
     public static class cTrait // Custom Traits
     {

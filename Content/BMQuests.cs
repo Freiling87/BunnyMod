@@ -161,6 +161,27 @@ namespace BunnyMod.Content
                 case "BigQuestBonusUptown":
                     xpReward = 500;
                     break;
+                case cSkillPoints.BQMalusDowntown:
+                    xpReward = -500;
+                    break;
+                case cSkillPoints.BQMalusFloor:
+                    xpReward = 300;
+                    break;
+                case cSkillPoints.BQMalusGame:
+                    xpReward = -1000;
+                    break;
+                case cSkillPoints.BQMalusIndustrial:
+                    xpReward = -500;
+                    break;
+                case cSkillPoints.BQMalusPark:
+                    xpReward = -500;
+                    break;
+                case cSkillPoints.BQMalusSlums:
+                    xpReward = -500;
+                    break;
+                case cSkillPoints.BQMalusUptown:
+                    xpReward = -500;
+                    break;
                 case "CompleteMission":
                     xpReward = 300;
 
@@ -195,8 +216,15 @@ namespace BunnyMod.Content
                 case "ElectabilityBonus":
                     xpReward = 100;
                     break;
+                case cSkillPoints.ElectabilityMalus:
+                    xpReward = -100;
+                    break;
                 case "Enslaved":
                     xpReward = 30;
+                    break;
+                case cSkillPoints.FailedToFreePrisoners:
+                    xpReward = -50 * extraNum;
+
                     break;
                 case "FindTreasure":
                     xpReward = 100;
@@ -303,7 +331,13 @@ namespace BunnyMod.Content
                 case "NoAngerLevel":
                     xpReward = 100;
                     break;
+                case cSkillPoints.AngeredMany:
+                    xpReward *= -100;
+                    break;
                 case "NoDamageTaken":
+                    xpReward = 100;
+                    break;
+                case cSkillPoints.TookLotsOfDamage:
                     xpReward = 100;
                     break;
                 case "NoDestruction":
@@ -707,7 +741,7 @@ namespace BunnyMod.Content
                         if (GC.quests.CheckIfBigQuestCompleteRun(__instance.agent, false) && !GC.challenges.Contains("Endless"))
                             bigQuestRunComplete = true;
                     }
-                    else
+                    else if (veryHardOnYourself)
                     {
                         __instance.agent.skillPoints.AddPoints(cSkillPoints.BQMalusFloor);
 
@@ -747,7 +781,7 @@ namespace BunnyMod.Content
                             break;
                     }
                 }
-                else if (!bigQuestThemeComplete && __instance.agent.health > 0f)
+                else if (!bigQuestThemeComplete && __instance.agent.health > 0f && veryHardOnYourself)
 				{
                     switch (GC.levelTheme)
                     {
@@ -838,9 +872,11 @@ namespace BunnyMod.Content
                     __instance.agent.skillPoints.AddPoints("StoleLots");
                 else if (GC.stats.stoleItems[agentNum] == 0)
                     __instance.agent.skillPoints.AddPoints(cSkillPoints.StoleNone);
-                
+
                 if (GC.stats.angered[agentNum] == 0)
                     __instance.agent.skillPoints.AddPoints("NoAngerLevel");
+                else if (GC.stats.angered[agentNum] >= (GC.agentCount * 4 / 5))
+                    __instance.agent.skillPoints.AddPoints(cSkillPoints.AngeredMany);
                 
                 if (GC.stats.killed[agentNum] == 0 && GC.stats.indirectlyKilled[agentNum] == 0)
                 {
@@ -852,9 +888,11 @@ namespace BunnyMod.Content
                 
                 if (GC.stats.knockedOut[agentNum] >= 20)
                     __instance.agent.skillPoints.AddPoints("ManySleeping");
-                
+
                 if (GC.stats.damageTaken[agentNum] == 0)
                     __instance.agent.skillPoints.AddPoints("NoDamageTaken");
+                else if (GC.stats.damageTaken[agentNum] >= 400)
+                    __instance.agent.skillPoints.AddPoints(cSkillPoints.TookLotsOfDamage);
                 
                 if (GC.stats.timeTaken[agentNum] < 120f)
                     __instance.agent.skillPoints.AddPoints("TimeBonus");
@@ -994,7 +1032,6 @@ namespace BunnyMod.Content
 
                 return false;
             }
-
             else if (__instance.currentLevelElectionScore < 0)
             {
                 if (veryHardOnYourself)

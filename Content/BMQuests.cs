@@ -222,10 +222,6 @@ namespace BunnyMod.Content
                 case "Enslaved":
                     xpReward = 30;
                     break;
-                case cSkillPoints.FailedToFreePrisoners:
-                    xpReward = -50 * extraNum;
-
-                    break;
                 case "FindTreasure":
                     xpReward = 100;
                     GC.stats.AddToStat(___agent, "TreasuresFound", 1);
@@ -247,6 +243,9 @@ namespace BunnyMod.Content
                     if (extraNum > 1)
                         pointsType = "FreedSlaves";
 
+                    break;
+                case cSkillPoints.FreePrisonerFailure:
+                    xpReward = -50 * extraNum;
                     break;
                 case "HackPoints":
                     xpReward = 20;

@@ -192,28 +192,30 @@ namespace BunnyMod.Content
 			{
 				if (vFloor.NaturalFloors.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+					if (GC.challenges.Contains(cChallenge.GreenLiving))
+						floorName = vFloor.Grass;
+					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 						floorName = vFloor.CaveFloor;
 				}
 				else if (vFloor.Rugs.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-						floorName = vFloor.Grass;
 					if (GC.challenges.Contains(cChallenge.Panoptikopolis))
 						floorName = vFloor.ClearFloor;
+					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+						floorName = vFloor.Grass;
 				}
 				else if (vFloor.ConstructedFloors.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-						floorName = vFloor.CaveFloor;
-					else if (GC.challenges.Contains(cChallenge.ShantyTown))
-						floorName = vFloor.WoodSlats;
-					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalFloor;
 					else if (GC.challenges.Contains(cChallenge.GreenLiving))
 						floorName = vFloor.DirtFloor;
 					else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
 						floorName = vFloor.CleanTiles;
+					else if (GC.challenges.Contains(cChallenge.ShantyTown))
+						floorName = vFloor.WoodSlats;
+					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+						floorName = vFloor.CaveFloor;
 				}
 			}
 

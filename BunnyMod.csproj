@@ -132,10 +132,10 @@
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
     <None Include="ReadMe.md" />
-    <None Include="Resources\ChronomanticDilation.bin" />
-    <None Include="Resources\CryomanticBolt.bin" />
-    <None Include="Resources\ElectromanticDischarge.bin" />
-    <None Include="Resources\MorphomanticGlamor.bin" />
+    <None Include="Properties\Resources\ChronomanticDilation.bin" />
+    <None Include="Properties\Resources\CryomanticBolt.bin" />
+    <None Include="Properties\Resources\ElectromanticDischarge.bin" />
+    <None Include="Properties\Resources\MorphomanticGlamor.bin" />
     <None Include="Staging.md" />
   </ItemGroup>
   <ItemGroup>
@@ -145,7 +145,6 @@
     <None Include="Properties\Resources\BeerCan.bin" />
     <None Include="Properties\Resources\PyromanticJet.bin" />
     <None Include="Properties\Resources\TelemanticBlink.bin" />
-    <None Include="Properties\Resources\ChronomanticDilation.bin" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

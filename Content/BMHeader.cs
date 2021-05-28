@@ -109,11 +109,16 @@ namespace BunnyMod.Content
 						.SetValue(obj, propertyValue, null);
 			};
 		}
-        public static void SayDialogue (Agent agent, string customNameInfo, string type)
+        public static void SayDialogue (Agent agent, string customNameInfo, string vNameType)
 		{
-            string text = GC.nameDB.GetName(customNameInfo, type);
+            string text = GC.nameDB.GetName(customNameInfo, vNameType);
             agent.Say(text);
 		}
+        public static void SayDialogue (ObjectReal objectReal, string customNameInfo, string vNameType)
+		{
+            string text = GC.nameDB.GetName(customNameInfo, vNameType);
+            objectReal.Say(text);
+        }
 	}
 
     public enum DamageType
@@ -273,15 +278,22 @@ namespace BunnyMod.Content
     public static class cDialogue // Custom Dialogue
 	{
         public const string
+            CantAffordAlarmButton = "AlarmButtonCantAfford",
+            CantAffordElevator = "CantAffordElevator",
+            CantAffordToilet = "ToiletCantAfford",
             CantUseLoud = "CantUseLoud",
             CantUseLoud_2 = "CantUseLoud_2",
+            CantEatMeat = "Vegetarian",
             CantEatNonvegetarian = "CantEatNonvegetarian",
             CantUseDrug = "CantUseDrug",
+            CantUseBlunt = "CantUseBlunt",
             CantUseSharp = "CantUseSharp",
             CantUseSharp_2 = "CantUseSharp_2",
             CantWearArmor = "CantWearArmor",
             CantWearHeadgear = "CantWearHeadgear",
             CantDrinkAlcohol = "CantDrinkAlcohol",
+            FlamingBarrelCookDamage = "FlamingBarrelCookDamage",
+            FlamingBarrelCookNoDamage = "FlamingBarrelCookNoDamage",
             MachineBusy = "MachineBusy",
             MSA_CD_CantDo1 = "MSA_CD_CantDo1",
             MSA_CD_CantDo2 = "MSA_CD_CantDo2",
@@ -331,13 +343,13 @@ namespace BunnyMod.Content
             MSA_TB_Recharge2 = "MSA_TB_Recharge2",
             MSA_TB_Recharge3 = "MSA_TB_Recharge3",
             MSA_TB_Recharge4 = "MSA_TB_Recharge4",
-            CantUseBlunt = "CantUseBlunt",
+            PurchaseElevator = "PurchaseElevator",
+            SlotMachineJackpot = "SlotMachineJackpot_", // For concatenation into following
             SlotMachineJackpot_1 = "SlotMachineJackpot_1",
             SlotMachineJackpot_2 = "SlotMachineJackpot_2",
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
             SlotMachineJackpot_4 = "SlotMachineJackpot_4",
             SlotMachineJackpot_5 = "SlotMachineJackpot_5",
-            CantEatMeat = "Vegetarian",
             VeiledThreatsAnnoyed = "ThreatenAnnoyed",
             WarlordSubmission = "WarlordSubmission";
     }
@@ -385,7 +397,7 @@ namespace BunnyMod.Content
             BQMalusSlums = "BQMalusSlums",
             BQMalusUptown = "BQMalusUptown",
             ElectabilityMalus = "ElectabilityMalus",
-            FailedToFreePrisoners = "FailedToFreePrisoners",
+            FreePrisonerFailure = "FreePrisonerFailure",
             StoleNone = "StoleNone",
             TookLotsOfDamage = "TookLotsOfDamage";
     }

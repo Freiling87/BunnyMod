@@ -87,24 +87,28 @@ namespace BunnyMod.Content
 			string t;
 
 			t = vNameType.Dialogue;
-			_ = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantAffordAlarmButton, t, new CustomNameInfo("I can't afford this. I should have worked harder!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantAffordElevator, t, new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
+            _ = RogueLibs.CreateCustomName(cDialogue.CantAffordToilet, t, new CustomNameInfo("I'm too poor (and therefore too lazy and unworthy) for this privilege!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookDamage, t, new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookNoDamage, t, new CustomNameInfo("Mmmm, toasty. Just like the burning flesh on my fingers!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
+            _ = RogueLibs.CreateCustomName(cDialogue.PurchaseElevator, t, new CustomNameInfo("PAYMENT ACCEPTED - Thank you for using Evilator Co.!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
+            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
 
-			t = vNameType.Interface;
-			_ = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
-			_ = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
+            t = vNameType.Interface;
+            _ = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
+            _ = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
             _ = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
             _ = RogueLibs.CreateCustomName(cButtonText.OpenContainer, t, new CustomNameInfo("Open container"));
             _ = RogueLibs.CreateCustomName(cButtonText.SlotMachineHackJackpot, t, new CustomNameInfo("Penny-Slot Jackpot Promotion"));
             _ = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay1, t, new CustomNameInfo("Play"));
             _ = RogueLibs.CreateCustomName(cButtonText.SlotMachinePlay100, t, new CustomNameInfo("Play"));
             _ = RogueLibs.CreateCustomName(cButtonText.StealItem, t, new CustomNameInfo("Steal item"));
-
-            t = vNameType.Dialogue;
-            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
-            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
-            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
-            _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
         }
         #endregion
 
@@ -1011,7 +1015,7 @@ namespace BunnyMod.Content
                 if (__instance.moneySuccess(buttonPrice))
                     __instance.ToggleSwitch(__instance.interactingAgent, null);
                 else
-                    __instance.interactingAgent.Say("I can't afford this. I should have worked harder!");
+                    BMHeaderTools.SayDialogue(__instance.interactingAgent, cDialogue.CantAffordAlarmButton, vNameType.Dialogue);
             }
 
             __instance.StopInteraction();
@@ -1388,7 +1392,7 @@ namespace BunnyMod.Content
                     if (!myFreedAgents[i].dead || myFreedAgents[i].teleporting)
                         return;
 
-                myAgent.skillPoints.AddPoints(cSkillPoints.NoPrisonersSurvived);
+                myAgent.skillPoints.AddPoints(cSkillPoints.FreePrisonerFailure);
             }
 		}
         public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
@@ -1749,11 +1753,11 @@ namespace BunnyMod.Content
                 Elevator_Variables[__instance].ticketPurchased = true;
                 //__instance.PlayAnim("MachineOperate", __instance.interactingAgent);
                 GC.audioHandler.Play(__instance.interactingAgent, vAudioClip.ATMDeposit);
-                __instance.Say("PAYMENT ACCEPTED - Thank you for using Evilator Co.!");
+                BMHeaderTools.SayDialogue(__instance, cDialogue.PurchaseElevator, vNameType.Dialogue);
             }
             else
 			{
-                __instance.Say("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day.");
+                BMHeaderTools.SayDialogue(__instance, cDialogue.CantAffordElevator, vNameType.Dialogue);
 
                 MethodInfo stopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
                 stopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -1850,11 +1854,11 @@ namespace BunnyMod.Content
             GC.audioHandler.Play(__instance, "FireHit");
 
             if (agent.statusEffects.hasTrait(vTrait.ResistFire) || agent.statusEffects.hasTrait(vTrait.FireproofSkin) || agent.statusEffects.hasTrait(vTrait.FireproofSkin2))
-                agent.Say("Mmmm, toasty. Just like the burning flesh on my fingers!");
+                BMHeaderTools.SayDialogue(agent, cDialogue.FlamingBarrelCookNoDamage, vNameType.Dialogue);
 			else
 			{
                 agent.statusEffects.ChangeHealth(-10f, __instance);
-                agent.Say("God fucking damn it, I always fucking burn my fucking hands!");
+                BMHeaderTools.SayDialogue(agent, cDialogue.FlamingBarrelCookDamage, vNameType.Dialogue);
             }
 
             return;
@@ -2787,7 +2791,7 @@ namespace BunnyMod.Content
 
                         if (i % 20 == 0)
 						{
-                            __instance.Say("SlotMachineJackpot" + (i / 20).ToString());
+                            BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot + (i / 20).ToString(), vNameType.Dialogue);
                             GC.audioHandler.Play(__instance, vAudioClip.ClubMusic);
                         }
                     }
@@ -3271,7 +3275,7 @@ namespace BunnyMod.Content
                     __instance.PurgeStatusEffects();
                 else
 				{
-                    __instance.interactingAgent.Say("I'm too poor (and therefore too lazy and unworthy) for this privilege!");
+                    BMHeaderTools.SayDialogue(__instance.interactingAgent, cDialogue.CantAffordToilet, vNameType.Dialogue);
                     __instance.StopInteraction();
                 }
 

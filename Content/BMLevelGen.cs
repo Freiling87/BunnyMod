@@ -2366,7 +2366,7 @@ namespace BunnyMod.Content
 						spawnedCount = null;
 					}
 					#endregion
-					#region Mod - Public Security Cams
+					#region Mod - Public Security Cams & Turrets
 
 					bool hasPublicSecurityCams = false;
 
@@ -2427,7 +2427,11 @@ namespace BunnyMod.Content
 
 							if (spotCandidate != Vector2.zero)
 							{
-								GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.SecurityCam).ShiftTowardWalls();
+								ObjectReal securityCam = GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.SecurityCam);
+								securityCam.ShiftTowardWalls();
+								SecurityCam securityCamCast = (SecurityCam)securityCam;
+								securityCamCast.securityType = "Noise";
+								securityCamCast.targets = "Wanted";
 								TileData spotTileData = GC.tileInfo.GetTileData(spotCandidate);
 								spawnedInChunks.Add(spotTileData.chunkID);
 								Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
@@ -2449,6 +2453,7 @@ namespace BunnyMod.Content
 										leftOfSpot = new Vector2(spotCandidate.x + 1.28f, spotCandidate.y);
 										rightOfSpot = new Vector2(spotCandidate.x - 1.28f, spotCandidate.y);
 										wallEdge = "S";
+										securityCam.direction = "N";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y)).wallMaterial != wallMaterialType.None)
 									{
@@ -2543,7 +2548,11 @@ namespace BunnyMod.Content
 
 									if (isSpotAcceptable && leftOfSpot != Vector2.zero)
 									{
-										GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.SecurityCam).ShiftTowardWalls();
+										ObjectReal securityCam2 = GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.SecurityCam);
+										securityCam2.ShiftTowardWalls();
+										SecurityCam securityCam2Cast = (SecurityCam)securityCam2;
+										securityCam2Cast.securityType = "Noise";
+										securityCam2Cast.targets = "Wanted";
 										num2 = numObjects;
 										numObjects = num2 + 1;
 									}
@@ -2578,7 +2587,10 @@ namespace BunnyMod.Content
 
 										if (isSpotAcceptable && rightOfSpot != Vector2.zero)
 										{
-											GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret).ShiftTowardWalls();
+											ObjectReal turret = GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret);
+											turret.ShiftTowardWalls();
+											securityCamCast.turrets.Add((Turret)turret);
+											securityCamCast.securityType = "Turret";
 											num2 = numObjects;
 											numObjects = num2 + 1;
 										}

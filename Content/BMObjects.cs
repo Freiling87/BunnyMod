@@ -51,6 +51,7 @@ namespace BunnyMod.Content
             Television_00();
             Toilet_00();
             TrashCan_00();
+            Turret_00();
             VendorCart_00();
             Window_00();
         }
@@ -2482,58 +2483,69 @@ namespace BunnyMod.Content
             BMLog("LoadLevel_FillFloors_Prefix");
 
             // Structure advised by Abbysssal for patch-replacing IEnumerators.
-            if (GC.challenges.Contains(cChallenge.PoliceState))
-            {
-                __result = SecurityCam_MyUpdate_Replacement(__instance, ___tilemapFloors2, ___agentsPreviouslyInView);
+            __result = SecurityCam_MyUpdate_Replacement(__instance, ___tilemapFloors2, ___agentsPreviouslyInView);
 
-                return false;
-            }
-
-            return true;
+            return false;
         }
         public static IEnumerator SecurityCam_MyUpdate_Replacement(SecurityCam __instance, tk2dTileMap ___tilemapFloors2, bool ___agentsPreviouslyInView) // Non-Patch
 		{
-            for (; ; )
+            // Detect Guilty/Wanted for PoliceState & Public Cameras
+
+            for (;;)
             {
-                if (__instance.functional && !__instance.destroyed && __instance.activeObject)
+				#region Detection
+				if (__instance.functional && !__instance.destroyed && __instance.activeObject)
                 {
                     __instance.agentsInView.Clear();
 
                     for (int i = 0; i < __instance.gc.activeBrainAgentList.Count; i++)
                     {
-                        bool targetFound = false;
+                        bool flag = false;
                         Agent agent = __instance.gc.activeBrainAgentList[i];
 
-                        if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0) && !agent.underBox)
+						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0) && !agent.underBox)
                         {
                             if (__instance.targets == "NonOwners")
                             {
-                                if (((agent.ownerID != __instance.owner && agent.ownerID != 99) || (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector))) ||
-                                    agent.statusEffects.hasTrait(vTrait.Wanted))
-                                    targetFound = true;
+                                if ((agent.ownerID != __instance.owner && agent.ownerID != 99) ||
+                                    (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector)))
+                                    flag = true;
                             }
                             else if (__instance.targets == "Owners")
                             {
-                                if (((agent.ownerID == __instance.owner || agent.ownerID == 99) && (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector)))||
-                                    agent.statusEffects.hasTrait(vTrait.Wanted))
-                                    targetFound = true;
+                                if ((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
+                                    (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector)))
+                                    flag = true;
                             }
                             else if (__instance.targets == "Everyone")
-                                targetFound = true;
+                                flag = true;
+                            else if (__instance.targets == "Wanted")
+                                flag = agent.statusEffects.hasTrait(vTrait.Wanted);
+                            
+                            if (GC.challenges.Contains(cChallenge.PoliceState)) // Always additionally possible
+                                flag = (agent.statusEffects.hasTrait(vTrait.Wanted) || agent.objectMultAgent.mustBeGuilty);
                         }
 
-                        if (targetFound && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
+						if (flag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
                         {
                             float num = Vector2.Distance(agent.tr.position, __instance.tr.position);
-                            
-                            if (num > __instance.blindSpotDistance && num < 9f && __instance.HasLOSObjectNormal(agent, num) && agent.curOwnerTile == __instance.owner && !agent.statusEffects.hasTrait("InvisibleToCameras") && __instance.functional && !__instance.destroyed && !__instance.destroying)
+
+                            if (num > __instance.blindSpotDistance && num < 9f && 
+                                __instance.HasLOSObjectNormal(agent, num) && 
+                                agent.curOwnerTile == __instance.owner && 
+                                !agent.statusEffects.hasTrait("InvisibleToCameras") && 
+                                __instance.functional && 
+                                !__instance.destroyed && 
+                                !__instance.destroying)
                                 __instance.agentsInView.Add(agent);
                         }
                     }
-
-                    if (__instance.securityType == "Turret")
+					#endregion
+					#region Post-Detection
+					if (__instance.securityType == "Turret")
                     {
                         for (int j = 0; j < __instance.turrets.Count; j++)
+                        {
                             if (__instance.agentsInView.Count > 0)
                             {
                                 if (!__instance.turrets[j].camerasViewing.Contains(__instance.UID))
@@ -2547,8 +2559,10 @@ namespace BunnyMod.Content
                                 __instance.turrets[j].camerasViewing.Remove(__instance.UID);
                                 __instance.turrets[j].camerasViewingReal.Remove(__instance);
                             }
+                        }
 
                         if (__instance.agentsInView.Count > 0 && __instance.countdownToNoise <= 0f)
+                        {
                             for (int k = 0; k < __instance.agentsInView.Count; k++)
                             {
                                 __instance.ChangeDoorTags();
@@ -2559,21 +2573,25 @@ namespace BunnyMod.Content
                                 __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
                                 __instance.gc.spawnerMain.SpawnNoise(__instance.agentsInView[k].tr.position, 4f, __instance, "Alarm", __instance.agentsInView[k]);
                                 
-                                if ((__instance.targets == "Everyone" || __instance.targets == "Owners") && (__instance.agentsInView[k].ownerID == __instance.owner || __instance.agentsInView[k].ownerID == 99) && __instance.agentsInView[k].startingChunk == __instance.startingChunk)
+                                if ((__instance.targets == "Everyone" || __instance.targets == "Owners") && 
+                                    (__instance.agentsInView[k].ownerID == __instance.owner || __instance.agentsInView[k].ownerID == 99) && 
+                                    __instance.agentsInView[k].startingChunk == __instance.startingChunk)
                                 {
                                     __instance.agentsInView[k].relationships.SetRel(__instance.objectAgent, "Hateful");
                                     __instance.agentsInView[k].relationships.SetRelHate(__instance.objectAgent, 5);
                                 }
-
+                                
                                 __instance.countdownToNoise = 1f;
                             }
+                        }
                         else if (__instance.agentsInView.Count == 0)
                             __instance.countdownToNoise = 0f;
                     }
                     else if (__instance.securityType == "Noise")
                     {
                         if (__instance.agentsInView.Count > 0 && __instance.countdownToNoise <= 0f)
-                            for (int l = 0; l < __instance.agentsInView.Count; l++)
+                        {
+                            for (int j = 0; j < __instance.agentsInView.Count; j++)
                             {
                                 __instance.ChangeDoorTags();
 
@@ -2581,21 +2599,25 @@ namespace BunnyMod.Content
                                     __instance.gc.audioHandler.Play(__instance, "SecurityCamSpot");
                                 
                                 __instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                                __instance.gc.spawnerMain.SpawnNoise(__instance.agentsInView[l].tr.position, 4f, __instance, "Alarm", __instance.agentsInView[l]);
+                                __instance.gc.spawnerMain.SpawnNoise(__instance.agentsInView[j].tr.position, 4f, __instance, "Alarm", __instance.agentsInView[j]);
                                 
-                                if ((__instance.targets == "Everyone" || __instance.targets == "Owners") && (__instance.agentsInView[l].ownerID == __instance.owner || __instance.agentsInView[l].ownerID == 99) && __instance.agentsInView[l].startingChunk == __instance.startingChunk)
+                                if ((__instance.targets == "Everyone" || __instance.targets == "Owners") && 
+                                    (__instance.agentsInView[j].ownerID == __instance.owner || __instance.agentsInView[j].ownerID == 99) && 
+                                    __instance.agentsInView[j].startingChunk == __instance.startingChunk)
                                 {
-                                    __instance.agentsInView[l].relationships.SetRel(__instance.objectAgent, "Hateful");
-                                    __instance.agentsInView[l].relationships.SetRelHate(__instance.objectAgent, 5);
+                                    __instance.agentsInView[j].relationships.SetRel(__instance.objectAgent, "Hateful");
+                                    __instance.agentsInView[j].relationships.SetRelHate(__instance.objectAgent, 5);
                                 }
-
+                                
                                 __instance.countdownToNoise = 1f;
                             }
+                        }
                         else if (__instance.agentsInView.Count == 0)
                             __instance.countdownToNoise = 0f;
                     }
+					#endregion
 
-                    if (!___agentsPreviouslyInView && __instance.agentsInView.Count > 0)
+					if (!___agentsPreviouslyInView && __instance.agentsInView.Count > 0)
                     {
                         ___agentsPreviouslyInView = true;
                         __instance.RemoveThenSpawnParticles("");
@@ -3311,8 +3333,40 @@ namespace BunnyMod.Content
 
             return true;
 		}
-		#endregion
-		#region VendorCart
+        #endregion
+        #region Turret
+        public void Turret_00()
+        {
+            Type t = typeof(Turret);
+            Type g = GetType();
+
+            Postfix(t, "IsOpponent", g, "Turret_IsOpponent", new Type[2] { typeof(Agent), typeof(bool) });
+        }
+        public static void Turret_IsOpponent(Agent myAgent, bool brainMustBeActive, Turret __instance, ref bool __result) // Postfix
+        {
+            // Public security cams
+            // Police State
+
+            if ((!brainMustBeActive || myAgent.brain.active) &&
+                !myAgent.invisible &&
+                !myAgent.ghost &&
+                !myAgent.objectAgent &&
+                (myAgent.prisoner <= 0 || myAgent.ownerID != 0) &&
+                !myAgent.statusEffects.hasTrait("InvisibleToCameras"))
+            {
+                if (__instance.targets == "Wanted")
+                {
+                    if (myAgent.statusEffects.hasTrait(vTrait.Wanted))
+                        __result = true;
+                }
+                
+                if (GC.challenges.Contains(cChallenge.PoliceState)) // Can always override others
+                    if (myAgent.statusEffects.hasTrait(vTrait.Wanted) || myAgent.objectMultAgent.mustBeGuilty)
+                        __result = true;
+            }
+        }
+        #endregion
+        #region VendorCart
         public void VendorCart_00()
 		{
             Postfix(typeof(VendorCart), "SetVars", GetType(), "VendorCart_SetVars", new Type[0] { });

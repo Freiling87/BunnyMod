@@ -1105,7 +1105,7 @@ namespace BunnyMod.Content
 		}
         public static bool ATMMachine_DetermineButtons(ATMMachine __instance) // Replacement
 		{
-            // Still vanilla, changed mind about allowing all to pay cops
+            // Priors enabled to pay off cops
 
             MethodInfo determineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
             determineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
@@ -1126,14 +1126,18 @@ namespace BunnyMod.Content
             {
                 bool flag = false;
 
-                if (__instance.readyForDelivery && (__instance.interactingAgent.inventory.HasItem("CourierPackage") || __instance.interactingAgent.inventory.HasItem("CourierPackageBroken")))
+                if (__instance.readyForDelivery && 
+                    (__instance.interactingAgent.inventory.HasItem("CourierPackage") || __instance.interactingAgent.inventory.HasItem("CourierPackageBroken")))
                 {
                     __instance.buttons.Add("DeliverPackage");
                     __instance.buttonPrices.Add(0);
                     __instance.buttonsExtra.Add("");
                 }
 
-                if (!__instance.gc.challenges.Contains("Sandbox") && !__instance.gc.challenges.Contains("SpeedRun") && !__instance.gc.challenges.Contains("SpeedRun2") && !__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
+                if (!__instance.gc.challenges.Contains("Sandbox") && 
+                    !__instance.gc.challenges.Contains("SpeedRun") && 
+                    !__instance.gc.challenges.Contains("SpeedRun2") && 
+                    !__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
                 {
                     __instance.buttons.Add("StoreItem");
                     __instance.buttonPrices.Add(0);
@@ -1141,7 +1145,11 @@ namespace BunnyMod.Content
                     flag = true;
                 }
 
-                if (!__instance.specialInvDatabase.isEmpty() && !__instance.gc.challenges.Contains("SpeedRun") && !__instance.gc.challenges.Contains("SpeedRun2") && !__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
+                if (!__instance.specialInvDatabase.isEmpty() && 
+                    !__instance.gc.challenges.Contains("SpeedRun") && 
+                    !__instance.gc.challenges.Contains("SpeedRun2") && 
+                    !__instance.gc.customCampaign && 
+                    !__instance.gc.wasLevelEditing)
                 {
                     __instance.buttons.Add("RetrieveStoredItem");
                     __instance.buttonPrices.Add(0);
@@ -1152,7 +1160,9 @@ namespace BunnyMod.Content
                     flag = true;
                 }
 
-                if (__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt") || __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt2") || __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt3"))
+                if (__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt") || 
+                    __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt2") || 
+                    __instance.interactingAgent.statusEffects.hasStatusEffect("InDebt3"))
                 {
                     __instance.buttons.Add("PayBackDebt");
                     __instance.buttonPrices.Add(__instance.interactingAgent.CalculateDebt());
@@ -1160,13 +1170,16 @@ namespace BunnyMod.Content
                     flag = true;
                 }
 
-                if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") || __instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2"))
+                if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") || 
+                    __instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
+                    __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
                 {
                     __instance.buttons.Add("PayCops");
 
                     if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1"))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops1"));
-                    else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2"))
+                    else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
+                        __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops2"));
                     
                     __instance.buttonsExtra.Add("");
@@ -1191,6 +1204,20 @@ namespace BunnyMod.Content
             }
 
             return false;
+		}
+        public static void ATMMachine_PayCops(ATMMachine __instance) // Postfix
+		{
+            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+            {
+                if (!__instance.moneySuccess(__instance.determineMoneyCost("PayCops2")))
+                {
+                    __instance.StopInteraction();
+                
+                    return;
+                }
+            
+                __instance.DidPayCops(__instance.interactingAgent);
+			}
 		}
 		#endregion
 		#region Bathtub
@@ -2183,6 +2210,9 @@ namespace BunnyMod.Content
         #region PoliceBox
         public void PoliceBox_00()
         {
+            Type t = typeof(PoliceBox);
+            Type g = GetType();
+
             Postfix(typeof(PoliceBox), "DetermineButtons", GetType(), "PoliceBox_DetermineButtons", new Type[0] { });
         }
         public static void PoliceBox_DetermineButtons(PoliceBox __instance) // Postfix

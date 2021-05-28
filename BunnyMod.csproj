@@ -132,6 +132,10 @@
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
     <None Include="ReadMe.md" />
+    <None Include="Resources\ChronomanticDilation.bin" />
+    <None Include="Resources\CryomanticBolt.bin" />
+    <None Include="Resources\ElectromanticDischarge.bin" />
+    <None Include="Resources\MorphomanticGlamor.bin" />
     <None Include="Staging.md" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +143,6 @@
     <None Include="MD\9.1. GameLogs.md" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
-    <None Include="Properties\Resources\Electromancy.bin" />
     <None Include="Properties\Resources\PyromanticJet.bin" />
     <None Include="Properties\Resources\TelemanticBlink.bin" />
     <None Include="Properties\Resources\ChronomanticDilation.bin" />

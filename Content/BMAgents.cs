@@ -230,7 +230,13 @@ namespace BunnyMod.Content
 		}
 		public static void Agent_Start(Agent __instance) // Postfix
 		{
-			veiledThreatsUsed.Add(__instance, false);
+			// Triggers at level gen. Not instantiator, may be reusing an existing Agent from last level. Saves overhead on procgen appearances/inv/etc.
+			// VeiledThreats tracking bool
+
+			if (veiledThreatsUsed.ContainsKey(__instance))
+				veiledThreatsUsed[__instance] = false;
+			else
+				veiledThreatsUsed.Add(__instance, false);
 		}
 		public static Dictionary<Agent, bool> veiledThreatsUsed = new Dictionary<Agent, bool>();
 		#endregion

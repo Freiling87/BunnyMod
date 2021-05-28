@@ -840,6 +840,8 @@ namespace BunnyMod.Content
 
 						if (newRel == vRelationship.Annoyed)
 							otherAgent.relationships.SetStrikes(___agent, 2);
+						else if (newRel == vRelationship.Hateful)
+							otherAgent.relationships.SetStrikes(___agent, 5);
 					}
 				}
 			}

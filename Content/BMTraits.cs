@@ -595,6 +595,18 @@ namespace BunnyMod.Content
             Myopic_2.Upgrade = null;
             #endregion
             #region Social
+            CustomTrait BootLicker = RogueLibs.CreateCustomTrait(cTrait.BootLicker, true,
+                new CustomNameInfo("Boot Licker", "", "", "", "", "", "", ""),
+                new CustomNameInfo("The only brown thing Cops like is the nose of people like you\n\n- Law Enforcers are Friendly\n-Criminals are Annoyed"));
+            BootLicker.Available = true;
+            BootLicker.AvailableInCharacterCreation = true;
+            BootLicker.CanRemove = true;
+            BootLicker.CanSwap = false;
+            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.Priors,cTrait.GenerallyUnpleasant,cTrait.ObjectivelyUnpleasant,});
+            BootLicker.CostInCharacterCreation = 3;
+            BootLicker.IsActive = true;
+            BootLicker.Upgrade = null;
+                        
             CustomTrait Domineering = RogueLibs.CreateCustomTrait(cTrait.Domineering, true,
                 new CustomNameInfo("Domineering", "", "", "", "", "Доминирующий", "", ""),
                 new CustomNameInfo("There's just something about how you carry yourself. Maybe it's the way you walk, or maybe it's the way you demand obedience from the weak around you. People will occasionally be Submissive to you. Kinky!", "", "", "", "", "Есть что-то в том, как ты себя ведешь. Может быть, что дело в том как вы ходите, а может в том, как вы требуете подчинения от слабых вокруг. Люди иногда будут повиноватся вам, но вы крайне эксцентричны!", "", ""));
@@ -626,12 +638,12 @@ namespace BunnyMod.Content
             GenerallyUnpleasant.AvailableInCharacterCreation = true;
             GenerallyUnpleasant.CanRemove = true;
             GenerallyUnpleasant.CanSwap = false;
-            GenerallyUnpleasant.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
+            GenerallyUnpleasant.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.ObjectivelyUnpleasant, vTrait.Malodorous, cTrait.Polarizing, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
             GenerallyUnpleasant.CostInCharacterCreation = -3;
             GenerallyUnpleasant.IsActive = true;
             GenerallyUnpleasant.Upgrade = null;
 
-            CustomTrait ObjectivelyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant_2, true,
+            CustomTrait ObjectivelyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.ObjectivelyUnpleasant, true,
                 new CustomNameInfo("Objectively Unpleasant", "", "", "", "", "Обьективно неприятный", "", ""),
                 new CustomNameInfo("You chew with your mouth open. You rightfully have no friends in the world. You are scum. Everyone starts out Annoyed, including me.", "", "", "", "", "Вы чавкаете во время еды. У вас в этом мире нету ни единого друга. Вы подонок. Все кто с вами встречаются раздражены, включая меня.", "", ""));
             ObjectivelyUnpleasant.Available = true;
@@ -650,7 +662,7 @@ namespace BunnyMod.Content
             Polarizing.AvailableInCharacterCreation = false;
             Polarizing.CanRemove = false;
             Polarizing.CanSwap = true;
-            Polarizing.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
+            Polarizing.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.ObjectivelyUnpleasant, vTrait.Malodorous, cTrait.Polarizing_2, vTrait.Suspicious, vTrait.Wanted });
             Polarizing.CostInCharacterCreation = 0;
             Polarizing.IsActive = true;
             Polarizing.Upgrade = cTrait.Polarizing_2;
@@ -662,7 +674,7 @@ namespace BunnyMod.Content
             Polarizing_2.AvailableInCharacterCreation = true;
             Polarizing_2.CanRemove = false;
             Polarizing_2.CanSwap = true;
-            Polarizing_2.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.GenerallyUnpleasant_2, vTrait.Malodorous, cTrait.Polarizing, vTrait.Suspicious, vTrait.Wanted });
+            Polarizing_2.Conflicting.AddRange(new string[] { vTrait.Antisocial, vTrait.Charismatic, vTrait.FairGame, vTrait.FriendoftheCommonFolk, cTrait.GenerallyUnpleasant, cTrait.ObjectivelyUnpleasant, vTrait.Malodorous, cTrait.Polarizing, vTrait.Suspicious, vTrait.Wanted });
             Polarizing_2.CostInCharacterCreation = 1;
             Polarizing_2.IsActive = true;
             Polarizing_2.Upgrade = null;

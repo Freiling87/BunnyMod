@@ -998,7 +998,7 @@ namespace BunnyMod.Content
         }
         public static bool AlarmButton_PressedButton(string buttonText, int buttonPrice, AlarmButton __instance) // Replacement
         {
-            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[2] { typeof(string), typeof(int) });
+            MethodInfo pressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
             pressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
 
             if (buttonText == "AllAccessAlarmButton")

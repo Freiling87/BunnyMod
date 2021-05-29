@@ -63,6 +63,26 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] BathtubClosed {
+            get {
+                object obj = ResourceManager.GetObject("BathtubClosed", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] BeerCan {
+            get {
+                object obj = ResourceManager.GetObject("BeerCan", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] ChronomanticDilation {
             get {
                 object obj = ResourceManager.GetObject("ChronomanticDilation", resourceCulture);
@@ -83,6 +103,26 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] Donut {
+            get {
+                object obj = ResourceManager.GetObject("Donut", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] DoorLocker {
+            get {
+                object obj = ResourceManager.GetObject("DoorLocker", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] ElectromanticDischarge {
             get {
                 object obj = ResourceManager.GetObject("ElectromanticDischarge", resourceCulture);
@@ -96,6 +136,16 @@ namespace BunnyMod.Properties {
         public static byte[] MorphomanticGlamor {
             get {
                 object obj = ResourceManager.GetObject("MorphomanticGlamor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] MorphomanticGlamorActive {
+            get {
+                object obj = ResourceManager.GetObject("MorphomanticGlamorActive", resourceCulture);
                 return ((byte[])(obj));
             }
         }

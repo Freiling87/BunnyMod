@@ -131,6 +131,10 @@
     <None Include="MD\2.6. Traits.md" />
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
+    <None Include="Properties\Resources\BathtubClosed.bin" />
+    <None Include="Properties\Resources\Donut.bin" />
+    <None Include="Properties\Resources\DoorLocker.bin" />
+    <None Include="Properties\Resources\MorphomanticGlamorActive.bin" />
     <None Include="ReadMe.md" />
     <None Include="Properties\Resources\ChronomanticDilation.bin" />
     <None Include="Properties\Resources\CryomanticBolt.bin" />

@@ -945,6 +945,17 @@ namespace BunnyMod.Content
 
 					if (otherAgent.agentName == vAgent.ResistanceLeader)
 						newRel = vRelationship.Aligned;
+					else if (otherAgent.agentName == vAgent.Mobster)
+					{
+						if (GC.levelTheme == 0 || GC.levelTheme == 1)
+							newRel = vRelationship.Friendly;
+						else if (GC.levelTheme == 2)
+							newRel = vRelationship.Neutral;
+						else if (GC.levelTheme == 3)
+							newRel = vRelationship.Annoyed;
+						else if (GC.levelTheme == 4 || GC.levelTheme == 5)
+							newRel = vRelationship.Hateful;
+					}
 
 					if (newRel != vRelationship.Neutral)
 					{
@@ -967,6 +978,7 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Postfix(t, "AddTrait", g, "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+			Postfix(t, "AgentIsRival", g, "StatusEffects_AgentIsRival", new Type[1] { typeof(string) });
 			Prefix(t, "BecomeHidden", g, "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
 			Prefix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Prefix", new Type[0] { });
 			Postfix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Postfix", new Type[0]);
@@ -982,6 +994,15 @@ namespace BunnyMod.Content
 				agent.SetEndurance(agent.enduranceStatMod + 1);
 				agent.SetSpeed(agent.speedStatMod - 1);
 			}
+		}
+		public static void StatusEffects_AgentIsRival(Agent myAgent, StatusEffects __instance, ref bool __result) // Postfix
+		{
+			Agent otherAgent = __instance.agent;
+
+			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||
+				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.Criminal.Contains(otherAgent.agentName)) ||
+				(myAgent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
+				__result = true;
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
 		{
@@ -1583,10 +1604,12 @@ namespace BunnyMod.Content
 
 			if (GC.multiplayerMode)
 			{
-				if (hurtAgent.isPlayer != 0 && !hurtAgent.localPlayer)
+				if (hurtAgent.isPlayer != 0 && 
+					!hurtAgent.localPlayer)
 					flag9 = false;
 				
-				if (!GC.serverPlayer && hurtAgent.isPlayer == 0)
+				if (!GC.serverPlayer && 
+					hurtAgent.isPlayer == 0)
 				{
 					flag9 = true;
 					flag10 = true;
@@ -1790,10 +1813,10 @@ namespace BunnyMod.Content
 				if (!flag15 && hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect.agentName == "Custom")
 					hurtAgent.deathKiller = hurtAgent.killedByAgentIndirect.agentRealName;
 				
-				Agent agent8 = null;
+				Agent mindControlAgent = null;
 				
 				if (hurtAgent.oma.mindControlled)
-					agent8 = hurtAgent.mindControlAgent;
+					mindControlAgent = hurtAgent.mindControlAgent;
 				
 				if ((!GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode) || hurtAgent.isPlayer == 0 || hurtAgent.resurrect)
 				{
@@ -1864,7 +1887,7 @@ namespace BunnyMod.Content
 								playerGettingPoints = hurtAgent.killedByAgent.employer;
 						}
 						else if (hurtAgent.recentMindControlAgent != null)
-							agent8 = hurtAgent.recentMindControlAgent;
+							mindControlAgent = hurtAgent.recentMindControlAgent;
 						
 						flag16 = __instance.IsInnocent(playerGettingPoints);
 					}
@@ -1873,16 +1896,16 @@ namespace BunnyMod.Content
 					{
 						bool flag17 = false;
 
-						if (agent8 != null)
+						if (mindControlAgent != null)
 						{
-							GC.stats.AddToStat(agent8, "IndirectlyKilled", 1);
+							GC.stats.AddToStat(mindControlAgent, "IndirectlyKilled", 1);
 						
-							if (__instance.AgentIsRival(agent8))
-								agent8.skillPoints.AddPoints("IndirectlyKillRival");
+							if (__instance.AgentIsRival(mindControlAgent))
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKillRival");
 							else if (flag16)
-								agent8.skillPoints.AddPoints("IndirectlyKillInnocent");
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKillInnocent");
 							else
-								agent8.skillPoints.AddPoints("IndirectlyKill");
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKill");
 						}
 						else if (hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect != hurtAgent)
 						{

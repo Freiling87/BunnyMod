@@ -5758,12 +5758,8 @@ namespace BunnyMod.Content
 						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
 
 					if (level >= 10)
-					{
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
 							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
-						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
-							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
-					}
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
 						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);

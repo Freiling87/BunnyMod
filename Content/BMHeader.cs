@@ -441,7 +441,6 @@ namespace BunnyMod.Content
             ManaBattery = "ManaBattery",
             ManaBattery_2 = "ManaBattery2",
             MobDebt = "MobDebt",
-            MobDebt_2 = "MobDebt2",
             MookMasher = "MookMasher",
             MoronTheMerrier = "MoronTheMerrier",
             Myopic = "Myopic",
@@ -547,7 +546,6 @@ namespace BunnyMod.Content
         {
             Haunted,
             MobDebt,
-            MobDebt_2,
             MookMasher,
             Reinforcements,
             Reinforcements_2,

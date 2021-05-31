@@ -247,6 +247,8 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "AddButton", g, "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			//Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
+			//Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
 			Prefix(t, "Shakedown", g, "AgentInteractions_Shakedown", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "Threaten", g, "AgentInteractions_Threaten", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenKey", g, "AgentInteractions_ThreatenKey", new Type[2] { typeof(Agent), typeof(Agent) });
@@ -256,6 +258,7 @@ namespace BunnyMod.Content
 			Prefix(t, "ThreatenMayorBadge", g, "AgentInteractions_ThreatenMayorBadge", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenMoney", g, "AgentInteractions_ThreatenMoney", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenSafeCombination", g, "AgentInteractions_ThreatenSafeCombination", new Type[2] { typeof(Agent), typeof(Agent) });
+			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
 		}
 		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
@@ -263,6 +266,83 @@ namespace BunnyMod.Content
 				extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
 			else if (extraCost.EndsWith("-20"))
 				extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
+		}
+		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
+		{
+			BMLog("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
+		}
+		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
+		{
+			BMLog("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
+
+			if (agent.agentName == "Hobo")
+			{
+				GC.audioHandler.Play(agent, "AgentTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+				{
+					BMLog("AgentInteractions_DetermineButtons: Adding Buttons");
+
+					__instance.AddButton("Hobo_GiveMoney1", agent.determineMoneyCost("Hobo_GiveMoney1"));
+					__instance.AddButton("Hobo_GiveMoney2", agent.determineMoneyCost("Hobo_GiveMoney2"));
+					__instance.AddButton("Hobo_GiveMoney3", agent.determineMoneyCost("Hobo_GiveMoney3"));
+					__instance.AddButton("Hobo_GiveItem", "(Choose)");
+				}
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
+			{
+				GC.audioHandler.Play(agent, "AgentTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance) // Prefix
+		{
+			BMLog("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
+
+			if (agent.agentName == "Hobo")
+			{
+				if (buttonText == "Hobo_GiveMoney1" || buttonText == "Hobo_GiveMoney2" || buttonText == "Hobo_GiveMoney3")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						BMBehaviors.Hobo_MugMoney(agent, interactingAgent, buttonPrice, BMBehaviors.Hobo_relStatusAfterDonation(agent, interactingAgent, buttonPrice).ToString("f"), buttonText);
+					else
+						BMHeaderTools.SayDialogue(agent, "Hobo_CantAfford", vNameType.Dialogue);
+
+					agent.StopInteraction();
+
+					return false; // Double-check that these aren't skipping anything important
+				}
+				else if (buttonText == "Hobo_GiveItem")
+				{
+					agent.ShowUseOn("Hobo_Donate");
+
+					return false;
+				}
+			}
+			else if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB"))
+			{
+				if (buttonText == "GangBanger_GiveMoney")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						__instance.MugMoney(agent, interactingAgent);
+					else
+						BMHeaderTools.SayDialogue(agent, "Gangbanger_CantAfford", vNameType.Dialogue);
+
+					agent.StopInteraction();
+
+					return false; // Double-check that these aren't skipping anything important
+				}
+			}
+
+			return true;
 		}
 		public static bool AgentInteractions_Shakedown(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
@@ -737,6 +817,25 @@ namespace BunnyMod.Content
 			}
 
 			return true;
+		}
+		public static void AgentInteractions_UseItemOnObject(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType, ref bool __result) // Postfix
+		{
+			BMLog("AgentInteractions_UseItemOnObject: " + item.invItemName);
+
+			if (useOnType == "Hobo_Donate")
+			{
+				string itemName = item.invItemName;
+
+				if (itemName == "Banana" || itemName == "BananaPeel" || itemName == "Beer" || itemName == "Cigarettes" || itemName == "Fud" || itemName == "Sugar" || itemName == "Whiskey")
+					BMBehaviors.Hobo_AcceptDonation(agent, interactingAgent, item);
+				else
+				{
+					BMHeaderTools.SayDialogue(agent, "Hobo_DontWant", vNameType.Dialogue);
+					GC.audioHandler.Play(interactingAgent, "CantDo");
+				}
+
+				__result = true;
+			}
 		}
 		#endregion
 		#region ObjectMult

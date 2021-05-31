@@ -22,7 +22,6 @@ namespace BunnyMod.Content
 		{
 			Initialize_Names();
 
-			AgentInteractions_00();
 			LoadLevel_00();
 			PlayfieldObject_00();
 		}
@@ -185,106 +184,6 @@ namespace BunnyMod.Content
 		}
 		#endregion
 
-		#region AgentInteractions
-		public void AgentInteractions_00()
-		{
-			//Prefix(typeof(AgentInteractions), "AddButton", GetType(), "AgentInteractions_AddButton_4", new Type[3] { typeof(string), typeof(int), typeof(string) });
-			//Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
-			//Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
-			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
-		}
-		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
-		{
-			BMLog("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
-		}
-		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
-		{
-			BMLog("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
-
-			if (agent.agentName == "Hobo")
-			{
-				GC.audioHandler.Play(agent, "AgentTalk");
-
-				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
-				{
-					BMLog("AgentInteractions_DetermineButtons: Adding Buttons");
-
-					__instance.AddButton("Hobo_GiveMoney1", agent.determineMoneyCost("Hobo_GiveMoney1"));
-					__instance.AddButton("Hobo_GiveMoney2", agent.determineMoneyCost("Hobo_GiveMoney2"));
-					__instance.AddButton("Hobo_GiveMoney3", agent.determineMoneyCost("Hobo_GiveMoney3"));
-					__instance.AddButton("Hobo_GiveItem", "(Choose)");
-				}
-				else
-					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
-			}
-			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
-			{
-				GC.audioHandler.Play(agent, "AgentTalk");
-
-				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
-					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
-				else
-					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
-			}
-			return true;
-		}
-		public static bool AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance) // Prefix
-		{
-			BMLog("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
-
-			if (agent.agentName == "Hobo")
-			{
-				if (buttonText == "Hobo_GiveMoney1" || buttonText == "Hobo_GiveMoney2" || buttonText == "Hobo_GiveMoney3")
-				{
-					if (agent.moneySuccess(buttonPrice))
-						Hobo_MugMoney(agent, interactingAgent, buttonPrice, Hobo_relStatusAfterDonation(agent, interactingAgent, buttonPrice).ToString("f"), buttonText);
-					else
-						BMHeaderTools.SayDialogue(agent, "Hobo_CantAfford", vNameType.Dialogue);
-
-					agent.StopInteraction();
-					return false; // Double-check that these aren't skipping anything important
-				}
-				else if (buttonText == "Hobo_GiveItem")
-				{
-					agent.ShowUseOn("Hobo_Donate");
-					return false;
-				}
-			}
-			else if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB"))
-			{
-				if (buttonText == "GangBanger_GiveMoney")
-				{
-					if (agent.moneySuccess(buttonPrice))
-						__instance.MugMoney(agent, interactingAgent);
-					else
-						BMHeaderTools.SayDialogue(agent, "Gangbanger_CantAfford", vNameType.Dialogue);
-
-					agent.StopInteraction();
-					return false; // Double-check that these aren't skipping anything important
-				}
-			}
-			return true;
-		}
-		public static void AgentInteractions_UseItemOnObject(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType, ref bool __result) // Postfix
-		{
-			BMLog("AgentInteractions_UseItemOnObject: " + item.invItemName);
-
-			if (useOnType == "Hobo_Donate")
-			{
-				string itemName = item.invItemName;
-
-				if (itemName == "Banana" || itemName == "BananaPeel" || itemName == "Beer" || itemName == "Cigarettes" || itemName == "Fud" || itemName == "Sugar" || itemName == "Whiskey" )
-					Hobo_AcceptDonation(agent, interactingAgent, item);
-				else
-				{
-					BMHeaderTools.SayDialogue(agent, "Hobo_DontWant", vNameType.Dialogue);
-					GC.audioHandler.Play(interactingAgent, "CantDo");
-				}
-
-				__result = true;
-			}
-		}
-		#endregion
 		#region LoadLevel
 		public void LoadLevel_00()
 		{

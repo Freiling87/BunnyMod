@@ -437,12 +437,12 @@ namespace BunnyMod.Content
 		}
 		public static bool BulletHitbox_OnTriggerEnter2D(Collider2D other, BulletHitbox __instance) // Prefix
 		{
-			// GhillieSuit
+			// Sniper +
 
 			BMLog("BulletHitbox_OnTriggerEnter2D");
 			try { BMLog("\tname: " + other.name); } catch { }
 
-			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait(cTrait.GhillieSuit))
+			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2))
 			{
 				BMLog("\tObject detected");
 				ObjectReal obj = other.GetComponent<ObjectReal>();

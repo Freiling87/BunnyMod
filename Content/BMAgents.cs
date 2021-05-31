@@ -1071,7 +1071,7 @@ namespace BunnyMod.Content
 		}
 		public static bool StatusEffects_BecomeNotHidden_Prefix(StatusEffects __instance) // Prefix
 		{
-			// GhillieSuit
+			// Sniper +
 
 			BMLog("StatusEffects_BecomeNotHidden_Prefix");
 

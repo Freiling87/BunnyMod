@@ -125,31 +125,31 @@ namespace BunnyMod.Content
             DoubleTapper.IsActive = true;
             DoubleTapper.Upgrade = null;
 
-            CustomTrait GhillieSuit = RogueLibs.CreateCustomTrait(cTrait.GhillieSuit, true,
-                new CustomNameInfo("000: Ghillie Suit"),
-                new CustomNameInfo("Wow, that's a poncho made of garbage, isn't it? Well, whatever it takes to blend into the urban environment.\n\n- Using a silent ranged weapon while hidden behind a Bush or other object will not remove you from cover."));
-            GhillieSuit.Available = true;
-            GhillieSuit.AvailableInCharacterCreation = true;
-            GhillieSuit.CanRemove = false;
-            GhillieSuit.CanSwap = true;
-            GhillieSuit.Conflicting.AddRange(new string[] { });
-            GhillieSuit.CostInCharacterCreation = 4;
-            GhillieSuit.Recommendations.AddRange(new string[] { });
-            GhillieSuit.IsActive = true;
-            GhillieSuit.Upgrade = null;
-
             CustomTrait Sniper = RogueLibs.CreateCustomTrait(cTrait.Sniper, true,
                 new CustomNameInfo("Sniper"),
                 new CustomNameInfo("One shot, a pretty good chance of one kill. They can run, but they'll only die tired, unless they get away.\n\n- Past a certain distance, Revolver hits on unaware targets deal massive damage\n- Bullet range increased by ~60%"));
             Sniper.Available = true;
             Sniper.AvailableInCharacterCreation = true;
             Sniper.CanRemove = false;
-            Sniper.CanSwap = true;
+            Sniper.CanSwap = false;
             Sniper.Conflicting.AddRange(new string[] { cTrait.Myopic, cTrait.Myopic2 });
             Sniper.CostInCharacterCreation = 4;
             Sniper.Recommendations.Add(cTrait.EagleEyes);
             Sniper.IsActive = true;
-            Sniper.Upgrade = null;
+            Sniper.Upgrade = cTrait.Sniper_2;
+
+            CustomTrait Sniper_2 = RogueLibs.CreateCustomTrait(cTrait.Sniper_2, true,
+                new CustomNameInfo("000: Sniper +"),
+                new CustomNameInfo("Wow, that's a poncho made of garbage, isn't it? Well, whatever it takes to blend into the urban environment.\n\n- Using a silent ranged weapon while hidden behind a Bush or other object will not remove you from cover."));
+            Sniper_2.Available = true;
+            Sniper_2.AvailableInCharacterCreation = true;
+            Sniper_2.CanRemove = false;
+            Sniper_2.CanSwap = false;
+            Sniper_2.Conflicting.AddRange(new string[] { });
+            Sniper_2.CostInCharacterCreation = 8;
+            Sniper_2.Recommendations.AddRange(new string[] { });
+            Sniper_2.IsActive = true;
+            Sniper_2.Upgrade = null;
             #endregion
             #region Drug Limitations
             CustomTrait DAREdevil = RogueLibs.CreateCustomTrait(cTrait.DAREdevil, true,

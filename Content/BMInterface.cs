@@ -37,9 +37,9 @@ namespace BunnyMod.Content
 		public static float GetZoomLevel(Agent playerAgent)
 		{
 			if (playerAgent.statusEffects.hasTrait(cTrait.EagleEyes))
-				return 0.70f;
+				return 0.75f;
 			else if (playerAgent.statusEffects.hasTrait(cTrait.EagleEyes_2))
-				return 0.40f;
+				return 0.50f;
 			else if (playerAgent.statusEffects.hasTrait(cTrait.Myopic))
 				return 1.50f;
 			else if (playerAgent.statusEffects.hasTrait(cTrait.Myopic2))

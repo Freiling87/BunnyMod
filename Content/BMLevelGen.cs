@@ -66,13 +66,13 @@ namespace BunnyMod.Content
 					curMutator = mutator;
 
 			//ArcologyEcology,
-   //         CityOfSteel,
-   //         GreenLiving,
-   //         Panoptikopolis,
-   //         ShantyTown,
-   //         SpelunkyDory,
-   //         SunkenCity,
-   //         TransitExperiment,
+			//         CityOfSteel,
+			//         GreenLiving,
+			//         Panoptikopolis,
+			//         ShantyTown,
+			//         SpelunkyDory,
+			//         SunkenCity,
+			//         TransitExperiment,
 
 			switch (curMutator)
 			{
@@ -99,7 +99,7 @@ namespace BunnyMod.Content
 		public static string GetWallTypeFromMutator()
 		{
 			BMLog("GetWallTypeFromMutator: '" + GetWallMutator() + "'");
-			
+
 			switch (GetWallMutator())
 			{
 				case cChallenge.CityOfSteel:
@@ -239,14 +239,14 @@ namespace BunnyMod.Content
 			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode))
 			{
 				int chance = 100;
-				
+
 				while (GC.percentChance(chance))
 				{
 					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.RandomRange(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
 					chance -= 25;
 				}
 			}
-				
+
 		}
 		#endregion
 		#region LoadLevel
@@ -311,12 +311,12 @@ namespace BunnyMod.Content
 							__instance.mapChunkArray[x, y].chunkDirX = "Normal";
 						else
 							__instance.mapChunkArray[x, y].chunkDirX = "Reverse";
-						
+
 						if (levelEditorTileChunk.directionY == 0)
 							__instance.mapChunkArray[x, y].chunkDirY = "Normal";
 						else
 							__instance.mapChunkArray[x, y].chunkDirY = "Reverse";
-						
+
 						__instance.mapChunkArray[x, y].chunkRotate = levelEditorTileChunk.rotation;
 
 						Debug.Log(string.Concat(new object[] { "Fill Custom Level Tile: ", __instance.mapChunkArray[x, y].chunkName, " - ", levelEditorTileChunk.directionX, " - ", __instance.mapChunkArray[x, y].chunkDirX, " - ", levelEditorTileChunk.rotation }));
@@ -336,7 +336,7 @@ namespace BunnyMod.Content
 							}
 							else
 								__instance.mapChunkArray[x, y].exitW = false;
-							
+
 							if (x < __instance.levelSizeAxis - 1)
 							{
 								if (__instance.mapChunkArray[x + 1, y].chunkID != 0)
@@ -346,7 +346,7 @@ namespace BunnyMod.Content
 							}
 							else
 								__instance.mapChunkArray[x, y].exitE = false;
-							
+
 							if (y > 0)
 							{
 								if (__instance.mapChunkArray[x, y - 1].chunkID != 0)
@@ -356,7 +356,7 @@ namespace BunnyMod.Content
 							}
 							else
 								__instance.mapChunkArray[x, y].exitN = false;
-							
+
 							if (y < __instance.levelSizeAxis - 1)
 							{
 								if (__instance.mapChunkArray[x, y + 1].chunkID != 0)
@@ -440,7 +440,7 @@ namespace BunnyMod.Content
 
 				if (GC.fourPlayerMode && GC.quests.questTriesTotal < 3)
 					GC.quests.questTriesTotal = 3;
-				
+
 				if (!__instance.customLevel.randomizeQuests)
 				{
 					GC.quests.questTriesTotal = 4;
@@ -567,7 +567,7 @@ namespace BunnyMod.Content
 
 				if (GC.levelTheme == 2 && __instance.levelSizeMax < 24)
 					__instance.levelSizeMax = 24;
-				
+
 				if (GC.levelTheme == 3)
 				{
 					if (__instance.levelSizeMax == 20)
@@ -590,25 +590,25 @@ namespace BunnyMod.Content
 
 				if (GC.levelTheme == 5)
 					__instance.levelSizeMax = 30;
-				
+
 				if (GC.oneTimeVersion)
 				{
 					if (GC.levelTheme == 3)
 						__instance.levelSizeMax = 50;
 					else
 						__instance.levelSizeMax = 30;
-				
+
 					GC.quests.questTriesTotal = 4;
 				}
 
 				if (GC.arcadeMode && GC.quests.questTriesTotal == 4)
 					GC.quests.questTriesTotal = 3;
-				
+
 				if (GC.fourPlayerMode && GC.quests.questTriesTotal < 3)
 					GC.quests.questTriesTotal = 3;
 
 				GC.quests.questTriesTotal = QuestCount(GC.quests.questTriesTotal);
-				
+
 				if (__instance.squareMap)
 				{
 					__instance.mapChunkArray[2, 2].chunkID = 1;
@@ -647,12 +647,12 @@ namespace BunnyMod.Content
 							mapChunk.special = "CanalEndE";
 						else
 							mapChunk.special = "Canal";
-						
+
 						if (num7 > 5)
 							__instance.levelSouth = num7;
 						else if (num7 < 5)
 							__instance.levelNorth = num7;
-						
+
 						if (num7 != 9)
 						{
 							__instance.mapChunkArray[num6, num7].exitN = true;
@@ -695,12 +695,12 @@ namespace BunnyMod.Content
 							mapChunk2.special = "CanalEndS";
 						else
 							mapChunk2.special = "CanalNS";
-						
+
 						if (num8 > 5)
 							__instance.levelEast = num8;
 						else if (num8 < 5)
 							__instance.levelWest = num8;
-						
+
 						if (num9 != 9)
 						{
 							__instance.mapChunkArray[num8, num9].exitN = true;
@@ -771,10 +771,10 @@ namespace BunnyMod.Content
 
 				if (__instance.levelNorth == 0)
 					__instance.levelNorth = 1;
-				
+
 				if (__instance.levelSouth == 9)
 					__instance.levelSouth = 8;
-				
+
 				bool flag = false;
 				bool flag2 = false;
 				List<int> list = new List<int>();
@@ -798,7 +798,7 @@ namespace BunnyMod.Content
 									list2.Add(num15);
 								}
 							}
-				
+
 				if (!__instance.LevelContainsMayor())
 				{
 					int index = Random.Range(0, list3.Count);
@@ -832,7 +832,7 @@ namespace BunnyMod.Content
 
 							if (__instance.mapChunkArray[num20, randA - 1].chunkID != 0 && __instance.mapChunkArray[num20, randA + 1].chunkID != 0 && Mathf.Abs(num20 - num17) > 2 && __instance.mapChunkArray[num20, randA].special == "Canal")
 								num16 = num20;
-							
+
 							num18++;
 						}
 						while (num16 == -1 && num18 < 100);
@@ -847,7 +847,7 @@ namespace BunnyMod.Content
 
 								if (__instance.mapChunkArray[num21, randA - 1].chunkID != 0 && Mathf.Abs(num21 - num17) > 2 && __instance.mapChunkArray[num21, randA].special == "Canal")
 									num16 = num21;
-								
+
 								num18++;
 							}
 							while (num16 == -1 && num18 < 100);
@@ -983,7 +983,7 @@ namespace BunnyMod.Content
 					for (int num31 = 0; num31 < __instance.levelSizeAxis; num31++)
 						for (int num32 = 0; num32 < __instance.levelSizeAxis; num32++)
 							__instance.mapChunkArray[num31, num32] = new MapChunk();
-					
+
 					int num33 = 5;
 					int num34 = 9;
 					int num35 = 0;
@@ -992,7 +992,7 @@ namespace BunnyMod.Content
 					__instance.mapChunkArray[num33, num34].exitN = true;
 					__instance.mapChunkArray[num33, num34].special = "LevelStart";
 					__instance.levelSize++;
-					
+
 					while (__instance.levelSize < __instance.levelSizeMax && num35 < 100 && !flag3)
 					{
 						num35++;
@@ -1001,10 +1001,10 @@ namespace BunnyMod.Content
 
 						if (__instance.levelSize == 1)
 							text = "N";
-						
+
 						if (text == "N" && num34 == 1)
 							flag3 = true;
-						
+
 						if (!flag3 && __instance.PlaceChunk(text, num33, num34))
 						{
 							if (text == "N")
@@ -1015,7 +1015,7 @@ namespace BunnyMod.Content
 								num33++;
 							else if (text == "W")
 								num33--;
-						
+
 							__instance.levelSize++;
 						}
 					}
@@ -1083,19 +1083,19 @@ namespace BunnyMod.Content
 				{
 					num43 = Random.Range(num40 + 1, num41);
 					num45 = Random.Range(num40 + 1, num41);
-				
+
 					if (num45 == num43)
 						num45 = -1;
 				}
 
 				int num47;
 				int num48;
-				
+
 				if (num41 != -1)
 				{
 					num47 = Random.Range(num41 + 1, num36);
 					num48 = Random.Range(num41 + 1, num36);
-				
+
 					if (num48 == num47)
 						num48 = -1;
 				}
@@ -1172,17 +1172,17 @@ namespace BunnyMod.Content
 										num33++;
 									else if (text2 == "W")
 										num33--;
-									
+
 									num53++;
 									__instance.levelSize++;
-									
+
 									if (__instance.mapChunkArray[num51, num52].chunkID == num42 || __instance.mapChunkArray[num51, num52].chunkID == num44)
 										__instance.mapChunkArray[num33, num34].sector = 1;
 									else if (__instance.mapChunkArray[num51, num52].chunkID == num43 || __instance.mapChunkArray[num51, num52].chunkID == num45)
 										__instance.mapChunkArray[num33, num34].sector = 2;
 									else if (__instance.mapChunkArray[num51, num52].chunkID == num47 || __instance.mapChunkArray[num51, num52].chunkID == num48)
 										__instance.mapChunkArray[num33, num34].sector = 3;
-									
+
 									if (num53 == randE)
 										__instance.PlaceKeyOrTreasure(num53, foundExit, num33, num34);
 								}
@@ -1211,16 +1211,16 @@ namespace BunnyMod.Content
 							else if (num35 == 100)
 								__instance.PlaceKeyOrTreasure(num53, foundExit, num33, num34);
 						}
-				
+
 				for (int num55 = 0; num55 < __instance.levelSizeAxis; num55++)
 					for (int num56 = 0; num56 < __instance.levelSizeAxis; num56++)
 					{
 						if (!___placedKey1 && __instance.mapChunkArray[num55, num56].chunkID == num40)
 							__instance.mapChunkArray[num55, num56].functionType = "";
-						
+
 						if (!___placedKey2 && __instance.mapChunkArray[num55, num56].chunkID == num41)
 							__instance.mapChunkArray[num55, num56].functionType = "";
-					
+
 						if (!___placedKey3)
 							_ = __instance.mapChunkArray[num55, num56].chunkID;
 					}
@@ -1266,7 +1266,7 @@ namespace BunnyMod.Content
 							string floorTileGroup = vFloorTileGroup.Building; // Homebase is default
 
 							if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-								floorTileGroup = GetFloorTileGroup();
+								floorTileGroup = vFloorTileGroup.Park; // GetFloorTileGroup();
 							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
 								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors) || BMHeader.debugMode)
@@ -1284,9 +1284,9 @@ namespace BunnyMod.Content
 								else if (GC.levelTheme == 5)
 									floorTileGroup = vFloorTileGroup.MayorVillage;
 							}
-							
+
 							tile = int.Parse(GC.rnd.RandomSelect(floorTileGroup, "RandomFloorsWalls"));
-							
+
 							___tilemapFloors2.SetTile(k, l - 1, 0, tile);
 						}
 					}
@@ -1305,6 +1305,168 @@ namespace BunnyMod.Content
 			}
 
 			__instance.allChunksFilled = true;
+
+			yield break;
+		}
+		public static bool LoadLevel_FillMapChunks_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapWalls, ref tk2dTileMap ___tilemapFloors2) // Replacement
+		{
+			__result = LoadLevel_FillMapChunks_Replacement(__instance, ___tilemapWalls, ___tilemapFloors2);
+
+			return false;
+		}
+		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapWalls, tk2dTileMap ___tilemapFloors2) // Non-Patch
+		{
+			float maxChunkTime = 0.02f;
+			float realtimeSinceStartup = Time.realtimeSinceStartup;
+			int triesCount = 0;
+			int num;
+
+			for (int i2 = 0; i2 < __instance.levelSizeAxis; i2 = num + 1)
+			{
+				for (int j2 = 0; j2 < __instance.levelSizeAxis; j2 = num + 1)
+				{
+					num = triesCount;
+					triesCount = num + 1;
+
+					if (__instance.mapChunkArray[i2, j2].chunkID != 0)
+					{
+						int num2 = i2 * 16;
+						int num3 = i2 * 16 + 16;
+						int num4 = 160 - j2 * 16;
+						int num5 = 160 - j2 * 16 - 16;
+
+						for (int k = num2; k < num3; k++)
+						{
+							for (int l = num4; l > num5; l--)
+							{
+								___tilemapWalls.ClearTile(k, l - 1, 0);
+								__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+								int tile = 0;
+								string tilemapGroup = vFloorTileGroup.Building;
+
+								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
+									tilemapGroup = vFloorTileGroup.MayorVillage;
+								else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
+								{
+									if (GC.levelTheme == 0)
+										tilemapGroup = vFloorTileGroup.Slums;
+									else if (GC.levelTheme == 1)
+										tilemapGroup = vFloorTileGroup.Industrial;
+									else if (GC.levelTheme == 2)
+										tilemapGroup = vFloorTileGroup.Park;
+									else if (GC.levelTheme == 3)
+										tilemapGroup = vFloorTileGroup.Downtown;
+									else if (GC.levelTheme == 4)
+										tilemapGroup = vFloorTileGroup.Uptown;
+									else if (GC.levelTheme == 5)
+										tilemapGroup = vFloorTileGroup.MayorVillage;
+								}
+
+								tile = int.Parse(GC.rnd.RandomSelect(tilemapGroup, "RandomFloorsWalls"));
+								___tilemapFloors2.SetTile(k, l - 1, 0, tile);
+							}
+						}
+					}
+					else if (!GC.holeLevel)
+					{
+						__instance.mapChunkArray[i2, j2].filled = true;
+						int num6 = i2 * 16;
+						int num7 = i2 * 16 + 16;
+						int num8 = 160 - j2 * 16;
+						int num9 = 160 - j2 * 16 - 16;
+
+						for (int m = num6; m < num7; m++)
+						{
+							for (int n = num8; n > num9; n--)
+							{
+								if (m != 0 && n != 160 && m != (__instance.levelSizeAxis - 1) * 16 + 16 - 1 && n != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
+								{
+									int wallMaterialOffset = 0;
+									int wallMaterialOffsetTop = 0;
+
+									switch (GC.levelTheme)
+									{
+										case 0:
+											wallMaterialOffset = 72;
+											wallMaterialOffsetTop = 140;
+											break;
+										case 1:
+											wallMaterialOffset = 244;
+											wallMaterialOffsetTop = 1015;
+											break;
+										case 2:
+											wallMaterialOffset = 220;
+											wallMaterialOffsetTop = 1085;
+											break;
+										case 3:
+											wallMaterialOffset = 228;
+											wallMaterialOffsetTop = 1155;
+											break;
+										case 4:
+											wallMaterialOffset = 236;
+											wallMaterialOffsetTop = 1225;
+											break;
+										case 5:
+											wallMaterialOffset = 300;
+											wallMaterialOffsetTop = 1673;
+											break;
+									}
+
+									___tilemapWalls.SetTile(m, n - 1, 0, 0);
+									TileData tileData = __instance.tileInfo.tileArray[m, n - 1];
+									tileData.wallMaterialOffset = wallMaterialOffset;
+									tileData.wallMaterialOffsetTop = wallMaterialOffsetTop;
+									tileData.wallFrontVariation = true;
+									tileData.wallMaterial = wallMaterialType.Border;
+									int tile2 = 0;
+									string tilemapGroup = vFloorTileGroup.Building;
+
+									if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
+										tilemapGroup = vFloorTileGroup.Industrial;
+									else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
+									{
+										if (GC.levelTheme == 0)
+											tilemapGroup = vFloorTileGroup.Slums;
+										else if (GC.levelTheme == 1)
+											tilemapGroup = vFloorTileGroup.Industrial;
+										else if (GC.levelTheme == 2)
+											tilemapGroup = vFloorTileGroup.Park;
+										else if (GC.levelTheme == 3)
+											tilemapGroup = vFloorTileGroup.Downtown;
+										else if (GC.levelTheme == 4)
+											tilemapGroup = vFloorTileGroup.Uptown;
+										else if (GC.levelTheme == 5)
+											tilemapGroup = vFloorTileGroup.MayorVillage;
+									}
+
+									tile2 = int.Parse(GC.rnd.RandomSelect(tilemapGroup, "RandomFloorsWalls"));
+									___tilemapFloors2.SetTile(m, n - 1, 0, tile2);
+									tileData.chunkID = __instance.mapChunkArray[i2, j2].chunkID;
+								}
+							}
+						}
+					}
+
+					if (Time.realtimeSinceStartup - realtimeSinceStartup > maxChunkTime)
+					{
+						yield return null;
+
+						realtimeSinceStartup = Time.realtimeSinceStartup;
+					}
+
+					Random.InitState(__instance.randomSeedNum + triesCount);
+					num = j2;
+				}
+				num = i2;
+			}
+
+			if (GC.levelType == "Tutorial" || GC.levelType == "HomeBase")
+				__instance.allChunksFilled = true;
+			else 
+			{
+				IEnumerator FillMapChunks2_Private = (IEnumerator)AccessTools.Method(typeof(LoadLevel), "FillMapChunks2", new Type[0] { });
+				__instance.StartCoroutine(FillMapChunks2_Private);
+			}
 
 			yield break;
 		}

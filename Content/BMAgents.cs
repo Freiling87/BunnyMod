@@ -1025,8 +1025,9 @@ namespace BunnyMod.Content
 
 			Agent agent = __instance.agent;
 			agent.oma.hidden = true;
-			
-			BMLog("\tA" + a++);
+			string audio = vAudioClip.Hide;
+
+				BMLog("\tA" + a++);
 
 			if (!(hiddenInObject is null))
 			{
@@ -1035,11 +1036,45 @@ namespace BunnyMod.Content
 				string objName = hiddenInObject.name;
 				agent.hiddenInObject = hiddenInObject;
 				hiddenInObject.agentHiding = agent;
+				string hide = "North";
+
+				switch (objName)
+				{
+					case vObject.Bathtub:
+						audio = vAudioClip.AgentJoin;
+						hide = "Conditional";
+						break;
+					case vObject.Bush:
+						audio = vAudioClip.Hide;
+						hide = "North";
+						break;
+					case vObject.Plant:
+						audio = vAudioClip.Hide;
+						hide = "South";
+						break;
+					case vObject.PoolTable:
+						audio = vAudioClip.AgentKnockOut;
+						hide = "North";
+						break;
+					case vObject.TableBig:
+						audio = vAudioClip.AgentKnockout2;
+						hide = "North";
+						break;
+					case vObject.TrashCan:
+						audio = vAudioClip.Hoist;
+						hide = "South";
+						break;
+				}
 				
-				if (objName == vObject.Bush || objName == vObject.TableBig)
+				if (hide == "North")
 					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
-				else
+				else if (hide == "South")
 					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y - 0.24f);
+				else if (hide == "Conditional")
+				{
+					agent.tr.position = new Vector2(hiddenInObject.tr.position.x, hiddenInObject.tr.position.y + 0.24f);
+					// Placeholder, detect walls here and do case-by-case
+				}
 
 				agent.rb.velocity = Vector2.zero;
 
@@ -1063,7 +1098,8 @@ namespace BunnyMod.Content
 			agent.SetInvisible(true);
 			agent.objectSprite.RefreshRenderer();
 			agent.objectMult.BecomeHidden();
-			GC.audioHandler.Play(agent, "Hide");
+
+			GC.audioHandler.Play(agent, audio);
 
 			BMLog("\tA" + a++);
 

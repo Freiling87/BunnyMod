@@ -1962,7 +1962,7 @@ namespace BunnyMod.Content
             WoodClean = "WoodClean",
             WoodSlats = "WoodSlats";
 
-        public static List<string> ConstructedFloors = new List<string>()
+        public static List<string> Constructed = new List<string>()
         {
 			ArenaFloor,
             ArmoryFloor,
@@ -1975,9 +1975,7 @@ namespace BunnyMod.Content
             Checkerboard,
             Checkerboard2,
             CleanTiles,
-            CleanTilesRaised,
             DanceFloor,
-            DanceFloorRaised, 
             DirtyTiles, 
             DrugDenFloor,
             ElectronicPlates,
@@ -2000,14 +1998,21 @@ namespace BunnyMod.Content
             WoodClean,
             WoodSlats,
         };
-        public static List<string> NaturalFloors = new List<string>()
+        public static List<string> Natural = new List<string>()
         {
             CaveFloor,
             DirtFloor,
             Grass,
         };
+        public static List<string> Raised = new List<string>()
+        {
+            ArenaFloor,
+            CleanTilesRaised,
+            DanceFloorRaised
+        };
         public static List<string> Rugs = new List<string>()
         {
+            CasinoFloor,
             Posh,
             RugBlue,
             RugDarkBlue,

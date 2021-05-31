@@ -158,6 +158,10 @@ namespace BunnyMod.Content
 
 			return vanilla;
 		}
+		public static int LevelSizeRatio()
+		{
+			return LevelSizeModifier(30) / 30;
+		}
 		public static int MafiaCount(int vanilla)
 		{
 			return vanilla;
@@ -191,7 +195,7 @@ namespace BunnyMod.Content
 
 			if (GetActiveFloorMod() != null)
 			{
-				if (vFloor.NaturalFloors.Contains(floorName))
+				if (vFloor.Natural.Contains(floorName))
 				{
 					if (GC.challenges.Contains(cChallenge.GreenLiving))
 						floorName = vFloor.Grass;
@@ -205,7 +209,7 @@ namespace BunnyMod.Content
 					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 						floorName = vFloor.Grass;
 				}
-				else if (vFloor.ConstructedFloors.Contains(floorName))
+				else if (vFloor.Constructed.Contains(floorName))
 				{
 					if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalFloor;
@@ -214,9 +218,22 @@ namespace BunnyMod.Content
 					else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
 						floorName = vFloor.CleanTiles;
 					else if (GC.challenges.Contains(cChallenge.ShantyTown))
-						floorName = vFloor.WoodSlats;
+						floorName = vFloor.DrugDenFloor;
 					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 						floorName = vFloor.CaveFloor;
+				}
+				else if (vFloor.Raised.Contains(floorName))
+				{
+					if (GC.challenges.Contains(cChallenge.CityOfSteel))
+						floorName = vFloor.SolidPlates;
+					else if (GC.challenges.Contains(cChallenge.GreenLiving))
+						floorName = vFloor.CaveFloor;
+					else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+						floorName = vFloor.CleanTilesRaised;
+					else if (GC.challenges.Contains(cChallenge.ShantyTown))
+						floorName = vFloor.DirtyTiles;
+					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
+						floorName = vFloor.Grass;
 				}
 			}
 
@@ -3715,7 +3732,7 @@ namespace BunnyMod.Content
 					if (hasFountains || BMHeader.debugMode)
 					{
 						Debug.Log("Loading Fountains");
-						int numObjects = 1;
+						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
 						int num2;
 
 						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
@@ -3725,10 +3742,10 @@ namespace BunnyMod.Content
 
 							do
 							{
-								vector20 = GC.tileInfo.FindRandLocationGeneral(1f);
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
 
 								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
-									if (GC.objectRealList[num47].objectName == "Fountain" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < 14f)
+									if (GC.objectRealList[num47].objectName == "Fountain" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
 										vector20 = Vector2.zero;
 
 								num46++;

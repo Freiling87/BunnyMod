@@ -30,6 +30,7 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			BasicFloor_00();
+			BasicWall_00();
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
@@ -220,6 +221,32 @@ namespace BunnyMod.Content
 			}
 
 			return true;
+		}
+		#endregion
+		#region BasicWall
+		public void BasicWall_00()
+		{
+			Type t = typeof(BasicWall);
+			Type g = GetType();
+
+			Postfix(t, "Spawn", g, "BasicWall_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static void BasicWall_Spawn(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Postfix
+		{
+			// FloralerFlora Hedge Wall leaves spawn
+
+
+			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode))
+			{
+				int chance = 100;
+				
+				while (GC.percentChance(chance))
+				{
+					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.RandomRange(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
+					chance -= 25;
+				}
+			}
+				
 		}
 		#endregion
 		#region LoadLevel
@@ -2636,14 +2663,14 @@ namespace BunnyMod.Content
 
 							do
 							{
-								spot = GC.tileInfo.FindRandLocationGeneral(2f);
+								spot = GC.tileInfo.FindRandLocationGeneral(0f); // Vanilla 2f
 
 								tries++;
 							}
 							while (spot == Vector2.zero && tries < 100);
 
 							if (spot != Vector2.zero)
-								GC.spawnerMain.SpawnWreckagePileObject(spot, GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter), false);
+								GC.spawnerMain.SpawnWreckagePileObject(spot, GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter, vObject.VendorCart), false);
 								
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{

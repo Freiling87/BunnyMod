@@ -707,7 +707,7 @@ namespace BunnyMod.Content
                     case vObject.ATMMachine:
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.Lamp, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
                             chance -= 10;
                         }
 
@@ -715,19 +715,19 @@ namespace BunnyMod.Content
                     case vObject.Barbecue:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, true);
-                            chance -= 20;
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.24f, 0.24f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.Bush, true);
+                            chance -= 25;
                         }
 
                         break;
                     case vObject.Boulder:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vItem.Rock);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
 
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.FlamingBarrel, false);
-                            chance -= 10;
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.FlamingBarrel, false);
+                            chance -= 15;
                         }
 
                         break;
@@ -745,8 +745,8 @@ namespace BunnyMod.Content
                     case vObject.FlamingBarrel:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vObject.Bush, true);
-                            chance -= 20; 
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.12f, 0.12f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
+                            chance -= 25; 
                         }
 
                         break;

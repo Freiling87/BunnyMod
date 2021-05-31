@@ -82,7 +82,7 @@ namespace BunnyMod.Content
 					agent.wontFlee = true;
 					agent.agentActive = true;
 					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-					//agent.oma.mustBeGuilty = true;
+					agent.oma.mustBeGuilty = true;
 					spawnedAgentList.Add(agent);
 
 					if (spawnedAgentList.Count > 1)
@@ -987,6 +987,9 @@ namespace BunnyMod.Content
 		}
 		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
+			// Fatass
+			// Sniper
+
 			Agent agent = __instance.agent;
 
 			if (traitName == cTrait.Fatass)
@@ -994,9 +997,16 @@ namespace BunnyMod.Content
 				agent.SetEndurance(agent.enduranceStatMod + 1);
 				agent.SetSpeed(agent.speedStatMod - 1);
 			}
+			else if (traitName == cTrait.Sniper || traitName == cTrait.Sniper_2)
+			{
+				__instance.SpecialAbilityInterfaceCheck();
+				// I think this is triggered once, and then continues as long as you have it.
+			}
 		}
 		public static void StatusEffects_AgentIsRival(Agent myAgent, StatusEffects __instance, ref bool __result) // Postfix
 		{
+			// All custom Social traits with Rivalry & XP bonus
+
 			Agent otherAgent = __instance.agent;
 
 			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||

@@ -344,7 +344,7 @@ namespace BunnyMod.Content
             MSA_TB_Recharge3 = "MSA_TB_Recharge3",
             MSA_TB_Recharge4 = "MSA_TB_Recharge4",
             PurchaseElevator = "PurchaseElevator",
-            SlotMachineJackpot = "SlotMachineJackpot_", // For concatenation into following
+            SlotMachineJackpot_ = "SlotMachineJackpot_", // For concatenation into following
             SlotMachineJackpot_1 = "SlotMachineJackpot_1",
             SlotMachineJackpot_2 = "SlotMachineJackpot_2",
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",

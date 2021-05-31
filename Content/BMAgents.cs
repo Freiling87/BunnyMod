@@ -291,12 +291,24 @@ namespace BunnyMod.Content
 				else
 					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
 			}
-			if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
+			else if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
 			{
 				GC.audioHandler.Play(agent, "AgentTalk");
 
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+			else if (agent.agentName == "Junkie")
+			{
+				GC.audioHandler.Play(agent, "AgenTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+				{
+					__instance.AddButton("Junkie_GiveMoney", agent.determineMoneyCost("Mug_Junkie"));
+					__instance.AddButton("Junkie_GiveItem", agent.determineMoneyCost("Junkie_GiveItem"));
+				}
 				else
 					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
 			}

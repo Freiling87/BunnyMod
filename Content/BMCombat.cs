@@ -440,61 +440,69 @@ namespace BunnyMod.Content
 		{
 			// Vanilla
 
-			__instance.myBullet.doingFakeHit = false;
-			bool flag = false;
-			int num = 0;
+			Bullet myBullet = __instance.myBullet;
+			myBullet.doingFakeHit = false;
+			bool bulletShotByMindSlave = false;
+			int playerNumber = 0;
+			Agent agent = null;
+			bulletStatus bulletType = myBullet.bulletType;
+			Bullet bullet = myBullet;
 
-			if (__instance.myBullet.agent != null)
+			if (myBullet.agent != null)
 			{
-				if (__instance.myBullet.agent.localPlayer || (!GC.serverPlayer && __instance.myBullet.agent.mindControlAgent == GC.playerAgent))
-					flag = true;
+				agent = myBullet.agent;
+
+				if (agent.localPlayer || (!GC.serverPlayer && agent.mindControlAgent == GC.playerAgent))
+					bulletShotByMindSlave = true;
 			
-				num = __instance.myBullet.agent.isPlayer;
+				playerNumber = agent.isPlayer;
 				
-				if (__instance.myBullet.agent.mindControlAgent != null && __instance.myBullet.agent.mindControlAgent != GC.playerAgent)
-					num = -1;
+				if (agent.mindControlAgent != null && agent.mindControlAgent != GC.playerAgent)
+					playerNumber = -1;
 			}
 
 			if (fromClient && hitObject.CompareTag("AgentSprite"))
 			{
-				Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
-				__instance.HitAftermath(agent, num, flag, fromClient);
+				Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
+				__instance.HitAftermath(hitAgent, playerNumber, bulletShotByMindSlave, fromClient);
 			}
 			
-			if (__instance.myBullet.fakeDestroyed)
+			if (myBullet.fakeDestroyed)
 				return false;
 			
-			if (GC.multiplayerMode && GC.serverPlayer && !flag && num != 0 && !fromClient)
+			if (GC.multiplayerMode && GC.serverPlayer && !bulletShotByMindSlave && playerNumber != 0 && !fromClient)
 			{
-				bool flag2 = true;
+				bool isSpecialBulletType = true;
 			
 				if (!hitObject.CompareTag("ObjectRealSprite") && !hitObject.CompareTag("AgentSprite") && !hitObject.CompareTag("ItemImage") && !hitObject.CompareTag("BulletHitbox"))
 					return false;
 				
 				if (hitObject.CompareTag("AgentSprite"))
 				{
-					Agent agent2 = hitObject.GetComponent<ObjectSprite>().agent;
+					Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
 				
-					if (agent2 == __instance.myBullet.agent)
-						flag2 = false;
+					if (hitAgent == agent)
+						isSpecialBulletType = false;
 					
-					if (agent2.localPlayer && num != 0 && !flag)
-						flag2 = false;
+					if (hitAgent.localPlayer && playerNumber != 0 && !bulletShotByMindSlave)
+						isSpecialBulletType = false;
 				}
 				else if (hitObject.CompareTag("BulletHitbox"))
-					flag2 = (__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher);
+					isSpecialBulletType = bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher;
 				
-				if (flag2)
-					__instance.myBullet.doingFakeHit = true;
+				if (isSpecialBulletType)
+					myBullet.doingFakeHit = true;
 			}
 
 			if (!__instance.ObjectListContains(hitObject))
 			{
 				__instance.objectList.Add(hitObject);
 			
-				if (__instance.myBullet.bulletType != bulletStatus.GhostBlaster)
+				if (bulletType != bulletStatus.GhostBlaster)
 				{
-					if (hitObject.CompareTag("ObjectRealSprite") && __instance.myBullet.bulletType != bulletStatus.LeafBlower && __instance.myBullet.bulletType != bulletStatus.ResearchGun)
+					if (hitObject.CompareTag("ObjectRealSprite") &&
+						bulletType != bulletStatus.LeafBlower &&
+						bulletType != bulletStatus.ResearchGun)
 					{
 						ObjectReal objectReal;
 				
@@ -502,13 +510,22 @@ namespace BunnyMod.Content
 							objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
 						else
 							objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
+
+						bool sniperShootFromCover = false;
+
+						if (agent.statusEffects.hasTrait(cTrait.Sniper_2) &&
+							agent.hiddenInObject != null &&
+							agent.hiddenInObject == objectReal)
+							sniperShootFromCover = true;
+
+						if (!GC.serverPlayer && !bulletShotByMindSlave)
+							myBullet.doingFakeHit = true;
 						
-						if (!GC.serverPlayer && !flag)
-							__instance.myBullet.doingFakeHit = true;
-						
-						if ((__instance.HasLOSBullet(objectReal) || objectReal.isDoor || objectReal.isWindow) && objectReal.spr.GetComponent<MeshRenderer>().enabled && objectReal != __instance.myBullet.objectReal)
+						if ((__instance.HasLOSBullet(objectReal) || objectReal.isDoor || objectReal.isWindow) && 
+							objectReal.spr.GetComponent<MeshRenderer>().enabled && 
+							objectReal != myBullet.objectReal)
 						{
-							bool flag3 = false;
+							bool bulletBreakingWindow = false;
 						
 							if (objectReal.objectName == "Window")
 							{
@@ -516,289 +533,314 @@ namespace BunnyMod.Content
 							
 								if (!window.hitWindowOnce)
 								{
-									bool flag4 = true;
+									bool WindowStopsBullet = true;
 								
-									if (__instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") && __instance.myBullet.bulletType != bulletStatus.Rocket && __instance.myBullet.bulletType != bulletStatus.MindControl)
-										flag4 = false;
+									if (agent != null && 
+										agent.statusEffects.hasTrait("BulletsPassThroughObjects") &&
+										bulletType != bulletStatus.Rocket &&
+										bulletType != bulletStatus.MindControl)
+										WindowStopsBullet = false;
 									
-									if (__instance.myBullet.bulletType == bulletStatus.Tranquilizer)
+									if (bulletType == bulletStatus.Tranquilizer)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.Taser)
+									else if (bulletType == bulletStatus.Taser)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.Dart)
+									else if (bulletType == bulletStatus.Dart)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.Shrink)
+									else if (bulletType == bulletStatus.Shrink)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.FreezeRay)
+									else if (bulletType == bulletStatus.FreezeRay)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.WaterPistol)
+									else if (bulletType == bulletStatus.WaterPistol)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.Water2)
+									else if (bulletType == bulletStatus.Water2)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.FireExtinguisher)
+									else if (bulletType == bulletStatus.FireExtinguisher)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.LeafBlower)
+									else if (bulletType == bulletStatus.LeafBlower)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.ResearchGun)
+									else if (bulletType == bulletStatus.ResearchGun)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (__instance.myBullet.bulletType == bulletStatus.ZombieSpit)
+									else if (bulletType == bulletStatus.ZombieSpit)
 									{
-										__instance.myBullet.BulletHitEffect(hitObject);
+										myBullet.BulletHitEffect(hitObject);
 									
-										if (flag4)
+										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
-									else if (!__instance.myBullet.doingFakeHit)
+									else if (!myBullet.doingFakeHit)
 									{
-										flag3 = true;
+										bulletBreakingWindow = true;
 										window.hitWindowOnce = true;
 									}
 								}
 							}
 
-							bool flag5 = true;
-							bool flag6 = true;
+							bool bulletPassingObject = true;
+							bool bulletIsFire = true;
 							
-							if (objectReal.bulletsCanPass && !flag3)
-								flag5 = false;
+							if (objectReal.bulletsCanPass && !bulletBreakingWindow)
+								bulletPassingObject = false;
 							
-							if (objectReal.bulletsCanPass && __instance.myBullet.bulletType != bulletStatus.Fire)
-								flag6 = false;
+							if (objectReal.bulletsCanPass && bulletType != bulletStatus.Fire)
+								bulletIsFire = false;
 							
-							if (!objectReal.notRealObject && !objectReal.OnFloor && (flag5 || flag6))
+							if (!objectReal.notRealObject && 
+								!objectReal.OnFloor && 
+								(bulletPassingObject || bulletIsFire) &&
+								!sniperShootFromCover) // Sniper_2
 							{
-								if (__instance.myBullet.bulletType == bulletStatus.Tranquilizer)
+								if (bulletType == bulletStatus.Tranquilizer)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 							
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Taser)
+								else if (bulletType == bulletStatus.Taser)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Dart)
+								else if (bulletType == bulletStatus.Dart)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Shrink)
+								else if (bulletType == bulletStatus.Shrink)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.FreezeRay)
+								else if (bulletType == bulletStatus.FreezeRay)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.WaterPistol)
+								else if (bulletType == bulletStatus.WaterPistol)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Water)
+								else if (bulletType == bulletStatus.Water)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Water2)
+								else if (bulletType == bulletStatus.Water2)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.FireExtinguisher)
+								else if (bulletType == bulletStatus.FireExtinguisher)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.LeafBlower)
-									__instance.myBullet.BulletHitEffect(hitObject);
-								else if (__instance.myBullet.bulletType == bulletStatus.ResearchGun)
-									__instance.myBullet.BulletHitEffect(hitObject);
-								else if (__instance.myBullet.bulletType == bulletStatus.ZombieSpit)
+								else if (bulletType == bulletStatus.LeafBlower)
+									myBullet.BulletHitEffect(hitObject);
+								else if (bulletType == bulletStatus.ResearchGun)
+									myBullet.BulletHitEffect(hitObject);
+								else if (bulletType == bulletStatus.ZombieSpit)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
-								else if (__instance.myBullet.bulletType != bulletStatus.Fire || !objectReal.fireDoesntDamage)
+								else if (bulletType != bulletStatus.Fire || !objectReal.fireDoesntDamage)
 								{
-									if (!__instance.myBullet.doingFakeHit)
+									if (!myBullet.doingFakeHit)
 									{
-										objectReal.Damage(__instance.myBullet, fromClient);
+										objectReal.Damage(myBullet, fromClient);
 								
-										if (__instance.myBullet.gun != null && !objectReal.noDamageNoise && __instance.myBullet.gun.invItemName != "TranquilizerGun")
-											GC.spawnerMain.SpawnNoise(objectReal.FindDamageNoisePos(objectReal.tr.position), (float)objectReal.noiseHitVol, null, null, __instance.myBullet.agent, true).bulletMadeNoise = true;
+										if (myBullet.gun != null && !objectReal.noDamageNoise && myBullet.gun.invItemName != "TranquilizerGun")
+											GC.spawnerMain.SpawnNoise(objectReal.FindDamageNoisePos(objectReal.tr.position), (float)objectReal.noiseHitVol, null, null, myBullet.agent, true).bulletMadeNoise = true;
 										
-										if (__instance.myBullet.agent != null)
+										if (myBullet.agent != null)
 										{
-											if (__instance.myBullet.bulletType == bulletStatus.Fire)
+											if (bulletType == bulletStatus.Fire)
 											{
 												if (objectReal.fireProof)
-													GC.OwnCheck(__instance.myBullet.agent, hitObject, "Normal", 1);
+													GC.OwnCheck(myBullet.agent, hitObject, "Normal", 1);
 												else
-													GC.OwnCheck(__instance.myBullet.agent, hitObject, "Normal", 0);
+													GC.OwnCheck(myBullet.agent, hitObject, "Normal", 0);
 											}
-											else if (__instance.myBullet.bulletType == bulletStatus.Shotgun)
+											else if (bulletType == bulletStatus.Shotgun)
 											{
 												if (!objectReal.shotgunHitsThisTick)
 												{
 													objectReal.shotgunHitsThisTick = true;
-													objectReal.tickEndBullet = __instance.myBullet;
+													objectReal.tickEndBullet = myBullet;
 												}
 											}
 											else
-												GC.OwnCheck(__instance.myBullet.agent, hitObject, "Normal", 1);
+												GC.OwnCheck(myBullet.agent, hitObject, "Normal", 1);
 										}
 										
-										if ((objectReal.destroying || objectReal.justDamaged) && __instance.myBullet.agent != null && (num != 0 && flag))
+										if ((objectReal.destroying || objectReal.justDamaged) && myBullet.agent != null && (playerNumber != 0 && bulletShotByMindSlave))
 										{
-											GC.ScreenShake(0.2f, 80f, __instance.myBullet.tr.position, __instance.myBullet.agent);
+											GC.ScreenShake(0.2f, 80f, myBullet.tr.position, myBullet.agent);
 										
 											if (objectReal.destroying && !objectReal.noDestroyEffects)
 												GC.FreezeFrames(1);
 										}
 
-										if (objectReal.destroying && (__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball) && !objectReal.fireProof)
+										if (objectReal.destroying && (bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && !objectReal.fireProof)
 											objectReal.burnt = true;
 									}
 
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 								}
 							}
 
 							if (!objectReal.bulletsCanPass)
 							{
-								if (!__instance.myBullet.doingFakeHit)
+								if (!myBullet.doingFakeHit)
 								{
-									bool flag7 = false;
+									bool causeFire = false;
 							
-									if (__instance.myBullet.agent != null && __instance.CanCauseFire())
-										flag7 = true;
+									if (myBullet.agent != null && 
+										__instance.CanCauseFire())
+										causeFire = true;
 									
-									if ((__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball || flag7) && !objectReal.fireProof && !objectReal.ora.onFire)
-										GC.spawnerMain.SpawnFire(__instance.myBullet, objectReal.gameObject);
+									if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || causeFire) && 
+										!objectReal.fireProof && 
+										!objectReal.ora.onFire)
+										GC.spawnerMain.SpawnFire(myBullet, objectReal.gameObject);
 								}
 
-								if ((__instance.myBullet.bulletType == bulletStatus.Normal || __instance.myBullet.bulletType == bulletStatus.Shotgun || __instance.myBullet.bulletType == bulletStatus.Revolver || __instance.myBullet.bulletType == bulletStatus.Laser) && !__instance.myBullet.fakeDestroyed && !__instance.myBullet.playedBulletHitEffect)
+								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser) && 
+									!myBullet.fakeDestroyed && 
+									!myBullet.playedBulletHitEffect)
 								{
-									if (__instance.myBullet.bulletType == bulletStatus.Laser)
-										GC.spawnerMain.SpawnParticleEffect("BulletHitLaser", __instance.myBullet.tr.position, __instance.myBullet.tr.eulerAngles.z);
+									if (bulletType == bulletStatus.Laser)
+										GC.spawnerMain.SpawnParticleEffect("BulletHitLaser", myBullet.tr.position, myBullet.tr.eulerAngles.z);
 									else
-										GC.spawnerMain.SpawnParticleEffect("BulletHit", __instance.myBullet.tr.position, __instance.myBullet.tr.eulerAngles.z);
+										GC.spawnerMain.SpawnParticleEffect("BulletHit", myBullet.tr.position, myBullet.tr.eulerAngles.z);
 								}
 								
-								bool flag8 = true;
+								bool bulletDestroyedHere = true;
 								
-								if (__instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") && __instance.myBullet.bulletType != bulletStatus.Rocket && __instance.myBullet.bulletType != bulletStatus.MindControl && objectReal.damageAccumulates)
-									flag8 = false;
+								if (myBullet.agent != null &&
+									myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") &&
+									bulletType != bulletStatus.Rocket &&
+									bulletType != bulletStatus.MindControl && 
+									objectReal.damageAccumulates)
+									bulletDestroyedHere = false;
 								
-								if ((__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher) && objectReal.objectName != "Door" && objectReal.objectName != "Window")
-									flag8 = false;
+								if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher) && 
+									objectReal.objectName != "Door" && 
+									objectReal.objectName != "Window")
+									bulletDestroyedHere = false;
+
+								// Sniper_2
+								if (myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2) &&
+									myBullet.agent.hiddenInObject == objectReal)
+									bulletDestroyedHere = false;
 								
-								if (flag8)
+								if (bulletDestroyedHere)
 									__instance.DestroyBullet(hitObject);
 							}
 
-							if (!__instance.myBullet.doingFakeHit && flag6)
+							if (!myBullet.doingFakeHit && bulletIsFire)
 							{
-								bool flag9 = false;
+								bool canCauseFire = false;
 							
-								if (__instance.myBullet.agent != null && __instance.CanCauseFire())
-									flag9 = true;
+								if (myBullet.agent != null && __instance.CanCauseFire())
+									canCauseFire = true;
 							
-								if ((__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball || flag9) && !objectReal.fireProof && !objectReal.ora.onFire)
-									GC.spawnerMain.SpawnFire(__instance.myBullet, objectReal.gameObject);
+								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || canCauseFire) && !objectReal.fireProof && !objectReal.ora.onFire)
+									GC.spawnerMain.SpawnFire(myBullet, objectReal.gameObject);
 							}
 
-							if (__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher || __instance.myBullet.bulletType == bulletStatus.FreezeRay)
+							if (bulletType == bulletStatus.Water ||
+								bulletType == bulletStatus.Water2 ||
+								bulletType == bulletStatus.FireExtinguisher ||
+								bulletType == bulletStatus.FreezeRay)
 							{
 								if (objectReal.canStartFireInObject)
-									objectReal.StopFireInObject(__instance.myBullet.agent);
+									objectReal.StopFireInObject(myBullet.agent);
 								else if (objectReal.fire != null)
-									__instance.PutOutFire(objectReal.fire, flag);
+									__instance.PutOutFire(objectReal.fire, bulletShotByMindSlave);
 							}
 							
-							if (!GC.serverPlayer && flag)
+							if (!GC.serverPlayer && bulletShotByMindSlave)
 							{
-								if (__instance.myBullet.agent.localPlayer)
+								if (myBullet.agent.localPlayer)
 								{
-									__instance.myBullet.agent.objectMult.CallCmdBulletHitObjectReal(objectReal.objectNetID, __instance.myBullet.bulletNetID);
+									myBullet.agent.objectMult.CallCmdBulletHitObjectReal(objectReal.objectNetID, myBullet.bulletNetID);
 							
 									return false;
 								}
 
-								GC.playerAgent.objectMult.CallCmdBulletHitObjectRealNPC(__instance.myBullet.agent.objectNetID, objectReal.objectNetID, __instance.myBullet.bulletNetID);
+								GC.playerAgent.objectMult.CallCmdBulletHitObjectRealNPC(myBullet.agent.objectNetID, objectReal.objectNetID, myBullet.bulletNetID);
 								
 								return false;
 							}
@@ -808,99 +850,99 @@ namespace BunnyMod.Content
 					{
 						Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
 						
-						if (__instance.HasLOSBullet(agent3) && (!agent3.bulletsCanPass || __instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher || __instance.myBullet.bulletType == bulletStatus.LeafBlower || __instance.myBullet.bulletType == bulletStatus.ResearchGun) && !agent3.ghost && !agent3.fellInHole)
+						if (__instance.HasLOSBullet(agent3) && (!agent3.bulletsCanPass || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.LeafBlower || bulletType == bulletStatus.ResearchGun) && !agent3.ghost && !agent3.fellInHole)
 						{
 							bool flag10 = true;
 						
-							if (__instance.myBullet.agent != null && __instance.myBullet.bulletType != bulletStatus.ResearchGun)
-								flag10 = __instance.myBullet.agent.DontHitAlignedCheck(agent3, __instance.myBullet.bulletType, __instance.myBullet.statusEffect);
+							if (myBullet.agent != null && bulletType != bulletStatus.ResearchGun)
+								flag10 = myBullet.agent.DontHitAlignedCheck(agent3, bulletType, myBullet.statusEffect);
 							
-							if (agent3 != __instance.myBullet.agent && flag10)
+							if (agent3 != myBullet.agent && flag10)
 							{
 								if (GC.multiplayerMode)
 								{
-									if (GC.serverPlayer && flag && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != __instance.myBullet.agent)
-										__instance.myBullet.doingFakeHit = true;
+									if (GC.serverPlayer && bulletShotByMindSlave && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != myBullet.agent)
+										myBullet.doingFakeHit = true;
 							
-									if (GC.serverPlayer && num == 0 && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != __instance.myBullet.agent)
-										__instance.myBullet.doingFakeHit = true;
+									if (GC.serverPlayer && playerNumber == 0 && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != myBullet.agent)
+										myBullet.doingFakeHit = true;
 									
-									if (__instance.myBullet.agent != null)
+									if (myBullet.agent != null)
 									{
-										if (!GC.serverPlayer && num == 0 && !agent3.localPlayer && __instance.myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != __instance.myBullet.agent)
-											__instance.myBullet.doingFakeHit = true;
+										if (!GC.serverPlayer && playerNumber == 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+											myBullet.doingFakeHit = true;
 									
-										if (!GC.serverPlayer && num != 0 && !flag && !agent3.localPlayer && __instance.myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != __instance.myBullet.agent)
-											__instance.myBullet.doingFakeHit = true;
+										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+											myBullet.doingFakeHit = true;
 										
-										if (!GC.serverPlayer && flag && agent3.isPlayer > 0 && !agent3.localPlayer && __instance.myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != __instance.myBullet.agent)
-											__instance.myBullet.doingFakeHit = true;
+										if (!GC.serverPlayer && bulletShotByMindSlave && agent3.isPlayer > 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+											myBullet.doingFakeHit = true;
 										
-										if (!GC.serverPlayer && num != 0 && !flag && agent3.isPlayer != 0 && !agent3.localPlayer && __instance.myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != __instance.myBullet.agent)
-											__instance.myBullet.doingFakeHit = true;
+										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && agent3.isPlayer != 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+											myBullet.doingFakeHit = true;
 									}
 								}
 
-								if ((__instance.myBullet.bulletType == bulletStatus.Rocket || __instance.myBullet.bulletType == bulletStatus.MindControl) && !__instance.myBullet.doingFakeHit)
+								if ((bulletType == bulletStatus.Rocket || bulletType == bulletStatus.MindControl) && !myBullet.doingFakeHit)
 								{
-									agent3.hitByRocket = new Vector3(__instance.myBullet.tr.eulerAngles.x, __instance.myBullet.tr.eulerAngles.y, __instance.myBullet.tr.eulerAngles.z);
+									agent3.hitByRocket = new Vector3(myBullet.tr.eulerAngles.x, myBullet.tr.eulerAngles.y, myBullet.tr.eulerAngles.z);
 								
 									if (GC.serverPlayer && agent3.localPlayer)
-										__instance.myBullet.mustExplode = true;
-									else if (!GC.serverPlayer && agent3.localPlayer && !flag)
+										myBullet.mustExplode = true;
+									else if (!GC.serverPlayer && agent3.localPlayer && !bulletShotByMindSlave)
 									{
-										__instance.myBullet.mustExplode = true;
-										__instance.myBullet.explosionFromNonLocalPlayer = true;
+										myBullet.mustExplode = true;
+										myBullet.explosionFromNonLocalPlayer = true;
 									}
-									else if (GC.serverPlayer && !agent3.localPlayer && agent3.isPlayer != 0 && !flag && num != 0)
-										__instance.myBullet.mustExplode = true;
+									else if (GC.serverPlayer && !agent3.localPlayer && agent3.isPlayer != 0 && !bulletShotByMindSlave && playerNumber != 0)
+										myBullet.mustExplode = true;
 								}
 								
 								bool flag11 = false;
 								
-								if ((__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher || __instance.myBullet.bulletType == bulletStatus.Fireball) && agent3.dead)
+								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.Fireball) && agent3.dead)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Tranquilizer)
+								else if (bulletType == bulletStatus.Tranquilizer)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TranquilizerHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Taser)
+								else if (bulletType == bulletStatus.Taser)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TaserHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Dart)
+								else if (bulletType == bulletStatus.Dart)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 									
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TranquilizerHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Shrink)
+								else if (bulletType == bulletStatus.Shrink)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "BulletHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.FreezeRay)
+								else if (bulletType == bulletStatus.FreezeRay)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 									{
 										if (agent3.preventStatusEffects)
 											GC.audioHandler.Play(agent3, "BulletHitAgent");
@@ -908,58 +950,58 @@ namespace BunnyMod.Content
 											GC.audioHandler.Play(agent3, "Freeze");
 									}
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.WaterPistol)
+								else if (bulletType == bulletStatus.WaterPistol)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 									
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "WaterPistolHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.LeafBlower)
+								else if (bulletType == bulletStatus.LeafBlower)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.ResearchGun)
+								else if (bulletType == bulletStatus.ResearchGun)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Water2)
+								else if (bulletType == bulletStatus.Water2)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.FireExtinguisher)
+								else if (bulletType == bulletStatus.FireExtinguisher)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.ZombieSpit)
+								else if (bulletType == bulletStatus.ZombieSpit)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
-										__instance.HitAftermath(agent3, num, flag, fromClient);
+									if (!myBullet.doingFakeHit && !fromClient)
+										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 								
-									if (!__instance.myBullet.fakeDestroyed)
+									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "BulletHitAgent");
 								}
-								else if (__instance.myBullet.bulletType == bulletStatus.Normal || __instance.myBullet.bulletType == bulletStatus.Shotgun || __instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher || __instance.myBullet.bulletType == bulletStatus.Fireball || __instance.myBullet.bulletType == bulletStatus.Revolver || __instance.myBullet.bulletType == bulletStatus.Laser)
+								else if (bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.Fireball || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser)
 								{
-									if (!__instance.myBullet.doingFakeHit && !fromClient)
+									if (!myBullet.doingFakeHit && !fromClient)
 									{
 										if (agent3.statusEffects.hasTrait("MeleeHoldDeflectsBullets") && agent3.inventory.equippedWeapon != agent3.inventory.fist && agent3.inventory.equippedWeapon.weaponCode == weaponType.WeaponMelee)
 										{
 											agent3.inventory.DepleteMelee(5);
 									
-											if (agent3.movement.HasLOSPositionNormal(__instance.myBullet.tr.position))
+											if (agent3.movement.HasLOSPositionNormal(myBullet.tr.position))
 											{
 												flag11 = true;
 											
-												if (__instance.myBullet.bulletType == bulletStatus.Laser)
-													GC.spawnerMain.SpawnParticleEffect("BulletHitLaser", agent3.tr.position, __instance.myBullet.tr.eulerAngles.z);
+												if (bulletType == bulletStatus.Laser)
+													GC.spawnerMain.SpawnParticleEffect("BulletHitLaser", agent3.tr.position, myBullet.tr.eulerAngles.z);
 												else
-													GC.spawnerMain.SpawnParticleEffect("BulletHit", agent3.tr.position, __instance.myBullet.tr.eulerAngles.z);
+													GC.spawnerMain.SpawnParticleEffect("BulletHit", agent3.tr.position, myBullet.tr.eulerAngles.z);
 												
 												if (agent3.inventory.equippedWeapon.hitSoundType == "Cut")
 													GC.audioHandler.Play(agent3, "MeleeHitMeleeBlade");
@@ -969,78 +1011,78 @@ namespace BunnyMod.Content
 										}
 
 										if (!flag11)
-											__instance.HitAftermath(agent3, num, flag, fromClient);
+											__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
 									}
 
-									if (!__instance.myBullet.fakeDestroyed && !flag11)
+									if (!myBullet.fakeDestroyed && !flag11)
 									{
-										if (__instance.myBullet.bulletType == bulletStatus.Fire)
+										if (bulletType == bulletStatus.Fire)
 											GC.audioHandler.Play(agent3, "FireHitShort");
-										else if (__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2)
+										else if (bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2)
 											GC.audioHandler.Play(agent3, "WaterHit");
-										else if (__instance.myBullet.bulletType == bulletStatus.FireExtinguisher)
+										else if (bulletType == bulletStatus.FireExtinguisher)
 											GC.audioHandler.Play(agent3, "FireHitShort");
-										else if (__instance.myBullet.bulletType == bulletStatus.Fireball)
+										else if (bulletType == bulletStatus.Fireball)
 											GC.audioHandler.Play(agent3, "FireballHitAgent");
 										else
 											GC.audioHandler.Play(agent3, "BulletHitAgent");
 									}
 								}
 
-								if ((__instance.myBullet.bulletType == bulletStatus.Normal || __instance.myBullet.bulletType == bulletStatus.Shotgun || __instance.myBullet.bulletType == bulletStatus.Revolver || __instance.myBullet.bulletType == bulletStatus.Laser) && agent3.tickEndDamage == 0 && !__instance.myBullet.fakeDestroyed && !flag11)
+								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser) && agent3.tickEndDamage == 0 && !myBullet.fakeDestroyed && !flag11)
 								{
 									if (agent3.inhuman || agent3.mechFilled || agent3.mechEmpty)
-										GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent3.tr.position, __instance.myBullet.tr.eulerAngles.z);
+										GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent3.tr.position, myBullet.tr.eulerAngles.z);
 									else
-										GC.spawnerMain.SpawnParticleEffect("BloodHit", agent3.tr.position, __instance.myBullet.tr.eulerAngles.z);
+										GC.spawnerMain.SpawnParticleEffect("BloodHit", agent3.tr.position, myBullet.tr.eulerAngles.z);
 								}
 
-								if (__instance.myBullet.bulletType != bulletStatus.Fire && (!agent3.dead || (__instance.myBullet.bulletType != bulletStatus.FireExtinguisher && __instance.myBullet.bulletType != bulletStatus.Water2)) && __instance.myBullet.bulletType != bulletStatus.ResearchGun)
+								if (bulletType != bulletStatus.Fire && (!agent3.dead || bulletType != bulletStatus.FireExtinguisher && bulletType != bulletStatus.Water2) && bulletType != bulletStatus.ResearchGun)
 								{
 									bool flag12 = true;
 								
-									if (__instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") && __instance.myBullet.bulletType != bulletStatus.Rocket && __instance.myBullet.bulletType != bulletStatus.MindControl)
+									if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") && bulletType != bulletStatus.Rocket && bulletType != bulletStatus.MindControl)
 										flag12 = false;
 									
 									if (flag12)
 										__instance.DestroyBullet(hitObject);
 								}
 
-								if (!GC.serverPlayer && flag && !__instance.myBullet.doingFakeHit && !flag11)
+								if (!GC.serverPlayer && bulletShotByMindSlave && !myBullet.doingFakeHit && !flag11)
 								{
-									if (__instance.myBullet.bulletType != bulletStatus.ResearchGun)
-										__instance.myBullet.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
-								
-									__instance.myBullet.dirHelper.localPosition = Vector3.zero;
-									__instance.myBullet.dirHelper.localPosition = new Vector3(0f, 10f, 0f);
-									Vector3 position = __instance.myBullet.dirHelper.position;
-									__instance.myBullet.dirHelper.localPosition = Vector3.zero;
+									if (bulletType != bulletStatus.ResearchGun)
+										myBullet.agent.objectMultPlayfield.TempDisableNetworkTransform(agent3);
+
+									myBullet.dirHelper.localPosition = Vector3.zero;
+									myBullet.dirHelper.localPosition = new Vector3(0f, 10f, 0f);
+									Vector3 position = myBullet.dirHelper.position;
+									myBullet.dirHelper.localPosition = Vector3.zero;
 									int num2 = 30;
 									
-									if (agent3.dead && __instance.myBullet.bulletType == bulletStatus.Fire)
+									if (agent3.dead && bulletType == bulletStatus.Fire)
 										num2 = 0;
-									else if (__instance.myBullet.bulletType != bulletStatus.Normal && __instance.myBullet.bulletType != bulletStatus.Shotgun && __instance.myBullet.bulletType != bulletStatus.Fire && __instance.myBullet.bulletType != bulletStatus.Fireball && __instance.myBullet.bulletType != bulletStatus.Revolver && __instance.myBullet.bulletType != bulletStatus.Laser)
+									else if (bulletType != bulletStatus.Normal && bulletType != bulletStatus.Shotgun && bulletType != bulletStatus.Fire && bulletType != bulletStatus.Fireball && bulletType != bulletStatus.Revolver && bulletType != bulletStatus.Laser)
 										num2 = 0;
 									else if (agent3.statusEffects.hasTrait("KnockbackLess2"))
 										num2 = 0;
-									else if (__instance.myBullet.bulletType == bulletStatus.Shotgun)
+									else if (bulletType == bulletStatus.Shotgun)
 										num2 = 0;
-									else if (__instance.myBullet.bulletType == bulletStatus.ResearchGun)
+									else if (bulletType == bulletStatus.ResearchGun)
 										num2 = 0;
 									else if (agent3.justDied)
 										num2 = Mathf.Abs(agent3.lastDamageVal) * 30;
 									
-									if (__instance.myBullet.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
+									if (myBullet.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
 										num2 *= 2;
 									
-									if (__instance.myBullet.agent.localPlayer)
+									if (myBullet.agent.localPlayer)
 									{
-										__instance.myBullet.agent.objectMult.CallCmdBulletHitAgent(agent3.objectNetID, __instance.myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
+										myBullet.agent.objectMult.CallCmdBulletHitAgent(agent3.objectNetID, myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
 									
 										return false;
 									}
 
-									GC.playerAgent.objectMult.CallCmdBulletHitAgentNPC(__instance.myBullet.agent.objectNetID, agent3.objectNetID, __instance.myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
+									GC.playerAgent.objectMult.CallCmdBulletHitAgentNPC(myBullet.agent.objectNetID, agent3.objectNetID, myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
 									
 									return false;
 								}
@@ -1051,44 +1093,44 @@ namespace BunnyMod.Content
 					{
 						Item item = hitObject.GetComponent<ItemHitbox>().item;
 
-						if (__instance.myBullet.bulletType == bulletStatus.LeafBlower || ((__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball || __instance.myBullet.bulletType == bulletStatus.ResearchGun) && item.invItem.canCatchFire))
+						if (bulletType == bulletStatus.LeafBlower || ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || bulletType == bulletStatus.ResearchGun) && item.invItem.canCatchFire))
 						{
-							if (!GC.serverPlayer && !flag)
-								__instance.myBullet.doingFakeHit = true;
+							if (!GC.serverPlayer && !bulletShotByMindSlave)
+								myBullet.doingFakeHit = true;
 						
-							if (!__instance.myBullet.doingFakeHit)
+							if (!myBullet.doingFakeHit)
 							{
-								if (__instance.myBullet.bulletType == bulletStatus.LeafBlower)
+								if (bulletType == bulletStatus.LeafBlower)
 								{
 									if (item.startingOwner != 0)
-										GC.OwnCheck(__instance.myBullet.agent, item.go, "Normal", 1);
+										GC.OwnCheck(myBullet.agent, item.go, "Normal", 1);
 							
-									item.thrower = __instance.myBullet.agent;
-									item.StartCoroutine(item.HitCauserCoroutine(__instance.myBullet.agent));
+									item.thrower = myBullet.agent;
+									item.StartCoroutine(item.HitCauserCoroutine(myBullet.agent));
 									
 									if (__instance.HasLOSBullet(item))
-										item.movement.KnockBackBullet(__instance.myBullet.go, 200f, false, __instance.myBullet);
+										item.movement.KnockBackBullet(myBullet.go, 200f, false, myBullet);
 								}
-								else if ((__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball) && item.invItem.canCatchFire)
+								else if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && item.invItem.canCatchFire)
 								{
 									if (item.startingOwner != 0)
-										GC.OwnCheck(__instance.myBullet.agent, item.go, "Normal", 1);
+										GC.OwnCheck(myBullet.agent, item.go, "Normal", 1);
 								
 									if (!item.burnt)
-										GC.spawnerMain.SpawnFire(__instance.myBullet, item.go, item.tr.position, true);
+										GC.spawnerMain.SpawnFire(myBullet, item.go, item.tr.position, true);
 								}
 							}
 
-							if (!GC.serverPlayer && flag)
+							if (!GC.serverPlayer && bulletShotByMindSlave)
 							{
-								if (__instance.myBullet.agent.localPlayer)
+								if (myBullet.agent.localPlayer)
 								{
-									__instance.myBullet.agent.objectMult.CallCmdBulletHitItem(item.objectNetID, __instance.myBullet.bulletNetID);
+									myBullet.agent.objectMult.CallCmdBulletHitItem(item.objectNetID, myBullet.bulletNetID);
 							
 									return false;
 								}
 
-								GC.playerAgent.objectMult.CallCmdBulletHitItemNPC(__instance.myBullet.agent.objectNetID, item.objectNetID, __instance.myBullet.bulletNetID);
+								GC.playerAgent.objectMult.CallCmdBulletHitItemNPC(myBullet.agent.objectNetID, item.objectNetID, myBullet.bulletNetID);
 								
 								return false;
 							}
@@ -1096,9 +1138,9 @@ namespace BunnyMod.Content
 					}
 					else if (hitObject.CompareTag("Fire"))
 					{
-						if (__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.Water2 || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher || __instance.myBullet.bulletType == bulletStatus.FreezeRay)
+						if (bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.FreezeRay)
 						{
-							__instance.PutOutFire(hitObject.GetComponent<Fire>(), flag);
+							__instance.PutOutFire(hitObject.GetComponent<Fire>(), bulletShotByMindSlave);
 
 							return false;
 						}
@@ -1107,7 +1149,7 @@ namespace BunnyMod.Content
 					{
 						if (hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee.agent.statusEffects.hasTrait("MeleeDestroysBullets"))
 						{
-							__instance.myBullet.BulletHitEffect(hitObject);
+							myBullet.BulletHitEffect(hitObject);
 							__instance.DestroyBullet(hitObject);
 							
 							return false;
@@ -1115,63 +1157,63 @@ namespace BunnyMod.Content
 					}
 					else if (hitObject.CompareTag("BulletHitbox"))
 					{
-						Bullet bullet = hitObject.GetComponent<BulletHitbox>().myBullet;
+						Bullet collidingBullet = hitObject.GetComponent<BulletHitbox>().myBullet;
 						
-						if (!__instance.myBullet.streamBullet)
+						if (!myBullet.streamBullet)
 						{
-							if (__instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets") && __instance.myBullet.agent != bullet.agent && !bullet.streamBullet)
+							if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets") && myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
 							{
 								bool flag13 = false;
 						
-								if (bullet.agent != null && bullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets"))
+								if (collidingBullet.agent != null && collidingBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets"))
 									flag13 = true;
 								
-								if (__instance.myBullet.bulletType != bulletStatus.Rocket || flag13)
+								if (bulletType != bulletStatus.Rocket || flag13)
 								{
-									__instance.myBullet.BulletHitEffect(hitObject);
+									myBullet.BulletHitEffect(hitObject);
 									__instance.DestroyBullet(hitObject);
 								}
 								
-								bullet.BulletHitEffect(__instance.gameObject);
-								bullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
+								collidingBullet.BulletHitEffect(__instance.gameObject);
+								collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 							}
 						}
-						else if (__instance.myBullet.bulletType == bulletStatus.LeafBlower)
+						else if (bulletType == bulletStatus.LeafBlower)
 						{
-							if (!bullet.alteredSpeed && __instance.myBullet.agent != bullet.agent && !bullet.streamBullet)
+							if (!collidingBullet.alteredSpeed && myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
 							{
-								bullet.speed /= 2;
-								bullet.alteredSpeed = true;
+								collidingBullet.speed /= 2;
+								collidingBullet.alteredSpeed = true;
 							}
 						}
-						else if (__instance.myBullet.bulletType == bulletStatus.Water2 && (__instance.myBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || __instance.myBullet.agent.oma.superSpecialAbility || bullet.bulletType == bulletStatus.Fire || bullet.bulletType == bulletStatus.Fireball) && __instance.myBullet.agent != bullet.agent)
+						else if (bulletType == bulletStatus.Water2 && (myBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || myBullet.agent.oma.superSpecialAbility || collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball) && myBullet.agent != collidingBullet.agent)
 						{
-							bullet.BulletHitEffect(__instance.gameObject);
-							bullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
+							collidingBullet.BulletHitEffect(__instance.gameObject);
+							collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
 
-						if (bullet.bulletType == bulletStatus.Water2 && (bullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || bullet.agent.oma.superSpecialAbility || __instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball) && bullet.agent != __instance.myBullet.agent)
+						if (collidingBullet.bulletType == bulletStatus.Water2 && (collidingBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || collidingBullet.agent.oma.superSpecialAbility || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && collidingBullet.agent != myBullet.agent)
 						{
-							__instance.myBullet.BulletHitEffect(__instance.gameObject);
-							__instance.myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
+							myBullet.BulletHitEffect(__instance.gameObject);
+							myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
 						
-						if ((__instance.myBullet.bulletType == bulletStatus.Water || __instance.myBullet.bulletType == bulletStatus.FireExtinguisher) && (bullet.bulletType == bulletStatus.Fire || bullet.bulletType == bulletStatus.Fireball))
+						if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.FireExtinguisher) && (collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball))
 						{
-							bullet.BulletHitEffect(__instance.gameObject);
-							bullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
+							collidingBullet.BulletHitEffect(__instance.gameObject);
+							collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
 						
-						if ((bullet.bulletType == bulletStatus.Water || bullet.bulletType == bulletStatus.FireExtinguisher) && (__instance.myBullet.bulletType == bulletStatus.Fire || __instance.myBullet.bulletType == bulletStatus.Fireball))
+						if ((collidingBullet.bulletType == bulletStatus.Water || collidingBullet.bulletType == bulletStatus.FireExtinguisher) && (bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball))
 						{
-							__instance.myBullet.BulletHitEffect(__instance.gameObject);
-							__instance.myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
+							myBullet.BulletHitEffect(__instance.gameObject);
+							myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
 						
-						if (bullet.bulletType == bulletStatus.LeafBlower && !__instance.myBullet.alteredSpeed && __instance.myBullet.agent != bullet.agent && !bullet.streamBullet)
+						if (collidingBullet.bulletType == bulletStatus.LeafBlower && !myBullet.alteredSpeed && myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
 						{
-							__instance.myBullet.speed /= 2;
-							__instance.myBullet.alteredSpeed = true;
+							myBullet.speed /= 2;
+							myBullet.alteredSpeed = true;
 						}
 					}
 				}

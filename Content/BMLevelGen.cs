@@ -1269,7 +1269,9 @@ namespace BunnyMod.Content
 								floorTileGroup = GetFloorTileGroup();
 							if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
-								if (GC.levelTheme == 0)
+								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors) || BMHeader.debugMode)
+									floorTileGroup = GetFloorTileGroup();
+								else if (GC.levelTheme == 0)
 									floorTileGroup = vFloorTileGroup.Slums;
 								else if (GC.levelTheme == 1)
 									floorTileGroup = vFloorTileGroup.Industrial;

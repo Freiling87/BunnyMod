@@ -82,7 +82,7 @@ namespace BunnyMod.Content
 					agent.wontFlee = true;
 					agent.agentActive = true;
 					//agent.statusEffects.AddStatusEffect("InvisiblePermanent");
-					//agent.oma.mustBeGuilty = true;
+					agent.oma.mustBeGuilty = true;
 					spawnedAgentList.Add(agent);
 
 					if (spawnedAgentList.Count > 1)
@@ -247,6 +247,8 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "AddButton", g, "AgentInteractions_AddButton", new Type[3] { typeof(string), typeof(int), typeof(string) });
+			//Prefix(typeof(AgentInteractions), "DetermineButtons", GetType(), "AgentInteractions_DetermineButtons", new Type[5] { typeof(Agent), typeof(Agent), typeof(List<string>), typeof(List<string>), typeof(List<int>) });
+			//Prefix(typeof(AgentInteractions), "PressedButton", GetType(), "AgentInteractions_PressedButton", new Type[4] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) });
 			Prefix(t, "Shakedown", g, "AgentInteractions_Shakedown", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "Threaten", g, "AgentInteractions_Threaten", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenKey", g, "AgentInteractions_ThreatenKey", new Type[2] { typeof(Agent), typeof(Agent) });
@@ -256,6 +258,7 @@ namespace BunnyMod.Content
 			Prefix(t, "ThreatenMayorBadge", g, "AgentInteractions_ThreatenMayorBadge", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenMoney", g, "AgentInteractions_ThreatenMoney", new Type[2] { typeof(Agent), typeof(Agent) });
 			Prefix(t, "ThreatenSafeCombination", g, "AgentInteractions_ThreatenSafeCombination", new Type[2] { typeof(Agent), typeof(Agent) });
+			//Postfix(typeof(AgentInteractions), "UseItemOnObject", GetType(), "AgentInteractions_UseItemOnObject", new Type[6] { typeof(Agent), typeof(Agent), typeof(InvItem), typeof(int), typeof(string), typeof(string) });
 		}
 		public static void AgentInteractions_AddButton(string buttonName, int moneyCost, string extraCost, AgentInteractions __instance, ref Agent ___mostRecentInteractingAgent) // Prefix
 		{
@@ -263,6 +266,95 @@ namespace BunnyMod.Content
 				extraCost.Replace("-30", "-" + ToolCost(___mostRecentInteractingAgent, 30));
 			else if (extraCost.EndsWith("-20"))
 				extraCost.Replace("-20", "-" + ToolCost(___mostRecentInteractingAgent, 20));
+		}
+		public static void AgentInteractions_AddButton_4(string buttonName, int moneyCost, string extraCost) // Prefix
+		{
+			BMLog("Adding Button: buttonName = " + buttonName + "; moneyCost = " + moneyCost + "; extraCost = " + extraCost);
+		}
+		public static bool AgentInteractions_DetermineButtons(Agent agent, Agent interactingAgent, List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1, AgentInteractions __instance) // Prefix
+		{
+			BMLog("AgentInteractions_DetermineButtons: agent = " + agent.agentName + agent.agentID + "; Gang: " + agent.gang + "; GangMugging: " + interactingAgent.gangMugging);
+
+			if (agent.agentName == "Hobo")
+			{
+				GC.audioHandler.Play(agent, "AgentTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+				{
+					BMLog("AgentInteractions_DetermineButtons: Adding Buttons");
+
+					__instance.AddButton("Hobo_GiveMoney1", agent.determineMoneyCost("Hobo_GiveMoney1"));
+					__instance.AddButton("Hobo_GiveMoney2", agent.determineMoneyCost("Hobo_GiveMoney2"));
+					__instance.AddButton("Hobo_GiveMoney3", agent.determineMoneyCost("Hobo_GiveMoney3"));
+					__instance.AddButton("Hobo_GiveItem", "(Choose)");
+				}
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+			else if (agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB")
+			{
+				GC.audioHandler.Play(agent, "AgentTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+					__instance.AddButton("Gangbanger_GiveMoney", agent.determineMoneyCost("Mug_Gangbanger"));
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+			else if (agent.agentName == "Junkie")
+			{
+				GC.audioHandler.Play(agent, "AgenTalk");
+
+				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
+				{
+					__instance.AddButton("Junkie_GiveMoney", agent.determineMoneyCost("Mug_Junkie"));
+					__instance.AddButton("Junkie_GiveItem", agent.determineMoneyCost("Junkie_GiveItem"));
+				}
+				else
+					BMHeaderTools.SayDialogue(agent, "Interact", vNameType.Dialogue);
+			}
+
+			return true;
+		}
+		public static bool AgentInteractions_PressedButton(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance) // Prefix
+		{
+			BMLog("AgentInteractions_PressedButton: " + agent.agentName + " / " + buttonText);
+
+			if (agent.agentName == "Hobo")
+			{
+				if (buttonText == "Hobo_GiveMoney1" || buttonText == "Hobo_GiveMoney2" || buttonText == "Hobo_GiveMoney3")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						BMBehaviors.Hobo_MugMoney(agent, interactingAgent, buttonPrice, BMBehaviors.Hobo_relStatusAfterDonation(agent, interactingAgent, buttonPrice).ToString("f"), buttonText);
+					else
+						BMHeaderTools.SayDialogue(agent, "Hobo_CantAfford", vNameType.Dialogue);
+
+					agent.StopInteraction();
+
+					return false; // Double-check that these aren't skipping anything important
+				}
+				else if (buttonText == "Hobo_GiveItem")
+				{
+					agent.ShowUseOn("Hobo_Donate");
+
+					return false;
+				}
+			}
+			else if ((agent.agentName == "Gangbanger" || agent.agentName == "GangbangerB"))
+			{
+				if (buttonText == "GangBanger_GiveMoney")
+				{
+					if (agent.moneySuccess(buttonPrice))
+						__instance.MugMoney(agent, interactingAgent);
+					else
+						BMHeaderTools.SayDialogue(agent, "Gangbanger_CantAfford", vNameType.Dialogue);
+
+					agent.StopInteraction();
+
+					return false; // Double-check that these aren't skipping anything important
+				}
+			}
+
+			return true;
 		}
 		public static bool AgentInteractions_Shakedown(Agent agent, Agent interactingAgent, AgentInteractions __instance) // Prefix
 		{
@@ -738,6 +830,25 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+		public static void AgentInteractions_UseItemOnObject(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType, ref bool __result) // Postfix
+		{
+			BMLog("AgentInteractions_UseItemOnObject: " + item.invItemName);
+
+			if (useOnType == "Hobo_Donate")
+			{
+				string itemName = item.invItemName;
+
+				if (itemName == "Banana" || itemName == "BananaPeel" || itemName == "Beer" || itemName == "Cigarettes" || itemName == "Fud" || itemName == "Sugar" || itemName == "Whiskey")
+					BMBehaviors.Hobo_AcceptDonation(agent, interactingAgent, item);
+				else
+				{
+					BMHeaderTools.SayDialogue(agent, "Hobo_DontWant", vNameType.Dialogue);
+					GC.audioHandler.Play(interactingAgent, "CantDo");
+				}
+
+				__result = true;
+			}
+		}
 		#endregion
 		#region ObjectMult
 		public void ObjectMult_00()
@@ -834,6 +945,17 @@ namespace BunnyMod.Content
 
 					if (otherAgent.agentName == vAgent.ResistanceLeader)
 						newRel = vRelationship.Aligned;
+					else if (otherAgent.agentName == vAgent.Mobster)
+					{
+						if (GC.levelTheme == 0 || GC.levelTheme == 1)
+							newRel = vRelationship.Friendly;
+						else if (GC.levelTheme == 2)
+							newRel = vRelationship.Neutral;
+						else if (GC.levelTheme == 3)
+							newRel = vRelationship.Annoyed;
+						else if (GC.levelTheme == 4 || GC.levelTheme == 5)
+							newRel = vRelationship.Hateful;
+					}
 
 					if (newRel != vRelationship.Neutral)
 					{
@@ -856,6 +978,7 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Postfix(t, "AddTrait", g, "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
+			Postfix(t, "AgentIsRival", g, "StatusEffects_AgentIsRival", new Type[1] { typeof(string) });
 			Prefix(t, "BecomeHidden", g, "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
 			Prefix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Prefix", new Type[0] { });
 			Postfix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Postfix", new Type[0]);
@@ -864,6 +987,9 @@ namespace BunnyMod.Content
 		}
 		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
 		{
+			// Fatass
+			// Sniper
+
 			Agent agent = __instance.agent;
 
 			if (traitName == cTrait.Fatass)
@@ -871,6 +997,22 @@ namespace BunnyMod.Content
 				agent.SetEndurance(agent.enduranceStatMod + 1);
 				agent.SetSpeed(agent.speedStatMod - 1);
 			}
+			else if (traitName == cTrait.Sniper || traitName == cTrait.Sniper_2)
+			{
+				__instance.SpecialAbilityInterfaceCheck();
+				// I think this is triggered once, and then continues as long as you have it.
+			}
+		}
+		public static void StatusEffects_AgentIsRival(Agent myAgent, StatusEffects __instance, ref bool __result) // Postfix
+		{
+			// All custom Social traits with Rivalry & XP bonus
+
+			Agent otherAgent = __instance.agent;
+
+			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||
+				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.Criminal.Contains(otherAgent.agentName)) ||
+				(myAgent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
+				__result = true;
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
 		{
@@ -960,7 +1102,7 @@ namespace BunnyMod.Content
 		}
 		public static bool StatusEffects_BecomeNotHidden_Prefix(StatusEffects __instance) // Prefix
 		{
-			// GhillieSuit
+			// Sniper +
 
 			BMLog("StatusEffects_BecomeNotHidden_Prefix");
 
@@ -1472,10 +1614,12 @@ namespace BunnyMod.Content
 
 			if (GC.multiplayerMode)
 			{
-				if (hurtAgent.isPlayer != 0 && !hurtAgent.localPlayer)
+				if (hurtAgent.isPlayer != 0 && 
+					!hurtAgent.localPlayer)
 					flag9 = false;
 				
-				if (!GC.serverPlayer && hurtAgent.isPlayer == 0)
+				if (!GC.serverPlayer && 
+					hurtAgent.isPlayer == 0)
 				{
 					flag9 = true;
 					flag10 = true;
@@ -1679,10 +1823,10 @@ namespace BunnyMod.Content
 				if (!flag15 && hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect.agentName == "Custom")
 					hurtAgent.deathKiller = hurtAgent.killedByAgentIndirect.agentRealName;
 				
-				Agent agent8 = null;
+				Agent mindControlAgent = null;
 				
 				if (hurtAgent.oma.mindControlled)
-					agent8 = hurtAgent.mindControlAgent;
+					mindControlAgent = hurtAgent.mindControlAgent;
 				
 				if ((!GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode) || hurtAgent.isPlayer == 0 || hurtAgent.resurrect)
 				{
@@ -1753,7 +1897,7 @@ namespace BunnyMod.Content
 								playerGettingPoints = hurtAgent.killedByAgent.employer;
 						}
 						else if (hurtAgent.recentMindControlAgent != null)
-							agent8 = hurtAgent.recentMindControlAgent;
+							mindControlAgent = hurtAgent.recentMindControlAgent;
 						
 						flag16 = __instance.IsInnocent(playerGettingPoints);
 					}
@@ -1762,16 +1906,16 @@ namespace BunnyMod.Content
 					{
 						bool flag17 = false;
 
-						if (agent8 != null)
+						if (mindControlAgent != null)
 						{
-							GC.stats.AddToStat(agent8, "IndirectlyKilled", 1);
+							GC.stats.AddToStat(mindControlAgent, "IndirectlyKilled", 1);
 						
-							if (__instance.AgentIsRival(agent8))
-								agent8.skillPoints.AddPoints("IndirectlyKillRival");
+							if (__instance.AgentIsRival(mindControlAgent))
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKillRival");
 							else if (flag16)
-								agent8.skillPoints.AddPoints("IndirectlyKillInnocent");
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKillInnocent");
 							else
-								agent8.skillPoints.AddPoints("IndirectlyKill");
+								mindControlAgent.skillPoints.AddPoints("IndirectlyKill");
 						}
 						else if (hurtAgent.killedByAgentIndirect != null && hurtAgent.killedByAgentIndirect != hurtAgent)
 						{

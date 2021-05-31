@@ -595,15 +595,6 @@ namespace BunnyMod.Content
                 RATStargetable = true;
             }
 
-            if (agent.statusEffects.hasTrait(cTrait.Charmed))
-                luckMultiplier = 1;
-            else if (agent.statusEffects.hasTrait(cTrait.Charmed_2))
-                luckMultiplier = 2;
-            else if (agent.statusEffects.hasTrait(cTrait.Cursed))
-                luckMultiplier = -1;
-            else if (agent.statusEffects.hasTrait(cTrait.Cursed_2))
-                luckMultiplier = -2;
-
             if (RATStargetable)
             {
                 if (agent.statusEffects.hasTrait(cTrait.RATS))
@@ -615,6 +606,15 @@ namespace BunnyMod.Content
                     if (BMAbilities.MSA_CD_IsCast(agent))
                         luckMultiplier *= 2;
             }
+
+            if (agent.statusEffects.hasTrait(cTrait.Charmed))
+                luckMultiplier += 1;
+            else if (agent.statusEffects.hasTrait(cTrait.Charmed_2))
+                luckMultiplier += 2;
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed))
+                luckMultiplier += -1;
+            else if (agent.statusEffects.hasTrait(cTrait.Cursed_2))
+                luckMultiplier += -2;
 
             __result = Mathf.Clamp(__result + (luckBonus * luckMultiplier), 0, 100);
         }
@@ -707,7 +707,7 @@ namespace BunnyMod.Content
                     case vObject.ATMMachine:
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.Lamp, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
                             chance -= 10;
                         }
 
@@ -715,19 +715,19 @@ namespace BunnyMod.Content
                     case vObject.Barbecue:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, true);
-                            chance -= 20;
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.24f, 0.24f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.Bush, true);
+                            chance -= 25;
                         }
 
                         break;
                     case vObject.Boulder:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vItem.Rock);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
 
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.FlamingBarrel, false);
-                            chance -= 10;
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.FlamingBarrel, false);
+                            chance -= 15;
                         }
 
                         break;
@@ -745,8 +745,8 @@ namespace BunnyMod.Content
                     case vObject.FlamingBarrel:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vObject.Bush, true);
-                            chance -= 20; 
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.12f, 0.12f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
+                            chance -= 25; 
                         }
 
                         break;
@@ -2764,7 +2764,12 @@ namespace BunnyMod.Content
                 __instance.objectInvDatabase.SubtractFromItemCount(__instance.objectInvDatabase.money, payout);
                 BMHeaderTools.SayDialogue(__instance.interactingAgent, "SlotMachineWon", vNameType.Dialogue);
                 __instance.PlayAnim("MachineOperate", __instance.interactingAgent);
-                GC.audioHandler.Play(__instance, "Win");
+                
+                while (payoutMult > 0)
+				{
+                    GC.audioHandler.Play(__instance, "Win");
+                    payoutMult--;
+				}
             }
             else
             {
@@ -2820,39 +2825,40 @@ namespace BunnyMod.Content
         }
         public static async void SlotMachine_Jackpot(int payout, SlotMachine __instance) // Non-Patch
         {
-            bool hacked = SlotMachineHacked[__instance];
-            int cashDropIncrement = payout / 10;
-            GC.audioHandler.Play(__instance, vAudioClip.Jukebox);
-            GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
+            float volume = SlotMachineHacked[__instance] ? 5f : 2f;
+            int cashDropIncrement = payout / 50;
             __instance.StartCoroutine(SlotMachine_JackpotPlayTime(__instance));
             __instance.StartCoroutine(SlotMachine_PlayingNoise(__instance));
             __instance.interactable = false;
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 0; i <= 100; i++)
             {
-                GC.audioHandler.Play(__instance, vAudioClip.Win);
-
-                if (i % 5 == 0)
+                if (i % 2 == 0 && i != 0)
 				{
                     __instance.PlayAnim(vAnimation.MachineOperate, __instance.interactingAgent);
-
-                    if (i % 10 == 0)
-                    {
-                        SlotMachine_SpitOutMoney(cashDropIncrement, __instance);
-                        GC.audioHandler.Play(__instance, vAudioClip.HighVolume);
-
-                        if (i % 20 == 0)
-						{
-                            BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot + (i / 20).ToString(), vNameType.Dialogue);
-                            GC.audioHandler.Play(__instance, vAudioClip.ClubMusic);
-                        }
-                    }
+                    SlotMachine_SpitOutMoney(cashDropIncrement, __instance);
+                    GC.audioHandler.Play(__instance, vAudioClip.Win);
                 }
+
+                if (i % 10 == 0) // Starts at 0
+                {
+                    GC.audioHandler.Play(__instance, vAudioClip.Boombox1);
+                    GC.spawnerMain.SpawnStateIndicator(__instance, "MusicNotes");
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, volume, __instance, "Attract");
+                }
+
+                if (i % 20 == 0 && i != 0)
+                    // BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot_ + (i / 20).ToString(), vNameType.Dialogue); // Testing
+                    BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot_1, vNameType.Dialogue);
 
                 await Task.Delay(100);
             }
 
-            __instance.MakeAllMachinesNonFunctional();
+            if (!GC.challenges.Contains(vChallenge.NoLimits))
+			{
+                __instance.MakeAllMachinesNonFunctional();
+                // TODO: Have proprietor come and cut you off from playing here, but give you a free cocktail.
+            }
         }
         public static IEnumerator SlotMachine_JackpotPlayTime(SlotMachine __instance) // Non-Patch
 		{

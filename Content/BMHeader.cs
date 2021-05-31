@@ -344,7 +344,7 @@ namespace BunnyMod.Content
             MSA_TB_Recharge3 = "MSA_TB_Recharge3",
             MSA_TB_Recharge4 = "MSA_TB_Recharge4",
             PurchaseElevator = "PurchaseElevator",
-            SlotMachineJackpot = "SlotMachineJackpot_", // For concatenation into following
+            SlotMachineJackpot_ = "SlotMachineJackpot_", // For concatenation into following
             SlotMachineJackpot_1 = "SlotMachineJackpot_1",
             SlotMachineJackpot_2 = "SlotMachineJackpot_2",
             SlotMachineJackpot_3 = "SlotMachineJackpot_3",
@@ -433,7 +433,6 @@ namespace BunnyMod.Content
             FocusedCasting_2 = "FocusedCasting2",
             FriendOfBill = "FriendOfBill",
             GenerallyUnpleasant = "GenerallyUnpleasant",
-            GhillieSuit = "GhillieSuit",
             Haunted = "Haunted",
             InfernalStrikes = "InfernalStrikes",
             InfernalStrikes_2 = "InfernalStrikes2",
@@ -442,7 +441,6 @@ namespace BunnyMod.Content
             ManaBattery = "ManaBattery",
             ManaBattery_2 = "ManaBattery2",
             MobDebt = "MobDebt",
-            MobDebt_2 = "MobDebt2",
             MookMasher = "MookMasher",
             MoronTheMerrier = "MoronTheMerrier",
             Myopic = "Myopic",
@@ -457,7 +455,8 @@ namespace BunnyMod.Content
             Reinforcements_2 = "Reinforcements2",
             SharpOnly = "SharpOnly",
             SmoothBrained = "SmoothBrained",
-            Sniper = "Sniper",
+            Sniper = "Sniper", 
+            Sniper_2 = "Sniper2",
             StealthBastardDeluxe = "StealthBastardDeluxe",
             TamperTantrum = "TamperTantrum",
             TamperTantrum_2 = "TamperTantrum2",
@@ -547,7 +546,6 @@ namespace BunnyMod.Content
         {
             Haunted,
             MobDebt,
-            MobDebt_2,
             MookMasher,
             Reinforcements,
             Reinforcements_2,

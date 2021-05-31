@@ -30,6 +30,7 @@ namespace BunnyMod.Content
 		public void Awake()
 		{
 			BasicFloor_00();
+			BasicWall_00();
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
@@ -220,6 +221,32 @@ namespace BunnyMod.Content
 			}
 
 			return true;
+		}
+		#endregion
+		#region BasicWall
+		public void BasicWall_00()
+		{
+			Type t = typeof(BasicWall);
+			Type g = GetType();
+
+			Postfix(t, "Spawn", g, "BasicWall_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static void BasicWall_Spawn(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Postfix
+		{
+			// FloralerFlora Hedge Wall leaves spawn
+
+
+			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode))
+			{
+				int chance = 100;
+				
+				while (GC.percentChance(chance))
+				{
+					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.RandomRange(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
+					chance -= 25;
+				}
+			}
+				
 		}
 		#endregion
 		#region LoadLevel
@@ -2636,14 +2663,14 @@ namespace BunnyMod.Content
 
 							do
 							{
-								spot = GC.tileInfo.FindRandLocationGeneral(2f);
+								spot = GC.tileInfo.FindRandLocationGeneral(0f); // Vanilla 2f
 
 								tries++;
 							}
 							while (spot == Vector2.zero && tries < 100);
 
 							if (spot != Vector2.zero)
-								GC.spawnerMain.SpawnWreckagePileObject(spot, GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter), false);
+								GC.spawnerMain.SpawnWreckagePileObject(spot, GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter, vObject.VendorCart), false);
 								
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -5758,12 +5785,8 @@ namespace BunnyMod.Content
 						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
 
 					if (level >= 10)
-					{
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
 							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
-						else if (agent.statusEffects.hasTrait(cTrait.MobDebt_2))
-							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.33f), vAgent.Mobster, __instance, false, 4);
-					}
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
 						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);

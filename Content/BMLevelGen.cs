@@ -2637,6 +2637,7 @@ namespace BunnyMod.Content
 							{
 								ObjectReal securityCam = GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.SecurityCam);
 								securityCam.ShiftTowardWalls();
+								securityCam.owner = 42069;
 								SecurityCam securityCamCast = (SecurityCam)securityCam;
 								securityCamCast.securityType = "Noise";
 								securityCamCast.targets = "Wanted";
@@ -2758,6 +2759,8 @@ namespace BunnyMod.Content
 									{
 										ObjectReal securityCam2 = GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.SecurityCam);
 										securityCam2.ShiftTowardWalls();
+										securityCam2.direction = securityCam.direction;
+										securityCam2.owner = 42069;
 										SecurityCam securityCam2Cast = (SecurityCam)securityCam2;
 										securityCam2Cast.securityType = "Noise";
 										securityCam2Cast.targets = "Wanted";
@@ -2796,6 +2799,8 @@ namespace BunnyMod.Content
 										if (isSpotAcceptable && rightOfSpot != Vector2.zero)
 										{
 											ObjectReal turret = GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret);
+											turret.direction = securityCam.direction;
+											turret.owner = 42069;
 											turret.ShiftTowardWalls();
 											securityCamCast.turrets.Add((Turret)turret);
 											securityCamCast.securityType = "Turret";

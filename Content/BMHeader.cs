@@ -158,6 +158,8 @@ namespace BunnyMod.Content
     public static class cButtonText
     {
         public const string
+            CamerasCaptureWanted = "CamerasCaptureWanted",
+            CamerasCaptureGuilty = "CamerasCaptureGuilty",
             DispenseIce = "DispenseIce",
             GrillFudPaid = "GrillFudPaid",
             HideInContainer = "HideInContainer",

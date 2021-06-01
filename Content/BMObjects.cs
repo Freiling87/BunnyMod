@@ -21,6 +21,7 @@ namespace BunnyMod.Content
         public static MethodInfo ObjectReal_DamagedObject_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
         public static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
         public static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+        public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
         public static MethodInfo ObjectReal_PressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
         public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
         public static MethodInfo ObjectReal_StopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
@@ -111,6 +112,8 @@ namespace BunnyMod.Content
             _ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
 
             t = vNameType.Interface;
+            _ = RogueLibs.CreateCustomName(cButtonText.CamerasCaptureGuilty, t, new CustomNameInfo("Detect Guilty"));
+            _ = RogueLibs.CreateCustomName(cButtonText.CamerasCaptureWanted, t, new CustomNameInfo("Detect Wanted"));
             _ = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
             _ = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
             _ = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
@@ -2251,7 +2254,14 @@ namespace BunnyMod.Content
         {
             Type t = typeof(SecurityCam);
             Type g = GetType();
+
+            Prefix(t, "DetermineButtons", g, "SecurityCam_DetermineButtons", new Type[0] { });
+            Prefix(t, "FinishedOperating", g, "SecurityCam_FinishedOperating", new Type[0] { });
+            Prefix(t, "Interact", g, "SecurityCam_Interact_Temporary", new Type[1] { typeof(Agent) });
             Prefix(t, "MyUpdate", g, "SecurityCam_MyUpdate", new Type[0] { });
+            Prefix(t, "PressedButton", g, "SecurityCam_PressedButton", new Type[2] { typeof(string), typeof(int) });
+            Prefix(t, "ObjectAction", g, "SecurityCam_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+            Postfix(t, "Start", g, "SecurityCam_Start", new Type[0] { });
         }
         public static bool SecurityCam_DetermineButtons(SecurityCam __instance) // Replacement
 		{
@@ -2265,12 +2275,15 @@ namespace BunnyMod.Content
                     __instance.buttons.Add("TurnCameraOn");
             
                 __instance.buttonsExtra.Add("");
+
+
                 __instance.buttons.Add("CamerasCaptureOwners");
                 
                 if (__instance.targets == "Owners")
                     __instance.buttonsExtra.Add(" *");
                 else
                     __instance.buttonsExtra.Add("");
+
                 
                 __instance.buttons.Add("CamerasCaptureNonOwners");
                 
@@ -2278,6 +2291,7 @@ namespace BunnyMod.Content
                     __instance.buttonsExtra.Add(" *");
                 else
                     __instance.buttonsExtra.Add("");
+
                 
                 __instance.buttons.Add("CamerasCaptureEveryone");
                 
@@ -2285,6 +2299,23 @@ namespace BunnyMod.Content
                     __instance.buttonsExtra.Add(" *");
                 else
                     __instance.buttonsExtra.Add("");
+
+
+                __instance.buttons.Add(cButtonText.CamerasCaptureWanted);
+
+                if (__instance.targets == "Wanted")
+                    __instance.buttonsExtra.Add(" *");
+                else
+                    __instance.buttonsExtra.Add("");
+
+
+                __instance.buttons.Add(cButtonText.CamerasCaptureGuilty);
+
+                if (__instance.targets == "Guilty")
+                    __instance.buttonsExtra.Add(" *");
+                else
+                    __instance.buttonsExtra.Add("");
+
                 
                 if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") || __instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
                 {
@@ -2302,6 +2333,44 @@ namespace BunnyMod.Content
 
             return false;
         }
+        public static bool SecurityCam_FinishedOperating(SecurityCam __instance) // Replacement
+		{
+            if (__instance.interactingAgent.interactionHelper.interactingFar)
+            {
+                __instance.ShowObjectButtons();
+
+                return false;
+            }
+
+            if (__instance.operatingBarType == "TurningOffSecurityCam")
+            {
+                if (__instance.gc.percentChance(__instance.FindDisarmPercentage(true)))
+                {
+                    if (__instance.gc.serverPlayer)
+                        __instance.MakeNonFunctional(null);
+                    else
+                        __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "TurnCameraOff");
+
+                    __instance.interactingAgent.skillPoints.AddPoints("TamperPoliceBoxPoints");
+                    __instance.StopInteraction();
+
+                    return false;
+                }
+
+                __instance.FailToDisable();
+                __instance.StopInteraction();
+            }
+
+            return false;
+        }
+        public static void SecurityCam_Interact_Temporary(Agent agent, SecurityCam __instance) // Postfix
+		{
+            BMLog("SecurityCam_Interact_Temporary");
+            BMLog("\tName:\t" + __instance.name);
+            BMLog("\tOwner:\t" + __instance.owner);
+            BMLog("\tTargets:\t" + __instance.targets);
+            BMLog("\tTurrets#:\t" + __instance.turrets.Count());
+		}
         public static bool SecurityCam_MyUpdate(ref IEnumerator __result, SecurityCam __instance, ref tk2dTileMap ___tilemapFloors2, ref bool ___agentsPreviouslyInView) // Prefix
         {
             BMLog("LoadLevel_FillFloors_Prefix");
@@ -2324,33 +2393,32 @@ namespace BunnyMod.Content
 
                     for (int i = 0; i < __instance.gc.activeBrainAgentList.Count; i++)
                     {
-                        bool flag = false;
+                        bool agentFlag = false;
                         Agent agent = __instance.gc.activeBrainAgentList[i];
 
 						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0) && !agent.underBox)
                         {
+                            BMLog("Agent detected on " + __instance.name);
+
                             if (__instance.targets == "NonOwners")
-                            {
-                                if ((agent.ownerID != __instance.owner && agent.ownerID != 99) ||
-                                    (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector)))
-                                    flag = true;
-                            }
+                                agentFlag = (agent.ownerID != __instance.owner && agent.ownerID != 99) ||
+                                    (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
                             else if (__instance.targets == "Owners")
-                            {
-                                if ((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
-                                    (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector)))
-                                    flag = true;
-                            }
+                                agentFlag = (((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
+                                    (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector))) ||
+                                    (agent.statusEffects.hasTrait(vTrait.TheLaw) && __instance.owner == 42069));
                             else if (__instance.targets == "Everyone")
-                                flag = true;
+                                agentFlag = true;
                             else if (__instance.targets == "Wanted")
-                                flag = agent.statusEffects.hasTrait(vTrait.Wanted);
-                            
-                            if (GC.challenges.Contains(cChallenge.PoliceState)) // Always additionally possible
-                                flag = (agent.statusEffects.hasTrait(vTrait.Wanted) || agent.objectMultAgent.mustBeGuilty);
+                                agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
+                            else if (__instance.targets == "Guilty")
+                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted);
+
+                            BMLog("\tCamera mode:\t" + __instance.targets);
+                            BMLog("\tFlag:\t" + agentFlag);
                         }
 
-						if (flag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
+						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
                         {
                             float num = Vector2.Distance(agent.tr.position, __instance.tr.position);
 
@@ -2457,6 +2525,151 @@ namespace BunnyMod.Content
             }
 
             yield break;
+        }
+        public static bool SecurityCam_PressedButton(string buttonText, int buttonPrice, SecurityCam __instance) // Replacement
+        {
+            ObjectReal_PressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+            if (buttonText == "AttemptTurnOffSecurityCam")
+            {
+                __instance.StartCoroutine(__instance.Operating(__instance.interactingAgent, null, 2f, true, "TurningOffSecurityCam"));
+
+                return false;
+            }
+            else if (buttonText == "CamerasCaptureEveryone")
+            {
+                __instance.targets = "Everyone";
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "CamerasCaptureEveryone");
+
+                __instance.RefreshButtons();
+
+                return false;
+            }
+            else if (buttonText == cButtonText.CamerasCaptureGuilty)
+			{
+                __instance.targets = "Guilty";
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, cButtonText.CamerasCaptureGuilty);
+
+                __instance.RefreshButtons();
+
+                return false;
+			}
+            else if (buttonText == cButtonText.CamerasCaptureWanted)
+            {
+                __instance.targets = "Wanted";
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, cButtonText.CamerasCaptureWanted);
+
+                __instance.RefreshButtons();
+
+                return false;
+            }
+            else if (buttonText == "CamerasCaptureNonOwners")
+            {
+                __instance.targets = "NonOwners";
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "CamerasCaptureNonOwners");
+
+                __instance.RefreshButtons();
+
+                return false;
+            }
+            else if (buttonText == "CamerasCaptureOwners")
+            {
+                __instance.targets = "Owners";
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "CamerasCaptureOwners");
+
+                __instance.RefreshButtons();
+
+                return false;
+            }
+            else if (buttonText == "TurnCameraOff")
+            {
+                if (__instance.gc.serverPlayer)
+                    __instance.MakeNonFunctional(null);
+                else
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "TurnCameraOff");
+
+                __instance.RefreshButtons();
+
+                return false;
+            }
+            else if (buttonText == "TurnCameraOn")
+            {
+                __instance.MakeFunctional();
+
+                if (!__instance.gc.serverPlayer)
+                    __instance.interactingAgent.objectMult.ObjectAction(__instance.objectNetID, "TurnCameraOn");
+                
+                __instance.RefreshButtons();
+                
+                return false;
+            }
+
+            __instance.StopInteraction();
+
+            return false;
+        }
+        public static bool SecurityCam_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject, SecurityCam __instance, ref bool ___noMoreObjectActions) // Replacement
+		{
+            ObjectReal_ObjectAction_base.GetMethodWithoutOverrides<Action<string, string, float, Agent, PlayfieldObject>>(__instance).Invoke(myAction, extraString, extraFloat, causerAgent, extraObject);
+
+            if (!___noMoreObjectActions)
+            {
+                if (myAction == "CamerasCaptureEveryone")
+                    __instance.targets = "Everyone";
+                else if (myAction == cButtonText.CamerasCaptureGuilty)
+                    __instance.targets = "Guilty";
+                else if (myAction == "CamerasCaptureNonOwners")
+                    __instance.targets = "NonOwners";
+                else if (myAction == "CamerasCaptureOwners")
+                    __instance.targets = "Owners";
+                else if (myAction == cButtonText.CamerasCaptureWanted)
+                    __instance.targets = "Wanted";
+                else if (myAction == "FailToDisable")
+                    __instance.FailToDisable();
+                else if (myAction == "RemoveParticles")
+                {
+                    __instance.functional = false;
+                    __instance.RemoveParticles(true, false);
+                }
+                else if (myAction == "RemoveThenSpawnParticles")
+                {
+                    __instance.functional = true;
+                    __instance.RemoveThenSpawnParticles(extraString);
+                }
+                else if (myAction == "SpawnParticles")
+                {
+                    __instance.functional = true;
+                    __instance.SpawnParticles(false);
+                }
+                else if (myAction == "TurnCameraOff")
+                    __instance.MakeNonFunctional(null);
+                else if (myAction == "TurnCameraOn")
+                    __instance.MakeFunctional();
+            }
+
+            ___noMoreObjectActions = false;
+
+            return false;
+        }
+        public static void SecurityCam_Start(SecurityCam __instance) // Postfix
+        {
+            if (__instance.owner == 42069)
+            {
+                if (GC.challenges.Contains(cChallenge.PoliceState))
+                    __instance.targets = "Guilty";
+                else
+                    __instance.targets = "Wanted";
+            }
         }
         #endregion
         #region SlotMachine

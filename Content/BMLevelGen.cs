@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RogueLibsCore;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections;
 using HarmonyLib;
@@ -14,9 +9,6 @@ using System.Reflection;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using Light2D;
-using UnityEngine;
-using System.Runtime;
-using System.Runtime.CompilerServices;
 
 namespace BunnyMod.Content
 {
@@ -35,6 +27,7 @@ namespace BunnyMod.Content
 			RandomWalls_00();
 			SpawnerFloor_00();
 			SpawnerObject_00();
+			TileInfo_00();
 		}
 		#region Custom
 		public static int GangCount(int vanilla)
@@ -68,13 +61,13 @@ namespace BunnyMod.Content
 			switch (curMutator)
 			{
 				case cChallenge.ArcologyEcology:
-					return vFloor.RugGreen;
+					return vFloor.Grass;
 				case cChallenge.DiscoCityDanceoff:
 					return vFloor.DanceFloor;
 				case cChallenge.SunkenCity:
-					return vFloor.RugPurple;
+					return vFloor.Water;
 				case cChallenge.TransitExperiment:
-					return vFloor.RugRed;
+					return vFloor.Ice;
 				default:
 					return null;
 			}
@@ -227,9 +220,7 @@ namespace BunnyMod.Content
 		}
 		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
-			string floorType;
-
-			// Ensure these three lists are mutually exclusive
+			// Modifies Interior Floors only
 
 			if (GetActiveFloorMod() != null)
 			{
@@ -242,7 +233,7 @@ namespace BunnyMod.Content
 				}
 				else if (vFloor.Rugs.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Exception to general challenge separation
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Overrides some non-exclusive challenges
 						floorName = vFloor.DanceFloorRaised;
 					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalPlates;
@@ -255,7 +246,9 @@ namespace BunnyMod.Content
 				}
 				else if (vFloor.Constructed.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Overrides some non-exclusive challenges
+						floorName = vFloor.RugRed;
+					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalFloor;
 					else if (GC.challenges.Contains(cChallenge.GreenLiving))
 						floorName = vFloor.DirtFloor;
@@ -268,7 +261,9 @@ namespace BunnyMod.Content
 				}
 				else if (vFloor.Raised.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.CityOfSteel))
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Overrides some non-exclusive challenges
+						floorName = vFloor.DanceFloorRaised;
+					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.SolidPlates;
 					else if (GC.challenges.Contains(cChallenge.GreenLiving))
 						floorName = vFloor.CaveFloor;
@@ -308,7 +303,7 @@ namespace BunnyMod.Content
 
 				while (GC.percentChance(chance))
 				{
-					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.RandomRange(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
+					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.Range(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
 					chance -= 20;
 				}
 			}
@@ -3029,8 +3024,8 @@ namespace BunnyMod.Content
 						List<Window> breakUs = new List<Window>();
 
 						foreach (ObjectReal objReal in GC.objectRealList)
-							if (objReal is Window && GC.percentChance(2))
-								breakUs.Add((Window)objReal);
+							if (objReal is Window window && GC.percentChance(2))
+								breakUs.Add(window);
 
 						if (breakUs.Count > 0)
 							foreach (Window window in breakUs)
@@ -6416,8 +6411,7 @@ namespace BunnyMod.Content
 			if (GetActiveFloorMod() == null)
 				return true;
 
-			// TEST:
-			floorName = vFloor.RugRed;
+			floorName = GetFloorTile();
 
 			if (GC.levelTheme == 2 && floorName == "FlamePit")
 				floorName = "Hole";
@@ -6952,6 +6946,234 @@ namespace BunnyMod.Content
 				objectRealName = vObject.SecurityCam;
 
 			return true;
+		}
+		#endregion
+		#region TileInfo
+		public void TileInfo_00()
+		{
+			Type t = typeof(TileInfo);
+			Type g = GetType();
+
+			Prefix(t, "setFloor", g, "TileInfo_setFloor", new Type[4] { typeof(int), typeof(int), typeof(int), typeof(int) });
+		}
+		public static bool TileInfo_setFloor(int x, int y, int tileNum, int layerNum, TileInfo __instance, StreamingTileArray ___lastStreamingTileArray2, bool ___playerBuildingFloor) // Replacement
+		{
+			// Exterior Floor Mods (unverified)
+
+			int x2 = x;
+			int y2 = y;
+			TileData[,] array = __instance.tileArray;
+
+			if (GC.streamingWorld && GC.loadComplete)
+			{
+				StreamingTilemaps streamingTilemaps = GC.streamingWorldController.curStreamingTilemaps;
+
+				if (__instance.curStreamingTileArray != null)
+					streamingTilemaps = __instance.curStreamingTileArray.streamingTileMaps;
+				else if (___lastStreamingTileArray2 != null)
+					streamingTilemaps = ___lastStreamingTileArray2.streamingTileMaps;
+				else if (__instance.lastStreamingTileArray != null)
+					streamingTilemaps = __instance.lastStreamingTileArray.streamingTileMaps;
+				
+				__instance.tilemapFloors = streamingTilemaps.tilemapFloors;
+				__instance.tilemapFloors2 = streamingTilemaps.tilemapFloors2;
+				__instance.tilemapFloors3 = streamingTilemaps.tilemapFloors3;
+				__instance.tilemapFloors4 = streamingTilemaps.tilemapFloors4;
+				x2 = __instance.CorrectTile(x);
+				y2 = __instance.CorrectTile(y);
+				__instance.GetEdgeMaps(x, y, streamingTilemaps, streamingTilemaps.streamingTileArray, true);
+				array = __instance.curMyTileArray;
+				
+				if (___playerBuildingFloor && !__instance.endOfFrameSetupFloorTilemaps.Contains(streamingTilemaps))
+					__instance.endOfFrameSetupFloorTilemaps.Add(streamingTilemaps);
+			}
+
+			if (layerNum == 0)
+			{
+				TileData tileData = array[x, y];
+			
+				if (tileData.hole)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset);
+				}
+				else if (tileData.water || GC.challenges.Contains(cChallenge.SunkenCity))
+				{
+					if (tileNum == 1)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+						else
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset);
+				}
+				else if ((tileData.ice || GC.challenges.Contains(cChallenge.TransitExperiment)) && tileData.floorMaterial != floorMaterialType.IceRink)
+					__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset);
+				else if (tileData.conveyorBelt)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset);
+				}
+				else if (tileNum == 1)
+				{
+					if (GC.streamingWorld)
+						__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+					else
+						__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+				}
+				else
+					__instance.tilemapFloors.SetTile(x2, y2, 0, tileNum + tileData.floorMaterialOffset);
+				
+				tileData.floorTileBeforeOffset = tileNum;
+			}
+			if (layerNum == 3)
+			{
+				TileData tileData2 = array[x, y];
+				
+				if (tileData2.hole)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3);
+				}
+				else if (array[x, y].water || GC.challenges.Contains(cChallenge.SunkenCity))
+					__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3);
+				else if ((tileData2.ice || GC.challenges.Contains(cChallenge.TransitExperiment))&& tileData2.floorMaterial3 != floorMaterialType.IceRink)
+				{
+					if (tileNum == 1)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset3 + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+						else
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset3 + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3);
+				}
+				else if (array[x, y].conveyorBelt)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3);
+				}
+				else if (tileNum == 1)
+				{
+					if (GC.streamingWorld)
+						__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+					else
+						__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3 + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+				}
+				else
+					__instance.tilemapFloors3.SetTile(x2, y2, 0, tileNum + tileData2.floorMaterialOffset3);
+				
+				tileData2.floorTileBeforeOffset3 = tileNum;
+			}
+			if (layerNum == 4)
+			{
+				TileData tileData3 = array[x, y];
+
+				if (tileData3.hole)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+				}
+				else if (tileData3.water || GC.challenges.Contains(cChallenge.SunkenCity))
+				{
+					if (tileData3.floorMaterial4 == floorMaterialType.Pool)
+					{
+						if (tileNum == 1)
+						{
+							if (GC.streamingWorld)
+								__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset4 + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+							else
+								__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + array[x, y].floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+						}
+						else
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+					}
+					else if (tileNum == 15)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + GC.Choose<int>(0, 1, new int[] { 2, 3, 4 }));
+						else
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("WaterTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+				}
+				else if ((tileData3.ice || GC.challenges.Contains(cChallenge.TransitExperiment)) && tileData3.floorMaterial4 != floorMaterialType.IceRink)
+				{
+					if (tileNum == 15)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + GC.Choose<int>(0, 1, new int[] { 2, 3, 4 }));
+						else
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("IceTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+				}
+				else if (tileData3.conveyorBelt)
+				{
+					if (tileNum == 2)
+					{
+						if (GC.streamingWorld)
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + GC.Choose<int>(0, 14, new int[] { 15, 16, 17 }));
+						else
+							__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("HoleTiles", "RandomFloorsWalls")));
+					}
+					else
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+				}
+				else if (tileNum == 1)
+				{
+					if (GC.streamingWorld)
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + GC.Choose<int>(0, 15, new int[] { 16, 17, 18 }));
+					else
+						__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4 + int.Parse(GC.rnd.RandomSelect("FloorTiles", "RandomFloorsWalls")));
+				}
+				else
+					__instance.tilemapFloors4.SetTile(x2, y2, 0, tileNum + tileData3.floorMaterialOffset4);
+				
+				tileData3.floorTileBeforeOffset4 = tileNum;
+			}
+
+			return false;
 		}
 		#endregion
 	}

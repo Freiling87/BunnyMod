@@ -290,12 +290,17 @@ namespace BunnyMod.Content
 			Type t = typeof(BasicWall);
 			Type g = GetType();
 
-			Postfix(t, "Spawn", g, "BasicWall_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+			Prefix(t, "Spawn", g, "BasicWall_Spawn_Prefix", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+			Postfix(t, "Spawn", g, "BasicWall_Spawn_Postfix", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 		}
-		public static void BasicWall_Spawn(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Postfix
+		public static void BasicWall_Spawn_Prefix(SpawnerBasic spawner, ref string __wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
+		{
+			if (IsWallModActive())
+				__wallName = GetWallTypeFromMutator();
+		}
+		public static void BasicWall_Spawn_Postfix(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Postfix
 		{
 			// FloralerFlora Hedge Wall leaves spawn
-
 
 			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode))
 			{

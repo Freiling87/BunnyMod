@@ -49,6 +49,7 @@ namespace BunnyMod.Content
             Generator_00();
             Generator2_00();
             Hole_00();
+            Lamp_00();
             LaserEmitter_00();
             Manhole_00();
             Plant_00();
@@ -1963,9 +1964,44 @@ namespace BunnyMod.Content
 
             return true;
 		}
-        #endregion
-        #region LaserEmitter
-        public void LaserEmitter_00()
+		#endregion
+		#region Lamp
+        public void Lamp_00()
+		{
+            Type t = typeof(Lamp);
+            Type g = GetType();
+
+            Prefix(t, "Start", g, "Lamp_Start", new Type[0] { });
+		}
+        public static bool Lamp_Start(Lamp __instance) // Prefix
+		{
+            if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff) || BMHeader.debugMode)
+			{
+                ObjectReal_Start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+                if ((GC.serverPlayer || __instance.functional) && (__instance.gc.lightingType == "Full" || __instance.gc.lightingType == "Med"))
+                {
+                    LightTemp lightTemp = __instance.gc.spawnerMain.SpawnLightTemp(__instance.transform.position, __instance, "Lamp");
+
+                    if (GC.percentChance(33))
+                        lightTemp.fancyLight.Color = new Color(0f, 0f, 0.75f, 0.75f);
+                    else if (GC.percentChance(50))
+                        lightTemp.fancyLight.Color = new Color(0f, 0.75f, 0f, 0.75f);
+                    else
+                        lightTemp.fancyLight.Color = new Color(0.75f, 0f, 0f, 0.75f);
+
+                    lightTemp.transform.position = new Vector3(__instance.transform.position.x, __instance.transform.position.y + 0.24f, lightTemp.transform.position.z);
+                    __instance.StartCoroutine(__instance.WaitToStartAmbientAudio());
+                }
+
+                return false;
+			}
+
+            return true;
+		}
+		#endregion
+		#region LaserEmitter
+		public void LaserEmitter_00()
         {
             Postfix(typeof(LaserEmitter), "DetermineButtons", GetType(), "LaserEmitter_DetermineButtons", new Type[0] { });
         }
@@ -3438,8 +3474,12 @@ namespace BunnyMod.Content
 		#region Window
 		public void Window_00()
         {
-            Postfix(typeof(Window), "DetermineButtons", GetType(), "Window_DetermineButtons", new Type[0] { });
-            Prefix(typeof(Window), "SlipThroughWindow", GetType(), "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
+            Type t = typeof(Window);
+            Type g = GetType();
+
+            Postfix(t, "DetermineButtons", g, "Window_DetermineButtons", new Type[0] { });
+            Prefix(t, "SlipThroughWindow", g, "Window_SlipThroughWindow", new Type[1] { typeof(Agent) });
+            Postfix(t, "SetVars", g, "Window_SetVars", new Type[0] { });
         }
         public static void Window_DetermineButtons(Window __instance) // Postfix
         {
@@ -3491,6 +3531,10 @@ namespace BunnyMod.Content
 
             return false;
         }
+        public static void Window_SetVars(Window __instance) // Postfix
+		{
+            __instance.breakForAthleteQuest = true;
+		}
 		#endregion
 		#endregion
 	}

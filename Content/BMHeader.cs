@@ -172,9 +172,11 @@ namespace BunnyMod.Content
     public static class cChallenge // Custom Mutators
     {
         public const string
+            ABenchInTheWorks = "ABenchInTheWorks",
             ACityForAnts = "ACityForAnts", 
             AnCapistan = "AnCapistan", 
             ArcologyEcology = "ArcologyEcology",
+            AwShucks = "AwShucks",
             BadNeighborhoods = "BadNeighborhoods",
             BoringPhysics = "BoringPhysics",
             BroughtBackFountain = "BroughtBackFountain",
@@ -205,6 +207,7 @@ namespace BunnyMod.Content
             RoaminOrgy = "RoaminOrgy",
             RushinRevolution = "RushinRevolution",
             SaveTheWalls = "SaveTheWalls",
+            StatueUnlimitations = "StatueUnlimitation",
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
             UnpaidInternship = "UnpaidInternship",
@@ -360,10 +363,13 @@ namespace BunnyMod.Content
     public static class cLevelFeature // Custom Level Features
 	{
         public const string
+            Benches = "Benches",
             BrokenWindows = "BrokenWindows",
+            Cornstalks = "Cornstalks",
             Fountains = "Fountains",
             Litter = "Litter",
-            PublicSecurityCams = "PublicSecurityCams";
+            PublicSecurityCams = "PublicSecurityCams",
+            Statues = "Statues";
 	}
     public static class cObject
 	{

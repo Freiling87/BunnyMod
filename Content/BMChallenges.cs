@@ -88,6 +88,13 @@ namespace BunnyMod.Content
 			SpelunkyDory.IsActive = false;
 			#endregion
 			#region Level Features
+			CustomMutator ABenchInTheWorks = RogueLibs.CreateCustomMutator(cChallenge.ABenchInTheWorks, true,
+				new CustomNameInfo("000: Features: A Bench in the Works"),
+				new CustomNameInfo("Whoa! It's some kind of... bench!"));
+			ABenchInTheWorks.Available = true;
+			ABenchInTheWorks.Conflicting.AddRange(new string[] { });
+			ABenchInTheWorks.IsActive = false;
+
 			CustomMutator BadNeighborhoods = RogueLibs.CreateCustomMutator(cChallenge.BadNeighborhoods, true,
 				new CustomNameInfo("Features: Bad Neighborhoods"),
 				new CustomNameInfo("This place sure went to shit, didn't it?\n\n- Small chance for any given window to start out broken"));
@@ -104,10 +111,17 @@ namespace BunnyMod.Content
 
 			CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
 				new CustomNameInfo("Features: Floral-er Flora"),
-				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes and treets. Looks nice.\n- May be a performance strain for plebs"));
+				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes, hedge walls, plants and trees. Looks nice.\n- May be a performance strain for plebs"));
 			FloralerFlora.Available = true;
 			FloralerFlora.Conflicting.AddRange(new string[] { });
 			FloralerFlora.IsActive = false;
+
+			CustomMutator GiveMeCorns = RogueLibs.CreateCustomMutator(cChallenge.AwShucks, true,
+				new CustomNameInfo("000: Features: Give Me Corns"),
+				new CustomNameInfo("I bet you're expecting some corn puns here. Nope. Not gonna do it."));
+			GiveMeCorns.Available = true;
+			GiveMeCorns.Conflicting.AddRange(new string[] { });
+			GiveMeCorns.IsActive = false;
 
 			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
 				new CustomNameInfo("Features: Litter-aly the Worst"),
@@ -122,6 +136,13 @@ namespace BunnyMod.Content
 			SkywayDistrict.Available = true;
 			SkywayDistrict.Conflicting.AddRange(new string[] { });
 			SkywayDistrict.IsActive = false;
+
+			CustomMutator StatueUnlimitations = RogueLibs.CreateCustomMutator(cChallenge.StatueUnlimitations, true,
+				new CustomNameInfo("000: Features: Statue Unlimitations"),
+				new CustomNameInfo("The ban on statues has finally run its course. Now, people run rampant, constructing effigies to historical figures like The Mayor!"));
+			StatueUnlimitations.Available = true;
+			StatueUnlimitations.Conflicting.AddRange(new string[] { });
+			StatueUnlimitations.IsActive = false;
 			#endregion
 			#region Knockback
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,

@@ -293,10 +293,10 @@ namespace BunnyMod.Content
 			Prefix(t, "Spawn", g, "BasicWall_Spawn_Prefix", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 			Postfix(t, "Spawn", g, "BasicWall_Spawn_Postfix", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 		}
-		public static void BasicWall_Spawn_Prefix(SpawnerBasic spawner, ref string __wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
+		public static void BasicWall_Spawn_Prefix(SpawnerBasic spawner, ref string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
 			if (IsWallModActive())
-				__wallName = GetWallTypeFromMutator();
+				wallName = GetWallTypeFromMutator();
 		}
 		public static void BasicWall_Spawn_Postfix(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Postfix
 		{
@@ -309,7 +309,7 @@ namespace BunnyMod.Content
 				while (GC.percentChance(chance))
 				{
 					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.RandomRange(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
-					chance -= 25;
+					chance -= 20;
 				}
 			}
 
@@ -3898,6 +3898,135 @@ namespace BunnyMod.Content
 
 							if (vector20 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector20, null, "Fountain");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - Statues
+					bool hasStatues = false;
+
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Statues) || GC.challenges.Contains(cChallenge.StatueUnlimitations))
+						hasStatues = true;
+
+					if (hasStatues || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Statues");
+						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector20 = Vector2.zero;
+							int num46 = 0;
+
+							do
+							{
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
+									if (GC.objectRealList[num47].objectName == "Statue" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
+										vector20 = Vector2.zero;
+
+								num46++;
+							}
+							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 5f) && num46 < 100);
+
+							if (vector20 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector20, null, "Statue");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - Benches
+					bool hasBenches = false;
+
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Benches) || GC.challenges.Contains(cChallenge.ABenchInTheWorks))
+						hasBenches = true;
+
+					if (hasBenches || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Benches");
+						int numObjects = Mathf.Clamp(12 * LevelSizeRatio(), 1, 5);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector20 = Vector2.zero;
+							int num46 = 0;
+
+							do
+							{
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
+									if (GC.objectRealList[num47].objectName == "Bench" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (2f * LevelSizeRatio()))
+										vector20 = Vector2.zero;
+
+								num46++;
+							}
+							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 2f) && num46 < 100);
+
+							if (vector20 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector20, null, "Bench");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - CornStalk
+					bool hasCornstalks = false;
+
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Cornstalks) || GC.challenges.Contains(cChallenge.AwShucks))
+						hasCornstalks = true;
+
+					if (hasCornstalks || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Cornstalks");
+						int numObjects = Mathf.Clamp(12 * LevelSizeRatio(), 1, 5);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector20 = Vector2.zero;
+							int num46 = 0;
+
+							do
+							{
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
+									if (GC.objectRealList[num47].objectName == "Cornstalk" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (2f * LevelSizeRatio()))
+										vector20 = Vector2.zero;
+
+								num46++;
+							}
+							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 2f) && num46 < 100);
+
+							if (vector20 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector20, null, "Cornstalk");
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{

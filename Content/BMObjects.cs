@@ -688,23 +688,34 @@ namespace BunnyMod.Content
                     case vObject.Bush:
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
                             chance -= 20;
                         }
 
                         break;
+
                     case vObject.KillerPlant:
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
                             chance -= 20;
                         }
 
                         break;
+
+                    case vObject.Plant:
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
+                            chance -= 66;
+						}
+
+                        break;
+
                     case vObject.Tree:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)), vObject.Bush, false);
                             chance -= 10;
                         }
 
@@ -717,56 +728,61 @@ namespace BunnyMod.Content
                     case vObject.ATMMachine:
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
                             chance -= 10;
                         }
 
                         break;
+
                     case vObject.Barbecue:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.24f, 0.24f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.Bush, true);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.24f, 0.24f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
                             chance -= 25;
                         }
 
                         break;
+
                     case vObject.Boulder:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
 
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.FlamingBarrel, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vObject.FlamingBarrel, false);
                             chance -= 15;
                         }
 
                         break;
+
                     case vObject.BoulderSmall:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.Rock);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.Rock);
 
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.FlamingBarrel, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.FlamingBarrel, false);
                             chance -= 10;
                         }
 
                         break;
+
                     case vObject.FlamingBarrel:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.12f, 0.12f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.12f, 0.12f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
                             chance -= 25; 
                         }
 
                         break;
+
                     case vObject.TrashCan:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.RandomRange(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
 
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.RandomRange(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
                             chance -= 10;
                         }
 

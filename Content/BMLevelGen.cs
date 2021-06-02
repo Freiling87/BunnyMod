@@ -2540,7 +2540,7 @@ namespace BunnyMod.Content
 						spawnedInChunks = null;
 					}
 					#endregion
-					#region Mod - Cave Wall Outcroppings
+					#region Mod - SpelunkyDory / Cave Wall Outcroppings
 					if (GC.challenges.Contains(cChallenge.SpelunkyDory))
 					{
 						Debug.Log("Loading SpelunkyDory Cave Wall Outcroppings");
@@ -2710,7 +2710,7 @@ namespace BunnyMod.Content
 						spawnedCount = null;
 					}
 					#endregion
-					#region Mod - Public Security Cams & Turrets
+					#region Mod - PoliceState / Public Security Cams & Turrets
 
 					bool hasPublicSecurityCams = false;
 
@@ -2963,7 +2963,7 @@ namespace BunnyMod.Content
 						spawnedInChunks = null;
 					}
 					#endregion
-					#region Mod - Litter
+					#region Mod - LitterallyTheWorst / Litter
 					bool hasLitter = false;
 
 					if (GC.customLevel)
@@ -3008,7 +3008,7 @@ namespace BunnyMod.Content
 						}
 					}
 					#endregion
-					#region Mod - Broken Windows
+					#region Mod - BadNeighborhoods / Broken Windows
 					bool hasBrokenWindows = false;
 
 					if (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))
@@ -3036,9 +3036,6 @@ namespace BunnyMod.Content
 							foreach (Window window in breakUs)
 								window.DamagedObject(window, 0f);
 					}
-					#endregion
-					#region Mod - Butler Bots
-
 					#endregion
 					#region Vendor Carts
 					bool hasVendorCarts = false;
@@ -3867,93 +3864,7 @@ namespace BunnyMod.Content
 						}
 					}
 					#endregion
-					#region Mod - Fountains
-					bool hasFountains = false;
-
-					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Fountains) || GC.challenges.Contains(cChallenge.BroughtBackFountain))
-						hasFountains = true;
-
-					if (hasFountains || BMHeader.debugMode)
-					{
-						Debug.Log("Loading Fountains");
-						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
-						int num2;
-
-						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
-						{
-							Vector2 vector20 = Vector2.zero;
-							int num46 = 0;
-
-							do
-							{
-								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
-
-								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
-									if (GC.objectRealList[num47].objectName == "Fountain" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
-										vector20 = Vector2.zero;
-
-								num46++;
-							}
-							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 5f) && num46 < 100);
-
-							if (vector20 != Vector2.zero)
-								GC.spawnerMain.spawnObjectReal(vector20, null, "Fountain");
-
-							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-							{
-								yield return null;
-								chunkStartTime = Time.realtimeSinceStartup;
-							}
-
-							Random.InitState(__instance.randomSeedNum + bigTries);
-							num2 = bigTries;
-						}
-					}
-					#endregion
-					#region Mod - Statues
-					bool hasStatues = false;
-
-					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Statues) || GC.challenges.Contains(cChallenge.StatueUnlimitations))
-						hasStatues = true;
-
-					if (hasStatues || BMHeader.debugMode)
-					{
-						Debug.Log("Loading Statues");
-						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
-						int num2;
-
-						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
-						{
-							Vector2 vector20 = Vector2.zero;
-							int num46 = 0;
-
-							do
-							{
-								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
-
-								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
-									if (GC.objectRealList[num47].objectName == "Statue" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
-										vector20 = Vector2.zero;
-
-								num46++;
-							}
-							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 5f) && num46 < 100);
-
-							if (vector20 != Vector2.zero)
-								GC.spawnerMain.spawnObjectReal(vector20, null, "Statue");
-
-							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
-							{
-								yield return null;
-								chunkStartTime = Time.realtimeSinceStartup;
-							}
-
-							Random.InitState(__instance.randomSeedNum + bigTries);
-							num2 = bigTries;
-						}
-					}
-					#endregion
-					#region Mod - Benches
+					#region Mod - ABenchInTheWorks / Benches
 					bool hasBenches = false;
 
 					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Benches) || GC.challenges.Contains(cChallenge.ABenchInTheWorks))
@@ -3996,7 +3907,277 @@ namespace BunnyMod.Content
 						}
 					}
 					#endregion
-					#region Mod - CornStalk
+					#region Mod - BroughtBackFountain / Fountains
+					bool hasFountains = false;
+
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Fountains) || GC.challenges.Contains(cChallenge.BroughtBackFountain))
+						hasFountains = true;
+
+					if (hasFountains || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Fountains");
+						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector20 = Vector2.zero;
+							int num46 = 0;
+
+							do
+							{
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
+									if (GC.objectRealList[num47].objectName == "Fountain" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
+										vector20 = Vector2.zero;
+
+								num46++;
+							}
+							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 5f) && num46 < 100);
+
+							if (vector20 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector20, null, "Fountain");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - DiscoCityDanceoff / Jukeboxes & Speakers
+					bool hasDisco = true;
+
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff) || BMHeader.debugMode)
+						hasDisco = true;
+					
+					if (hasDisco)
+					{
+						Debug.Log("Loading Disco Shit");
+						int bigTries = (int)((float)Random.Range(6, 12) * __instance.levelSizeModifier);
+						List<int> spawnedInChunks = new List<int>();
+						int num2;
+
+						for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
+						{
+							Vector2 vector7 = Vector2.zero;
+							int num22 = 0;
+
+							do
+							{
+								vector7 = GC.tileInfo.FindRandLocationNearWall(0.64f);
+
+								if (vector7 != Vector2.zero)
+								{
+									TileData tileData4 = GC.tileInfo.GetTileData(vector7);
+
+									if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y + 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).owner == 0 &&
+										GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).owner == 0)
+										vector7 = Vector2.zero;
+
+									if (!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y + 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y - 0.64f), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x + 0.64f, vector7.y), "Wall") &&
+										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x - 0.64f, vector7.y), "Wall"))
+										vector7 = Vector2.zero;
+
+									if (GC.tileInfo.IsOverlapping(vector7, "ObjectRealSprite", 0.64f))
+										vector7 = Vector2.zero;
+
+									if (spawnedInChunks.Contains(tileData4.chunkID))
+										vector7 = Vector2.zero;
+
+									if (GC.tileInfo.DestroyIfBetweenWalls(vector7))
+										vector7 = Vector2.zero;
+								}
+
+								num22++;
+							}
+							while ((vector7 == Vector2.zero || Vector2.Distance(vector7, GC.playerAgent.tr.position) < 5f) && num22 < 100);
+
+							if (vector7 != Vector2.zero)
+							{
+								GC.spawnerMain.spawnObjectReal(vector7, null, vObject.Speaker).ShiftTowardWalls();
+
+								TileData tileData5 = GC.tileInfo.GetTileData(vector7);
+								spawnedInChunks.Add(tileData5.chunkID);
+								Random.InitState(__instance.randomSeedNum + numObjects + ++randomCount);
+
+								if (numObjects < bigTries - 1 && GC.percentChance(25))
+								{
+									string a2 = "";
+									Vector2 zero4 = Vector2.zero;
+									Vector2 zero5 = Vector2.zero;
+
+									if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y + 0.64f)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(vector7.x + 1.28f, vector7.y);
+										zero5 = new Vector2(vector7.x - 1.28f, vector7.y);
+										a2 = "N";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(vector7.x + 1.28f, vector7.y);
+										zero5 = new Vector2(vector7.x - 1.28f, vector7.y);
+										a2 = "S";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(vector7.x, vector7.y + 1.28f);
+										zero5 = new Vector2(vector7.x, vector7.y - 1.28f);
+										a2 = "E";
+									}
+									else if (GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).wallMaterial != wallMaterialType.None)
+									{
+										zero4 = new Vector2(vector7.x, vector7.y + 1.28f);
+										zero5 = new Vector2(vector7.x, vector7.y - 1.28f);
+										a2 = "W";
+									}
+
+									GC.tileInfo.GetTileData(zero4);
+									bool flag9 = true;
+
+									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W"))
+										flag9 = false;
+
+									if (GC.tileInfo.IsOverlapping(zero4, "Anything"))
+										flag9 = false;
+
+									if (GC.tileInfo.IsOverlapping(zero4, "ObjectRealSprite", 0.64f))
+										flag9 = false;
+
+									if (flag9 && zero4 != Vector2.zero)
+									{
+										GC.spawnerMain.spawnObjectReal(zero4, null, vObject.Speaker).ShiftTowardWalls();
+										num2 = numObjects;
+										numObjects = num2 + 1;
+									}
+									else
+									{
+										GC.tileInfo.GetTileData(zero5);
+										flag9 = true;
+
+										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "W"))
+											flag9 = false;
+
+										if (GC.tileInfo.IsOverlapping(zero5, "Anything"))
+											flag9 = false;
+
+										if (GC.tileInfo.IsOverlapping(zero5, "ObjectRealSprite", 0.64f))
+											flag9 = false;
+
+										if (flag9 && zero5 != Vector2.zero)
+										{
+											GC.spawnerMain.spawnObjectReal(zero5, null, vObject.Jukebox).ShiftTowardWalls();
+											num2 = numObjects;
+											numObjects = num2 + 1;
+										}
+									}
+								}
+							}
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + numObjects);
+							num2 = numObjects;
+						}
+
+						spawnedInChunks = null;
+					}
+					#endregion
+					#region Mod - DiscoCityDanceoff / Turntables
+					if (hasDisco || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Disco Turntables");
+						int bigTries = 6;
+
+						int num2;
+
+						for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
+						{
+							Vector2 vector4 = Vector2.zero;
+							int num15 = 0;
+
+							do
+							{
+								vector4 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num16 = 0; num16 < GC.objectRealList.Count; num16++)
+									if (GC.objectRealList[num16].objectName == vObject.Turntables && Vector2.Distance(GC.objectRealList[num16].tr.position, vector4) < 28f)
+										vector4 = Vector2.zero;
+
+								if (vector4 != Vector2.zero)
+								{
+									if (GC.tileInfo.WaterNearby(vector4))
+										vector4 = Vector2.zero;
+
+									if (GC.tileInfo.IceNearby(vector4))
+										vector4 = Vector2.zero;
+
+									if (GC.tileInfo.BridgeNearby(vector4))
+										vector4 = Vector2.zero;
+								}
+
+								num15++;
+							}
+							while ((vector4 == Vector2.zero || Vector2.Distance(vector4, GC.playerAgent.tr.position) < 5f || Vector2.Distance(vector4, GC.elevatorDown.tr.position) < 20f) && num15 < 100);
+
+							if (vector4 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector4, null, vObject.Turntables);
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + numObjects);
+							num2 = numObjects;
+						}
+					}
+					#endregion
+					#region Mod - GiveMeCorns / Cornstalks
 					bool hasCornstalks = false;
 
 					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Cornstalks) || GC.challenges.Contains(cChallenge.AwShucks))
@@ -4027,6 +4208,49 @@ namespace BunnyMod.Content
 
 							if (vector20 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector20, null, "Cornstalk");
+
+							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
+							{
+								yield return null;
+								chunkStartTime = Time.realtimeSinceStartup;
+							}
+
+							Random.InitState(__instance.randomSeedNum + bigTries);
+							num2 = bigTries;
+						}
+					}
+					#endregion
+					#region Mod - StatueUnlimitations / Statues
+					bool hasStatues = false;
+
+					if (__instance.customLevel.levelFeatures.Contains(cLevelFeature.Statues) || GC.challenges.Contains(cChallenge.StatueUnlimitations))
+						hasStatues = true;
+
+					if (hasStatues || BMHeader.debugMode)
+					{
+						Debug.Log("Loading Statues");
+						int numObjects = Mathf.Clamp(3 * LevelSizeRatio(), 1, 5);
+						int num2;
+
+						for (int bigTries = 0; bigTries < numObjects; bigTries = num2 + 1)
+						{
+							Vector2 vector20 = Vector2.zero;
+							int num46 = 0;
+
+							do
+							{
+								vector20 = GC.tileInfo.FindRandLocationGeneral(2f);
+
+								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
+									if (GC.objectRealList[num47].objectName == "Statue" && Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
+										vector20 = Vector2.zero;
+
+								num46++;
+							}
+							while ((vector20 == Vector2.zero || Vector2.Distance(vector20, GC.playerAgent.tr.position) < 5f) && num46 < 100);
+
+							if (vector20 != Vector2.zero)
+								GC.spawnerMain.spawnObjectReal(vector20, null, "Statue");
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -6220,7 +6444,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-				public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
+		public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Postfix");
 
@@ -6236,19 +6460,24 @@ namespace BunnyMod.Content
 				if (agent.isPlayer > 0)
 				{
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, false, 1);
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, vRelationship.Hateful, 1);
 
 					if (level >= 10)
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, false, 4);
+							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, vRelationship.Hateful, 4);
+
+					if (level >= 13)
+						if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || GC.challenges.Contains(cChallenge.FloralerFlora))
+							for (int i = 0; i <= level - 11; i++)
+								GC.spawnerMain.SpawnButlerBot();
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, false, 4);
+						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, vRelationship.Hateful, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, vRelationship.Aligned, 1);
 					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						BMAgents.SpawnRoamerSquad(agent, 8, vAgent.ResistanceLeader, __instance, true, 1);
+						BMAgents.SpawnRoamerSquad(agent, 8, vAgent.ResistanceLeader, __instance, vRelationship.Aligned, 1);
 				}
 			}
 		}

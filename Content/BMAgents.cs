@@ -37,7 +37,7 @@ namespace BunnyMod.Content
 		}
 
 		#region Custom
-		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, bool aligned, int splitIntoGroupSize) // Non-Patch
+		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship, int splitIntoGroupSize) // Non-Patch
 		{
 			BMLog("LoadLevel_SpawnRoamerSquad");
 
@@ -85,25 +85,30 @@ namespace BunnyMod.Content
 					agent.oma.mustBeGuilty = true;
 					spawnedAgentList.Add(agent);
 
+					// Align agents in group to each other
 					if (spawnedAgentList.Count > 1)
 						for (int j = 0; j < spawnedAgentList.Count; j++)
 							if (spawnedAgentList[j] != agent)
 							{
-								agent.relationships.SetRelInitial(spawnedAgentList[j], "Aligned");
-								spawnedAgentList[j].relationships.SetRelInitial(agent, "Aligned");
+								agent.relationships.SetRelInitial(spawnedAgentList[j], vRelationship.Aligned);
+								spawnedAgentList[j].relationships.SetRelInitial(agent, vRelationship.Aligned);
 							}
 
-					if (aligned)
+					agent.relationships.SetRel(playerAgent, relationship);
+					playerAgent.relationships.SetRel(agent, relationship);
+
+					switch (relationship.ToString())
 					{
-						agent.relationships.SetRel(playerAgent, "Aligned");
-						playerAgent.relationships.SetRel(agent, "Aligned");
-					}
-					else
-					{
-						agent.relationships.SetRel(playerAgent, "Hateful");
-						playerAgent.relationships.SetRel(agent, "Hateful");
-						agent.relationships.SetRelHate(playerAgent, 5);
-						playerAgent.relationships.SetRelHate(agent, 5);
+						case vRelationship.Annoyed:
+							agent.relationships.SetRelHate(playerAgent, 1);
+							playerAgent.relationships.SetRelHate(agent, 1);
+
+							break;
+						case vRelationship.Hateful:
+							agent.relationships.SetRelHate(playerAgent, 5);
+							playerAgent.relationships.SetRelHate(agent, 5);
+							
+							break;
 					}
 
 					if (agentType == vAgent.ResistanceLeader && BMTraits.IsPlayerTraitActive(cTrait.Reinforcements_2))

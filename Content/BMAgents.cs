@@ -983,7 +983,7 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Postfix(t, "AddTrait", g, "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
-			Postfix(t, "AgentIsRival", g, "StatusEffects_AgentIsRival", new Type[1] { typeof(string) });
+			Postfix(t, "AgentIsRival", g, "StatusEffects_AgentIsRival", new Type[1] { typeof(Agent) });
 			Prefix(t, "BecomeHidden", g, "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
 			Prefix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Prefix", new Type[0] { });
 			Postfix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Postfix", new Type[0]);

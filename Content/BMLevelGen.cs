@@ -1543,7 +1543,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance, ref string __floorName) // Prefix
+		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance) // Prefix
 		{
 			BMLog("LoadLevel_loadStuff2_Prefix");
 
@@ -1551,9 +1551,6 @@ namespace BunnyMod.Content
 				GC.canalHoles = true;
 			else
 				GC.canalHoles = false;
-
-			if (!(GetFloorTile() is null))
-				__floorName = GetFloorTile();
 
 			return true;
 		}

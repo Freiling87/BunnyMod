@@ -57,6 +57,26 @@ namespace BunnyMod.Content
 
 			return vanilla;
 		}
+		public static string GetFloorTile()
+		{
+			string curMutator = "";
+
+			foreach (string mutator in cChallenge.AffectsFloors)
+				if (GC.challenges.Contains(mutator))
+					curMutator = mutator;
+
+			switch (curMutator)
+			{
+				case cChallenge.ArcologyEcology:
+					return vFloor.RugGreen;
+				case cChallenge.SunkenCity:
+					return vFloor.RugPurple;
+				case cChallenge.TransitExperiment:
+					return vFloor.RugRed;
+				default:
+					return null;
+			}
+		}
 		public static string GetFloorTileGroup()
 		{
 			string curMutator = "";
@@ -65,20 +85,9 @@ namespace BunnyMod.Content
 				if (GC.challenges.Contains(mutator))
 					curMutator = mutator;
 
-			//ArcologyEcology,
-			//         CityOfSteel,
-			//         GreenLiving,
-			//         Panoptikopolis,
-			//         ShantyTown,
-			//         SpelunkyDory,
-			//         SunkenCity,
-			//         TransitExperiment,
-
 			switch (curMutator)
 			{
 				case cChallenge.ArcologyEcology:
-					return vFloorTileGroup.Park;
-				case cChallenge.GreenLiving:
 					return vFloorTileGroup.Park;
 				case cChallenge.SunkenCity:
 					return vFloorTileGroup.Water;
@@ -1281,11 +1290,10 @@ namespace BunnyMod.Content
 						for (int l = num4; l > num5; l--)
 						{
 							__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i2, j2].chunkID;
-							int tile = 0;
 							string floorTileGroup = vFloorTileGroup.Building; // Homebase is default
 
 							if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-								floorTileGroup = GetFloorTileGroup(); // GetFloorTileGroup();
+								floorTileGroup = GetFloorTileGroup();
 							else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
 								if (GC.levelTheme == 0)
@@ -1302,7 +1310,7 @@ namespace BunnyMod.Content
 									floorTileGroup = vFloorTileGroup.MayorVillage;
 							}
 
-							tile = int.Parse(GC.rnd.RandomSelect(floorTileGroup, "RandomFloorsWalls"));
+							int tile = int.Parse(GC.rnd.RandomSelect(floorTileGroup, "RandomFloorsWalls"));
 
 							___tilemapFloors2.SetTile(k, l - 1, 0, tile);
 						}
@@ -1499,14 +1507,17 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance) // Prefix
+		public static bool LoadLevel_loadStuff2_Prefix (LoadLevel __instance, ref string __floorName) // Prefix
 		{
 			BMLog("LoadLevel_loadStuff2_Prefix");
 
 			if (GC.challenges.Contains(cChallenge.SkywayDistrict))
 				GC.canalHoles = true;
 			else
-				GC.canalHoles = false; 
+				GC.canalHoles = false;
+
+			if (!(GetFloorTile() is null))
+				__floorName = GetFloorTile();
 
 			return true;
 		}

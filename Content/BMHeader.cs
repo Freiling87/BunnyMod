@@ -177,11 +177,12 @@ namespace BunnyMod.Content
             ArcologyEcology = "ArcologyEcology",
             BadNeighborhoods = "BadNeighborhoods",
             BoringPhysics = "BoringPhysics",
+            BroughtBackFountain = "BroughtBackFountain",
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",
+            DiscoCityDanceoff = "DiscoCityDanceoff",
             DoublePlyRewards = "DoublePlyRewards",
             FloralerFlora = "FloralerFlora",
-            BroughtBackFountain = "FountainTest",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
             HomesickAndTired = "HomesickandTired",
@@ -224,6 +225,7 @@ namespace BunnyMod.Content
         public static List<string> AffectsFloors = new List<string>()
         {
             ArcologyEcology,
+            DiscoCityDanceoff,
             SunkenCity,
             TransitExperiment,
         };

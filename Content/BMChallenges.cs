@@ -30,6 +30,13 @@ namespace BunnyMod.Content
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
 			ArcologyEcology.IsActive = false;
 
+			CustomMutator DiscoCityDanceoff = RogueLibs.CreateCustomMutator(cChallenge.DiscoCityDanceoff, true,
+				new CustomNameInfo("000: FloorTiles: Disco City Dance-off"),
+				new CustomNameInfo("Here's the skinny: this freaky deaky Mayor is just bad vibes, man. Time to make this city copacetic, can you dig it? Outta sight!"));
+			DiscoCityDanceoff.Available = true;
+			DiscoCityDanceoff.Conflicting.AddRange(cChallenge.AffectsFloors);
+			DiscoCityDanceoff.IsActive = false;
+
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
 				new CustomNameInfo("000: FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));

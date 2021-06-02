@@ -69,6 +69,8 @@ namespace BunnyMod.Content
 			{
 				case cChallenge.ArcologyEcology:
 					return vFloor.RugGreen;
+				case cChallenge.DiscoCityDanceoff:
+					return vFloor.DanceFloor;
 				case cChallenge.SunkenCity:
 					return vFloor.RugPurple;
 				case cChallenge.TransitExperiment:
@@ -89,6 +91,8 @@ namespace BunnyMod.Content
 			{
 				case cChallenge.ArcologyEcology:
 					return vFloorTileGroup.Park;
+				case cChallenge.DiscoCityDanceoff:
+					return vFloorTileGroup.Uptown;
 				case cChallenge.SunkenCity:
 					return vFloorTileGroup.Water;
 				case cChallenge.TransitExperiment:
@@ -104,6 +108,31 @@ namespace BunnyMod.Content
 					return mutator;
 
 			return null;
+		}
+		public static wallMaterialType GetBorderWallMaterialFromMutator()
+		{
+			BMLog("GetWallBorderTypeFromMutator: '" + GetWallMutator() + "'");
+
+			switch (GetWallMutator())
+			{
+				case cChallenge.CityOfSteel:
+					return wallMaterialType.Steel;
+
+				case cChallenge.GreenLiving:
+					return wallMaterialType.Wood;
+
+				case cChallenge.Panoptikopolis:
+					return wallMaterialType.Glass;
+
+				case cChallenge.ShantyTown:
+					return wallMaterialType.Wood;
+
+				case cChallenge.SpelunkyDory:
+					return wallMaterialType.Border;
+
+				default:
+					return wallMaterialType.Border;
+			}
 		}
 		public static string GetWallTypeFromMutator()
 		{
@@ -213,10 +242,16 @@ namespace BunnyMod.Content
 				}
 				else if (vFloor.Rugs.Contains(floorName))
 				{
-					if (GC.challenges.Contains(cChallenge.Panoptikopolis))
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Exception to general challenge separation
+						floorName = vFloor.DanceFloorRaised;
+					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
+						floorName = vFloor.MetalPlates;
+					else if (GC.challenges.Contains(cChallenge.GreenLiving))
+						floorName = vFloor.Grass;
+					else if (GC.challenges.Contains(cChallenge.Panoptikopolis))
 						floorName = vFloor.ClearFloor;
 					else if (GC.challenges.Contains(cChallenge.SpelunkyDory))
-						floorName = vFloor.Grass;
+						floorName = vFloor.DirtFloor;
 				}
 				else if (vFloor.Constructed.Contains(floorName))
 				{
@@ -285,6 +320,7 @@ namespace BunnyMod.Content
 			Prefix(t, "FillFloors", g, "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(t, "FillMapChunks", g, "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
 			Prefix(t, "loadStuff2", g, "LoadLevel_loadStuff2_Prefix", new Type[0] { });
+			Prefix(t, "LoadBasicLEvel", g, "LoadLevel_SetupBasicLevel", new Type[0] { });
 			Prefix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(t, "SetupMore5_2", g, "LoadLevel_SetupMore5_2", new Type[0] { });
@@ -1521,6 +1557,78 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+		public static bool LoadLevel_SetupBasicLevel (LoadLevel __instance, tk2dTileMap ___tilemapWalls, tk2dTileMap ___tilemapFloors2) // Replacement
+		{
+			// WallMod Borders
+
+			for (int i = 0; i < __instance.levelSizeAxis; i++)
+				for (int j = 0; j < __instance.levelSizeAxis; j++)
+					if (__instance.mapChunkArray[i, j].chunkID != 0)
+						for (int k = i * 16; k < i * 16 + 16; k++)
+							for (int l = 160 - j * 16; l > 160 - j * 16 - 16; l--)
+							{
+								___tilemapWalls.ClearTile(k, l - 1, 0);
+								__instance.tileInfo.tileArray[k, l - 1].chunkID = __instance.mapChunkArray[i, j].chunkID;
+								int tile = Random.Range(0, 0);
+								___tilemapFloors2.SetTile(k, l - 1, 0, tile);
+							}
+					else
+					{
+						__instance.mapChunkArray[i, j].filled = true;
+						int num = i * 16;
+						int num2 = i * 16 + 16;
+						int num3 = 160 - j * 16;
+						int num4 = 160 - j * 16 - 16;
+
+						for (int m = num; m < num2; m++)
+							for (int n = num3; n > num4; n--)
+								if (m != 0 && n != 160 && m != (__instance.levelSizeAxis - 1) * 16 + 16 - 1 && n != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
+								{
+									int wallMaterialOffset = 0;
+									int wallMaterialOffsetTop = 0;
+						
+									switch (GC.levelTheme)
+									{
+										case 0:
+											wallMaterialOffset = 72;
+											wallMaterialOffsetTop = 140;
+											break;
+										case 1:
+											wallMaterialOffset = 244;
+											wallMaterialOffsetTop = 1015;
+											break;
+										case 2:
+											wallMaterialOffset = 220;
+											wallMaterialOffsetTop = 1085;
+											break;
+										case 3:
+											wallMaterialOffset = 228;
+											wallMaterialOffsetTop = 1155;
+											break;
+										case 4:
+											wallMaterialOffset = 236;
+											wallMaterialOffsetTop = 1225;
+											break;
+										case 5:
+											wallMaterialOffset = 300;
+											wallMaterialOffsetTop = 1673;
+											break;
+									}
+
+									TileData tileData = __instance.tileInfo.tileArray[m, n - 1];
+									___tilemapWalls.SetTile(m, n - 1, 0, 0);
+									tileData.wallMaterialOffset = wallMaterialOffset;
+									tileData.wallMaterialOffsetTop = wallMaterialOffsetTop;
+									tileData.wallFrontVariation = true;
+									tileData.wallMaterial = GetBorderWallMaterialFromMutator();
+									int tile2 = Random.Range(0, 0);
+									___tilemapFloors2.SetTile(m, n - 1, 0, tile2);
+									tileData.chunkID = __instance.mapChunkArray[i, j].chunkID;
+								}
+					}
+
+			return false;
+		}
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap, ref IEnumerator __result) // Prefix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Prefix");
@@ -2679,6 +2787,7 @@ namespace BunnyMod.Content
 										leftOfSpot = new Vector2(spotCandidate.x + 1.28f, spotCandidate.y);
 										rightOfSpot = new Vector2(spotCandidate.x - 1.28f, spotCandidate.y);
 										wallEdge = "N";
+										securityCam.direction = "S";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f)).wallMaterial != wallMaterialType.None)
 									{
@@ -2692,12 +2801,14 @@ namespace BunnyMod.Content
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
 										wallEdge = "E";
+										securityCam.direction = "W";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y)).wallMaterial != wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
 										wallEdge = "W";
+										securityCam.direction = "E";
 									}
 
 									GC.tileInfo.GetTileData(leftOfSpot);
@@ -5975,7 +6086,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
-		public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
+				public static IEnumerator LoadLevel_SetupMore3_3_Postfix(IEnumerator __result, LoadLevel __instance) // Postfix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Postfix");
 

@@ -55,6 +55,7 @@ namespace BunnyMod.Content
             PoliceBox_00();
             PoolTable_00();
             Refrigerator_00();
+            SecurityCam_00();
             SlotMachine_00();
             Stove_00();
             TableBig_00();
@@ -2371,16 +2372,16 @@ namespace BunnyMod.Content
             BMLog("\tTargets:\t" + __instance.targets);
             BMLog("\tTurrets#:\t" + __instance.turrets.Count());
 		}
-        public static bool SecurityCam_MyUpdate(ref IEnumerator __result, SecurityCam __instance, ref tk2dTileMap ___tilemapFloors2, ref bool ___agentsPreviouslyInView) // Prefix
+        public static bool SecurityCam_MyUpdate(ref IEnumerator __result, SecurityCam __instance, ref bool ___agentsPreviouslyInView) // Prefix
         {
             BMLog("LoadLevel_FillFloors_Prefix");
 
             // Structure advised by Abbysssal for patch-replacing IEnumerators.
-            __result = SecurityCam_MyUpdate_Replacement(__instance, ___tilemapFloors2, ___agentsPreviouslyInView);
+            __result = SecurityCam_MyUpdate_Replacement(__instance, ___agentsPreviouslyInView);
 
             return false;
         }
-        public static IEnumerator SecurityCam_MyUpdate_Replacement(SecurityCam __instance, tk2dTileMap ___tilemapFloors2, bool ___agentsPreviouslyInView) // Non-Patch
+        public static IEnumerator SecurityCam_MyUpdate_Replacement(SecurityCam __instance, bool ___agentsPreviouslyInView) // Non-Patch
 		{
             // Detect Guilty/Wanted for PoliceState & Public Cameras
 
@@ -2398,24 +2399,19 @@ namespace BunnyMod.Content
 
 						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0) && !agent.underBox)
                         {
-                            BMLog("Agent detected on " + __instance.name);
-
                             if (__instance.targets == "NonOwners")
                                 agentFlag = (agent.ownerID != __instance.owner && agent.ownerID != 99) ||
                                     (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
                             else if (__instance.targets == "Owners")
                                 agentFlag = (((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
                                     (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector))) ||
-                                    (agent.statusEffects.hasTrait(vTrait.TheLaw) && __instance.owner == 42069));
+                                    (agent.statusEffects.hasTrait(vTrait.TheLaw) && __instance.owner == 85));
                             else if (__instance.targets == "Everyone")
                                 agentFlag = true;
                             else if (__instance.targets == "Wanted")
                                 agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
                             else if (__instance.targets == "Guilty")
                                 agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted);
-
-                            BMLog("\tCamera mode:\t" + __instance.targets);
-                            BMLog("\tFlag:\t" + agentFlag);
                         }
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
@@ -2663,7 +2659,7 @@ namespace BunnyMod.Content
         }
         public static void SecurityCam_Start(SecurityCam __instance) // Postfix
         {
-            if (__instance.owner == 42069)
+            if (__instance.owner == 85)
             {
                 if (GC.challenges.Contains(cChallenge.PoliceState))
                     __instance.targets = "Guilty";

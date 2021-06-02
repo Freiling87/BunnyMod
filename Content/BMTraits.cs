@@ -597,7 +597,7 @@ namespace BunnyMod.Content
             #region Social
             CustomTrait BootLicker = RogueLibs.CreateCustomTrait(cTrait.BootLicker, true,
                 new CustomNameInfo("Boot Licker", "", "", "", "", "", "", ""),
-                new CustomNameInfo("The only brown thing Cops like is the nose of people like you\n\n- Law Enforcers are Friendly\n-Criminals are Annoyed"));
+                new CustomNameInfo("The only brown thing Cops like is the nose of people like you.\n\n- Law Enforcers are Friendly\n- Criminals are Annoyed"));
             BootLicker.Available = true;
             BootLicker.AvailableInCharacterCreation = true;
             BootLicker.CanRemove = true;

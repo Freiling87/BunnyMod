@@ -5551,10 +5551,17 @@ namespace BunnyMod.Content
 						if (GC.customLevel)
 							hasMusician = __instance.customLevel.levelFeatures.Contains("Musician");
 
+						if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff))
+							hasMusician = true;
+
 						if (hasMusician && GC.levelFeeling != "Riot" && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone")
 						{
 							Debug.Log("Loading Musician");
 							int bigTries = 1;
+
+							if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff))
+								bigTries = 4 * LevelSizeRatio();
+
 							int num2;
 
 							for (int numObjects = 0; numObjects < bigTries; numObjects = num2 + 1)
@@ -5597,10 +5604,12 @@ namespace BunnyMod.Content
 
 										for (int j = 0; j < i; j = num2 + 1)
 										{
-											if ((!GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 9) || (GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 6))
-												agentType10 = "Guard2";
+											if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff))
+												agentType10 = vAgent.Musician;
+											else if ((!GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 9) || (GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 6))
+												agentType10 = vAgent.Goon;
 											else
-												agentType10 = "Guard";
+												agentType10 = vAgent.Supergoon;
 
 											Agent agent16 = GC.spawnerMain.SpawnAgent(myLocation, null, agentType10);
 											agent16.movement.RotateToAngleTransform((float)Random.Range(0, 360));

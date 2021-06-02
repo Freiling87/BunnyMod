@@ -46,6 +46,7 @@ namespace BunnyMod.Content
             Elevator_00();
             FireHydrant_00();
             FlamingBarrel_00();
+            Fountain_00();
             Generator_00();
             Generator2_00();
             Hole_00();
@@ -117,6 +118,12 @@ namespace BunnyMod.Content
             _ = RogueLibs.CreateCustomName(cButtonText.CamerasCaptureGuilty, t, new CustomNameInfo("Detect Guilty"));
             _ = RogueLibs.CreateCustomName(cButtonText.CamerasCaptureWanted, t, new CustomNameInfo("Detect Wanted"));
             _ = RogueLibs.CreateCustomName(cButtonText.DispenseIce, t, new CustomNameInfo("Dispense ice"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainSteal , t, new CustomNameInfo("Steal money"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainWishFabulousWealth , t, new CustomNameInfo("Wish for fabulous wealth"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainWishFameAndGlory , t, new CustomNameInfo("Wish for fame & glory"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainWishGoodHealth , t, new CustomNameInfo("Wish for good health"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainWishTrueFriendship , t, new CustomNameInfo("Wish for true friendship"));
+            _ = RogueLibs.CreateCustomName(cButtonText.FountainWishWorldPeace , t, new CustomNameInfo("Wish for world peace"));
             _ = RogueLibs.CreateCustomName(cButtonText.GrillFudPaid, t, new CustomNameInfo("Grill Fud"));
             _ = RogueLibs.CreateCustomName(cButtonText.HideInContainer, t, new CustomNameInfo("Hide in container"));
             _ = RogueLibs.CreateCustomName(cButtonText.OpenContainer, t, new CustomNameInfo("Open container"));
@@ -1914,9 +1921,50 @@ namespace BunnyMod.Content
             __instance.interactable = true;
             __instance.fireDoesntDamage = true;
         }
-        #endregion
-        #region Generator 
-        public void Generator_00()
+		#endregion
+		#region Fountain
+        public void Fountain_00()
+		{
+            Type t = typeof(Fountain);
+            Type g = GetType();
+
+            Postfix(t, "SetVars", g, "Fountain_SetVars", new Type[0] { });
+            //Prefix(t, "DetermineButtons", g, "Fountain_DetermineButtons", new Type[0] { });
+		}
+        public static void Fountain_SetVars(Fountain __instance) // Postfix
+		{
+            __instance.damageThreshold = 50;
+            __instance.damageAccumulates = false;
+            __instance.pickUppable = false;
+            __instance.fireProof = true;
+            __instance.cantMakeFollowersAttack = true;
+		}
+        public static bool Fountain_DetermineButtons(Fountain __instance) // Replacement
+		{
+            ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            __instance.buttons.Add(cButtonText.FountainSteal);
+
+            __instance.buttons.Add(cButtonText.FountainWishGoodHealth);
+            __instance.buttonPrices.Add(30);
+
+            __instance.buttons.Add(cButtonText.FountainWishFabulousWealth);
+            __instance.buttonPrices.Add(30);
+
+            __instance.buttons.Add(cButtonText.FountainWishFameAndGlory);
+            __instance.buttonPrices.Add(30);
+
+            __instance.buttons.Add(cButtonText.FountainWishTrueFriendship);
+            __instance.buttonPrices.Add(30);
+
+            __instance.buttons.Add(cButtonText.FountainWishWorldPeace);
+            __instance.buttonPrices.Add(30);
+
+            return false;
+        }
+		#endregion
+		#region Generator 
+		public void Generator_00()
 		{
             Postfix(typeof(Generator), "DetermineButtons", GetType(), "Generator_DetermineButtons", new Type[0] { });
         }

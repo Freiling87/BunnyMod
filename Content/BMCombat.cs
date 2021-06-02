@@ -1228,11 +1228,12 @@ namespace BunnyMod.Content
 			// Sniper +
 
 			BMLog("BulletHitbox_OnTriggerEnter2D");
-			try { BMLog("\tname: " + other.name); } catch { }
-			try { BMLog("\thiddenIn: " + __instance.myBullet.agent.hiddenInObject.name); } catch { }
 
 			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2) && __instance.myBullet.agent.hiddenInObject != null)
 			{
+				try { BMLog("\tname: " + other.name); } catch { }
+				try { BMLog("\thiddenIn: " + __instance.myBullet.agent.hiddenInObject.name); } catch { }
+
 				BMLog("\tObject detected");
 				ObjectReal obj = other.GetComponent<ObjectReal>();
 
@@ -1594,7 +1595,6 @@ namespace BunnyMod.Content
 								num *= 2f;
 							
 							Vector3 position = hitAgent.tr.position;
-							Vector2 velocity = hitAgent.rb.velocity;
 							
 							if (!hitAgent.disappeared && !fromClient)
 								hitAgent.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, hittingAgent);

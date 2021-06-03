@@ -25,6 +25,7 @@ namespace BunnyMod.Content
 		#region Main
 		public void Awake()
 		{
+			Agent_00();
 			Item_00();
 			InvInterface_00();
 			ObjectReal_00();
@@ -74,6 +75,102 @@ namespace BunnyMod.Content
 		{
 			Type t = typeof(Agent);
 			Type g = GetType();
+
+			Prefix(t, "AgentOnCamera", g, "Agent_AgentOnCamera", new Type[0] { });
+		}
+		public static bool Agent_AgentOnCamera(Agent __instance, ref bool __result) // Replacement
+		{
+			if (__instance.isPlayer != 0)
+			{
+				__instance.onCamera = true;
+
+				__result = true; 
+				return false;
+			}
+
+			if (GC.serverPlayer)
+			{
+				if ((!__instance.brain.active && !__instance.oma._dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer && GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel && !__instance.oma.mindControlled) || __instance.objectAgent)
+				{
+					__instance.onCamera = false;
+
+					__result = false; 
+					return false;
+				}
+			}
+			else if ((!__instance.brain.active && !__instance.dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer && GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel) || __instance.objectAgent)
+			{
+				__instance.onCamera = false;
+
+				__result = false; 
+				return false;
+			}
+
+			Vector2 v = __instance.tr.position;
+			Vector2 vector = GC.playerAgent.agentCamera.originalCamera.WorldToViewportPoint(v);
+			float x = vector.x / GetZoomLevel();
+			float y = vector.y / GetZoomLevel();
+
+			if (x > -0.1f && x < 1.1f && 
+				y > -0.1f && y < 1.1f)
+			{
+				__instance.onCamera = true;
+
+				__result = true; 
+				return false;
+			}
+
+			if (GC.coopMode || GC.fourPlayerMode)
+			{
+				vector = GC.playerAgent2.agentCamera.originalCamera.WorldToViewportPoint(v);
+				x = vector.x / GetZoomLevel();
+				y = vector.y / GetZoomLevel();
+
+				if (x > -0.1f && x < 1.1f && 
+					y > -0.1f && y < 1.1f)
+				{
+					__instance.onCamera = true;
+
+					__result = true; 
+					return false;
+				}
+
+				if (GC.fourPlayerMode)
+				{
+					vector = GC.playerAgent3.agentCamera.originalCamera.WorldToViewportPoint(v);
+					x = vector.x / GetZoomLevel();
+					y = vector.y / GetZoomLevel();
+
+					if (x > -0.1f && x < 1.1f && 
+						y > -0.1f && y < 1.1f)
+					{
+						__instance.onCamera = true;
+
+						__result = true; 
+						return false;
+					}
+					if (!GC.sessionDataBig.threePlayer)
+					{
+						vector = GC.playerAgent4.agentCamera.originalCamera.WorldToViewportPoint(v);
+						x = vector.x / GetZoomLevel();
+						y = vector.y / GetZoomLevel();
+
+						if (x > -0.1f && x < 1.1f && 
+							y > -0.1f && y < 1.1f)
+						{
+							__instance.onCamera = true;
+
+							__result = true; 
+							return false;
+						}
+					}
+				}
+			}
+
+			__instance.onCamera = false;
+
+			__result = false; 
+			return false;
 		}
 		#endregion
 		#region InvInterface

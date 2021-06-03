@@ -131,13 +131,22 @@ namespace BunnyMod.Content
 	{
         public const string
             Cook = "Cook",
-            Driver = "Driver",
+            Commando = "Commando",
+            Dancer = "Dancer",
+            DiscoMonarch = "DiscoMonarch",
+            Driver = "Driver", // "Have you seen my truck?"
             Fence = "Fence",
             Fixer = "Fixer",
+            GoGanger = "GoGanger", // Roller Skates + melee, hireable with cocaine
+            Hippie = "Hippie",
             Hitman = "Hitman",
             Janitor = "Janitor",
             Junkie = "Junkie",
+            Mechanic = "Mechanic",
+            Mercenary = "Mercenary",
             Priest = "Priest",
+            Paramedic = "Paramedic",
+            PostalWorker = "PostalWorker",
             RentACop = "RentACop",
             ResistanceBreacher = "ResistanceBreacher",
             ResistanceDoctor = "ReistanceDoctor",
@@ -145,9 +154,14 @@ namespace BunnyMod.Content
             ResistanceInfiltrator = "ResistanceInfiltrator",
             ResistanceSoldier = "ResistanceSoldier",
             SecretPolice = "SecretPolice",
+            ServiceDrone = "ServiceDrone",
+            Sniper = "Sniper",
+            Spy = "Spy",
             SWAT = "SWAT",
             Teamster = "Teamster",
             Tourist = "Tourist",
+            Trapper = "Trapper",
+            UndercoverCop = "UndercoverCop",
             Wildfolk = "Wildfolk";
 	}
     public static class cBuffText
@@ -237,6 +251,12 @@ namespace BunnyMod.Content
             DiscoCityDanceoff,
             SunkenCity,
             TransitExperiment,
+        };
+        public static List<string> AffectsLights = new List<string>()
+        {
+            DiscoCityDanceoff,
+            GreenLiving,
+            Panoptikopolis,
         };
         public static List<string> Knockback = new List<string>()
         {

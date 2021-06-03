@@ -298,7 +298,7 @@ namespace BunnyMod.Content
 				if (GC.challenges.Contains(mutator))
 					return mutator;
 
-			return "";
+			return null;
 		}
 		public static bool IsChallengeFromListActive(List<string> challengeList)
 		{

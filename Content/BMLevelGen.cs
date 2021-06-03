@@ -26,6 +26,7 @@ namespace BunnyMod.Content
 			LoadLevel_00();
 			RandomWalls_00();
 			SpawnerFloor_00();
+			SpawnerMain_00();
 			SpawnerObject_00();
 			TileInfo_00();
 		}
@@ -234,7 +235,7 @@ namespace BunnyMod.Content
 				else if (vFloor.Rugs.Contains(floorName))
 				{
 					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Overrides some non-exclusive challenges
-						floorName = vFloor.DanceFloorRaised;
+						floorName = vFloor.CasinoFloor;
 					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalPlates;
 					else if (GC.challenges.Contains(cChallenge.GreenLiving))
@@ -247,7 +248,7 @@ namespace BunnyMod.Content
 				else if (vFloor.Constructed.Contains(floorName))
 				{
 					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff)) // Overrides some non-exclusive challenges
-						floorName = vFloor.RugRed;
+						floorName = vFloor.BathroomTile;
 					else if (GC.challenges.Contains(cChallenge.CityOfSteel))
 						floorName = vFloor.MetalFloor;
 					else if (GC.challenges.Contains(cChallenge.GreenLiving))
@@ -1775,7 +1776,7 @@ namespace BunnyMod.Content
 									LightReal lightReal = GC.spawnerMain.SpawnLightReal(vector2, null, 2);
 									lightReal.name = "LakeLight";
 									lightReal.tr.localScale = new Vector3(8f, 8f, 1f);
-									lightReal.GetComponent<LightSprite>().Color = new Color32(0, 213, byte.MaxValue, 85);
+									lightReal.GetComponent<LightSprite>().Color = new Color32(0, 213, 255, 85);
 									lightReal.GetComponent<LightSprite>().Sprite = lightReal.pointLightSpecial;
 									GC.tileInfo.lakeLightLocations.Add(vector2);
 								}
@@ -6934,6 +6935,160 @@ namespace BunnyMod.Content
 			}
 
 			Object.Destroy(__instance.gameObject);
+
+			return false;
+		}
+		#endregion
+		#region SpawnerMain
+		public void SpawnerMain_00()
+		{
+			Type t = typeof(SpawnerMain);
+			Type g = GetType();
+
+			Prefix(t, "GetLightColor", g, "SpawnerMain_GetLightColor", new Type[1] { typeof(string) });
+		}
+		#region Light Colors
+		// https://colordesigner.io/color-mixer
+		static Color32 arenaRingColor = new Color32(167, 76, 134, 200);
+		static Color32 blueColor = new Color32(62, 62, 255, 200);
+		static Color32 cyanColor = new Color32(0, 113, 159, 200);
+		static Color32 cyanGreenColor = new Color32(0, 180, 143, 200);
+		static Color32 defaultColor = new Color32(161, 161, 161, 105);
+		static Color32 discoBlueColor = new Color32(64, 64, 255, 200);
+		static Color32 discoGreenColor = new Color32(85, 170, 0, 200);
+		static Color32 discoOrangeColor = new Color32(255, 188, 64, 200);
+		static Color32 discoPurpleColor = new Color32(140, 52, 173, 200);
+		static Color32 discoRedColor = new Color32(255, 85, 85, 200);
+		static Color32 discoYellowColor = new Color32(255, 255, 85, 200);
+		static Color32 fireStationColor = new Color32(125, 87, 248, 111);
+		static Color32 greenColor = new Color32(0, 159, 60, 200);
+		static Color32 homeColor = new Color32(199, 174, 120, 160);
+		static Color32 homeColorMayorVillage = new Color32(212, 122, 244, 160);
+		static Color32 homeColorUptown = new Color32(205, 173, 219, 85);
+		static Color32 labColor = new Color32(64, 224, 255, 180);
+		static Color32 lakeColor = new Color32(0, 213, 255, 85);
+		static Color32 lightBlueColor = new Color32(124, 151, 189, 180);
+		static Color32 lightBlueColorMayorVillage = new Color32(44, 106, 193, 180);
+		static Color32 mallColor = new Color32(255, 255, 255, 80);
+		static Color32 pinkColor = new Color32(159, 0, 148, 200);
+		static Color32 pinkWhiteColor = new Color32(208, 163, 255, 120);
+		static Color32 poolColor = new Color32(0, 213, 255, 85);
+		static Color32 poolColorLighter = new Color32(144, 237, 255, 85);
+		static Color32 privateClubColor = new Color32(163, 178, 110, 160);
+		static Color32 purpleColor = new Color32(111, 0, 159, 200);
+		static Color32 redColor = new Color32(159, 0, 0, 200);
+		static Color32 whiteColor = new Color32(255, 255, 255, 120);
+		static Color32 zooColor = new Color32(0, 255, 181, 85);
+		static List<Color32> discoColors = new List<Color32>()
+		{
+			discoBlueColor,
+			discoGreenColor,
+			discoOrangeColor,
+			discoPurpleColor,
+			discoRedColor,
+			discoYellowColor,
+		};
+		#endregion	
+		public static bool SpawnerMain_GetLightColor(string lightRealName, SpawnerMain __instance, ref Color __result, Color32 ___defaultColor) // Prefix
+		{
+			string challenge = BMChallenges.GetActiveChallengeFromList(cChallenge.AffectsLights);
+
+			LightReal lightReal = new LightReal();
+
+			if (challenge == null)
+				return true;
+			else if (challenge == cChallenge.DiscoCityDanceoff)
+				lightReal.lightReal2Color = discoColors.RandomElement<Color32>();
+			else if (challenge == cChallenge.GreenLiving)
+				lightReal.lightReal2Color = homeColor;
+			else if (challenge == cChallenge.Panoptikopolis)
+				lightReal.lightReal2Color = whiteColor;
+
+			__result = lightReal.lightReal2Color;
+			return false;
+
+			#region Vanilla
+			if (lightRealName == "ArenaRingLight")
+				lightReal.lightReal2Color = arenaRingColor;
+			else if (lightRealName == "BankLight")
+				lightReal.lightReal2Color = whiteColor;
+			else if (lightRealName == "BlueLight")
+				lightReal.lightReal2Color = blueColor;
+			else if (lightRealName == "CyanGreenLight")
+				lightReal.lightReal2Color = cyanGreenColor;
+			else if (lightRealName == "CyanLight")
+				lightReal.lightReal2Color = cyanColor;
+			else  if (lightRealName == "DefaultLight")
+				lightReal.lightReal2Color = defaultColor;
+			else if (lightRealName == "FarmLight")
+				lightReal.lightReal2Color = homeColor;
+			else if (lightRealName == "FireStationLight")
+				lightReal.lightReal2Color = fireStationColor;
+			else if (lightRealName == "GraveyardLight")
+				lightReal.lightReal2Color = cyanColor;
+			if (lightRealName == "GreenLight")
+				lightReal.lightReal2Color = greenColor;
+			else if (lightRealName == "HomeLight")
+			{
+				if (GC.levelTheme == 4)
+					lightReal.lightReal2Color = homeColorUptown;
+				else if (GC.levelTheme == 5)
+					lightReal.lightReal2Color = homeColorMayorVillage;
+				else
+					lightReal.lightReal2Color = homeColor;
+			}
+			else if (lightRealName == "HospitalLight")
+			{
+				if (GC.levelTheme == 5)
+					lightReal.lightReal2Color = homeColorMayorVillage;
+				else
+					lightReal.lightReal2Color = whiteColor;
+			}
+			else if (lightRealName == "KitchenLight")
+				lightReal.lightReal2Color = whiteColor;
+			if (lightRealName == "LabLight")
+				lightReal.lightReal2Color = labColor;
+			else if (lightRealName == "LakeLight")
+				lightReal.lightReal2Color = lakeColor;
+			else if (lightRealName == "LightBlueLight")
+			{
+				if (GC.levelTheme == 5)
+					lightReal.lightReal2Color = lightBlueColorMayorVillage;
+				else
+					lightReal.lightReal2Color = lightBlueColor;
+			}
+			else if (lightRealName == "MallLight")
+				lightReal.lightReal2Color = mallColor;
+			else if (lightRealName == "OfficeLight")
+				lightReal.lightReal2Color = whiteColor;
+			else if (lightRealName == "PinkLight")
+				lightReal.lightReal2Color = pinkColor;
+			if (lightRealName == "PinkWhiteLight")
+				lightReal.lightReal2Color = pinkWhiteColor;
+			else if (lightRealName == "PoolLight")
+			{
+				if (GC.levelTheme == 5)
+					lightReal.lightReal2Color = poolColorLighter;
+				else
+					lightReal.lightReal2Color = poolColor;
+			}
+			else if (lightRealName == "PrivateClubLight")
+				lightReal.lightReal2Color = privateClubColor;
+			else if (lightRealName == "PurpleLight")
+				lightReal.lightReal2Color = purpleColor;
+			if (lightRealName == "RedLight")
+				lightReal.lightReal2Color = redColor;
+			else if (lightRealName == "TVStationLight")
+			{
+				lightReal.lightReal2Color = mallColor;
+			}
+			else if (lightRealName == "WhiteLight")
+				lightReal.lightReal2Color = whiteColor;
+			else if (lightRealName == "ZooLight")
+				lightReal.lightReal2Color = zooColor;
+			#endregion
+
+			__result = lightReal.lightReal2Color;
 
 			return false;
 		}

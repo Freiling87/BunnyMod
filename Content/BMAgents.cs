@@ -104,7 +104,7 @@ namespace BunnyMod.Content
 							playerAgent.relationships.SetRelHate(agent, 1);
 
 							break;
-						case vRelationship.Hateful:
+						case vRelationship.Hostile:
 							agent.relationships.SetRelHate(playerAgent, 5);
 							playerAgent.relationships.SetRelHate(agent, 5);
 							
@@ -877,8 +877,18 @@ namespace BunnyMod.Content
 		#region Relationships
 		public void Relationships_00()
 		{
-			Prefix(typeof(Relationships), "OwnCheck", GetType(), "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
-			Postfix(typeof(Relationships), "SetupRelationshipOriginal", GetType(), "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
+			Type t = typeof(Relationships);
+			Type g = GetType();
+
+			Postfix(t, "EnforcerAlert", g, "Relationships_EnforcerAlert", new Type[5] { typeof(Agent), typeof(float), typeof(Vector2), typeof(int), typeof(Agent) });
+			Prefix(t, "OwnCheck", g, "Relationships_OwnCheck", new Type[7] { typeof(Agent), typeof(GameObject), typeof(int), typeof(string), typeof(bool), typeof(int), typeof(Fire) });
+			Postfix(t, "SetupRelationshipOriginal", g, "Relationships_SetupRelationshipOriginal", new Type[1] { typeof(Agent) });
+		}
+		public static void Relationships_EnforcerAlert(Agent criminal, float noiseDist, Vector2 noisePos, int numStrikes, Agent victim, Relationships __instance) // Postfix
+		{
+			if (GC.challenges.Contains(cChallenge.PoliceState))
+				if (__instance.GetRel(criminal) == vRelationship.Hostile)
+					criminal.statusEffects.AddTrait(vTrait.Wanted);
 		}
 		public static bool Relationships_OwnCheck(Agent otherAgent, GameObject affectedGameObject, int tagType, string ownCheckType, bool extraSprite, int strikes, Fire fire) // Prefix
 		{
@@ -913,7 +923,7 @@ namespace BunnyMod.Content
 						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.Criminal.Contains(otherAgent.agentName)))
 					{
 						if (roll <= 5)
-							newRel = vRelationship.Hateful;
+							newRel = vRelationship.Hostile;
 						else
 							newRel = vRelationship.Annoyed;
 					}
@@ -930,7 +940,7 @@ namespace BunnyMod.Content
 					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
 					{
 						if (roll <= 25)
-							newRel = vRelationship.Hateful;
+							newRel = vRelationship.Hostile;
 						else if (roll <= 50)
 							newRel = vRelationship.Annoyed;
 						else if (roll <= 67)
@@ -959,7 +969,7 @@ namespace BunnyMod.Content
 						else if (GC.levelTheme == 3)
 							newRel = vRelationship.Annoyed;
 						else if (GC.levelTheme == 4 || GC.levelTheme == 5)
-							newRel = vRelationship.Hateful;
+							newRel = vRelationship.Hostile;
 					}
 
 					if (newRel != vRelationship.Neutral)
@@ -969,7 +979,7 @@ namespace BunnyMod.Content
 
 						if (newRel == vRelationship.Annoyed)
 							otherAgent.relationships.SetStrikes(___agent, 2);
-						else if (newRel == vRelationship.Hateful)
+						else if (newRel == vRelationship.Hostile)
 							otherAgent.relationships.SetStrikes(___agent, 5);
 					}
 				}

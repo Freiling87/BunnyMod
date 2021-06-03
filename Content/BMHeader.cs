@@ -2648,7 +2648,7 @@ namespace BunnyMod.Content
             Aligned = "Aligned",
             Annoyed = "Annoyed",
             Friendly = "Friendly",
-            Hateful = "Hateful",
+            Hostile = "Hateful",
             Loyal = "Loyal",
             Neutral = "Neutral",
             Submissive = "Submissive";

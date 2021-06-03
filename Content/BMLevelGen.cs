@@ -2710,6 +2710,9 @@ namespace BunnyMod.Content
 					if (GC.challenges.Contains(cChallenge.PoliceState))
 						hasPublicSecurityCams = true;
 
+					if (GC.challenges.Contains(cChallenge.AnCapistan))
+						hasPublicSecurityCams = false;
+
 					if (hasPublicSecurityCams || BMHeader.debugMode)
 					{
 						BMLog("Loading Public Security Cams");
@@ -2766,6 +2769,7 @@ namespace BunnyMod.Content
 							{
 								ObjectReal securityCam = GC.spawnerMain.spawnObjectReal(spotCandidate, null, vObject.SecurityCam);
 								securityCam.ShiftTowardWalls();
+
 								securityCam.owner = 85;
 								SecurityCam securityCamCast = (SecurityCam)securityCam;
 								securityCamCast.securityType = "Noise";
@@ -2891,6 +2895,7 @@ namespace BunnyMod.Content
 									{
 										ObjectReal securityCam2 = GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.SecurityCam);
 										securityCam2.ShiftTowardWalls();
+
 										securityCam2.direction = securityCam.direction;
 										securityCam2.owner = 85;
 										SecurityCam securityCam2Cast = (SecurityCam)securityCam2;
@@ -2931,9 +2936,10 @@ namespace BunnyMod.Content
 										if (isSpotAcceptable && rightOfSpot != Vector2.zero)
 										{
 											ObjectReal turret = GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret);
+											turret.ShiftTowardWalls();
+
 											turret.direction = securityCam.direction;
 											turret.owner = 85;
-											turret.ShiftTowardWalls();
 											securityCamCast.turrets.Add((Turret)turret);
 											securityCamCast.securityType = "Turret";
 											num2 = numObjects;
@@ -6333,11 +6339,11 @@ namespace BunnyMod.Content
 				if (agent.isPlayer > 0)
 				{
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, vRelationship.Hateful, 1);
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, vRelationship.Hostile, 1);
 
 					if (level >= 10)
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, vRelationship.Hateful, 4);
+							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, vRelationship.Hostile, 4);
 
 					if (level >= 13)
 						if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || GC.challenges.Contains(cChallenge.FloralerFlora))
@@ -6345,7 +6351,7 @@ namespace BunnyMod.Content
 								GC.spawnerMain.SpawnButlerBot();
 
 					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, vRelationship.Hateful, 4);
+						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, vRelationship.Hostile, 4);
 
 					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
 						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, vRelationship.Aligned, 1);

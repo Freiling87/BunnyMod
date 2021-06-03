@@ -2503,15 +2503,16 @@ namespace BunnyMod.Content
                                 agentFlag = (agent.ownerID != __instance.owner && agent.ownerID != 99) ||
                                     (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
                             else if (__instance.targets == "Owners")
-                                agentFlag = (((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
+                                agentFlag = 
+                                    ((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
                                     (agent.startingChunk == __instance.startingChunk || (__instance.startingSector != 0 && agent.startingSector == __instance.startingSector))) ||
-                                    (agent.statusEffects.hasTrait(vTrait.TheLaw) && __instance.owner == 85));
+                                    ((agent.enforcer || agent.statusEffects.hasTrait(vTrait.TheLaw)) && __instance.owner == 85);
                             else if (__instance.targets == "Everyone")
                                 agentFlag = true;
                             else if (__instance.targets == "Wanted")
                                 agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
                             else if (__instance.targets == "Guilty")
-                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted);
+                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.Priors);
                         }
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)

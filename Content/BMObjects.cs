@@ -2497,10 +2497,12 @@ namespace BunnyMod.Content
                         bool agentFlag = false;
                         Agent agent = __instance.gc.activeBrainAgentList[i];
 
-						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0) && !agent.underBox)
+						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead && !agent.underBox &&
+                            (agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0))
                         {
                             if (__instance.targets == "NonOwners")
-                                agentFlag = (agent.ownerID != __instance.owner && agent.ownerID != 99) ||
+                                agentFlag = 
+                                    (agent.ownerID != __instance.owner && agent.ownerID != 99) ||
                                     (agent.startingChunk != __instance.startingChunk && (__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
                             else if (__instance.targets == "Owners")
                                 agentFlag = 
@@ -2514,6 +2516,12 @@ namespace BunnyMod.Content
                             else if (__instance.targets == "Guilty")
                                 agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.Priors);
                         }
+
+                        if (agent.isPlayer != 0)
+						{
+                            BMLog("Player Agent detected on Camera");
+                            BMLog("\tOwnerID:\t" + agent.ownerID);
+						}
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
                         {
@@ -2758,7 +2766,7 @@ namespace BunnyMod.Content
 
             return false;
         }
-        public static void SecurityCam_Start(SecurityCam __instance) // Postfix
+        public static void SecurityCam_StartLate(SecurityCam __instance) // Postfix
         {
             if (__instance.owner == 85)
             {

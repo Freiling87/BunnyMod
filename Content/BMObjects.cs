@@ -2535,6 +2535,8 @@ namespace BunnyMod.Content
                                 !__instance.destroyed && 
                                 !__instance.destroying)
                                 __instance.agentsInView.Add(agent);
+
+                            BMLog("\tAgentsInView:\t" + __instance.agentsInView.Count());
                         }
                     }
 					#endregion

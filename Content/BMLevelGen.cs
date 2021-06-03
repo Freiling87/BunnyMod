@@ -1330,7 +1330,7 @@ namespace BunnyMod.Content
 							string floorTileGroup = vFloorTileGroup.Building; // Homebase is default
 
 							if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-								floorTileGroup = GetFloorTileGroup();
+								floorTileGroup = vFloorTileGroup.Industrial;
 							else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
 								if (GC.levelTheme == 0)
@@ -1412,7 +1412,7 @@ namespace BunnyMod.Content
 								string tilemapGroup = vFloorTileGroup.Building;
 
 								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-									tilemapGroup = GetFloorTileGroup();
+									tilemapGroup = vFloorTileGroup.Uptown;
 								else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
 									if (GC.levelTheme == 0)
@@ -1488,7 +1488,7 @@ namespace BunnyMod.Content
 									string tilemapGroup = vFloorTileGroup.Building;
 
 									if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-										tilemapGroup = GetFloorTileGroup();
+										tilemapGroup = vFloorTileGroup.MayorVillage;
 									else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
 										if (GC.levelTheme == 0)
@@ -2893,14 +2893,11 @@ namespace BunnyMod.Content
 
 									if (isSpotAcceptable && leftOfSpot != Vector2.zero)
 									{
-										ObjectReal securityCam2 = GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.SecurityCam);
-										securityCam2.ShiftTowardWalls();
+										ObjectReal turret1 = GC.spawnerMain.spawnObjectReal(leftOfSpot, null, vObject.Turret);
+										turret1.ShiftTowardWalls();
 
-										securityCam2.direction = securityCam.direction;
-										securityCam2.owner = 85;
-										SecurityCam securityCam2Cast = (SecurityCam)securityCam2;
-										securityCam2Cast.securityType = "Noise";
-										securityCam2Cast.targets = "Wanted";
+										turret1.direction = securityCam.direction;
+										turret1.owner = 85;
 										num2 = numObjects;
 										numObjects = num2 + 1;
 									}
@@ -2935,12 +2932,12 @@ namespace BunnyMod.Content
 
 										if (isSpotAcceptable && rightOfSpot != Vector2.zero)
 										{
-											ObjectReal turret = GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret);
-											turret.ShiftTowardWalls();
+											ObjectReal turret2 = GC.spawnerMain.spawnObjectReal(rightOfSpot, null, vObject.Turret);
+											turret2.ShiftTowardWalls();
 
-											turret.direction = securityCam.direction;
-											turret.owner = 85;
-											securityCamCast.turrets.Add((Turret)turret);
+											turret2.direction = securityCam.direction;
+											turret2.owner = 85;
+											securityCamCast.turrets.Add((Turret)turret2);
 											securityCamCast.securityType = "Turret";
 											num2 = numObjects;
 											numObjects = num2 + 1;

@@ -1972,6 +1972,7 @@ namespace BunnyMod.Content
             else if (buttonText == cButtonText.FountainSteal)
 			{
                 __instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
+                GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
 
                 if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
 				{
@@ -1999,11 +2000,13 @@ namespace BunnyMod.Content
             InvItem invItem = new InvItem();
             invItem.invItemName = "Money";
             invItem.ItemSetup(false);
+            invItem.invItemCount = Random.Range(10, 30);
             invItem.ShowPickingUpText(__instance.interactingAgent);
             __instance.interactingAgent.inventory.AddItem(invItem);
             __instance.objectInvDatabase.DestroyAllItems();
             FountainStolenFrom[__instance] = true;
             __instance.interactable = false;
+            GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
             __instance.StopInteraction();
         }
         #endregion

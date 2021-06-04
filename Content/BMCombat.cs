@@ -47,9 +47,11 @@ namespace BunnyMod.Content
 			float maxBulletRange = 13.44f;
 
 			if (agent.statusEffects.hasTrait(cTrait.Ballistician))
+				maxBulletRange = 50f;
+			else if (agent.statusEffects.hasTrait(cTrait.Ballistician_2))
 				maxBulletRange = 100f;
-			if (agent.statusEffects.hasTrait(cTrait.Sniper))
-				maxBulletRange = 20f;
+			else if (agent.statusEffects.hasTrait(cTrait.Sniper))
+				maxBulletRange = 25f;
 
 			return maxBulletRange;
 		}

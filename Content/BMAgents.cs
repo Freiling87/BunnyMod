@@ -37,6 +37,13 @@ namespace BunnyMod.Content
 		}
 
 		#region Custom
+		public static void SpawnEmployees(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship) // Non-Patch
+		{
+			BMLog("SpawnEmployees");
+
+			for (int i = 0; i <numberToSpawn; i++)
+				GC.spawnerMain.SpawnAgent(GC.tileInfo.FindLocationNearLocation(playerAgent.tr.position, playerAgent, 0.32f, 0.96f, true, false), playerAgent, agentType, "FriendPhone", playerAgent);
+		}
 		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship, int splitIntoGroupSize) // Non-Patch
 		{
 			BMLog("LoadLevel_SpawnRoamerSquad");
@@ -907,38 +914,34 @@ namespace BunnyMod.Content
 			}
 			else if (BMTraits.isPlayerInitialRelationshipTraitActive && ___agent.isPlayer != 0)
 			{
-				BMLog("Relationships_SetupRelationshipOriginal: ");
-				BMLog("\tAgent = " + ___agent.name);
-				BMLog("\totherAgent = " + otherAgent.name);
-				BMLog("\tRelationship = '" + __instance.GetRel(otherAgent) + "'");
-
 				if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
 				{
-					int roll = Random.Range(0, 100);
 					string newRel = vRelationship.Neutral;
 
-					if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && roll <= 20) ||
+					if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && GC.percentChance(20)) ||
 						___agent.statusEffects.hasTrait(cTrait.ObjectivelyUnpleasant) ||
-						(___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)) ||
-						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.Criminal.Contains(otherAgent.agentName)))
+						(___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer) || otherAgent.statusEffects.hasTrait(vTrait.TheLaw)) ||
+						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)))
 					{
-						if (roll <= 5)
+						if (GC.percentChance(4))
 							newRel = vRelationship.Hostile;
 						else
 							newRel = vRelationship.Annoyed;
 					}
-					else if ((___agent.statusEffects.hasTrait(cTrait.Priors) && vAgent.Criminal.Contains(otherAgent.agentName)) ||
-						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
+					else if ((___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
+						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
 						newRel = vRelationship.Friendly;
 					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
 					{
-						if (roll <= 50)
+						if (GC.percentChance(50))
 							newRel = vRelationship.Annoyed;
 						else
 							newRel = vRelationship.Friendly;
 					}
 					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing_2))
 					{
+						int roll = Random.Range(1, 100);
+
 						if (roll <= 25)
 							newRel = vRelationship.Hostile;
 						else if (roll <= 50)
@@ -951,16 +954,13 @@ namespace BunnyMod.Content
 							newRel = vRelationship.Aligned;
 					}
 
-					roll = Random.Range(0, 100);
-
-					if (___agent.statusEffects.hasTrait(cTrait.Domineering) && roll <= 5)
-						newRel = vRelationship.Submissive;
-					else if (___agent.statusEffects.hasTrait(cTrait.Domineering_2) && roll <= 10)
+					if ((___agent.statusEffects.hasTrait(cTrait.Domineering) && GC.percentChance(4)) || 
+						(___agent.statusEffects.hasTrait(cTrait.Domineering_2) && GC.percentChance(8)))
 						newRel = vRelationship.Submissive;
 
 					if (otherAgent.agentName == vAgent.ResistanceLeader)
 						newRel = vRelationship.Aligned;
-					else if (otherAgent.agentName == vAgent.Mobster)
+					else if (otherAgent.agentName == vAgent.Mobster && ___agent.statusEffects.hasTrait(cTrait.MobDebt))
 					{
 						if (GC.levelTheme == 0 || GC.levelTheme == 1)
 							newRel = vRelationship.Friendly;
@@ -978,9 +978,15 @@ namespace BunnyMod.Content
 						otherAgent.relationships.SetRelInitial(___agent, newRel);
 
 						if (newRel == vRelationship.Annoyed)
+						{
 							otherAgent.relationships.SetStrikes(___agent, 2);
+							__instance.SetStrikes(otherAgent, 2);
+						}
 						else if (newRel == vRelationship.Hostile)
+						{
 							otherAgent.relationships.SetStrikes(___agent, 5);
+							__instance.SetStrikes(otherAgent, 5);
+						}
 					}
 				}
 			}
@@ -1025,8 +1031,8 @@ namespace BunnyMod.Content
 			Agent otherAgent = __instance.agent;
 
 			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||
-				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && vAgent.Criminal.Contains(otherAgent.agentName)) ||
-				(myAgent.statusEffects.hasTrait(cTrait.Priors) && vAgent.LawEnforcement.Contains(otherAgent.agentName)))
+				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
+				(myAgent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
 				__result = true;
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement

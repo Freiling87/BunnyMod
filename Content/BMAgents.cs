@@ -37,6 +37,81 @@ namespace BunnyMod.Content
 		}
 
 		#region Custom
+		public static void AnnoyWitnesses(Agent perp, Agent victim)
+		{
+			for (int i = 0; i < GC.agentList.Count; i++)
+			{
+				Agent bystander = GC.agentList[i];
+
+				if (Vector2.Distance(bystander.tr.position, perp.tr.position) < bystander.LOSRange / perp.hardToSeeFromDistance && 
+					bystander != perp && bystander != victim && !bystander.zombified && !bystander.ghost && !bystander.oma.hidden && 
+					(!perp.aboveTheLaw || !bystander.enforcer || victim.enforcer) && 
+					perp.prisoner == bystander.prisoner && !perp.invisible && !victim.noEnforcerAlert)
+				{
+					string perpRel = bystander.relationships.GetRel(perp);
+					string victimRel = bystander.relationships.GetRel(victim);
+
+					if (victimRel != vRelationship.Hostile && victimRel != vRelationship.Annoyed)
+					{
+						if (perpRel == vRelationship.Neutral || perpRel == vRelationship.Friendly)
+						{
+							if (bystander.relationships.GetRelationship(perp).hasLOS)
+							{
+								relStatus victimRel2 = bystander.relationships.GetRelCode(victim);
+								relStatus perpRel2 = bystander.relationships.GetRelCode(perp);
+
+								if ((victimRel2 == relStatus.Aligned && perpRel2 != relStatus.Aligned) || 
+									(victimRel2 == relStatus.Loyal && perpRel2 != relStatus.Aligned && perpRel2 != relStatus.Loyal))
+								{
+									bystander.sawBiteList.Add(victim);
+									bystander.relationships.SetRelHate(perp, 5);
+								}
+								else
+								{
+									bystander.sawBiteList.Add(victim);
+									bystander.relationships.SetStrikes(perp, 2);
+								}
+							}
+						}
+						else if (perpRel == vRelationship.Annoyed && bystander.relationships.GetRelationship(perp).hasLOS)
+						{
+							bystander.sawBiteList.Add(victim);
+							bystander.relationships.SetRelHate(perp, 5);
+						}
+					}
+				}
+			}
+		}
+		public static void AnnoyWitnessesVictimless(Agent perp)
+		{
+			for (int i = 0; i < GC.agentList.Count; i++)
+			{
+				Agent bystander = GC.agentList[i];
+
+				if (Vector2.Distance(bystander.tr.position, perp.tr.position) < bystander.LOSRange / perp.hardToSeeFromDistance &&
+					bystander != perp && !bystander.zombified && !bystander.ghost && !bystander.oma.hidden &&
+					(!perp.aboveTheLaw || !bystander.enforcer) &&
+					perp.prisoner == bystander.prisoner && !perp.invisible)
+				{
+					string perpRel = bystander.relationships.GetRel(perp);
+
+					if (perpRel == vRelationship.Neutral || perpRel == vRelationship.Friendly)
+					{
+						if (bystander.relationships.GetRelationship(perp).hasLOS)
+						{
+							relStatus perpRel2 = bystander.relationships.GetRelCode(perp);
+
+							if (perpRel2 != relStatus.Aligned || perpRel2 != relStatus.Loyal)
+								bystander.relationships.SetStrikes(perp, 2);
+						}
+					}
+					else if (perpRel == vRelationship.Annoyed && bystander.relationships.GetRelationship(perp).hasLOS)
+					{
+						bystander.relationships.SetRelHate(perp, 5);
+					}
+				}
+			}
+		}
 		public static void SpawnEmployees(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship) // Non-Patch
 		{
 			BMLog("SpawnEmployees");

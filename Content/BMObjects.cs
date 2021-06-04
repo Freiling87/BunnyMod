@@ -1972,16 +1972,19 @@ namespace BunnyMod.Content
             else if (buttonText == cButtonText.FountainSteal)
 			{
                 __instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
-                GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
+                GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
 
                 if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
-				{
+                {
+                    GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
                     GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.4f, agent, "Normal", agent);
                     GC.audioHandler.Play(__instance, vAudioClip.Operating);
-                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
                     GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-                    GC.OwnCheck(agent, __instance.go, "Normal", 1);
+                    GC.OwnCheck(agent, __instance.go, "Normal", 2);
+                    BMAgents.AnnoyWitnessesVictimless(agent);
                 }
+                else
+                    GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
             }
 
             __instance.StopInteraction();
@@ -2006,7 +2009,12 @@ namespace BunnyMod.Content
             __instance.objectInvDatabase.DestroyAllItems();
             FountainStolenFrom[__instance] = true;
             __instance.interactable = false;
-            GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
+
+            if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers))
+                GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
+            else
+                GC.audioHandler.Play(__instance, vAudioClip.JumpOutWater);
+
             __instance.StopInteraction();
         }
         #endregion

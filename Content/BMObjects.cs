@@ -2000,6 +2000,8 @@ namespace BunnyMod.Content
         }
         public static void Fountain_Steal(Fountain __instance) // Non-Patch
         {
+            Agent agent = __instance.interactingAgent;
+
             InvItem invItem = new InvItem();
             invItem.invItemName = "Money";
             invItem.ItemSetup(false);
@@ -2009,8 +2011,9 @@ namespace BunnyMod.Content
             __instance.objectInvDatabase.DestroyAllItems();
             FountainStolenFrom[__instance] = true;
             __instance.interactable = false;
+            agent.statusEffects.AddStatusEffect(vStatusEffect.FeelingUnlucky, true, true);
 
-            if (!__instance.interactingAgent.statusEffects.hasTrait(vTrait.SneakyFingers))
+            if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
                 GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
             else
                 GC.audioHandler.Play(__instance, vAudioClip.JumpOutWater);

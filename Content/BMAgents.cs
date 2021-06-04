@@ -918,8 +918,8 @@ namespace BunnyMod.Content
 				{
 					string newRel = vRelationship.Neutral;
 
-					if ((___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && GC.percentChance(20)) ||
-						___agent.statusEffects.hasTrait(cTrait.ObjectivelyUnpleasant) ||
+					if (___agent.statusEffects.hasTrait(cTrait.ObjectivelyUnpleasant) || 
+						(___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && GC.percentChance(20)) ||
 						(___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer) || otherAgent.statusEffects.hasTrait(vTrait.TheLaw)) ||
 						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)))
 					{
@@ -928,10 +928,12 @@ namespace BunnyMod.Content
 						else
 							newRel = vRelationship.Annoyed;
 					}
-					else if ((___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
+					
+					if ((___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
 						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
 						newRel = vRelationship.Friendly;
-					else if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
+					
+					if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
 					{
 						if (GC.percentChance(50))
 							newRel = vRelationship.Annoyed;

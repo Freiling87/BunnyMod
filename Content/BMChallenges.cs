@@ -96,7 +96,7 @@ namespace BunnyMod.Content
 			BadNeighborhoods.IsActive = false;
 
 			CustomMutator BroughtBackFountain = RogueLibs.CreateCustomMutator(cChallenge.BroughtBackFountain, true,
-				new CustomNameInfo("Features: FountainTest"),
+				new CustomNameInfo("Features: Broughtback Fountain"),
 				new CustomNameInfo("\"He could smell Jack - the intensely familiar odor of cigarettes, musky sweat, and a faint sweetness like grass, and with it the rushing cold of the fountain.\"\n\n- Adds Fountains\n- Purely aesthetic for now"));
 			BroughtBackFountain.Available = true;
 			BroughtBackFountain.Conflicting.AddRange(new string[] { });

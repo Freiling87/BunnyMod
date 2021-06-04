@@ -2362,7 +2362,7 @@ namespace BunnyMod.Content
             Prefix(t, "MyUpdate", g, "SecurityCam_MyUpdate", new Type[0] { });
             Prefix(t, "PressedButton", g, "SecurityCam_PressedButton", new Type[2] { typeof(string), typeof(int) });
             Prefix(t, "ObjectAction", g, "SecurityCam_ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-            Postfix(t, "Start", g, "SecurityCam_Start", new Type[0] { });
+            Postfix(t, "StartLate", g, "SecurityCam_StartLate", new Type[0] { });
         }
         public static bool SecurityCam_DetermineButtons(SecurityCam __instance) // Replacement
 		{

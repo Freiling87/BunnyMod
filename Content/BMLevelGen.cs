@@ -1306,6 +1306,8 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_FillFloors_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapFloors2) // Non-Patch
 		{
+			// Attempt at FloorMod. No visible effect yet.
+
 			float maxChunkTime = 0.02f;
 			float realtimeSinceStartup = Time.realtimeSinceStartup;
 			int triesCount = 0;
@@ -1330,7 +1332,7 @@ namespace BunnyMod.Content
 							string floorTileGroup = vFloorTileGroup.Building; // Homebase is default
 
 							if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-								floorTileGroup = vFloorTileGroup.Industrial;
+								floorTileGroup = vFloorTileGroup.Industrial; // No effect?
 							else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 							{
 								if (GC.levelTheme == 0)
@@ -1378,16 +1380,17 @@ namespace BunnyMod.Content
 		}
 		public static IEnumerator LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapWalls, tk2dTileMap ___tilemapFloors2) // Non-Patch
 		{
+			// Exterior Floors (confirmed)
+			// This works in two different places, which work on different levels.
+
 			int log = 0;
 			BMLog("LoadLevel_FillMapChunks_Replacement");
-			BMLog("\t" + log++);
 
 			float maxChunkTime = 0.02f;
 			float realtimeSinceStartup = Time.realtimeSinceStartup;
 			int triesCount = 0;
 			int num;
 
-			BMLog("\t" + log++);
 
 			for (int i = 0; i < __instance.levelSizeAxis; i = num + 1)
 			{
@@ -1396,7 +1399,7 @@ namespace BunnyMod.Content
 					num = triesCount;
 					triesCount = num + 1;
 
-					if (__instance.mapChunkArray[i, j].chunkID != 0)
+					if (__instance.mapChunkArray[i, j].chunkID != 0) // Slums, 
 					{
 						int num2 = i * 16;
 						int num3 = i * 16 + 16;
@@ -1412,7 +1415,7 @@ namespace BunnyMod.Content
 								string tilemapGroup = vFloorTileGroup.Building;
 
 								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-									tilemapGroup = vFloorTileGroup.Uptown;
+									tilemapGroup = GetFloorTileGroup(); // Works on: 
 								else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
 									if (GC.levelTheme == 0)
@@ -1434,7 +1437,7 @@ namespace BunnyMod.Content
 							}
 						}
 					}
-					else if (!GC.holeLevel)
+					else if (!GC.holeLevel) // Park, 
 					{
 						__instance.mapChunkArray[i, j].filled = true;
 						int num6 = i * 16;
@@ -1488,7 +1491,7 @@ namespace BunnyMod.Content
 									string tilemapGroup = vFloorTileGroup.Building;
 
 									if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-										tilemapGroup = vFloorTileGroup.MayorVillage;
+										tilemapGroup = vFloorTileGroup.MayorVillage; // Works on: Park, 
 									else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 									{
 										if (GC.levelTheme == 0)
@@ -1519,17 +1522,13 @@ namespace BunnyMod.Content
 
 						realtimeSinceStartup = Time.realtimeSinceStartup;
 					}
-					BMLog("\t" + log++);
 
 					Random.InitState(__instance.randomSeedNum + triesCount);
 					num = j;
 				}
 
-				BMLog("\t" + log++);
 				num = i;
 			}
-
-			BMLog("\t" + log++);
 
 			if (GC.levelType == "Tutorial" || GC.levelType == "HomeBase")
 				__instance.allChunksFilled = true;

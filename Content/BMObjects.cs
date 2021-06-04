@@ -303,6 +303,8 @@ namespace BunnyMod.Content
 
             if (__instance is FlamingBarrel)
                 FlamingBarrel_GrilledFud((FlamingBarrel)__instance);
+            else if (__instance is Fountain)
+                Fountain_Steal((Fountain)__instance);
             else if (__instance is Manhole && opItem == vItem.Crowbar)
                 Manhole_UseCrowbar((Manhole)__instance);
             else if (__instance is Stove)
@@ -400,13 +402,6 @@ namespace BunnyMod.Content
 
                 ___noMoreObjectActions = false;
             }
-            else if (__instance is VendorCart)
-                if (myAction == "VendorCart_Steal")
-                {
-                    VendorCart_Steal((VendorCart)__instance);
-
-                    ___noMoreObjectActions = true;
-                }
         }
         public static bool ObjectReal_ObjectUpdate(ObjectReal __instance) // Prefix
         {
@@ -1928,43 +1923,92 @@ namespace BunnyMod.Content
             Type t = typeof(Fountain);
             Type g = GetType();
 
+            Prefix(t, "DetermineButtons", g, "Fountain_DetermineButtons", new Type[0] { });
+            Prefix(t, "PressedButton", g, "Fountain_PressedButton", new Type[2] { typeof(string), typeof(int) });
             Postfix(t, "SetVars", g, "Fountain_SetVars", new Type[0] { });
-            //Prefix(t, "DetermineButtons", g, "Fountain_DetermineButtons", new Type[0] { });
-		}
-        public static void Fountain_SetVars(Fountain __instance) // Postfix
+        }
+        public static Dictionary<PlayfieldObject, bool> FountainStolenFrom = new Dictionary<PlayfieldObject, bool>();
+        public static bool Fountain_DetermineButtons(Fountain __instance) // Replacement
 		{
+            ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+
+            __instance.buttons.Add("TossCoin");
+            __instance.buttonPrices.Add(1);
+
+            if (FountainStolenFrom[__instance] == false)
+                __instance.buttons.Add(cButtonText.FountainSteal);
+
+            //__instance.buttons.Add(cButtonText.FountainWishGoodHealth);
+            //__instance.buttonPrices.Add(30);
+
+            //__instance.buttons.Add(cButtonText.FountainWishFabulousWealth);
+            //__instance.buttonPrices.Add(30);
+
+            //__instance.buttons.Add(cButtonText.FountainWishFameAndGlory);
+            //__instance.buttonPrices.Add(30);
+
+            //__instance.buttons.Add(cButtonText.FountainWishTrueFriendship);
+            //__instance.buttonPrices.Add(30);
+
+            //__instance.buttons.Add(cButtonText.FountainWishWorldPeace);
+            //__instance.buttonPrices.Add(30);
+
+            return false;
+        }
+        public static void Fountain_PressedButton(string buttonText, int buttonPrice, Fountain __instance) // Replacement
+		{
+            ObjectReal_PressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
+
+            Agent agent = __instance.interactingAgent;
+
+            if (buttonText == "TossCoin")
+            {
+                if (__instance.moneySuccess(buttonPrice))
+                {
+                    __instance.tossedAgents.Add(__instance.interactingAgent);
+                    __instance.objectInvDatabase.AddItem("Money", 1);
+                }
+            }
+            else if (buttonText == cButtonText.FountainSteal)
+			{
+                __instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
+
+                if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
+				{
+                    GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.4f, agent, "Normal", agent);
+                    GC.audioHandler.Play(__instance, vAudioClip.Operating);
+                    __instance.SpawnParticleEffect("Hack", __instance.tr.position);
+                    GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
+                    GC.OwnCheck(agent, __instance.go, "Normal", 1);
+                }
+            }
+
+            __instance.StopInteraction();
+        }
+        public static void Fountain_SetVars(Fountain __instance) // Postfix
+        {
             __instance.damageThreshold = 50;
             __instance.damageAccumulates = false;
             __instance.pickUppable = false;
             __instance.fireProof = true;
             __instance.cantMakeFollowersAttack = true;
-		}
-        public static bool Fountain_DetermineButtons(Fountain __instance) // Replacement
-		{
-            ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-            __instance.buttons.Add(cButtonText.FountainSteal);
-
-            __instance.buttons.Add(cButtonText.FountainWishGoodHealth);
-            __instance.buttonPrices.Add(30);
-
-            __instance.buttons.Add(cButtonText.FountainWishFabulousWealth);
-            __instance.buttonPrices.Add(30);
-
-            __instance.buttons.Add(cButtonText.FountainWishFameAndGlory);
-            __instance.buttonPrices.Add(30);
-
-            __instance.buttons.Add(cButtonText.FountainWishTrueFriendship);
-            __instance.buttonPrices.Add(30);
-
-            __instance.buttons.Add(cButtonText.FountainWishWorldPeace);
-            __instance.buttonPrices.Add(30);
-
-            return false;
+            BMHeaderTools.AddDictionary(FountainStolenFrom, __instance, false);
         }
-		#endregion
-		#region Generator 
-		public void Generator_00()
+        public static void Fountain_Steal(Fountain __instance) // Non-Patch
+        {
+            InvItem invItem = new InvItem();
+            invItem.invItemName = "Money";
+            invItem.ItemSetup(false);
+            invItem.ShowPickingUpText(__instance.interactingAgent);
+            __instance.interactingAgent.inventory.AddItem(invItem);
+            __instance.objectInvDatabase.DestroyAllItems();
+            FountainStolenFrom[__instance] = true;
+            __instance.interactable = false;
+            __instance.StopInteraction();
+        }
+        #endregion
+        #region Generator 
+        public void Generator_00()
 		{
             Postfix(typeof(Generator), "DetermineButtons", GetType(), "Generator_DetermineButtons", new Type[0] { });
         }
@@ -3508,6 +3552,9 @@ namespace BunnyMod.Content
         #region VendorCart
         public void VendorCart_00()
 		{
+            Type t = typeof(VendorCart);
+            Type g = GetType();
+
             Postfix(typeof(VendorCart), "SetVars", GetType(), "VendorCart_SetVars", new Type[0] { });
 		}
         public static Dictionary<PlayfieldObject, bool> VendorCartStolenFrom = new Dictionary<PlayfieldObject, bool>();

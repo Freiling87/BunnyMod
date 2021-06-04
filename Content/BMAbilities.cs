@@ -41,10 +41,14 @@ namespace BunnyMod.Content
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast2, t, new CustomNameInfo("Swallow this, clock-suckers!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast3, t, new CustomNameInfo("Nothing can slow me down!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast4, t, new CustomNameInfo("Freeze! In time, not in ice."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast1, t, new CustomNameInfo("Back to boring normal time."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast2, t, new CustomNameInfo("I guess there is a spoon."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast3, t, new CustomNameInfo("There can't always be Morpheus. Sometimes you get Lesspheus."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast4, t, new CustomNameInfo("You can only dilate time so much, or else everything just falls out."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast1, t, new CustomNameInfo("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp..."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast2, t, new CustomNameInfo("Bullet Time? More like Bullshit Time!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast3, t, new CustomNameInfo("(Slow Motion Noises)"));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("Okay, maybe there is a spoon, I guess. Whatever."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("I dilated time too much, and it turned into a chronological prolapse!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge1, t, new CustomNameInfo("It's Slowing-down-time... time!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge2, t, new CustomNameInfo("Not many time puns left. Uh... clock-a-doodle-doo?"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge3, t, new CustomNameInfo("All wound up and ready to run. Like a clock."));
@@ -152,6 +156,9 @@ namespace BunnyMod.Content
 		#region Chronomantic Dilation - Dialogue
 		public static void MSA_CD_DialogueCantDo(Agent agent)
 		{
+			if (GC.percentChance(75))
+				return;
+
 			GC.audioHandler.Play(agent, "CantDo");
 
 			List<string> dialogue = new List<string>()
@@ -162,12 +169,17 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_CantDo4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-		public static void MSA_CD_DialogueCast(Agent agent) // TODO
+		public static void MSA_CD_DialogueCast(Agent agent)
 		{
-			string[] dialogue =
+			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_CD_Cast1,
 				cDialogue.MSA_CD_Cast2,
@@ -175,12 +187,34 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Cast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
+		}
+		public static void MSA_CD_DialogueDecast(Agent agent)
+		{
+			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
+			{
+				cDialogue.MSA_CD_Decast1,
+				cDialogue.MSA_CD_Decast2,
+				cDialogue.MSA_CD_Decast3,
+				cDialogue.MSA_CD_Decast4,
+			};
+
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_CD_DialogueMiscast(Agent agent)
 		{
-			string[] dialogue =
+			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
+			GC.audioHandler.Play(agent, "ToiletTeleportIn");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_CD_Miscast1,
 				cDialogue.MSA_CD_Miscast2,
@@ -188,12 +222,17 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Miscast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_CD_DialogueRecharge(Agent agent)
 		{
-			string[] dialogue =
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			GC.audioHandler.Play(agent, "Recharge");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_CD_Recharge1,
 				cDialogue.MSA_CD_Recharge2,
@@ -201,8 +240,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_CD_Recharge4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		#endregion
 		public static float baseTimeScale;
@@ -354,10 +392,8 @@ namespace BunnyMod.Content
 		}
 		public static void MSA_CD_StartCast(Agent agent, float speedupfactor)
 		{
-			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
-			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
-
 			MSA_CD_SetCast(agent, true);
+			MSA_CD_DialogueCast(agent);
 
 			GC.selectedTimeScale = baseTimeScale / speedupfactor;
 			GC.mainTimeScale = baseTimeScale / speedupfactor;
@@ -367,14 +403,14 @@ namespace BunnyMod.Content
 		}
 		public static async void MSA_CD_StartDecast(Agent agent)
 		{
-			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
-
 			agent.speedMax = agent.FindSpeed();
 
 			MSA_CD_SetCast(agent, false); // Needs to occur before delays or Overcast occurs erroneously
 
 			GC.selectedTimeScale = baseTimeScale;
 			GC.mainTimeScale = baseTimeScale;
+
+			MSA_CD_DialogueDecast(agent);
 
 			await Task.Delay(1000);
 
@@ -386,8 +422,6 @@ namespace BunnyMod.Content
 		{
 			BMLog("ChronomancyStartMiscast: " + slowdownFactor);
 
-			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-			GC.audioHandler.Play(agent, "ToiletTeleportIn");
 			MSA_CD_DialogueMiscast(agent);
 
 			if (MSA_CD_IsCast(agent))
@@ -415,12 +449,7 @@ namespace BunnyMod.Content
 			BMLog("ChronomancyStartRecharge");
 
 			if (!routine)
-			{
-				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				GC.audioHandler.Play(agent, "Recharge");
-
 				MSA_CD_DialogueRecharge(agent);
-			}
 
 			if (MSA_CD_IsWindingUp(agent))
 				MSA_CD_SetWindingUp(agent, false);
@@ -519,7 +548,10 @@ namespace BunnyMod.Content
 		{
 			GC.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue =
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_PJ_CantDo1,
 				cDialogue.MSA_PJ_CantDo2,
@@ -527,14 +559,16 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_CantDo4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-		public static void MSA_PJ_DialogueCast(Agent agent) // Not used yet
+		public static void MSA_PJ_DialogueCast(Agent agent)
 		{
+			if (GC.percentChance(99))
+				return;
+
 			GC.audioHandler.Play(agent, vAudioClip.AgentLaugh);
 
-			string[] dialogue =
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_PJ_Cast1,
 				cDialogue.MSA_PJ_Cast2,
@@ -542,12 +576,14 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Cast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_PJ_DialogueMiscast(Agent agent)
 		{
-			string[] dialogue =
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_PJ_Miscast1,
 				cDialogue.MSA_PJ_Miscast2,
@@ -555,12 +591,17 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Miscast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_PJ_DialogueRecharge(Agent agent)
 		{
-			string[] dialogue =
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			GC.audioHandler.Play(agent, "Recharge");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_PJ_Recharge1,
 				cDialogue.MSA_PJ_Recharge2,
@@ -568,8 +609,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_PJ_Recharge4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		#endregion
 		public static void MSA_PJ_Initialize()
@@ -622,6 +662,8 @@ namespace BunnyMod.Content
 							MSA_PJ_StartBurnout(agent);
 					}
 				}
+				else
+					MSA_PJ_DialogueCantDo(agent);
 			};
 
 			pyromanticJet.OnReleased = delegate (InvItem item, Agent agent)
@@ -722,13 +764,13 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				risk *= 0.50f;
 
-			return risk >= UnityEngine.Random.Range(0f, 100f);
+			return risk >= Random.Range(0f, 100f);
 		}
 		public static void MSA_PJ_StartBurnout(Agent agent)
 		{
 			if (!agent.statusEffects.hasTrait(cTrait.WildCasting) && !agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 			{
-				GC.audioHandler.Play(agent, "MindControlEnd");
+				GC.audioHandler.Play(agent, vAudioClip.Win);
 				MSA_PJ_SetBurnedOut(agent, true);
 			}
 
@@ -767,6 +809,8 @@ namespace BunnyMod.Content
 				bullet.speed += 3;
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2) || agent.statusEffects.hasTrait(cTrait.Archmage))
 				bullet.speed += 6;
+
+			MSA_PJ_DialogueCast(agent);
 		}
 		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
 		{
@@ -813,10 +857,7 @@ namespace BunnyMod.Content
 			BMLog("PyromancyStartRecharge");
 
 			if (!routine)
-			{
-				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				GC.audioHandler.Play(agent, "Recharge");
-			}
+				MSA_PJ_DialogueRecharge(agent);
 
 			if (MSA_PJ_IsBurnedOut(agent))
 				MSA_PJ_SetBurnedOut(agent, false);
@@ -866,7 +907,10 @@ namespace BunnyMod.Content
 		{
 			GC.audioHandler.Play(agent, "CantDo");
 
-			string[] dialogue =
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_TB_CantDo1,
 				cDialogue.MSA_TB_CantDo2,
@@ -874,15 +918,17 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_CantDo4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-			string[] dialogue =
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_TB_Cast1,
 				cDialogue.MSA_TB_Cast2,
@@ -890,19 +936,21 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Cast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			GC.audioHandler.Play(agent, "Hypnotize");
-		}
+					}
 		public static void MSA_TB_DialogueMiscast(Agent agent)
 		{
 			GC.audioHandler.Play(agent, "ZombieSpitFire");
 
-			string[] dialogue =
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_TB_Miscast1,
 				cDialogue.MSA_TB_Miscast2,
@@ -910,12 +958,17 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Miscast4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
-			string[] dialogue =
+			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
+			GC.audioHandler.Play(agent, "Recharge");
+
+			if (GC.percentChance(75))
+				return;
+
+			List<string> dialogue = new List<string>()
 			{
 				cDialogue.MSA_TB_Recharge1,
 				cDialogue.MSA_TB_Recharge2,
@@ -923,8 +976,7 @@ namespace BunnyMod.Content
 				cDialogue.MSA_TB_Recharge4,
 			};
 
-			if (GC.percentChance(25))
-				BMHeaderTools.SayDialogue(agent, dialogue[Random.Range(0, dialogue.Count() - 1)], vNameType.Dialogue);
+			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
 		#endregion
 		public static void MSA_TB_Initialize()
@@ -1193,10 +1245,8 @@ namespace BunnyMod.Content
 		public static void MSA_TB_StartRecharge(Agent agent, bool routine)
 		{
 			if (true) // Not checking for routine/nonroutine yet.
-			{
-				agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-				GC.audioHandler.Play(agent, "Recharge");
-			}
+				MSA_TB_DialogueRecharge(agent);
+
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
 		public static async void MSA_TB_StartReturn(Agent agent, int mSecs)

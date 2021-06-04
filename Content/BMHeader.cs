@@ -98,6 +98,12 @@ namespace BunnyMod.Content
 				await Task.Delay(interval);
 			}
 		}
+        public static T RandomFromList<T>(List<T> list)
+		{
+            System.Random rnd = new System.Random();
+
+            return list[rnd.Next(list.Count)];
+		}
 		public static void Set(this object obj, params Func<string, object>[] hash)
 		{
 			foreach (Func<string, object> member in hash)
@@ -336,6 +342,10 @@ namespace BunnyMod.Content
             MSA_CD_Cast2 = "MSA_CD_Cast2",
             MSA_CD_Cast3 = "MSA_CD_Cast3",
             MSA_CD_Cast4 = "MSA_CD_Cast4",
+            MSA_CD_Decast1 = "MSA_CS_Decast1",
+            MSA_CD_Decast2 = "MSA_CS_Decast2",
+            MSA_CD_Decast3 = "MSA_CS_Decast3",
+            MSA_CD_Decast4 = "MSA_CS_Decast4",
             MSA_CD_Miscast1 = "MSA_CD_Miscast1",
             MSA_CD_Miscast2 = "MSA_CD_Miscast2",
             MSA_CD_Miscast3 = "MSA_CD_Miscast3",

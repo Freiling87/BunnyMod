@@ -217,7 +217,12 @@ namespace BunnyMod.Content
 			Type t = typeof(BasicFloor);
 			Type g = GetType();
 
+			Prefix(t, "SetExtraFloorParams", g, "BasicFloor_SetExtraFloorParams", new Type[5] { typeof(SpawnerBasic), typeof(int), typeof(int), typeof(floorMaterialType), typeof(TileData[,]) });
 			Prefix(t, "Spawn", g, "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+		}
+		public static void BasicFloor_SetExtraFloorParams(SpawnerBasic spawner, int xPosition, int yPosition, floorMaterialType floorType, TileData[,] myTileArray) // Postfix
+		{
+			myTileArray[xPosition, yPosition].water = true;
 		}
 		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{
@@ -6415,7 +6420,12 @@ namespace BunnyMod.Content
 			Type t = typeof(SpawnerFloor);
 			Type g = GetType();
 
+			Postfix(t, "SetExtraFloorParams", g, "SpawnerFloor_SetExtraFloorParams", new Type[3] { typeof(int), typeof(int), typeof(floorMaterialType) });
 			Prefix(t, "spawn", g, "SpawnerFloor_spawn", new Type[1] { typeof(string) });
+		}
+		public static void SpawnerFloor_SetExtraFloorParams(int xPosition, int yPosition, floorMaterialType floorType, SpawnerFloor __instance) // Postfix
+		{
+			__instance.tileInfo.tileArray[xPosition, yPosition].ice = true;
 		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors3, ref tk2dTileMap ___tilemapFloors4) // Replacement
 		{

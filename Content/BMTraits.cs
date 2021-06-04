@@ -595,8 +595,8 @@ namespace BunnyMod.Content
             #endregion
             #region Social
             CustomTrait BodyGuarded = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded, true,
-                new CustomNameInfo("000: Bodyguarded", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy.\n\n- Two Goons join you on each level"));
+                new CustomNameInfo("Bodyguarded", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy. La de da!\n\n- Two Goons join you on each level"));
             BodyGuarded.Available = true;
             BodyGuarded.AvailableInCharacterCreation = true;
             BodyGuarded.CanRemove = false;
@@ -608,7 +608,7 @@ namespace BunnyMod.Content
 
             CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
                 new CustomNameInfo("000: BodyGuarded_2", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Ooh, look at the bigger more important VVIP here. I bet you feel even fancier.\n\n- Two Supergoons join you on each level"));
+                new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
             BodyGuarded_2.Available = true; // TODO: Set to false after testing
             BodyGuarded_2.AvailableInCharacterCreation = true;
             BodyGuarded_2.CanRemove = false;

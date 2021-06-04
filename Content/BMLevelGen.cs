@@ -303,13 +303,13 @@ namespace BunnyMod.Content
 		{
 			// FloralerFlora Hedge Wall leaves spawn
 
-			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode))
+			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora)))
 			{
 				int chance = 100;
 
 				while (GC.percentChance(chance))
 				{
-					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.Range(-0.32f, 0.32f), myPos.y + Random.Range(-0.32f, 0.32f)), vObject.Bush, false);
+					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.Range(-0.48f, 0.48f), myPos.y + Random.Range(-0.48f, 0.48f)), vObject.Bush, false);
 					chance -= 20;
 				}
 			}
@@ -2974,7 +2974,7 @@ namespace BunnyMod.Content
 					else if (GC.challenges.Contains(cChallenge.AnCapistan) || GC.challenges.Contains(cChallenge.LitterallyTheWorst))
 						hasLitter = true;
 
-					if (BMHeader.debugMode || hasLitter)
+					if (hasLitter)
 					{
 						Debug.Log("Loading Litter");
 
@@ -3910,7 +3910,7 @@ namespace BunnyMod.Content
 					#region Mod - DiscoCityDanceoff / Jukeboxes & Speakers
 					bool hasDisco = true;
 
-					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff) || BMHeader.debugMode)
+					if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff))
 						hasDisco = true;
 					
 					if (hasDisco)
@@ -4084,7 +4084,7 @@ namespace BunnyMod.Content
 					}
 					#endregion
 					#region Mod - DiscoCityDanceoff / Turntables
-					if (hasDisco || BMHeader.debugMode)
+					if (hasDisco)
 					{
 						Debug.Log("Loading Disco Turntables");
 						int bigTries = 6;

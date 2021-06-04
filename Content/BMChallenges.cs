@@ -30,13 +30,6 @@ namespace BunnyMod.Content
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
 			ArcologyEcology.IsActive = false;
 
-			CustomMutator DiscoCityDanceoff = RogueLibs.CreateCustomMutator(cChallenge.DiscoCityDanceoff, true,
-				new CustomNameInfo("000: FloorTiles: Disco City Dance-off"),
-				new CustomNameInfo("Here's the skinny: this freaky deaky Mayor is just bad vibes, man. Time to make this city copacetic, can you dig it? Outta sight!"));
-			DiscoCityDanceoff.Available = true;
-			DiscoCityDanceoff.Conflicting.AddRange(cChallenge.AffectsFloors);
-			DiscoCityDanceoff.IsActive = false;
-
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
 				new CustomNameInfo("000: FloorTiles: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
@@ -177,12 +170,19 @@ namespace BunnyMod.Content
 			#region Overhauls
 			CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 				new CustomNameInfo("000: Overhaul: AnCapistan"),
-				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday!"));
+				new CustomNameInfo("Freedom, at last! Freedom to starve in the gutter and watch your children wallow in the poverty you could never escape. Keep on dreaming and you'll make it someday! Get out there and earn some bootstraps, you inspiring entrepeneur! #RespectTheHustle #LiveToGrind #PleaseHelpImStarving"));
 			AnCapistan.Available = false;
 			AnCapistan.Conflicting.AddRange(vChallenge.AddsLawEnforcement);
 			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
 			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
 			AnCapistan.IsActive = false;
+
+			CustomMutator DiscoCityDanceoff = RogueLibs.CreateCustomMutator(cChallenge.DiscoCityDanceoff, true,
+				new CustomNameInfo("000: FloorTiles: Disco City Dance-off"),
+				new CustomNameInfo("Here's the skinny: this freaky deaky Mayor is just bad vibes, man. Time to make this city copacetic, can you dig it? Outta sight!"));
+			DiscoCityDanceoff.Available = false;
+			DiscoCityDanceoff.Conflicting.AddRange(cChallenge.Overhauls);
+			DiscoCityDanceoff.IsActive = false;
 
 			CustomMutator MACITS = RogueLibs.CreateCustomMutator(cChallenge.MACITS, true,
 				new CustomNameInfo("000: Overhaul: Mostly Automated Comfortable Inclusive Terrestrial Socialism"),

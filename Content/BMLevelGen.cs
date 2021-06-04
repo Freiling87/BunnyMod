@@ -6337,6 +6337,11 @@ namespace BunnyMod.Content
 					if (agent.statusEffects.hasTrait(cTrait.Haunted))
 						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, vRelationship.Hostile, 1);
 
+					if (agent.statusEffects.hasTrait(cTrait.BodyGuarded))
+						BMAgents.SpawnEmployees(agent, 2, vAgent.Goon, __instance, vRelationship.Aligned);
+					else if (agent.statusEffects.hasTrait(cTrait.BodyGuarded_2))
+						BMAgents.SpawnEmployees(agent, 2, vAgent.Supergoon, __instance, vRelationship.Aligned);
+
 					if (level >= 10)
 						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
 							BMAgents.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, vRelationship.Hostile, 4);

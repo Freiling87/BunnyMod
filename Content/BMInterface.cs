@@ -77,6 +77,7 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "AgentOnCamera", g, "Agent_AgentOnCamera", new Type[0] { });
+			Postfix(t, "Awake", g, "Agent_Awake", new Type[0] { });
 		}
 		public static bool Agent_AgentOnCamera(Agent __instance, ref bool __result) // Replacement
 		{
@@ -171,6 +172,10 @@ namespace BunnyMod.Content
 
 			__result = false; 
 			return false;
+		}
+		public static void Agent_Awake(Agent __instance) // Postfix
+		{
+			__instance.wasOnCamera = false;
 		}
 		#endregion
 		#region InvInterface
@@ -542,8 +547,6 @@ namespace BunnyMod.Content
 		public static bool ObjectReal_ObjectRealOnCamera(ObjectReal __instance, ref bool __result) // Replacement
 		{
 			// Eagle Eye activation range
-
-			// BMLog("ObjectReal_ObjectRealOnCamera"); // Drags framerate
 
 			if (!__instance.activeObject || __instance.notRealObject)
 			{

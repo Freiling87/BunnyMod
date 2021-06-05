@@ -1976,7 +1976,6 @@ namespace BunnyMod.Content
 
                 if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
                 {
-                    GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
                     GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.4f, agent, "Normal", agent);
                     GC.audioHandler.Play(__instance, vAudioClip.Operating);
                     GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
@@ -2542,6 +2541,10 @@ namespace BunnyMod.Content
         public static IEnumerator SecurityCam_MyUpdate_Replacement(SecurityCam __instance, bool ___agentsPreviouslyInView) // Non-Patch
 		{
             // Detect Guilty/Wanted for PoliceState & Public Cameras
+            // Confirmed via logging:
+            // Modes are set correctly
+            // Player is detected
+            // Turrets do count to turret total
 
             for (;;)
             {
@@ -2574,12 +2577,6 @@ namespace BunnyMod.Content
                             else if (__instance.targets == "Guilty")
                                 agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.Priors);
                         }
-
-                        if (agent.isPlayer != 0)
-						{
-                            BMLog("Player Agent detected on Camera");
-                            BMLog("\tOwnerID:\t" + agent.ownerID);
-						}
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
                         {

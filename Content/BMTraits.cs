@@ -607,7 +607,7 @@ namespace BunnyMod.Content
             BodyGuarded.Upgrade = cTrait.BodyGuarded_2;
 
             CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
-                new CustomNameInfo("000: BodyGuarded_2", "", "", "", "", "", "", ""),
+                new CustomNameInfo("BodyGuarded +", "", "", "", "", "", "", ""),
                 new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
             BodyGuarded_2.Available = true; // TODO: Set to false after testing
             BodyGuarded_2.AvailableInCharacterCreation = true;

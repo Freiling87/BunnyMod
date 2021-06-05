@@ -217,12 +217,7 @@ namespace BunnyMod.Content
 			Type t = typeof(BasicFloor);
 			Type g = GetType();
 
-			Prefix(t, "SetExtraFloorParams", g, "BasicFloor_SetExtraFloorParams", new Type[5] { typeof(SpawnerBasic), typeof(int), typeof(int), typeof(floorMaterialType), typeof(TileData[,]) });
 			Prefix(t, "Spawn", g, "BasicFloor_Spawn", new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
-		}
-		public static void BasicFloor_SetExtraFloorParams(SpawnerBasic spawner, int xPosition, int yPosition, floorMaterialType floorType, TileData[,] myTileArray) // Postfix
-		{
-			myTileArray[xPosition, yPosition].water = true;
 		}
 		public static bool BasicFloor_Spawn(SpawnerBasic spawner, ref string floorName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
 		{

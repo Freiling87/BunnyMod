@@ -497,7 +497,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant = "ObjectivelyUnpleasant",
             Polarizing = "Polarizing",
             Polarizing_2 = "Polarizing2",
-            Priors = "Priors",
+            GangTats = "Priors",
             RATS = "RATS",
             RATS_2 = "RATS2",
             Reinforcements = "Reinforcements",
@@ -583,13 +583,14 @@ namespace BunnyMod.Content
         };
         public static List<string> RelationshipInitial = new List<string>()
         {
+            BootLicker,
             Domineering,
             Domineering_2,
             GenerallyUnpleasant,
             ObjectivelyUnpleasant,
             Polarizing,
             Polarizing_2,
-            Priors,
+            GangTats,
         };
         public static List<string> Spawns = new List<string>()
         {

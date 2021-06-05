@@ -1197,14 +1197,14 @@ namespace BunnyMod.Content
 
                 if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") || 
                     __instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-                    __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+                    __instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
                 {
                     __instance.buttons.Add("PayCops");
 
                     if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1"))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops1"));
                     else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-                        __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+                        __instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops2"));
                     
                     __instance.buttonsExtra.Add("");
@@ -1232,7 +1232,7 @@ namespace BunnyMod.Content
 		}
         public static void ATMMachine_PayCops(ATMMachine __instance) // Postfix
 		{
-            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
             {
                 if (!__instance.moneySuccess(__instance.determineMoneyCost("PayCops2")))
                 {
@@ -2575,7 +2575,7 @@ namespace BunnyMod.Content
                             else if (__instance.targets == "Wanted")
                                 agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
                             else if (__instance.targets == "Guilty")
-                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.Priors);
+                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.GangTats);
                         }
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)

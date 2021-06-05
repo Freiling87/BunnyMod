@@ -992,11 +992,13 @@ namespace BunnyMod.Content
 				if (__instance.GetRel(otherAgent) == vRelationship.Neutral)
 				{
 					string newRel = vRelationship.Neutral;
+					bool enforcer = otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw) || vAgent.LawEnforcement.Contains(otherAgent.agentName);
+					bool criminal = otherAgent.objectMultAgent.mustBeGuilty || vAgent.Criminal.Contains(otherAgent.agentName);
 
 					if (___agent.statusEffects.hasTrait(cTrait.ObjectivelyUnpleasant) || 
 						(___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && GC.percentChance(20)) ||
-						(___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer) || otherAgent.statusEffects.hasTrait(vTrait.TheLaw)) ||
-						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)))
+						(___agent.statusEffects.hasTrait(cTrait.GangTats) && enforcer) ||
+						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && criminal))
 					{
 						if (GC.percentChance(4))
 							newRel = vRelationship.Hostile;
@@ -1004,8 +1006,8 @@ namespace BunnyMod.Content
 							newRel = vRelationship.Annoyed;
 					}
 					
-					if ((___agent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
-						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
+					if ((___agent.statusEffects.hasTrait(cTrait.GangTats) && criminal) ||
+						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && enforcer))
 						newRel = vRelationship.Friendly;
 					
 					if (___agent.statusEffects.hasTrait(cTrait.Polarizing))
@@ -1109,7 +1111,7 @@ namespace BunnyMod.Content
 
 			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||
 				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
-				(myAgent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
+				(myAgent.statusEffects.hasTrait(cTrait.GangTats) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
 				__result = true;
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement

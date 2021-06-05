@@ -224,6 +224,31 @@ namespace BunnyMod.Content
             Vegetarian.IsActive = true;
             Vegetarian.Upgrade = null;
             #endregion
+            #region Followers
+            CustomTrait BodyGuarded = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded, true,
+                new CustomNameInfo("Bodyguarded", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy. La de da!\n\n- Two Goons join you on each level"));
+            BodyGuarded.Available = true;
+            BodyGuarded.AvailableInCharacterCreation = true;
+            BodyGuarded.CanRemove = false;
+            BodyGuarded.CanSwap = true;
+            BodyGuarded.Conflicting.AddRange(new string[] { });
+            BodyGuarded.CostInCharacterCreation = 7;
+            BodyGuarded.IsActive = true;
+            BodyGuarded.Upgrade = cTrait.BodyGuarded_2;
+
+            CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
+                new CustomNameInfo("BodyGuarded +", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
+            BodyGuarded_2.Available = true; // TODO: Set to false after testing
+            BodyGuarded_2.AvailableInCharacterCreation = true;
+            BodyGuarded_2.CanRemove = false;
+            BodyGuarded_2.CanSwap = true;
+            BodyGuarded_2.Conflicting.AddRange(new string[] { });
+            BodyGuarded_2.CostInCharacterCreation = 12;
+            BodyGuarded_2.IsActive = true;
+            BodyGuarded_2.Upgrade = null;
+            #endregion
             #region Equipment Limitations
             CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait(cTrait.AfraidOfLoudNoises, true,
                 new CustomNameInfo("Afraid of Loud Noises", "", "", "", "", "Боязнь громких звуков", "", ""),
@@ -594,38 +619,14 @@ namespace BunnyMod.Content
             Myopic_2.Upgrade = null;
             #endregion
             #region Social
-            CustomTrait BodyGuarded = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded, true,
-                new CustomNameInfo("Bodyguarded", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy. La de da!\n\n- Two Goons join you on each level"));
-            BodyGuarded.Available = true;
-            BodyGuarded.AvailableInCharacterCreation = true;
-            BodyGuarded.CanRemove = false;
-            BodyGuarded.CanSwap = true;
-            BodyGuarded.Conflicting.AddRange(new string[] { });
-            BodyGuarded.CostInCharacterCreation = 7;
-            BodyGuarded.IsActive = true;
-            BodyGuarded.Upgrade = cTrait.BodyGuarded_2;
-
-            CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
-                new CustomNameInfo("BodyGuarded +", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
-            BodyGuarded_2.Available = true; // TODO: Set to false after testing
-            BodyGuarded_2.AvailableInCharacterCreation = true;
-            BodyGuarded_2.CanRemove = false;
-            BodyGuarded_2.CanSwap = true;
-            BodyGuarded_2.Conflicting.AddRange(new string[] { });
-            BodyGuarded_2.CostInCharacterCreation = 12;
-            BodyGuarded_2.IsActive = true;
-            BodyGuarded_2.Upgrade = null;
-
             CustomTrait BootLicker = RogueLibs.CreateCustomTrait(cTrait.BootLicker, true,
-                new CustomNameInfo("000: Boot Licker", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Boot Licker", "", "", "", "", "", "", ""),
                 new CustomNameInfo("The only brown thing Cops like is the nose of people like you.\n\n- Law Enforcers are Friendly\n- Criminals are Annoyed"));
             BootLicker.Available = true;
             BootLicker.AvailableInCharacterCreation = true;
             BootLicker.CanRemove = true;
             BootLicker.CanSwap = false;
-            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.Priors,cTrait.GenerallyUnpleasant,cTrait.ObjectivelyUnpleasant,});
+            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.GangTats,cTrait.GenerallyUnpleasant,cTrait.ObjectivelyUnpleasant,});
             BootLicker.CostInCharacterCreation = 3;
             BootLicker.IsActive = true;
             BootLicker.Upgrade = null;
@@ -653,6 +654,18 @@ namespace BunnyMod.Content
             Domineering_2.CostInCharacterCreation = 4;
             Domineering_2.IsActive = true;
             Domineering_2.Upgrade = null;
+
+            CustomTrait GangTats = RogueLibs.CreateCustomTrait(cTrait.GangTats, true,
+                new CustomNameInfo("Gang Tats", "", "", "", "", "Давные преступления", "", ""),
+                new CustomNameInfo("Your ink marks you as a scourge to law enforcers. On the upside, you have the respect of the City's criminals.", "", "", "", "", "У вас длинный список преступлений и каждый коп знает вас в лицо. Они так устали от вас и вашего дерьма, что только и ищут повод, чтобы избить вас.", "", ""));
+            GangTats.Available = true;
+            GangTats.AvailableInCharacterCreation = true;
+            GangTats.CanRemove = true;
+            GangTats.CanSwap = true;
+            GangTats.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
+            GangTats.CostInCharacterCreation = -2;
+            GangTats.IsActive = true;
+            GangTats.Upgrade = null;
 
             CustomTrait GenerallyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant, true,
                 new CustomNameInfo("Generally Unpleasant", "", "", "", "", "Вообще неприятный", "", ""),
@@ -701,18 +714,6 @@ namespace BunnyMod.Content
             Polarizing_2.CostInCharacterCreation = 1;
             Polarizing_2.IsActive = true;
             Polarizing_2.Upgrade = null;
-
-            CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
-                new CustomNameInfo("Priors", "", "", "", "", "Давные преступления", "", ""),
-                new CustomNameInfo("You have a long rap sheet, and the police know you by first name. On the upside, you've earned the respect of the City's criminals.", "", "", "", "", "У вас длинный список преступлений и каждый коп знает вас в лицо. Они так устали от вас и вашего дерьма, что только и ищут повод, чтобы избить вас.", "", ""));
-            Priors.Available = true;
-            Priors.AvailableInCharacterCreation = true;
-            Priors.CanRemove = true;
-            Priors.CanSwap = true;
-            Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
-            Priors.CostInCharacterCreation = -2;
-            Priors.IsActive = true;
-            Priors.Upgrade = null;
 
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait(cTrait.VeiledThreats, true,
                 new CustomNameInfo("Veiled Threats", "", "", "", "", "Скрытое давление", "", ""),

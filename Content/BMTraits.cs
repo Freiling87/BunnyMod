@@ -626,7 +626,7 @@ namespace BunnyMod.Content
             BootLicker.AvailableInCharacterCreation = true;
             BootLicker.CanRemove = true;
             BootLicker.CanSwap = false;
-            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.GangTats,cTrait.GenerallyUnpleasant,cTrait.ObjectivelyUnpleasant,});
+            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.Priors, cTrait.GenerallyUnpleasant, cTrait.ObjectivelyUnpleasant, vTrait.TheLaw });
             BootLicker.CostInCharacterCreation = 3;
             BootLicker.IsActive = true;
             BootLicker.Upgrade = null;
@@ -654,18 +654,6 @@ namespace BunnyMod.Content
             Domineering_2.CostInCharacterCreation = 4;
             Domineering_2.IsActive = true;
             Domineering_2.Upgrade = null;
-
-            CustomTrait GangTats = RogueLibs.CreateCustomTrait(cTrait.GangTats, true,
-                new CustomNameInfo("Gang Tats", "", "", "", "", "Давные преступления", "", ""),
-                new CustomNameInfo("Your ink marks you as a scourge to law enforcers. On the upside, you have the respect of the City's criminals.", "", "", "", "", "У вас длинный список преступлений и каждый коп знает вас в лицо. Они так устали от вас и вашего дерьма, что только и ищут повод, чтобы избить вас.", "", ""));
-            GangTats.Available = true;
-            GangTats.AvailableInCharacterCreation = true;
-            GangTats.CanRemove = true;
-            GangTats.CanSwap = true;
-            GangTats.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
-            GangTats.CostInCharacterCreation = -2;
-            GangTats.IsActive = true;
-            GangTats.Upgrade = null;
 
             CustomTrait GenerallyUnpleasant = RogueLibs.CreateCustomTrait(cTrait.GenerallyUnpleasant, true,
                 new CustomNameInfo("Generally Unpleasant", "", "", "", "", "Вообще неприятный", "", ""),
@@ -715,6 +703,18 @@ namespace BunnyMod.Content
             Polarizing_2.IsActive = true;
             Polarizing_2.Upgrade = null;
 
+            CustomTrait Priors = RogueLibs.CreateCustomTrait(cTrait.Priors, true,
+                new CustomNameInfo("Priors", "", "", "", "", "Давные преступления", "", ""),
+                new CustomNameInfo("Your ink marks you as a scourge to law enforcers. On the upside, you have the respect of the City's criminals.", "", "", "", "", "У вас длинный список преступлений и каждый коп знает вас в лицо. Они так устали от вас и вашего дерьма, что только и ищут повод, чтобы избить вас.", "", ""));
+            Priors.Available = true;
+            Priors.AvailableInCharacterCreation = true;
+            Priors.CanRemove = true;
+            Priors.CanSwap = true;
+            Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
+            Priors.CostInCharacterCreation = -2;
+            Priors.IsActive = true;
+            Priors.Upgrade = null;
+
             CustomTrait VeiledThreats = RogueLibs.CreateCustomTrait(cTrait.VeiledThreats, true,
                 new CustomNameInfo("Veiled Threats", "", "", "", "", "Скрытое давление", "", ""),
                 new CustomNameInfo("When you attempt to Bribe, Extort, Mug, or Threaten, a failure will turn the target Annoyed instead of Hostile.", "", "", "", "", "Когда вы пытаетесь угрожать, подкупить, грабить если ваша цель откажется, то она будет раздражена, а не враждебна.", "", ""));
@@ -736,7 +736,7 @@ namespace BunnyMod.Content
             Warlord.CanRemove = false;
             Warlord.CanSwap = true;
             Warlord.Conflicting.AddRange(new string[] { });
-            Warlord.CostInCharacterCreation = 20;
+            Warlord.CostInCharacterCreation = 32;
             Warlord.IsActive = true;
             Warlord.Upgrade = null;
             #endregion

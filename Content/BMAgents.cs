@@ -997,7 +997,7 @@ namespace BunnyMod.Content
 
 					if (___agent.statusEffects.hasTrait(cTrait.ObjectivelyUnpleasant) || 
 						(___agent.statusEffects.hasTrait(cTrait.GenerallyUnpleasant) && GC.percentChance(20)) ||
-						(___agent.statusEffects.hasTrait(cTrait.GangTats) && enforcer) ||
+						(___agent.statusEffects.hasTrait(cTrait.Priors) && enforcer) ||
 						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && criminal))
 					{
 						if (GC.percentChance(4))
@@ -1006,7 +1006,7 @@ namespace BunnyMod.Content
 							newRel = vRelationship.Annoyed;
 					}
 					
-					if ((___agent.statusEffects.hasTrait(cTrait.GangTats) && criminal) ||
+					if ((___agent.statusEffects.hasTrait(cTrait.Priors) && criminal) ||
 						(___agent.statusEffects.hasTrait(cTrait.BootLicker) && enforcer))
 						newRel = vRelationship.Friendly;
 					
@@ -1080,7 +1080,6 @@ namespace BunnyMod.Content
 			Postfix(t, "AddTrait", g, "StatusEffects_AddTrait", new Type[3] { typeof(string), typeof(bool), typeof(bool) });
 			Postfix(t, "AgentIsRival", g, "StatusEffects_AgentIsRival", new Type[1] { typeof(Agent) });
 			Prefix(t, "BecomeHidden", g, "StatusEffects_BecomeHidden", new Type[1] { typeof(ObjectReal) });
-			Prefix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Prefix", new Type[0] { });
 			Postfix(t, "BecomeNotHidden", g, "StatusEffects_BecomeNotHidden_Postfix", new Type[0]);
 			Prefix(t, "ChangeHealth", g, "StatusEffects_ChangeHealth", new Type[6] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) });
 			Postfix(t, "RemoveTrait", g, "StatusEffects_RemoveTrait", new Type[2] { typeof(string), typeof(bool) });
@@ -1111,7 +1110,7 @@ namespace BunnyMod.Content
 
 			if ((myAgent.statusEffects.hasTrait(cTrait.MobDebt) && otherAgent.agentName == vAgent.Mobster) ||
 				(myAgent.statusEffects.hasTrait(cTrait.BootLicker) && (vAgent.Criminal.Contains(otherAgent.agentName) || otherAgent.objectMultAgent.mustBeGuilty)) ||
-				(myAgent.statusEffects.hasTrait(cTrait.GangTats) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
+				(myAgent.statusEffects.hasTrait(cTrait.Priors) && (vAgent.LawEnforcement.Contains(otherAgent.agentName) || otherAgent.enforcer || otherAgent.statusEffects.hasTrait(vTrait.TheLaw))))
 				__result = true;
 		}
 		public static bool StatusEffects_BecomeHidden(ObjectReal hiddenInObject, StatusEffects __instance) // Replacement
@@ -1235,28 +1234,6 @@ namespace BunnyMod.Content
 			//	agent.agentCollider.enabled = false;
 
 			return false;
-		}
-		public static bool StatusEffects_BecomeNotHidden_Prefix(StatusEffects __instance) // Prefix
-		{
-			// Sniper +
-
-			BMLog("StatusEffects_BecomeNotHidden_Prefix");
-
-			if (__instance.agent.hiddenInObject is null) 
-				return true;
-
-			BMLog("\tA");
-
-			ObjectReal hiddenInObject = __instance.agent.hiddenInObject;
-
-			BMLog("\tA");
-
-			if (!hiddenInObject.objectCollider.enabled && (hiddenInObject is Plant || hiddenInObject is Bathtub))
-				__instance.agent.hiddenInObject.objectCollider.enabled = true;
-
-			BMLog("\tA");
-
-			return true;
 		}
 		public static void StatusEffects_BecomeNotHidden_Postfix(StatusEffects __instance) // Postfix
 		{

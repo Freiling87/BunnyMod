@@ -497,7 +497,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant = "ObjectivelyUnpleasant",
             Polarizing = "Polarizing",
             Polarizing_2 = "Polarizing2",
-            GangTats = "Priors",
+            Priors = "Priors",
             RATS = "RATS",
             RATS_2 = "RATS2",
             Reinforcements = "Reinforcements",
@@ -590,7 +590,7 @@ namespace BunnyMod.Content
             ObjectivelyUnpleasant,
             Polarizing,
             Polarizing_2,
-            GangTats,
+            Priors,
         };
         public static List<string> Spawns = new List<string>()
         {

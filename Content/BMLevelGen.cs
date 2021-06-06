@@ -1391,7 +1391,6 @@ namespace BunnyMod.Content
 			int triesCount = 0;
 			int num;
 
-
 			for (int i = 0; i < __instance.levelSizeAxis; i = num + 1)
 			{
 				for (int j = 0; j < __instance.levelSizeAxis; j = num + 1)
@@ -1415,7 +1414,7 @@ namespace BunnyMod.Content
 								string tilemapGroup = vFloorTileGroup.Building;
 
 								if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFloors))
-									tilemapGroup = GetFloorTileGroup(); // Works on: 
+									tilemapGroup = GetFloorTileGroup(); // Works on: Slums,
 								else if (GC.levelShape == 0 && GC.levelType != "HomeBase")
 								{
 									if (GC.levelTheme == 0)
@@ -2746,7 +2745,6 @@ namespace BunnyMod.Content
 										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y), "Wall") &&
 										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y), "Wall"))
 									{
-										BMLog("PoliceState Security Cams: This one actually isn't useless // 202104261119");
 										spotCandidate = Vector2.zero;
 									}
 
@@ -6415,12 +6413,7 @@ namespace BunnyMod.Content
 			Type t = typeof(SpawnerFloor);
 			Type g = GetType();
 
-			Postfix(t, "SetExtraFloorParams", g, "SpawnerFloor_SetExtraFloorParams", new Type[3] { typeof(int), typeof(int), typeof(floorMaterialType) });
 			Prefix(t, "spawn", g, "SpawnerFloor_spawn", new Type[1] { typeof(string) });
-		}
-		public static void SpawnerFloor_SetExtraFloorParams(int xPosition, int yPosition, floorMaterialType floorType, SpawnerFloor __instance) // Postfix
-		{
-			__instance.tileInfo.tileArray[xPosition, yPosition].ice = true;
 		}
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors3, ref tk2dTileMap ___tilemapFloors4) // Replacement
 		{
@@ -6474,190 +6467,39 @@ namespace BunnyMod.Content
 						num5 = 712;
 						__instance.tileInfo.tileArray[num, num2].arenaFloor = true;
 					}
-					else if (floorName == "CleanTilesRaised")
-					{
-						num5 = 1104;
-						floorMaterialType = floorMaterialType.CleanTilesRaised;
-					}
-					else if (floorName == "Checkerboard2")
-					{
-						num5 = 1356;
-						floorMaterialType = floorMaterialType.Checkerboard2;
-					}
-					else if (floorName == "WoodClean")
-					{
-						num5 = 924;
-						floorMaterialType = floorMaterialType.WoodClean;
-					}
-					else if (floorName == "HideoutFloor")
+					else if (floorName == "ArmoryFloor")
 					{
 						num5 = 172;
+						floorMaterialType = floorMaterialType.ArmoryFloor;
+					}
+					else if (floorName == "BankFloor")
+					{
+						if (GC.levelTheme == 5)
+							num5 = 1356;
+						else
+							num5 = 172;
 
-						if (GC.levelTheme == 1)
-							num5 = 476;
-						
-						floorMaterialType = floorMaterialType.HideoutFloor;
+						floorMaterialType = floorMaterialType.BankFloor;
 					}
-					else if (floorName == "CleanTiles")
+					else if (floorName == "Bathhouse")
 					{
-						num5 = 1064;
-						floorMaterialType = floorMaterialType.CleanTiles;
+						num5 = 824;
+						floorMaterialType = floorMaterialType.Bathhouse;
 					}
-					else if (floorName == "ClearFloor2")
-						floorMaterialType = floorMaterialType.ClearFloor;
-					else if (floorName == "SmallTiles")
+					else if (floorName == "BathroomTile")
 					{
-						num5 = 1164;
-						floorMaterialType = floorMaterialType.SmallTiles;
-					}
-					else if (floorName == "CasinoFloor")
-					{
-						num5 = 152;
-						floorMaterialType = floorMaterialType.CasinoFloor;
-					}
-					else if (floorName == "Hole")
-					{
-						if (GC.levelTheme != 1 && GC.levelTheme != 2 && GC.levelTheme != 4 && GC.levelTheme != 5 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
-						{
-							Object.Destroy(__instance.gameObject);
-
-							return false;
-						}
-
-						num5 = 192;
-						__instance.tileInfo.tileArray[num, num2].hole = true;
-						__instance.floorLayer = 2;
-						floorMaterialType = floorMaterialType.Hole;
-					}
-					else if (floorName == "PurpleRug")
-					{
-						num5 = 556;
-						floorMaterialType = floorMaterialType.PurpleRug;
-					}
-					else  if (floorName == "DrugDenFloor")
-					{
-						num5 = 496;
-						floorMaterialType = floorMaterialType.DrugDenFloor;
-					}
-					else if (floorName == "DirtyTiles")
-					{
-						num5 = 1084;
-						floorMaterialType = floorMaterialType.DirtyTiles;
+						num5 = 46;
+						floorMaterialType = floorMaterialType.BathroomTile;
 					}
 					else if (floorName == "BrickIndoor")
 					{
 						num5 = 1376;
 						floorMaterialType = floorMaterialType.BrickIndoor;
 					}
-					else if (floorName == "FlamePit")
+					else if (floorName == "Bridge")
 					{
-						if (GC.levelTheme != 1 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
-						{
-							Object.Destroy(__instance.gameObject);
-
-							return false;
-						}
-
-						if (GC.serverPlayer)
-							GC.spawnerMain.spawnObjectReal(new Vector2((float)num * 0.64f, (float)num2 * 0.64f), null, "FlameGrate").extraVar = 1;
-						
-						__instance.floorLayer = -1;
-						__instance.tileInfo.tileArray[num, num2].dangerousToWalk = true;
-						floorMaterialType = floorMaterialType.FlamePit;
-					}
-					else if (floorName == "ClearFloor")
-						floorMaterialType = floorMaterialType.ClearFloor;
-					if (floorName == "Mall")
-					{
-						num5 = 884;
-						floorMaterialType = floorMaterialType.Mall;
-					}
-					else if (floorName == "DanceFloorRaised")
-					{
-						num5 = 1124;
-						floorMaterialType = floorMaterialType.DanceFloorRaised;
-					}
-					if (floorName == "OfficeFloor")
-					{
-						num5 = 456;
-						floorMaterialType = floorMaterialType.OfficeFloor;
-					}
-					else if (floorName == "MetalPlates")
-					{
-						num5 = 1244;
-						floorMaterialType = floorMaterialType.MetalPlates;
-					}
-					if (floorName == "ElectronicPlates")
-					{
-						num5 = 1184;
-						floorMaterialType = floorMaterialType.ElectronicPlates;
-					}
-					else if (floorName == "RedRug")
-					{
-						num5 = 232;
-						floorMaterialType = floorMaterialType.RedRug;
-					}
-					else if (floorName == "Normal")
-					{
-						if (GC.levelTheme == 3 || GC.levelTheme == 5)
-							num5 = 924;
-						else if (GC.levelTheme == 4)
-							num5 = 1184;
-						else
-							num5 = 110;
-						
-						floorMaterialType = floorMaterialType.Normal;
-					}
-					if (floorName == "GreenRug")
-					{
-						num5 = 212;
-						floorMaterialType = floorMaterialType.GreenRug;
-					}
-					else if (floorName == "SolidPlates")
-					{
-						num5 = 1204;
-						floorMaterialType = floorMaterialType.SolidPlates;
-					}
-					if (floorName == "Bathhouse")
-					{
-						num5 = 824;
-						floorMaterialType = floorMaterialType.Bathhouse;
-					}
-					else if (floorName == "MetalFloor")
-					{
-						num5 = 86;
-						floorMaterialType = floorMaterialType.MetalFloor;
-					}
-					if (floorName == "PrisonFloor")
-					{
-						num5 = 536;
-						floorMaterialType = floorMaterialType.PrisonFloor;
-					}
-					else if (floorName == "Checkerboard")
-					{
-						num5 = 66;
-						floorMaterialType = floorMaterialType.Checkerboard;
-					}
-					else if (floorName == "IceRink")
-					{
-						num5 = 984;
-						__instance.tileInfo.tileArray[num, num2].ice = true;
-						floorMaterialType = floorMaterialType.IceRink;
-					}
-					if (floorName == "ConveyorBelt")
-					{
-						if (GC.levelTheme != 1 && GC.levelTheme != 2 && (GC.levelTheme < 3 || !(__instance.transform.parent.GetComponent<Chunk>().description == "Mall")) && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
-						{
-							Object.Destroy(__instance.gameObject);
-							return false;
-						}
-
-						num5 = 628;
-						__instance.tileInfo.tileArray[num, num2].conveyorBelt = true;
-						list.Add(__instance.tileInfo.tileArray[num, num2]);
-						list2.Add(Object.Instantiate<GameObject>(GC.spawnerMain.conveyorBeltImagePrefab, new Vector2((float)num * 0.64f, (float)num2 * 0.64f), Quaternion.Euler(0f, 0f, 0f)));
-						__instance.floorLayer = 2;
-						floorMaterialType = floorMaterialType.ConveyorBelt;
+						floorMaterialType = floorMaterialType.Bridge;
+						__instance.tileInfo.tileArray[num, num2].bridge = true;
 					}
 					else if (floorName == "Canal")
 					{
@@ -6679,20 +6521,25 @@ namespace BunnyMod.Content
 							__instance.floorLayer = 0;
 						}
 					}
-					else if (floorName == "FactoryFloor")
+					else if (floorName == "CasinoFloor")
 					{
-						num5 = 476;
-						floorMaterialType = floorMaterialType.FactoryFloor;
+						num5 = 152;
+						floorMaterialType = floorMaterialType.CasinoFloor;
 					}
-					else if (floorName == "DanceFloor")
+					else if (floorName == "CaveFloor")
 					{
-						num5 = 844;
-						floorMaterialType = floorMaterialType.DanceFloor;
+						num5 = 736;
+						floorMaterialType = floorMaterialType.CaveFloor;
 					}
-					else if (floorName == "HospitalFloor")
+					else if (floorName == "Checkerboard")
 					{
-						num5 = 436;
-						floorMaterialType = floorMaterialType.HospitalFloor;
+						num5 = 66;
+						floorMaterialType = floorMaterialType.Checkerboard;
+					}
+					else if (floorName == "Checkerboard2")
+					{
+						num5 = 1356;
+						floorMaterialType = floorMaterialType.Checkerboard2;
 					}
 					else if (floorName == "CityParkFloor")
 					{
@@ -6705,63 +6552,128 @@ namespace BunnyMod.Content
 
 						floorMaterialType = floorMaterialType.CityParkFloor;
 					}
-					else if (floorName == "Gym")
+					else if (floorName == "CleanTiles")
 					{
-						num5 = 864;
-						floorMaterialType = floorMaterialType.Gym;
+						num5 = 1064;
+						floorMaterialType = floorMaterialType.CleanTiles;
 					}
-					else if (floorName == "CaveFloor")
+					else if (floorName == "CleanTilesRaised")
 					{
-						num5 = 736;
-						floorMaterialType = floorMaterialType.CaveFloor;
+						num5 = 1104;
+						floorMaterialType = floorMaterialType.CleanTilesRaised;
 					}
-					else if (floorName == "ArmoryFloor")
+					else if (floorName == "ClearFloor")
+						floorMaterialType = floorMaterialType.ClearFloor;
+					else if (floorName == "ClearFloor2")
+						floorMaterialType = floorMaterialType.ClearFloor;
+					if (floorName == "ConveyorBelt")
 					{
-						num5 = 172;
-						floorMaterialType = floorMaterialType.ArmoryFloor;
+						if (GC.levelTheme != 1 && GC.levelTheme != 2 && (GC.levelTheme < 3 || !(__instance.transform.parent.GetComponent<Chunk>().description == "Mall")) && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+						{
+							Object.Destroy(__instance.gameObject);
+							return false;
+						}
+
+						num5 = 628;
+						__instance.tileInfo.tileArray[num, num2].conveyorBelt = true;
+						list.Add(__instance.tileInfo.tileArray[num, num2]);
+						list2.Add(Object.Instantiate<GameObject>(GC.spawnerMain.conveyorBeltImagePrefab, new Vector2((float)num * 0.64f, (float)num2 * 0.64f), Quaternion.Euler(0f, 0f, 0f)));
+						__instance.floorLayer = 2;
+						floorMaterialType = floorMaterialType.ConveyorBelt;
+					}
+					else if (floorName == "DanceFloor")
+					{
+						num5 = 844;
+						floorMaterialType = floorMaterialType.DanceFloor;
+					}
+					else if (floorName == "DanceFloorRaised")
+					{
+						num5 = 1124;
+						floorMaterialType = floorMaterialType.DanceFloorRaised;
+					}
+					else if (floorName == "DirtFloor")
+					{
+						num5 = 756;
+						floorMaterialType = floorMaterialType.DirtFloor;
+					}
+					else if (floorName == "DirtyTiles")
+					{
+						num5 = 1084;
+						floorMaterialType = floorMaterialType.DirtyTiles;
+					}
+					else if (floorName == "DrugDenFloor")
+					{
+						num5 = 496;
+						floorMaterialType = floorMaterialType.DrugDenFloor;
+					}
+					else if (floorName == "ElectronicPlates")
+					{
+						num5 = 1184;
+						floorMaterialType = floorMaterialType.ElectronicPlates;
 					}
 					else if (floorName == "Facility")
 					{
 						num5 = 1224;
 						floorMaterialType = floorMaterialType.Facility;
 					}
-					else if (floorName == "BankFloor")
+					else if (floorName == "FactoryFloor")
 					{
-						if (GC.levelTheme == 5)
-							num5 = 1356;
-						else
-							num5 = 172;
-
-						floorMaterialType = floorMaterialType.BankFloor;
+						num5 = 476;
+						floorMaterialType = floorMaterialType.FactoryFloor;
 					}
-					else if (floorName == "BlueRug")
+					else if (floorName == "FlamePit")
 					{
-						num5 = 252;
-						floorMaterialType = floorMaterialType.BlueRug;
+						if (GC.levelTheme != 1 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+						{
+							Object.Destroy(__instance.gameObject);
+
+							return false;
+						}
+
+						if (GC.serverPlayer)
+							GC.spawnerMain.spawnObjectReal(new Vector2((float)num * 0.64f, (float)num2 * 0.64f), null, "FlameGrate").extraVar = 1;
+
+						__instance.floorLayer = -1;
+						__instance.tileInfo.tileArray[num, num2].dangerousToWalk = true;
+						floorMaterialType = floorMaterialType.FlamePit;
 					}
 					else if (floorName == "GreyTile")
 					{
 						num5 = 13;
 						floorMaterialType = floorMaterialType.GreyTile;
 					}
-					else if (floorName == "Muted")
+					else if (floorName == "Gym")
 					{
-						num5 = 1264;
-						floorMaterialType = floorMaterialType.Muted;
+						num5 = 864;
+						floorMaterialType = floorMaterialType.Gym;
 					}
-					else if (floorName == "Posh")
+					else if (floorName == "HideoutFloor")
 					{
-						num5 = 904;
-						floorMaterialType = floorMaterialType.Posh;
+						num5 = 172;
+
+						if (GC.levelTheme == 1)
+							num5 = 476;
+
+						floorMaterialType = floorMaterialType.HideoutFloor;
 					}
-					else if (floorName == "Water")
+					else if (floorName == "Hole")
 					{
-						num5 = 688;
-						__instance.tileInfo.tileArray[num, num2].water = true;
-						__instance.tileInfo.tileArray[num, num2].organic = true;
+						if (GC.levelTheme != 1 && GC.levelTheme != 2 && GC.levelTheme != 4 && GC.levelTheme != 5 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated || !(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+						{
+							Object.Destroy(__instance.gameObject);
+
+							return false;
+						}
+
+						num5 = 192;
+						__instance.tileInfo.tileArray[num, num2].hole = true;
 						__instance.floorLayer = 2;
-						floorMaterialType = floorMaterialType.Water;
-						list3.Add(new Vector2((float)num, (float)num2));
+						floorMaterialType = floorMaterialType.Hole;
+					}
+					else if (floorName == "HospitalFloor")
+					{
+						num5 = 436;
+						floorMaterialType = floorMaterialType.HospitalFloor;
 					}
 					else if (floorName == "Ice")
 					{
@@ -6771,20 +6683,47 @@ namespace BunnyMod.Content
 						__instance.floorLayer = 2;
 						floorMaterialType = floorMaterialType.Ice;
 					}
-					else if (floorName == "DirtFloor")
+					else if (floorName == "IceRink")
 					{
-						num5 = 756;
-						floorMaterialType = floorMaterialType.DirtFloor;
+						num5 = 984;
+						__instance.tileInfo.tileArray[num, num2].ice = true;
+						floorMaterialType = floorMaterialType.IceRink;
 					}
-					else if (floorName == "DarkBlueRug")
+					else if (floorName == "Mall")
 					{
-						num5 = 272;
-						floorMaterialType = floorMaterialType.DarkBlueRug;
+						num5 = 884;
+						floorMaterialType = floorMaterialType.Mall;
 					}
-					else if (floorName == "Bridge")
+					else if (floorName == "MetalFloor")
 					{
-						floorMaterialType = floorMaterialType.Bridge;
-						__instance.tileInfo.tileArray[num, num2].bridge = true;
+						num5 = 86;
+						floorMaterialType = floorMaterialType.MetalFloor;
+					}
+					else if (floorName == "MetalPlates")
+					{
+						num5 = 1244;
+						floorMaterialType = floorMaterialType.MetalPlates;
+					}
+					else if (floorName == "Muted")
+					{
+						num5 = 1264;
+						floorMaterialType = floorMaterialType.Muted;
+					}
+					else if (floorName == "Normal")
+					{
+						if (GC.levelTheme == 3 || GC.levelTheme == 5)
+							num5 = 924;
+						else if (GC.levelTheme == 4)
+							num5 = 1184;
+						else
+							num5 = 110;
+
+						floorMaterialType = floorMaterialType.Normal;
+					}
+					else if (floorName == "OfficeFloor")
+					{
+						num5 = 456;
+						floorMaterialType = floorMaterialType.OfficeFloor;
 					}
 					else if (floorName == "Pool")
 					{
@@ -6799,10 +6738,64 @@ namespace BunnyMod.Content
 						num5 = 172;
 						floorMaterialType = floorMaterialType.PoliceStationFloor;
 					}
-					else if (floorName == "BathroomTile")
+					else if (floorName == "Posh")
 					{
-						num5 = 46;
-						floorMaterialType = floorMaterialType.BathroomTile;
+						num5 = 904;
+						floorMaterialType = floorMaterialType.Posh;
+					}
+					else if (floorName == "PrisonFloor")
+					{
+						num5 = 536;
+						floorMaterialType = floorMaterialType.PrisonFloor;
+					}
+					else if (floorName == vFloor.RugBlue)
+					{
+						num5 = 252;
+						floorMaterialType = floorMaterialType.BlueRug;
+					}
+					else if (floorName == vFloor.RugDarkBlue)
+					{
+						num5 = 272;
+						floorMaterialType = floorMaterialType.DarkBlueRug;
+					}
+					else if (floorName == vFloor.RugGreen)
+					{
+						num5 = 212;
+						floorMaterialType = floorMaterialType.GreenRug;
+					}
+					else if (floorName == vFloor.RugPurple)
+					{
+						num5 = 556;
+						floorMaterialType = floorMaterialType.PurpleRug;
+					}
+					else if (floorName == vFloor.RugRed)
+					{
+						num5 = 232;
+						floorMaterialType = floorMaterialType.RedRug;
+					}
+					else if (floorName == "SmallTiles")
+					{
+						num5 = 1164;
+						floorMaterialType = floorMaterialType.SmallTiles;
+					}
+					else if (floorName == "SolidPlates")
+					{
+						num5 = 1204;
+						floorMaterialType = floorMaterialType.SolidPlates;
+					}
+					else if (floorName == "Water")
+					{
+						num5 = 688;
+						__instance.tileInfo.tileArray[num, num2].water = true;
+						__instance.tileInfo.tileArray[num, num2].organic = true;
+						__instance.floorLayer = 2;
+						floorMaterialType = floorMaterialType.Water;
+						list3.Add(new Vector2((float)num, (float)num2));
+					}
+					else if (floorName == "WoodClean")
+					{
+						num5 = 924;
+						floorMaterialType = floorMaterialType.WoodClean;
 					}
 					else if (floorName == "WoodSlats")
 					{

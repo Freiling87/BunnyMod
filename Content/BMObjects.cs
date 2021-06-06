@@ -760,11 +760,11 @@ namespace BunnyMod.Content
 
                     case vObject.BoulderSmall:
                         while (GC.percentChance(1))
-                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.Rock);
+                            GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vItem.Rock);
 
                         while (GC.percentChance(chance))
                         {
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vObject.FlamingBarrel, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vObject.FlamingBarrel, false);
                             chance -= 10;
                         }
 
@@ -773,9 +773,18 @@ namespace BunnyMod.Content
                     case vObject.FlamingBarrel:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.12f, 0.12f), loc.y + Random.Range(-0.12f, 0.12f)), vObject.Bush, true);
-                            chance -= 25; 
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.08f, 0.08f), loc.y + Random.Range(-0.08f, 0.08f)), vObject.Bush, true);
+                            chance -= 50; 
                         }
+
+                        break;
+
+                    case vObject.Toilet:
+                        while (GC.percentChance(chance))
+						{
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.Door, false);
+                                chance -= 100;
+						}
 
                         break;
 
@@ -786,7 +795,7 @@ namespace BunnyMod.Content
                         while (GC.percentChance(chance))
 						{
                             GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
-                            chance -= 10;
+                            chance -= 15;
                         }
 
                         break;
@@ -1197,14 +1206,14 @@ namespace BunnyMod.Content
 
                 if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") || 
                     __instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-                    __instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
+                    __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
                 {
                     __instance.buttons.Add("PayCops");
 
                     if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1"))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops1"));
                     else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-                        __instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
+                        __instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
                         __instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops2"));
                     
                     __instance.buttonsExtra.Add("");
@@ -1232,7 +1241,7 @@ namespace BunnyMod.Content
 		}
         public static void ATMMachine_PayCops(ATMMachine __instance) // Postfix
 		{
-            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.GangTats))
+            if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
             {
                 if (!__instance.moneySuccess(__instance.determineMoneyCost("PayCops2")))
                 {
@@ -2575,7 +2584,7 @@ namespace BunnyMod.Content
                             else if (__instance.targets == "Wanted")
                                 agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
                             else if (__instance.targets == "Guilty")
-                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.GangTats);
+                                agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) || agent.statusEffects.hasTrait(cTrait.Priors);
                         }
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)

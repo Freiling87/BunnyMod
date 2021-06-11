@@ -22,6 +22,28 @@ namespace BunnyMod.Content
 		}
 		public static void InitializeChallenges()
 		{
+			#region Fire
+			CustomMutator FastFires = RogueLibs.CreateCustomMutator(cChallenge.FastFires, true,
+				new CustomNameInfo("000: Fast Fires"),
+				new CustomNameInfo("Fires spread faster."));
+			FastFires.Available = true;
+			FastFires.Conflicting.AddRange(new string[] { });
+			FastFires.IsActive = false;
+
+			CustomMutator StubbornFires = RogueLibs.CreateCustomMutator(cChallenge.StubbornFires, true,
+				new CustomNameInfo("000: Stubborn Fires"),
+				new CustomNameInfo("Fires last longer and spread further."));
+			StubbornFires.Available = true;
+			StubbornFires.Conflicting.AddRange(new string[] { });
+			StubbornFires.IsActive = false;
+
+			CustomMutator WeakFires = RogueLibs.CreateCustomMutator(cChallenge.WeakFires, true,
+				new CustomNameInfo("000: Weak Fires"),
+				new CustomNameInfo("Fires burn out shorter, and don't spread as much."));
+			WeakFires.Available = true;
+			WeakFires.Conflicting.AddRange(new string[] { });
+			WeakFires.IsActive = false;
+			#endregion
 			#region Floor Exteriors & Features
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
 				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
@@ -95,6 +117,13 @@ namespace BunnyMod.Content
 			BroughtBackFountain.Conflicting.AddRange(new string[] { });
 			BroughtBackFountain.IsActive = false;
 
+			CustomMutator CartOfTheDeal = RogueLibs.CreateCustomMutator(cChallenge.CartOfTheDeal, true,
+				new CustomNameInfo("Features: Cart of the Deal"),
+				new CustomNameInfo("A lot of people, very important people, are saying the City has the best Vendor Carts. The best folks, just tremendous. Don't we love our Vendor Carts?"));
+			CartOfTheDeal.Available = true;
+			CartOfTheDeal.Conflicting.AddRange(new string[] { });
+			CartOfTheDeal.IsActive = false;
+
 			CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
 				new CustomNameInfo("Features: Floral-er Flora"),
 				new CustomNameInfo("A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes, hedge walls, plants and trees. Looks nice.\n- May be a performance strain for plebs"));
@@ -102,12 +131,26 @@ namespace BunnyMod.Content
 			FloralerFlora.Conflicting.AddRange(new string[] { });
 			FloralerFlora.IsActive = false;
 
-			CustomMutator LitteralyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
+			CustomMutator LakeItOrLeaveIt = RogueLibs.CreateCustomMutator(cChallenge.LakeItOrLeaveIt, true,
+				new CustomNameInfo("Features: Lake it or Leave it"),
+				new CustomNameInfo("Don't like large inland bodies of water? Too fuckin' bad, buddy!"));
+			LakeItOrLeaveIt.Available = true;
+			LakeItOrLeaveIt.Conflicting.AddRange(new string[] { });
+			LakeItOrLeaveIt.IsActive = false;
+
+			CustomMutator LitterallyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
 				new CustomNameInfo("Features: Litter-aly the Worst"),
-				new CustomNameInfo("Civic Pride must have went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
-			LitteralyTheWorst.Available = true;
-			LitteralyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
-			LitteralyTheWorst.IsActive = false;
+				new CustomNameInfo("Civic Pride went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
+			LitterallyTheWorst.Available = true;
+			LitterallyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
+			LitterallyTheWorst.IsActive = false;
+
+			CustomMutator PowerWhelming = RogueLibs.CreateCustomMutator(cChallenge.PowerWhelming, true,
+				new CustomNameInfo("Features: Power Whelming"),
+				new CustomNameInfo("You're not gonna be *over*whelmed, but you will see Power Boxes in every district. And that's something, I guess."));
+			PowerWhelming.Available = true;
+			PowerWhelming.Conflicting.AddRange(new string[] { });
+			PowerWhelming.IsActive = false;
 
 			CustomMutator SkywayDistrict = RogueLibs.CreateCustomMutator(cChallenge.SkywayDistrict, true,
 				new CustomNameInfo("Skyway District"),
@@ -115,6 +158,20 @@ namespace BunnyMod.Content
 			SkywayDistrict.Available = true;
 			SkywayDistrict.Conflicting.AddRange(new string[] { });
 			SkywayDistrict.IsActive = false;
+
+			CustomMutator SurveillanceSociety = RogueLibs.CreateCustomMutator(cChallenge.SurveillanceSociety, true,
+				new CustomNameInfo("Features: Surveillance Society"),
+				new CustomNameInfo("Those cameras? For your safety.\n\nOh, the turrets? For their safety.\n\nThe invasion of privacy and midnight raids? What's your name, citizen?\n\n- Spawns Security Cameras & Turrets in public, aligned with The Law"));
+			SurveillanceSociety.Available = true;
+			SurveillanceSociety.Conflicting.AddRange(new string[] { });
+			SurveillanceSociety.IsActive = false;
+
+			CustomMutator ThePollutionSolution = RogueLibs.CreateCustomMutator(cChallenge.ThePollutionSolution, true,
+				new CustomNameInfo("Features: The Pollution Solution"),
+				new CustomNameInfo("We've finally solved pollution! Make more, dump it everywhere, and then ignore it. Done.\n\n- Adds pollution features to levels\n- Lakes have 80% chance of being poisoned"));
+			ThePollutionSolution.Available = true;
+			ThePollutionSolution.Conflicting.AddRange(new string[] { });
+			ThePollutionSolution.IsActive = false;
 			#endregion
 			#region Knockback
 			CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
@@ -176,13 +233,24 @@ namespace BunnyMod.Content
 			AnCapistan.Conflicting.AddRange(cChallenge.Overhauls);
 			AnCapistan.Conflicting.AddRange(new string[] { vChallenge.MixedUpLevels, vChallenge.NoGuns, cChallenge.ArcologyEcology });
 			AnCapistan.IsActive = false;
+			AnCapistan.OnEnabled += () => 
+			{
+				BadNeighborhoods.IsActive = true;
+				CartOfTheDeal.IsActive = true;
+				LitterallyTheWorst.IsActive = true;
+				ThePollutionSolution.IsActive = true;
+				SurveillanceSociety.IsActive = false;
+			};
 
 			CustomMutator DiscoCityDanceoff = RogueLibs.CreateCustomMutator(cChallenge.DiscoCityDanceoff, true,
-				new CustomNameInfo("000: FloorTiles: Disco City Dance-off"),
+				new CustomNameInfo("000: Overhaul: Disco City Dance-off"),
 				new CustomNameInfo("Here's the skinny: this freaky deaky Mayor is just bad vibes, man. Time to make this city copacetic, can you dig it? Outta sight!"));
 			DiscoCityDanceoff.Available = false;
 			DiscoCityDanceoff.Conflicting.AddRange(cChallenge.Overhauls);
 			DiscoCityDanceoff.IsActive = false;
+			DiscoCityDanceoff.OnEnabled += () =>
+			{
+			};
 
 			CustomMutator MACITS = RogueLibs.CreateCustomMutator(cChallenge.MACITS, true,
 				new CustomNameInfo("000: Overhaul: Mostly Automated Comfortable Inclusive Terrestrial Socialism"),
@@ -193,6 +261,12 @@ namespace BunnyMod.Content
 			MACITS.Conflicting.AddRange(vChallenge.RemovesLawEnforcement);
 			MACITS.Conflicting.Add(vChallenge.MixedUpLevels);
 			MACITS.IsActive = false;
+			MACITS.OnEnabled += () =>
+			{
+				BadNeighborhoods.IsActive = false;
+				LitterallyTheWorst.IsActive = false;
+				ThePollutionSolution.IsActive = false;
+			};
 
 			CustomMutator PoliceState = RogueLibs.CreateCustomMutator(cChallenge.PoliceState, true,
 				new CustomNameInfo("000: Overhaul: Police State"),
@@ -205,6 +279,13 @@ namespace BunnyMod.Content
 			PoliceState.Conflicting.AddRange(vChallenge.Zombies);
 			PoliceState.Conflicting.Add(vChallenge.MixedUpLevels);
 			PoliceState.IsActive = false;
+			PoliceState.OnEnabled += () =>
+			{
+				BadNeighborhoods.IsActive = false;
+				LitterallyTheWorst.IsActive = false;
+				ThePollutionSolution.IsActive = false;
+				SurveillanceSociety.IsActive = true;
+			};
 			#endregion
 			#region Population
 			CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cChallenge.GhostTown, true,

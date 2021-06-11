@@ -782,7 +782,7 @@ namespace BunnyMod.Content
                     case vObject.Toilet:
                         while (GC.percentChance(chance))
 						{
-                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.Door, false);
+                            GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)), vObject.FlamingBarrel, false);
                                 chance -= 100;
 						}
 

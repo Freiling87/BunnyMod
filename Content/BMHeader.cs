@@ -207,15 +207,18 @@ namespace BunnyMod.Content
             BadNeighborhoods = "BadNeighborhoods",
             BoringPhysics = "BoringPhysics",
             BroughtBackFountain = "BroughtBackFountain",
+            CartOfTheDeal = "CartOfTheDeal",
             CityOfSteel = "CityOfSteel",
             Claustropolis = "Claustropolis",
             DiscoCityDanceoff = "DiscoCityDanceoff",
             DoublePlyRewards = "DoublePlyRewards",
+            FastFires = "FastFires",
             FloralerFlora = "FloralerFlora",
             GhostTown = "GhostTown",
             GreenLiving = "GreenLiving",
             HomesickAndTired = "HomesickandTired",
             HoodlumsWonderland = "HoodlumsWonderland",
+            LakeItOrLeaveIt = "LakeItOrLeaveIt",
             LetMeSeeThatThrong = "LetMeSeeThatThrong",
             LitterallyTheWorst = "LitterallyTheWorst",
             MACITS = "MACITS",
@@ -224,6 +227,7 @@ namespace BunnyMod.Content
             Null = "",
             Panoptikopolis = "Panoptikopolis",
             PoliceState = "PoliceState",
+            PowerWhelming = "PowerWhelming",
             ScaryGuns = "ScaryGuns",
             ShantyTown = "ShantyTown",
             SingleMinded = "SingleMinded",
@@ -231,14 +235,18 @@ namespace BunnyMod.Content
             SpelunkyDory = "SpelunkyDory",
             SwarmWelcome = "SwarmWelcome",
             SunkenCity = "SunkenCity",
+            SurveillanceSociety = "SurveillanceSociety",
             RoaminOrgy = "RoaminOrgy",
             RushinRevolution = "RushinRevolution",
             SaveTheWalls = "SaveTheWalls",
             StatueUnlimitations = "StatueUnlimitation",
+            StubbornFires = "StubbornFires",
+            ThePollutionSolution = "ThePollutionSolution",
             TransitExperiment = "TransitExperiment",
             Ultrapolis = "Ultrapolis",
             UnpaidInternship = "UnpaidInternship",
             WallWallopWorld = "WallWallopWorld",
+            WeakFires = "WeakFires",
             Workhorse = "Workhorse",
             YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood";
 
@@ -251,6 +259,12 @@ namespace BunnyMod.Content
         public static List<string> AffectsBullets = new List<string>()
         {
             ScaryGuns,
+        };
+        public static List<string> AffectsFires = new List<string>()
+        {
+            FastFires,
+            StubbornFires,
+            WeakFires,
         };
         public static List<string> AffectsFloors = new List<string>()
         {

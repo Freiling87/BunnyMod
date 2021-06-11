@@ -136,7 +136,7 @@ namespace BunnyMod.Content
 			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);
 			SpelunkyDory.IsActive = false;
 			#endregion
-			#region Level Features
+			#region Map Features
 			CustomMutator BadNeighborhoods = RogueLibs.CreateCustomMutator(cChallenge.BadNeighborhoods, true,
 				new CustomNameInfo("Features: Bad Neighborhoods"),
 				new CustomNameInfo("This place sure went to shit, didn't it?\n\n- Small chance for any given window to start out broken"));

@@ -362,27 +362,27 @@ namespace BunnyMod.Content
             #region Luck
             CustomTrait Charmed = RogueLibs.CreateCustomTrait(cTrait.Charmed, true,
                 new CustomNameInfo("Charmed & Dangerous", "", "", "", "", "везучий", "", ""),
-                new CustomNameInfo("You once found a fourteen-leaf clover.", "", "", "", "", "Как-то раз вы нашли 14 листьев клевера.", "", ""));
+                new CustomNameInfo("You once found a fourteen-leaf clover.\n\n- Stacks with Four-Leaf Clover", "", "", "", "", "Как-то раз вы нашли 14 листьев клевера.", "", ""));
             Charmed.Available = true;
             Charmed.AvailableInCharacterCreation = true;
             Charmed.CanRemove = false;
             Charmed.CanSwap = true;
             Charmed.Conflicting.AddRange(cTrait.Luck);
             Charmed.Conflicting.Remove(cTrait.Charmed);
-            Charmed.CostInCharacterCreation = 4;
+            Charmed.CostInCharacterCreation = 5;
             Charmed.IsActive = true;
             Charmed.Upgrade = cTrait.Charmed_2;
 
             CustomTrait Charmed_2 = RogueLibs.CreateCustomTrait(cTrait.Charmed_2, false,
                 new CustomNameInfo("Charmed & Dangerous +", "", "", "", "", "везучий +", "", ""),
-                new CustomNameInfo("You are *really* lucky. Anyone who's been at the toilet next to you can attest.", "", "", "", "", "Вам действительно повезло. Любой кто был у туалета рядом с вами это подтвердит.", "", ""));
+                new CustomNameInfo("You are *really* lucky. Anyone who's been at the toilet next to you can attest.\n\n- Stacks with Four-Leaf Clover", "", "", "", "", "Вам действительно повезло. Любой кто был у туалета рядом с вами это подтвердит.", "", ""));
             Charmed_2.Available = false;
             Charmed_2.AvailableInCharacterCreation = false;
             Charmed_2.CanRemove = false;
             Charmed_2.CanSwap = true;
             Charmed_2.Conflicting.AddRange(cTrait.Luck);
             Charmed_2.Conflicting.Remove(cTrait.Charmed_2);
-            Charmed_2.CostInCharacterCreation = 8;
+            Charmed_2.CostInCharacterCreation = 10;
             Charmed_2.Upgrade = null;
 
             CustomTrait Cursed = RogueLibs.CreateCustomTrait(cTrait.Cursed, true,
@@ -710,7 +710,7 @@ namespace BunnyMod.Content
             Priors.AvailableInCharacterCreation = true;
             Priors.CanRemove = true;
             Priors.CanSwap = true;
-            Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CopsDontCare, vTrait.CorruptionCosts, vTrait.FairGame, vTrait.Suspicious, vTrait.TheLaw, vTrait.Wanted });
+            Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.TheLaw });
             Priors.CostInCharacterCreation = -2;
             Priors.IsActive = true;
             Priors.Upgrade = null;

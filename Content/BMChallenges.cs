@@ -26,23 +26,57 @@ namespace BunnyMod.Content
 			CustomMutator FastFires = RogueLibs.CreateCustomMutator(cChallenge.FastFires, true,
 				new CustomNameInfo("000: Fast Fires"),
 				new CustomNameInfo("Fires spread faster."));
-			FastFires.Available = true;
+			FastFires.Available = false;
 			FastFires.Conflicting.AddRange(new string[] { });
 			FastFires.IsActive = false;
 
 			CustomMutator StubbornFires = RogueLibs.CreateCustomMutator(cChallenge.StubbornFires, true,
 				new CustomNameInfo("000: Stubborn Fires"),
 				new CustomNameInfo("Fires last longer and spread further."));
-			StubbornFires.Available = true;
+			StubbornFires.Available = false;
 			StubbornFires.Conflicting.AddRange(new string[] { });
 			StubbornFires.IsActive = false;
 
 			CustomMutator WeakFires = RogueLibs.CreateCustomMutator(cChallenge.WeakFires, true,
 				new CustomNameInfo("000: Weak Fires"),
 				new CustomNameInfo("Fires burn out shorter, and don't spread as much."));
-			WeakFires.Available = true;
+			WeakFires.Available = false;
 			WeakFires.Conflicting.AddRange(new string[] { });
 			WeakFires.IsActive = false;
+
+			CustomMutator Fire_Hide = RogueLibs.CreateCustomMutator(cChallenge.Fire_Hide, true,
+				new CustomNameInfo("[BunnyMod] Fire Mods [-]"),
+				new CustomNameInfo(""));
+			CustomMutator Fire_Show = RogueLibs.CreateCustomMutator(cChallenge.Fire_Show, true,
+				new CustomNameInfo("[BunnyMod] Fire Mods [+]"),
+				new CustomNameInfo(""));
+
+			CustomMutator[] fireMutators = new CustomMutator[] { FastFires, StubbornFires, WeakFires };
+			Fire_Hide.Available = false;
+			Fire_Hide.ScrollingMenu_PushedButton = (menu, button) =>
+			{
+				Fire_Hide.Available = false;
+				Fire_Show.Available = true;
+
+				foreach (CustomMutator m in fireMutators)
+					m.Available = true;
+
+				GC.mainGUI.scrollingMenuScript.OpenScrollingMenu();
+
+				return false;
+			};
+			Fire_Show.ScrollingMenu_PushedButton = (menu, button) =>
+			{
+				Fire_Hide.Available = true;
+				Fire_Show.Available = false;
+
+				foreach (CustomMutator m in fireMutators)
+					m.Available = true;
+
+				GC.mainGUI.scrollingMenuScript.OpenScrollingMenu();
+
+				return false;
+			};
 			#endregion
 			#region Floor Exteriors & Features
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,

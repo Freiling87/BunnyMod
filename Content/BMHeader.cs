@@ -199,6 +199,8 @@ namespace BunnyMod.Content
     public static class cChallenge // Custom Mutators
     {
         public const string
+            Fire_Hide = "Fire_Hide",
+            Fire_Show = "Fire_Show",
             ABenchInTheWorks = "ABenchInTheWorks",
             ACityForAnts = "ACityForAnts", 
             AnCapistan = "AnCapistan", 

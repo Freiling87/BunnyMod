@@ -80,57 +80,57 @@ namespace BunnyMod.Content
 			#endregion
 			#region Floor Exteriors & Features
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
-				new CustomNameInfo("000: FloorTiles: Arcology Ecology"),
+				new CustomNameInfo("Exteriors: Arcology Ecology"),
 				new CustomNameInfo("Sustainable Eco-homes! Trees! Less pollution! What's not to love?\n\n(Answer: It's still miserable.)"));
 			ArcologyEcology.Available = true;
 			ArcologyEcology.Conflicting.AddRange(cChallenge.AffectsFloors);
 			ArcologyEcology.IsActive = false;
 
 			CustomMutator SunkenCity = RogueLibs.CreateCustomMutator(cChallenge.SunkenCity, true,
-				new CustomNameInfo("000: FloorTiles: Sunken City"),
+				new CustomNameInfo("000: Exteriors: Sunken City"),
 				new CustomNameInfo("More like \"Stinkin' Shitty!\" No, but seriously, that's all sewage."));
-			SunkenCity.Available = true;
+			SunkenCity.Available = false;
 			SunkenCity.Conflicting.AddRange(cChallenge.AffectsFloors);
 			SunkenCity.IsActive = false;
 
 			CustomMutator TransitExperiment = RogueLibs.CreateCustomMutator(cChallenge.TransitExperiment, true,
-				new CustomNameInfo("000: FloorTiles: Transit Experiment"),
+				new CustomNameInfo("000: Exteriors: Transit Experiment"),
 				new CustomNameInfo("The City's authorities considered making all the public streets into conveyor belts, but that was too hard to mod into the game... er, I mean construct. Yeah."));
-			TransitExperiment.Available = true;
+			TransitExperiment.Available = false;
 			TransitExperiment.Conflicting.AddRange(cChallenge.AffectsFloors);
 			TransitExperiment.IsActive = false;
 			#endregion
 			#region Floor Interiors & Walls
 			CustomMutator CityOfSteel = RogueLibs.CreateCustomMutator(cChallenge.CityOfSteel, true,
-				new CustomNameInfo("Construction: City Of Steel"),
+				new CustomNameInfo("Interiors: City Of Steel"),
 				new CustomNameInfo("A gleaming city of steel! The world of the future, today. Mankind's dream in... Wow, it *really* smells like steel cleaner. Like, it fucking stinks. This is pungent."));
 			CityOfSteel.Available = true;
 			CityOfSteel.Conflicting.AddRange(cChallenge.Walls);
 			CityOfSteel.IsActive = false;
 
 			CustomMutator GreenLiving = RogueLibs.CreateCustomMutator(cChallenge.GreenLiving, true,
-				new CustomNameInfo("Construction: Green Living"),
+				new CustomNameInfo("Interiors: Green Living"),
 				new CustomNameInfo("The Mayor has retrofitted most buildings to eco-friendly plant-based construction. Caterpillars crawl on your face while you sleep, but the air is mighty fresh!"));
 			GreenLiving.Available = true;
 			GreenLiving.Conflicting.AddRange(cChallenge.Walls);
 			GreenLiving.IsActive = false;
 
 			CustomMutator Panoptikopolis = RogueLibs.CreateCustomMutator(cChallenge.Panoptikopolis, true,
-				new CustomNameInfo("Construction: Panoptikopolis"),
+				new CustomNameInfo("Interiors: Panoptikopolis"),
 				new CustomNameInfo("Locals just call it The Pan for short. Authoritarian surveillance measures mandate that most buildings have to be built with glass walls. If you have nothing to hide, what are you worried about, citizen?"));
 			Panoptikopolis.Available = true;
 			Panoptikopolis.Conflicting.AddRange(cChallenge.Walls);
 			Panoptikopolis.IsActive = false;
 
 			CustomMutator ShantyTown = RogueLibs.CreateCustomMutator(cChallenge.ShantyTown, true,
-				new CustomNameInfo("Construction: Shanty Town"),
+				new CustomNameInfo("Interiors: Shanty Town"),
 				new CustomNameInfo("Looks like we're short on Steel.\n\nHard mode for Firefighters, easy mode for arsonists. Fun mode for psychopaths."));
 			ShantyTown.Available = true;
 			ShantyTown.Conflicting.AddRange(cChallenge.Walls);
 			ShantyTown.IsActive = false;
 
 			CustomMutator SpelunkyDory = RogueLibs.CreateCustomMutator(cChallenge.SpelunkyDory, true,
-				new CustomNameInfo("Construction: Spelunky Dory"),
+				new CustomNameInfo("Interiors: Spelunky Dory"),
 				new CustomNameInfo("You and your fellow citizens live in a disgusting cave complex, but you keep a stiff upper lip about it!"));
 			SpelunkyDory.Available = true;
 			SpelunkyDory.Conflicting.AddRange(cChallenge.Walls);

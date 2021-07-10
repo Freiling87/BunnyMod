@@ -199,11 +199,21 @@ namespace BunnyMod.Content
     public static class cChallenge // Custom Mutators
     {
         public const string
+            Buildings_Hide = "Buildings_Hide",
+            Buildings_Show = "Buildings_Show",
+                CityOfSteel = "CityOfSteel",
+                GreenLiving = "GreenLiving",
+                Panoptikopolis = "Panoptikopolis",
+                ShantyTown = "ShantyTown",
+                SpelunkyDory = "SpelunkyDory",
+            Exteriors_Hide = "FloorExteriors_Hide",
+            Exteriors_Show = "FloorExteriors_Show",
+                ArcologyEcology = "ArcologyEcology",
             Fire_Hide = "Fire_Hide",
             Fire_Show = "Fire_Show",
-                FastFires = "FastFires",
-                WeakFires = "WeakFires",
-                StubbornFires = "StubbornFires",
+                GasolineHumidity = "FastFires",
+                Mildfire = "WeakFires",
+                NapalmSprings = "StubbornFires",
             Features_Hide = "Features_Hide",
             Features_Show = "Features_Show",
                 BadNeighborhoods = "BadNeighborhoods",
@@ -216,18 +226,6 @@ namespace BunnyMod.Content
                 SkywayDistrict = "SkywayDistrict",
                 SurveillanceSociety = "SurveillanceSociety",
                 ThePollutionSolution = "ThePollutionSolution",
-            FloorExteriors_Hide = "FloorExteriors_Hide",
-            FloorExteriors_Show = "FloorExteriors_Show",
-                ArcologyEcology = "ArcologyEcology",
-                SunkenCity = "SunkenCity",
-                TransitExperiment = "TransitExperiment",
-            FloorInteriorsAndWalls_Hide = "FloorInteriorsAndWalls_Hide",
-            FloorInteriorsAndWalls_Show = "FloorInteriorsAndWalls_Show",
-                CityOfSteel = "CityOfSteel",
-                GreenLiving = "GreenLiving",
-                Panoptikopolis = "Panoptikopolis",
-                ShantyTown = "ShantyTown",
-                SpelunkyDory = "SpelunkyDory",
             Gameplay_Hide = "Gameplay_Hide",
             Gameplay_Show = "Gameplay_Show",
                 ScaryGuns = "ScaryGuns",
@@ -284,16 +282,14 @@ namespace BunnyMod.Content
         };
         public static List<string> AffectsFires = new List<string>()
         {
-            FastFires,
-            StubbornFires,
-            WeakFires,
+            GasolineHumidity,
+            NapalmSprings,
+            Mildfire,
         };
         public static List<string> AffectsFloors = new List<string>()
         {
             ArcologyEcology,
             DiscoCityDanceoff,
-            SunkenCity,
-            TransitExperiment,
         };
         public static List<string> AffectsLights = new List<string>()
         {

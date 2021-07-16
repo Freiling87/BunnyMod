@@ -24,7 +24,7 @@ namespace BunnyMod.Content
         public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
         public static MethodInfo ObjectReal_PressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
         public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
-        public static MethodInfo ObjectReal_StopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
+        public static MethodInfo PlayfieldObject_StopInteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), nameof(PlayfieldObject.StopInteraction), new Type[0] { });
         public static MethodInfo PlayfieldObject_FinishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
         public static MethodInfo PlayfieldObject_Interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
         public static MethodInfo PlayfieldObject_PressedButton_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
@@ -1819,7 +1819,7 @@ namespace BunnyMod.Content
 			{
                 BMHeaderTools.SayDialogue(__instance, cDialogue.CantAffordElevator, vNameType.Dialogue);
 
-                ObjectReal_StopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
+                PlayfieldObject_StopInteraction_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
                 return;
             }
@@ -3543,7 +3543,7 @@ namespace BunnyMod.Content
             Type t = typeof(Turret);
             Type g = GetType();
 
-            Postfix(t, "IsOpponent", g, "Turret_IsOpponent", new Type[2] { typeof(Agent), typeof(bool) });
+            Postfix(t, nameof(Turret.isOpponent), g, "Turret_IsOpponent", new Type[2] { typeof(Agent), typeof(bool) });
         }
         public static void Turret_IsOpponent(Agent myAgent, bool brainMustBeActive, Turret __instance, ref bool __result) // Postfix
         {

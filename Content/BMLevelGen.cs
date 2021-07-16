@@ -315,7 +315,7 @@ namespace BunnyMod.Content
 			Prefix(t, "FillFloors", g, "LoadLevel_FillFloors_Prefix", new Type[0] { });
 			Prefix(t, "FillMapChunks", g, "LoadLevel_FillMapChunks_Prefix", new Type[0] { });
 			Prefix(t, "loadStuff2", g, "LoadLevel_loadStuff2_Prefix", new Type[0] { });
-			Prefix(t, "LoadBasicLEvel", g, "LoadLevel_SetupBasicLevel", new Type[0] { });
+			Prefix(t, nameof(LoadLevel.SetupBasicLevel), g, "LoadLevel_SetupBasicLevel", new Type[0] { });
 			Prefix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(t, "SetupMore5_2", g, "LoadLevel_SetupMore5_2", new Type[0] { });

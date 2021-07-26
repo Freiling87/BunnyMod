@@ -13,8 +13,13 @@ namespace BunnyMod.Content
 	public class BMMiscellaneous
 	{
 		public static GameController GC => GameController.gameController;
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		public void Awake()
@@ -26,6 +31,7 @@ namespace BunnyMod.Content
 		}
 
 		#region Fire
+
 		public void Fire_00()
 		{
 			Type t = typeof(Fire);
@@ -33,6 +39,7 @@ namespace BunnyMod.Content
 
 			Prefix(t, "UpdateFire", g, "Fire_UpdateFire", new Type[0] { });
 		}
+
 		public static bool Fire_UpdateFire(Fire __instance) // Replacement
 		{
 			float lifetime = 10f;
@@ -53,7 +60,7 @@ namespace BunnyMod.Content
 					spreadTime = 3f;
 					generationCap = 2;
 				}
-				
+
 				if (GC.challenges.Contains(cChallenge.GasolineHumidity))
 					spreadTime = lifetime - 2f;
 			}
@@ -79,45 +86,43 @@ namespace BunnyMod.Content
 
 				if (__instance.timeLeft <= 0f)
 					goto IL_460;
-				
+
 				if (__instance.burningObjectAgent && __instance.hasObjectAgent)
 				{
 					try
 					{
 						__instance.objectAgent.tr.position = __instance.tr.position;
 					}
-					catch
-					{
-					}
+					catch { }
 				}
 
 				__instance.timeLeft -= Time.deltaTime;
 				__instance.timeToOilSpread -= Time.deltaTime;
-				
+
 				if (__instance.timeLeft <= spreadTime && !__instance.fireHasSpread && __instance.canSpread)
 				{
 					try
 					{
 						if (__instance.generation < generationCap && GC.serverPlayer)
 							__instance.StartCoroutine(__instance.FireSpread());
-						
+
 						__instance.fireHasSpread = true;
 					}
 					catch
 					{
-						Debug.LogError(string.Concat(new object[] { "Fire Spread Error 1: ", __instance, " - ", __instance.UID }));					
+						Debug.LogError(string.Concat(new object[] { "Fire Spread Error 1: ", __instance, " - ", __instance.UID }));
 					}
 				}
 
 				if (__instance.timeLeft <= spreadTime && __instance.neverGoOut)
 					__instance.timeLeft = lifetime;
-				
+
 				if (__instance.timeLeft <= spreadTime && __instance.oilFireTime > 0)
 				{
 					__instance.oilFireTime--;
 					__instance.timeLeft = lifetime;
 				}
-				
+
 				if (__instance.timeLeft <= 0f && !__instance.destroying)
 				{
 					try
@@ -135,17 +140,17 @@ namespace BunnyMod.Content
 							__instance.particles.GetComponent<ParticleSystem>().Stop();
 							__instance.particles.transform.SetParent(GC.particleEffectsNest.transform);
 						}
-						
+
 						GC.firesList.Remove(__instance);
 						Object.Destroy(__instance.gameObject);
-						
+
 						return false;
 					}
 				}
 
 				if (__instance.timeToOilSpread > 0f || __instance.hasSpreadOil)
 					goto IL_460;
-				
+
 				try
 				{
 					__instance.timeToOilSpread = __instance.timeToOilSpreadBase;
@@ -163,7 +168,7 @@ namespace BunnyMod.Content
 						__instance.particles.GetComponent<ParticleSystem>().Stop();
 						__instance.particles.transform.SetParent(GC.particleEffectsNest.transform);
 					}
-					
+
 					GC.firesList.Remove(__instance);
 					Object.Destroy(__instance.gameObject);
 
@@ -177,7 +182,7 @@ namespace BunnyMod.Content
 				{
 					__instance.clientDestroyed = true;
 					__instance.DestroyMe();
-			
+
 					goto IL_460;
 				}
 				catch
@@ -193,7 +198,8 @@ namespace BunnyMod.Content
 				try
 				{
 					if (__instance.burningObjectAgent || __instance.burningObjectItem)
-						__instance.tr.position = new Vector3(__instance.burningObject.transform.position.x, __instance.burningObject.transform.position.y - 0.1f, __instance.burningObject.transform.position.z);
+						__instance.tr.position = new Vector3(__instance.burningObject.transform.position.x,
+							__instance.burningObject.transform.position.y - 0.1f, __instance.burningObject.transform.position.z);
 					else
 						__instance.tr.position = __instance.burningObject.transform.position;
 				}
@@ -203,18 +209,22 @@ namespace BunnyMod.Content
 				}
 			}
 
-		IL_460:
+			IL_460:
 			if (__instance.tr.eulerAngles != Vector3.zero)
 				__instance.tr.eulerAngles = Vector3.zero;
 
 			return false;
 		}
+
 		#endregion
+
 		#region InvInterface
+
 		public void InvInterface_00()
 		{
 			//Prefix(typeof(InvInterface), "RealAwake", GetType(), "InvInterface_RealAwake", new Type[0] { });
 		}
+
 		public static bool InvInterface_RealAwake(InvInterface __instance, ref bool ___isRealAwake, ref int ___slotXPos, ref int ___slotYPos) // Replacement
 		{
 			___isRealAwake = true;
@@ -306,7 +316,7 @@ namespace BunnyMod.Content
 
 			if (__instance.mainGUI.agent.controllerType != "Keyboard")
 				__instance.tooltipCanvas.enabled = true;
-			
+
 			__instance.instructionText = __instance.mainGUI.invContent.transform.Find("InstructionText").transform;
 			__instance.instructionText1 = __instance.instructionText.Find("InstructionText1").GetComponent<Text>();
 			__instance.instructionText2 = __instance.instructionText.Find("InstructionText2").GetComponent<Text>();
@@ -379,10 +389,14 @@ namespace BunnyMod.Content
 
 			if (__instance.mainGUI.agent.controllerTypeSpecific == "Keyboard" && (GC.coopMode || GC.fourPlayerMode || GC.multiplayerMode))
 			{
-				__instance.tooltipText1[0].rectTransform.sizeDelta = new Vector2(__instance.tooltipText1[0].rectTransform.sizeDelta.x, __instance.tooltipText1[0].rectTransform.sizeDelta.y - 20f);
-				__instance.tooltipText1[1].rectTransform.sizeDelta = new Vector2(__instance.tooltipText1[1].rectTransform.sizeDelta.x, __instance.tooltipText1[1].rectTransform.sizeDelta.y - 20f);
-				__instance.tooltipText1[0].rectTransform.anchoredPosition = new Vector2(__instance.tooltipText1[0].rectTransform.anchoredPosition.x, __instance.tooltipText1[0].rectTransform.anchoredPosition.y + 10f);
-				__instance.tooltipText1[1].rectTransform.anchoredPosition = new Vector2(__instance.tooltipText1[1].rectTransform.anchoredPosition.x, __instance.tooltipText1[1].rectTransform.anchoredPosition.y + 10f);
+				__instance.tooltipText1[0].rectTransform.sizeDelta = new Vector2(__instance.tooltipText1[0].rectTransform.sizeDelta.x,
+					__instance.tooltipText1[0].rectTransform.sizeDelta.y - 20f);
+				__instance.tooltipText1[1].rectTransform.sizeDelta = new Vector2(__instance.tooltipText1[1].rectTransform.sizeDelta.x,
+					__instance.tooltipText1[1].rectTransform.sizeDelta.y - 20f);
+				__instance.tooltipText1[0].rectTransform.anchoredPosition = new Vector2(__instance.tooltipText1[0].rectTransform.anchoredPosition.x,
+					__instance.tooltipText1[0].rectTransform.anchoredPosition.y + 10f);
+				__instance.tooltipText1[1].rectTransform.anchoredPosition = new Vector2(__instance.tooltipText1[1].rectTransform.anchoredPosition.x,
+					__instance.tooltipText1[1].rectTransform.anchoredPosition.y + 10f);
 				__instance.tooltipText2[0].rectTransform.anchoredPosition = new Vector2(-115f, -108f);
 				__instance.tooltipText3[0].rectTransform.anchoredPosition = new Vector2(-115f, -138f);
 				__instance.tooltipText4[0].rectTransform.anchoredPosition = new Vector2(-115f, -168f);
@@ -407,13 +421,17 @@ namespace BunnyMod.Content
 				for (int i = 0; i < 2; i++)
 				{
 					__instance.tooltipText2[i].alignment = 0;
-					__instance.tooltipText2[i].transform.localPosition = new Vector3(__instance.tooltipText2[i].transform.localPosition.x + 30f, __instance.tooltipText2[i].transform.localPosition.y, __instance.tooltipText2[i].transform.localPosition.z);
+					__instance.tooltipText2[i].transform.localPosition = new Vector3(__instance.tooltipText2[i].transform.localPosition.x + 30f,
+						__instance.tooltipText2[i].transform.localPosition.y, __instance.tooltipText2[i].transform.localPosition.z);
 					__instance.tooltipText3[i].alignment = 0;
-					__instance.tooltipText3[i].transform.localPosition = new Vector3(__instance.tooltipText3[i].transform.localPosition.x + 30f, __instance.tooltipText3[i].transform.localPosition.y, __instance.tooltipText3[i].transform.localPosition.z);
+					__instance.tooltipText3[i].transform.localPosition = new Vector3(__instance.tooltipText3[i].transform.localPosition.x + 30f,
+						__instance.tooltipText3[i].transform.localPosition.y, __instance.tooltipText3[i].transform.localPosition.z);
 					__instance.tooltipText4[i].alignment = 0;
-					__instance.tooltipText4[i].transform.localPosition = new Vector3(__instance.tooltipText4[i].transform.localPosition.x + 30f, __instance.tooltipText4[i].transform.localPosition.y, __instance.tooltipText4[i].transform.localPosition.z);
+					__instance.tooltipText4[i].transform.localPosition = new Vector3(__instance.tooltipText4[i].transform.localPosition.x + 30f,
+						__instance.tooltipText4[i].transform.localPosition.y, __instance.tooltipText4[i].transform.localPosition.z);
 					__instance.tooltipText5[i].alignment = 0;
-					__instance.tooltipText5[i].transform.localPosition = new Vector3(__instance.tooltipText5[i].transform.localPosition.x + 30f, __instance.tooltipText5[i].transform.localPosition.y, __instance.tooltipText5[i].transform.localPosition.z);
+					__instance.tooltipText5[i].transform.localPosition = new Vector3(__instance.tooltipText5[i].transform.localPosition.x + 30f,
+						__instance.tooltipText5[i].transform.localPosition.y, __instance.tooltipText5[i].transform.localPosition.z);
 				}
 			}
 			else
@@ -466,8 +484,10 @@ namespace BunnyMod.Content
 			{
 				for (int k = 0; k < 2; k++)
 				{
-					__instance.tooltipText2[k].transform.localPosition = new Vector2(__instance.tooltipText2[k].transform.localPosition.x, __instance.tooltipText2[k].transform.localPosition.y - 30f);
-					__instance.tooltipButtonImage[k].transform.localPosition = new Vector2(__instance.tooltipButtonImage[k].transform.localPosition.x, __instance.tooltipButtonImage[k].transform.localPosition.y - 30f);
+					__instance.tooltipText2[k].transform.localPosition = new Vector2(__instance.tooltipText2[k].transform.localPosition.x,
+						__instance.tooltipText2[k].transform.localPosition.y - 30f);
+					__instance.tooltipButtonImage[k].transform.localPosition = new Vector2(__instance.tooltipButtonImage[k].transform.localPosition.x,
+						__instance.tooltipButtonImage[k].transform.localPosition.y - 30f);
 				}
 			}
 
@@ -514,19 +534,19 @@ namespace BunnyMod.Content
 					gameObject.GetComponent<InvSlot>().slotType = "Player";
 					gameObject.GetComponent<InvSlot>().slotTypePlayer = true;
 					gameObject.transform.Find("ToolbarSlotNum").gameObject.SetActive(false);
-					
+
 					if (num > 19 && (!(__instance.mainGUI.agent.controllerTypeSpecific != "Keyboard") || num - 19 != 5))
 					{
 						if (!GC.fourPlayerMode || !__instance.mainGUI.fourPlayerNoToolbar)
 							gameObject.transform.Find("ToolbarSlotNum").GetComponent<Text>().text = string.Concat(num - 19);
-						
+
 						GameObject gameObject2 = gameObject.transform.Find("ToolbarArrowImage").gameObject;
 
 						if (!GC.fourPlayerMode || !__instance.mainGUI.fourPlayerNoToolbar)
 							gameObject2.SetActive(true);
 						else
 							gameObject2.SetActive(false);
-						
+
 						if (num == 20)
 							gameObject2.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
 						else if (num == 21)
@@ -537,9 +557,9 @@ namespace BunnyMod.Content
 
 					__instance.Slots.Add(gameObject.GetComponent<InvSlot>());
 					__instance.mainGUI.AllSlots.Add(gameObject.GetComponent<InvSlot>());
-					gameObject.name = string.Concat(new object[] { "InvSlot (",	m + 1, ".",	n + 1, ")" });
+					gameObject.name = string.Concat(new object[] { "InvSlot (", m + 1, ".", n + 1, ")" });
 					gameObject.transform.SetParent(__instance.transform.GetChild(0).transform.GetChild(0).transform);
-					gameObject.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
+					gameObject.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
 					___slotXPos += 80;
 
 					if (n == __instance.numSlotRows - 1)
@@ -580,12 +600,12 @@ namespace BunnyMod.Content
 
 					if (!GC.fourPlayerMode || !__instance.mainGUI.fourPlayerNoToolbar)
 						gameObject3.transform.Find("ToolbarSlotNum").GetComponent<Text>().text = string.Concat(num - 19);
-					
+
 					__instance.Slots.Add(gameObject3.GetComponent<InvSlot>());
 					__instance.mainGUI.AllSlots.Add(gameObject3.GetComponent<InvSlot>());
 					gameObject3.name = "ToolbarSlot (" + num4 + ")";
 					gameObject3.transform.SetParent(__instance.mainGUI.transform.Find("Toolbar").transform);
-					gameObject3.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
+					gameObject3.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
 					___slotXPos += 80;
 					gameObject3.transform.localScale = new Vector3(1f, 1f, 1f);
 					gameObject3.GetComponent<InvSlot>().canvas = gameObject3.transform.parent.GetComponent<Canvas>();
@@ -598,9 +618,11 @@ namespace BunnyMod.Content
 			{
 				foreach (object obj in __instance.mainGUI.transform)
 				{
-					Transform transform = (Transform)obj;
-					
-					if (transform.gameObject.name == "InvButton" || transform.gameObject.name == "QuestButton" || transform.gameObject.name == "CharacterButton" || transform.gameObject.name == "Outline1" || transform.gameObject.name == "Outline2" || transform.gameObject.name == "Outline3")
+					Transform transform = (Transform) obj;
+
+					if (transform.gameObject.name == "InvButton" || transform.gameObject.name == "QuestButton" ||
+						transform.gameObject.name == "CharacterButton" || transform.gameObject.name == "Outline1" || transform.gameObject.name == "Outline2" ||
+						transform.gameObject.name == "Outline3")
 						transform.gameObject.SetActive(false);
 				}
 
@@ -622,14 +644,14 @@ namespace BunnyMod.Content
 						gameObject5.SetActive(true);
 					else
 						gameObject5.SetActive(false);
-					
+
 					if (num == 20)
 						gameObject5.transform.localRotation = Quaternion.Euler(0f, 0f, 180f);
 					else if (num == 21)
 						gameObject5.transform.localRotation = Quaternion.Euler(0f, 0f, 270f);
 					else if (num == 22)
 						gameObject5.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-					
+
 					__instance.Slots.Add(gameObject4.GetComponent<InvSlot>());
 					__instance.mainGUI.AllSlots.Add(gameObject4.GetComponent<InvSlot>());
 					gameObject4.name = "ToolbarSlot (" + num5 + ")";
@@ -650,16 +672,16 @@ namespace BunnyMod.Content
 					}
 
 					if (num5 == 0)
-						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float)(-90 + num6), 68f, 0f);
+						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float) (-90 + num6), 68f, 0f);
 					else if (num5 == 1)
-						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float)(-170 + num6), 28f, 0f);
+						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float) (-170 + num6), 28f, 0f);
 					else if (num5 == 2)
-						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float)(-10 + num6), 28f, 0f);
+						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float) (-10 + num6), 28f, 0f);
 					else if (num5 == 3)
-						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float)(-90 + num6), -12f, 0f);
+						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3((float) (-90 + num6), -12f, 0f);
 					else if (num5 == 4)
 						gameObject4.GetComponent<RectTransform>().localPosition = new Vector3(2000f, 68f, 0f);
-					
+
 					gameObject4.transform.localScale = new Vector3(1f, 1f, 1f);
 					gameObject4.GetComponent<InvSlot>().canvas = gameObject4.transform.parent.GetComponent<Canvas>();
 					num++;
@@ -676,7 +698,7 @@ namespace BunnyMod.Content
 			{
 				if (num7 == 0)
 					__instance.firstNPCChestSlot = num2;
-				
+
 				GameObject gameObject6 = Object.Instantiate<GameObject>(__instance.slots);
 				gameObject6.GetComponent<InvSlot>().slotNumber = num7;
 				gameObject6.GetComponent<InvSlot>().totalSlotNumber = num2;
@@ -686,7 +708,7 @@ namespace BunnyMod.Content
 				__instance.mainGUI.AllSlots.Add(gameObject6.GetComponent<InvSlot>());
 				gameObject6.name = "NPCSlot (" + num7 + ")";
 				gameObject6.transform.SetParent(__instance.worldSpaceGUI.npcChest.transform.GetChild(0).transform);
-				gameObject6.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
+				gameObject6.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
 				___slotXPos += 80;
 				gameObject6.transform.localScale = new Vector3(1f, 1f, 1f);
 				gameObject6.GetComponent<InvSlot>().canvas = gameObject6.transform.parent.transform.parent.GetComponent<Canvas>();
@@ -701,7 +723,7 @@ namespace BunnyMod.Content
 			{
 				if (num8 == 0)
 					__instance.firstChestSlot = num2;
-				
+
 				GameObject gameObject7 = Object.Instantiate<GameObject>(__instance.slots);
 				gameObject7.GetComponent<InvSlot>().slotNumber = num8;
 				gameObject7.GetComponent<InvSlot>().totalSlotNumber = num2;
@@ -712,7 +734,7 @@ namespace BunnyMod.Content
 				__instance.mainGUI.AllSlots.Add(gameObject7.GetComponent<InvSlot>());
 				gameObject7.name = "ChestSlot (" + num8 + ")";
 				gameObject7.transform.SetParent(__instance.worldSpaceGUI.chest.transform.GetChild(0).transform);
-				gameObject7.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
+				gameObject7.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
 				___slotXPos += 80;
 				gameObject7.transform.localScale = new Vector3(1f, 1f, 1f);
 				gameObject7.GetComponent<InvSlot>().canvas = gameObject7.transform.parent.transform.parent.GetComponent<Canvas>();
@@ -725,38 +747,38 @@ namespace BunnyMod.Content
 			num = 0;
 
 			for (int num9 = 0; num9 < __instance.numSlotCols; num9++)
-				for (int num10 = 0; num10 < __instance.numSlotRows; num10++)
+			for (int num10 = 0; num10 < __instance.numSlotRows; num10++)
+			{
+				if (num9 == 0 && num10 == 0)
+					__instance.firstUseOnSlot = num2;
+
+				GameObject gameObject8 = Object.Instantiate<GameObject>(__instance.slots);
+				gameObject8.GetComponent<InvSlot>().slotNumber = num;
+				gameObject8.GetComponent<InvSlot>().totalSlotNumber = num2;
+				gameObject8.GetComponent<InvSlot>().slotType = "UseOn";
+				gameObject8.GetComponent<InvSlot>().slotTypeUseOn = true;
+				gameObject8.transform.Find("ToolbarSlotNum").gameObject.SetActive(false);
+				__instance.Slots.Add(gameObject8.GetComponent<InvSlot>());
+				__instance.mainGUI.AllSlots.Add(gameObject8.GetComponent<InvSlot>());
+				gameObject8.name = string.Concat(new object[] { "UseOnSlot (", num9 + 1, ".", num10 + 1, ")" });
+				gameObject8.transform.SetParent(__instance.worldSpaceGUI.useOn.transform);
+				gameObject8.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
+				___slotXPos += 80;
+
+				if (num10 == __instance.numSlotRows - 1)
 				{
-					if (num9 == 0 && num10 == 0)
-						__instance.firstUseOnSlot = num2;
-					
-					GameObject gameObject8 = Object.Instantiate<GameObject>(__instance.slots);
-					gameObject8.GetComponent<InvSlot>().slotNumber = num;
-					gameObject8.GetComponent<InvSlot>().totalSlotNumber = num2;
-					gameObject8.GetComponent<InvSlot>().slotType = "UseOn";
-					gameObject8.GetComponent<InvSlot>().slotTypeUseOn = true;
-					gameObject8.transform.Find("ToolbarSlotNum").gameObject.SetActive(false);
-					__instance.Slots.Add(gameObject8.GetComponent<InvSlot>());
-					__instance.mainGUI.AllSlots.Add(gameObject8.GetComponent<InvSlot>());
-					gameObject8.name = string.Concat(new object[] { "UseOnSlot (", num9 + 1, ".", num10 + 1, ")" });
-					gameObject8.transform.SetParent(__instance.worldSpaceGUI.useOn.transform);
-					gameObject8.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
-					___slotXPos += 80;
+					___slotXPos = -128;
+					___slotYPos -= 80;
 
-					if (num10 == __instance.numSlotRows - 1)
-					{
-						___slotXPos = -128;
-						___slotYPos -= 80;
-
-						if (num9 == 3)
-							___slotYPos = 112;
-					}
-
-					gameObject8.transform.localScale = new Vector3(1f, 1f, 1f);
-					gameObject8.GetComponent<InvSlot>().canvas = gameObject8.transform.parent.transform.parent.GetComponent<Canvas>();
-					num++;
-					num2++;
+					if (num9 == 3)
+						___slotYPos = 112;
 				}
+
+				gameObject8.transform.localScale = new Vector3(1f, 1f, 1f);
+				gameObject8.GetComponent<InvSlot>().canvas = gameObject8.transform.parent.transform.parent.GetComponent<Canvas>();
+				num++;
+				num2++;
+			}
 
 			if (__instance.mainGUI.agent == GC.playerAgent)
 			{
@@ -768,60 +790,60 @@ namespace BunnyMod.Content
 				Sprite sprite = __instance.gr.gui[16];
 
 				for (int num11 = 0; num11 < 6; num11++)
-					for (int num12 = 0; num12 < 8; num12++)
+				for (int num12 = 0; num12 < 8; num12++)
+				{
+					if (num11 == 0 && num12 == 0)
+						__instance.firstCharacterSelectSlot = num2;
+
+					GameObject gameObject9 = Object.Instantiate<GameObject>(__instance.slots);
+					gameObject9.GetComponent<InvSlot>().slotNumber = num;
+					gameObject9.GetComponent<InvSlot>().totalSlotNumber = num2;
+					gameObject9.GetComponent<InvSlot>().slotType = "CharacterSelect";
+					gameObject9.GetComponent<InvSlot>().slotTypeCharacterSelect = true;
+					gameObject9.transform.Find("ToolbarSlotNum").gameObject.SetActive(false);
+					gameObject9.transform.Find("InvItemIcon").gameObject.SetActive(false);
+					gameObject9.transform.Find("InvItemCount").gameObject.SetActive(false);
+					__instance.Slots.Add(gameObject9.GetComponent<InvSlot>());
+					__instance.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
+
+					if (GC.coopMode || GC.fourPlayerMode)
 					{
-						if (num11 == 0 && num12 == 0)
-							__instance.firstCharacterSelectSlot = num2;
-						
-						GameObject gameObject9 = Object.Instantiate<GameObject>(__instance.slots);
-						gameObject9.GetComponent<InvSlot>().slotNumber = num;
-						gameObject9.GetComponent<InvSlot>().totalSlotNumber = num2;
-						gameObject9.GetComponent<InvSlot>().slotType = "CharacterSelect";
-						gameObject9.GetComponent<InvSlot>().slotTypeCharacterSelect = true;
-						gameObject9.transform.Find("ToolbarSlotNum").gameObject.SetActive(false);
-						gameObject9.transform.Find("InvItemIcon").gameObject.SetActive(false);
-						gameObject9.transform.Find("InvItemCount").gameObject.SetActive(false);
-						__instance.Slots.Add(gameObject9.GetComponent<InvSlot>());
-						__instance.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
-						
-						if (GC.coopMode || GC.fourPlayerMode)
+						GC.playerAgent2.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
+						GC.playerAgent2.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
+
+						if (GC.fourPlayerMode)
 						{
-							GC.playerAgent2.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
-							GC.playerAgent2.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
-						
-							if (GC.fourPlayerMode)
-							{
-								GC.playerAgent3.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
-								GC.playerAgent3.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
-								GC.playerAgent4.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
-								GC.playerAgent4.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
-							}
+							GC.playerAgent3.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
+							GC.playerAgent3.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
+							GC.playerAgent4.mainGUI.invInterface.Slots.Add(gameObject9.GetComponent<InvSlot>());
+							GC.playerAgent4.mainGUI.AllSlots.Add(gameObject9.GetComponent<InvSlot>());
 						}
-
-						gameObject9.name = string.Concat(new object[] { "CharacterSelectSlot (", num11 + 1, ".", num12 + 1, ")" });
-						gameObject9.transform.SetParent(__instance.mainGUI.characterSelect.transform.Find("CharacterBoxes").transform);
-						gameObject9.GetComponent<RectTransform>().localPosition = new Vector3((float)___slotXPos, (float)___slotYPos, 0f);
-						component.slotAgent[num] = Object.Instantiate<GameObject>(__instance.slotAgent);
-						component.slotAgent[num].transform.position = gameObject9.transform.position;
-						component.slotAgent[num].transform.SetParent(gameObject9.transform);
-						component.slotAgent[num].transform.localScale = new Vector3(1f, 1f, 1f);
-						gameObject9.GetComponent<InvSlot>().canvas = gameObject9.transform.parent.transform.parent.GetComponent<Canvas>();
-						___slotXPos += 80;
-
-						if (num12 == 7)
-						{
-							___slotXPos = -280;
-							___slotYPos -= 80;
-						}
-
-						gameObject9.transform.localScale = new Vector3(1f, 1f, 1f);
-
-						if (num >= 32)
-							gameObject9.GetComponent<InvSlot>().itemImage.sprite = sprite;
-						
-						num++;
-						num2++;
 					}
+
+					gameObject9.name = string.Concat(new object[] { "CharacterSelectSlot (", num11 + 1, ".", num12 + 1, ")" });
+					gameObject9.transform.SetParent(__instance.mainGUI.characterSelect.transform.Find("CharacterBoxes").transform);
+					gameObject9.GetComponent<RectTransform>().localPosition = new Vector3((float) ___slotXPos, (float) ___slotYPos, 0f);
+					component.slotAgent[num] = Object.Instantiate<GameObject>(__instance.slotAgent);
+					component.slotAgent[num].transform.position = gameObject9.transform.position;
+					component.slotAgent[num].transform.SetParent(gameObject9.transform);
+					component.slotAgent[num].transform.localScale = new Vector3(1f, 1f, 1f);
+					gameObject9.GetComponent<InvSlot>().canvas = gameObject9.transform.parent.transform.parent.GetComponent<Canvas>();
+					___slotXPos += 80;
+
+					if (num12 == 7)
+					{
+						___slotXPos = -280;
+						___slotYPos -= 80;
+					}
+
+					gameObject9.transform.localScale = new Vector3(1f, 1f, 1f);
+
+					if (num >= 32)
+						gameObject9.GetComponent<InvSlot>().itemImage.sprite = sprite;
+
+					num++;
+					num2++;
+				}
 			}
 
 			for (int num13 = 0; num13 < 4; num13++)
@@ -829,12 +851,16 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+
 		#endregion
+
 		#region RandomOther
+
 		public void RandomOther_00()
 		{
 			//Postfix(typeof(RandomOther), "fillOther", GetType(), "RandomOther_fillOther", new Type[0] { });
 		}
+
 		public static void RandomOther_fillOther(ref RandomSelection ___component, ref RandomList ___rList) // Postfix
 		{
 			BMLog("RandomOther_fillOther");
@@ -858,12 +884,16 @@ namespace BunnyMod.Content
 				___component.CreateRandomElement(___rList, "No", 5);
 			}
 		}
+
 		#endregion
+
 		#region RandomSelection
+
 		public void RandomSelection_00()
 		{
 			Prefix(typeof(RandomSelection), "RandomSelect", GetType(), "RandomSelection_RandomSelect", new Type[2] { typeof(string), typeof(string) });
 		}
+
 		public static bool RandomSelection_RandomSelect(string rName, string rCategory, ref string __result) // Prefix
 		{
 			if (rName.StartsWith("FireSpewerSpawnChance") && BMChallenges.IsChallengeFromListActive(cChallenge.WallsFlammable))
@@ -875,6 +905,7 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+
 		#endregion
 	}
 }

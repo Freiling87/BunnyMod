@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
 using BepInEx;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
-
 using Random = UnityEngine.Random;
 using UnityEngine.Networking;
 using System.Linq;
@@ -18,11 +16,17 @@ namespace BunnyMod.Content
 	public class BMInterface
 	{
 		public static GameController GC => GameController.gameController;
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		#region Main
+
 		public void Awake()
 		{
 			Agent_00();
@@ -32,9 +36,11 @@ namespace BunnyMod.Content
 			PlayerControl_00();
 			StatusEffects_00();
 		}
+
 		#endregion
 
 		#region Custom
+
 		public static float GetZoomLevel(Agent playerAgent)
 		{
 			if (playerAgent.statusEffects.hasTrait(cTrait.EagleEyes))
@@ -48,6 +54,7 @@ namespace BunnyMod.Content
 			else
 				return 1f;
 		}
+
 		public static float GetZoomLevel()
 		{
 			float result = 1.0f;
@@ -68,9 +75,11 @@ namespace BunnyMod.Content
 
 			return result;
 		}
+
 		#endregion
 
 		#region Agent
+
 		public void Agent_00()
 		{
 			Type t = typeof(Agent);
@@ -79,31 +88,34 @@ namespace BunnyMod.Content
 			Prefix(t, "AgentOnCamera", g, "Agent_AgentOnCamera", new Type[0] { });
 			Postfix(t, "Awake", g, "Agent_Awake", new Type[0] { });
 		}
+
 		public static bool Agent_AgentOnCamera(Agent __instance, ref bool __result) // Replacement
 		{
 			if (__instance.isPlayer != 0)
 			{
 				__instance.onCamera = true;
 
-				__result = true; 
+				__result = true;
 				return false;
 			}
 
 			if (GC.serverPlayer)
 			{
-				if ((!__instance.brain.active && !__instance.oma._dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer && GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel && !__instance.oma.mindControlled) || __instance.objectAgent)
+				if ((!__instance.brain.active && !__instance.oma._dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer &&
+					GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel && !__instance.oma.mindControlled) || __instance.objectAgent)
 				{
 					__instance.onCamera = false;
 
-					__result = false; 
+					__result = false;
 					return false;
 				}
 			}
-			else if ((!__instance.brain.active && !__instance.dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer && GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel) || __instance.objectAgent)
+			else if ((!__instance.brain.active && !__instance.dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer &&
+				GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel) || __instance.objectAgent)
 			{
 				__instance.onCamera = false;
 
-				__result = false; 
+				__result = false;
 				return false;
 			}
 
@@ -112,12 +124,12 @@ namespace BunnyMod.Content
 			float x = vector.x / GetZoomLevel();
 			float y = vector.y / GetZoomLevel();
 
-			if (x > -0.1f && x < 1.1f && 
+			if (x > -0.1f && x < 1.1f &&
 				y > -0.1f && y < 1.1f)
 			{
 				__instance.onCamera = true;
 
-				__result = true; 
+				__result = true;
 				return false;
 			}
 
@@ -127,12 +139,12 @@ namespace BunnyMod.Content
 				x = vector.x / GetZoomLevel();
 				y = vector.y / GetZoomLevel();
 
-				if (x > -0.1f && x < 1.1f && 
+				if (x > -0.1f && x < 1.1f &&
 					y > -0.1f && y < 1.1f)
 				{
 					__instance.onCamera = true;
 
-					__result = true; 
+					__result = true;
 					return false;
 				}
 
@@ -142,12 +154,12 @@ namespace BunnyMod.Content
 					x = vector.x / GetZoomLevel();
 					y = vector.y / GetZoomLevel();
 
-					if (x > -0.1f && x < 1.1f && 
+					if (x > -0.1f && x < 1.1f &&
 						y > -0.1f && y < 1.1f)
 					{
 						__instance.onCamera = true;
 
-						__result = true; 
+						__result = true;
 						return false;
 					}
 					if (!GC.sessionDataBig.threePlayer)
@@ -156,12 +168,12 @@ namespace BunnyMod.Content
 						x = vector.x / GetZoomLevel();
 						y = vector.y / GetZoomLevel();
 
-						if (x > -0.1f && x < 1.1f && 
+						if (x > -0.1f && x < 1.1f &&
 							y > -0.1f && y < 1.1f)
 						{
 							__instance.onCamera = true;
 
-							__result = true; 
+							__result = true;
 							return false;
 						}
 					}
@@ -170,15 +182,19 @@ namespace BunnyMod.Content
 
 			__instance.onCamera = false;
 
-			__result = false; 
+			__result = false;
 			return false;
 		}
+
 		public static void Agent_Awake(Agent __instance) // Postfix
 		{
 			__instance.wasOnCamera = false;
 		}
+
 		#endregion
+
 		#region InvInterface
+
 		public void InvInterface_00()
 		{
 			Type t = typeof(InvInterface);
@@ -186,7 +202,9 @@ namespace BunnyMod.Content
 
 			Prefix(t, "ShowCursorText", g, "InvInterface_ShowCursorText", new Type[4] { typeof(string), typeof(string), typeof(PlayfieldObject), typeof(int) });
 		}
-		public static bool InvInterface_ShowCursorText(string myText, string myText2, PlayfieldObject myPlayfieldObject, int specificColor, InvInterface __instance) // Replacement
+
+		public static bool InvInterface_ShowCursorText(string myText, string myText2, PlayfieldObject myPlayfieldObject, int specificColor,
+			InvInterface __instance) // Replacement
 		{
 			// "Guilty" cursor text and others
 
@@ -196,23 +214,23 @@ namespace BunnyMod.Content
 
 			if (GC.levelEnded || __instance.noCursorText)
 				return false;
-			
+
 			if (__instance.cursorTextAgent != null)
 			{
 				__instance.cursorTextAgent.showingCursorText = false;
 				__instance.cursorTextAgent = null;
 			}
-			
+
 			if (GC.coopMode || GC.fourPlayerMode)
 			{
 				if (GC.mainGUI2.openedQuestSheet && GC.mainGUI2.questSheetScript.openedByPlayer == GC.playerAgent2)
 					player2 = true;
-				
+
 				if (GC.fourPlayerMode)
 				{
 					if (GC.mainGUI3.openedQuestSheet && GC.mainGUI3.questSheetScript.openedByPlayer == GC.playerAgent3)
 						player3 = true;
-				
+
 					if (GC.mainGUI4.openedQuestSheet && GC.mainGUI4.questSheetScript.openedByPlayer == GC.playerAgent4)
 						player4 = true;
 				}
@@ -224,11 +242,12 @@ namespace BunnyMod.Content
 				__instance.cursorTextString.text = myText;
 
 				#region Colors & Health Bar
+
 				if (myPlayfieldObject != null)
 				{
 					if (myPlayfieldObject.playfieldObjectType == "Agent")
 					{
-						Agent agent = (Agent)myPlayfieldObject;
+						Agent agent = (Agent) myPlayfieldObject;
 						__instance.cursorTextAgent = agent;
 						__instance.cursorTextAgent.showingCursorText = true;
 
@@ -240,7 +259,9 @@ namespace BunnyMod.Content
 									agent.agentHealthBar.ChangeHealth(true, false);
 							}
 							catch
-							{	Debug.LogError("Error in AgentHealthBar ChangeHealth: " + agent);	}
+							{
+								Debug.LogError("Error in AgentHealthBar ChangeHealth: " + agent);
+							}
 						}
 
 						if (agent.ownerID > 0)
@@ -250,14 +271,14 @@ namespace BunnyMod.Content
 					}
 					else if (myPlayfieldObject.playfieldObjectType == "ObjectReal")
 					{
-						if (((ObjectReal)myPlayfieldObject).owner > 0)
+						if (((ObjectReal) myPlayfieldObject).owner > 0)
 							__instance.cursorTextString.color = new Color32(byte.MaxValue, 225, 0, byte.MaxValue);
 						else
 							__instance.cursorTextString.color = Color.white;
 					}
 					else if (myPlayfieldObject.playfieldObjectType == "Item")
 					{
-						Item item = (Item)myPlayfieldObject;
+						Item item = (Item) myPlayfieldObject;
 
 						if (item.owner != null)
 						{
@@ -341,7 +362,7 @@ namespace BunnyMod.Content
 						__instance.cursorTextString2.color = Color.white;
 						__instance.cursorTextString2.text = myText2;
 					}
-					
+
 					if (!myText2.Contains("Neutral"))
 						__instance.cursorTextCanvas2.enabled = true;
 					else
@@ -349,6 +370,7 @@ namespace BunnyMod.Content
 				}
 				else
 					__instance.cursorTextCanvas2.enabled = false;
+
 				#endregion
 
 				__instance.cursorTextCanvas4.enabled = false;
@@ -357,7 +379,7 @@ namespace BunnyMod.Content
 
 				if (myPlayfieldObject != null && myPlayfieldObject.playfieldObjectType == "Agent")
 				{
-					Agent agent2 = (Agent)myPlayfieldObject;
+					Agent agent2 = (Agent) myPlayfieldObject;
 
 					if (agent2.statusEffects.StatusEffectList.Count > 0 && (agent2.isPlayer == 0 || !agent2.localPlayer))
 					{
@@ -368,7 +390,7 @@ namespace BunnyMod.Content
 							__instance.cursorTextString4.text = "\n\n(";
 						else
 							__instance.cursorTextString4.text = "\n(";
-						
+
 						if (agent2.statusEffects.StatusEffectList.Count > 1)
 						{
 							Text text = __instance.cursorTextString4;
@@ -383,7 +405,9 @@ namespace BunnyMod.Content
 
 					bool flag5 = false;
 
-					if ((__instance.mainGUI.agent.enforcer || __instance.mainGUI.agent.bigQuest == "Cop" || __instance.mainGUI.agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself)) && !agent2.statusEffects.IsInnocent(__instance.mainGUI.agent) && !agent2.dead)
+					if ((__instance.mainGUI.agent.enforcer || __instance.mainGUI.agent.bigQuest == "Cop" ||
+							__instance.mainGUI.agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself)) &&
+						!agent2.statusEffects.IsInnocent(__instance.mainGUI.agent) && !agent2.dead)
 					{
 						flag5 = true;
 
@@ -396,7 +420,7 @@ namespace BunnyMod.Content
 								__instance.cursorTextString5.text = "\n\n\n(";
 							else
 								__instance.cursorTextString5.text = "\n\n(";
-							
+
 							Text text3 = __instance.cursorTextString5;
 							text3.text = text3.text + InvInterface.guiltyName + ")";
 						}
@@ -409,13 +433,14 @@ namespace BunnyMod.Content
 								__instance.cursorTextString4.text = "\n\n(";
 							else
 								__instance.cursorTextString4.text = "\n(";
-							
+
 							Text text4 = __instance.cursorTextString4;
 							text4.text = text4.text + InvInterface.guiltyName + ")";
 						}
 					}
 
-					if (__instance.mainGUI.agent.statusEffects.hasSpecialAbility("StealingGlove") && agent2.pickpocketedTimes > 0 && agent2.isPlayer == 0 && agent2.objectMultAgent.emptyInventoryPickpocket)
+					if (__instance.mainGUI.agent.statusEffects.hasSpecialAbility("StealingGlove") && agent2.pickpocketedTimes > 0 && agent2.isPlayer == 0 &&
+						agent2.objectMultAgent.emptyInventoryPickpocket)
 					{
 						if (flag5)
 						{
@@ -442,7 +467,7 @@ namespace BunnyMod.Content
 									__instance.cursorTextString5.text = "\n\n\n";
 								else
 									__instance.cursorTextString5.text = "\n\n";
-								
+
 								Text text7 = __instance.cursorTextString5;
 								text7.text += InvInterface.emptyName;
 							}
@@ -456,7 +481,7 @@ namespace BunnyMod.Content
 								__instance.cursorTextString5.text = "\n\n\n";
 							else
 								__instance.cursorTextString5.text = "\n\n";
-							
+
 							Text text8 = __instance.cursorTextString5;
 							text8.text += InvInterface.emptyName;
 						}
@@ -469,7 +494,7 @@ namespace BunnyMod.Content
 								__instance.cursorTextString4.text = "\n\n";
 							else
 								__instance.cursorTextString4.text = "\n";
-							
+
 							Text text9 = __instance.cursorTextString4;
 							text9.text += InvInterface.emptyName;
 						}
@@ -478,48 +503,48 @@ namespace BunnyMod.Content
 
 				if (specificColor != 0)
 					__instance.cursorTextString.color = new Color32(byte.MaxValue, 225, 0, byte.MaxValue);
-				
+
 				if (__instance.cursorTextString.text != "")
 					__instance.cursorTextBackgroundCanvas.enabled = true;
-				
+
 				LayoutRebuilder.ForceRebuildLayoutImmediate(__instance.cursorTextRect);
 				__instance.cursorTextBackgroundRect.localPosition = new Vector2(__instance.cursorTextRect.localPosition.x - 17f, 8f);
 				float width = __instance.cursorTextRect.rect.width;
 				float num = 54.5f;
-				
+
 				if (flag4)
 					num += 44f;
-				
+
 				if (__instance.cursorTextString.text.Contains("\n"))
 					num += 44f;
-				
+
 				if (__instance.cursorTextCanvas2.enabled)
 				{
 					LayoutRebuilder.ForceRebuildLayoutImmediate(__instance.cursorTextRect2);
-				
+
 					if (__instance.cursorTextRect2.rect.width > width)
 						width = __instance.cursorTextRect2.rect.width;
-					
+
 					num += 44f;
 				}
 
 				if (__instance.cursorTextCanvas4.enabled)
 				{
 					LayoutRebuilder.ForceRebuildLayoutImmediate(__instance.cursorTextRect4);
-				
+
 					if (__instance.cursorTextRect4.rect.width > width)
 						width = __instance.cursorTextRect4.rect.width;
-					
+
 					num += 44f;
 				}
 
 				if (__instance.cursorTextCanvas5.enabled)
 				{
 					LayoutRebuilder.ForceRebuildLayoutImmediate(__instance.cursorTextRect5);
-					
+
 					if (__instance.cursorTextRect5.rect.width > width)
 						width = __instance.cursorTextRect5.rect.width;
-					
+
 					num += 44f;
 				}
 
@@ -528,15 +553,21 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+
 		#endregion
+
 		#region Item
+
 		public void Item_00()
 		{
 			Type t = typeof(Item);
 			Type g = GetType();
 		}
+
 		#endregion
+
 		#region ObjectReal
+
 		public void ObjectReal_00()
 		{
 			Type t = typeof(ObjectReal);
@@ -544,6 +575,7 @@ namespace BunnyMod.Content
 
 			Prefix(t, "ObjectRealOnCamera", g, "ObjectReal_ObjectRealOnCamera", new Type[0]);
 		}
+
 		public static bool ObjectReal_ObjectRealOnCamera(ObjectReal __instance, ref bool __result) // Replacement
 		{
 			// Eagle Eye activation range
@@ -562,9 +594,9 @@ namespace BunnyMod.Content
 				float cameraHeight = 8f / GetZoomLevel();
 				Vector2 curPosition = GC.playerAgent.agentCamera.curPosition;
 
-				if (curPosition.x > __instance.curPosition.x - cameraWidth && 
-					curPosition.x < __instance.curPosition.x + cameraWidth && 
-					curPosition.y > __instance.curPosition.y - cameraHeight && 
+				if (curPosition.x > __instance.curPosition.x - cameraWidth &&
+					curPosition.x < __instance.curPosition.x + cameraWidth &&
+					curPosition.y > __instance.curPosition.y - cameraHeight &&
 					curPosition.y < __instance.curPosition.y + cameraHeight)
 				{
 					__instance.onCamera = true;
@@ -577,9 +609,9 @@ namespace BunnyMod.Content
 				{
 					curPosition = GC.playerAgent2.agentCamera.curPosition;
 
-					if (curPosition.x > __instance.curPosition.x - cameraWidth && 
-						curPosition.x < __instance.curPosition.x + cameraWidth && 
-						curPosition.y > __instance.curPosition.y - cameraHeight && 
+					if (curPosition.x > __instance.curPosition.x - cameraWidth &&
+						curPosition.x < __instance.curPosition.x + cameraWidth &&
+						curPosition.y > __instance.curPosition.y - cameraHeight &&
 						curPosition.y < __instance.curPosition.y + cameraHeight)
 					{
 						__instance.onCamera = true;
@@ -592,9 +624,9 @@ namespace BunnyMod.Content
 					{
 						curPosition = GC.playerAgent3.agentCamera.curPosition;
 
-						if (curPosition.x > __instance.curPosition.x - cameraWidth && 
-							curPosition.x < __instance.curPosition.x + cameraWidth && 
-							curPosition.y > __instance.curPosition.y - cameraHeight && 
+						if (curPosition.x > __instance.curPosition.x - cameraWidth &&
+							curPosition.x < __instance.curPosition.x + cameraWidth &&
+							curPosition.y > __instance.curPosition.y - cameraHeight &&
 							curPosition.y < __instance.curPosition.y + cameraHeight)
 						{
 							__instance.onCamera = true;
@@ -607,9 +639,9 @@ namespace BunnyMod.Content
 						{
 							curPosition = GC.playerAgent4.agentCamera.curPosition;
 
-							if (curPosition.x > __instance.curPosition.x - cameraWidth && 
-								curPosition.x < __instance.curPosition.x + cameraWidth && 
-								curPosition.y > __instance.curPosition.y - cameraHeight && 
+							if (curPosition.x > __instance.curPosition.x - cameraWidth &&
+								curPosition.x < __instance.curPosition.x + cameraWidth &&
+								curPosition.y > __instance.curPosition.y - cameraHeight &&
 								curPosition.y < __instance.curPosition.y + cameraHeight)
 							{
 								__instance.onCamera = true;
@@ -625,9 +657,9 @@ namespace BunnyMod.Content
 			{
 				Vector2 vector = GC.playerAgent.agentCamera.originalCamera.WorldToViewportPoint(__instance.curPosition);
 
-				if (vector.x > -0.1f && 
-					vector.x < 1.1f && 
-					vector.y > -0.1f && 
+				if (vector.x > -0.1f &&
+					vector.x < 1.1f &&
+					vector.y > -0.1f &&
 					vector.y < 1.1f)
 				{
 					__instance.onCamera = true;
@@ -639,9 +671,9 @@ namespace BunnyMod.Content
 				if (GC.coopMode || GC.fourPlayerMode)
 				{
 					vector = GC.playerAgent2.agentCamera.originalCamera.WorldToViewportPoint(__instance.curPosition);
-					if (vector.x > -0.1f && 
-						vector.x < 1.1f && 
-						vector.y > -0.1f && 
+					if (vector.x > -0.1f &&
+						vector.x < 1.1f &&
+						vector.y > -0.1f &&
 						vector.y < 1.1f)
 					{
 						__instance.onCamera = true;
@@ -653,9 +685,9 @@ namespace BunnyMod.Content
 					if (GC.fourPlayerMode)
 					{
 						vector = GC.playerAgent3.agentCamera.originalCamera.WorldToViewportPoint(__instance.curPosition);
-						if (vector.x > -0.1f && 
-							vector.x < 1.1f && 
-							vector.y > -0.1f && 
+						if (vector.x > -0.1f &&
+							vector.x < 1.1f &&
+							vector.y > -0.1f &&
 							vector.y < 1.1f)
 						{
 							__instance.onCamera = true;
@@ -667,9 +699,9 @@ namespace BunnyMod.Content
 						if (!GC.sessionDataBig.threePlayer)
 						{
 							vector = GC.playerAgent4.agentCamera.originalCamera.WorldToViewportPoint(__instance.curPosition);
-							if (vector.x > -0.1f && 
-								vector.x < 1.1f && 
-								vector.y > -0.1f && 
+							if (vector.x > -0.1f &&
+								vector.x < 1.1f &&
+								vector.y > -0.1f &&
 								vector.y < 1.1f)
 							{
 								__instance.onCamera = true;
@@ -687,19 +719,26 @@ namespace BunnyMod.Content
 			__result = false;
 			return false;
 		}
+
 		#endregion
+
 		#region PlayerControl
+
 		public void PlayerControl_00()
 		{
 			Postfix(typeof(PlayerControl), "Update", GetType(), "PlayerControl_Update", new Type[0] { });
 		}
+
 		public static void PlayerControl_Update(PlayerControl __instance) // Postfix
 		{
 			GC.cameraScript.zoomLevel = GetZoomLevel();
 			__instance.myCamera.zoomLevel = GetZoomLevel();
 		}
+
 		#endregion
+
 		#region StatusEffects
+
 		public void StatusEffects_00()
 		{
 			Type t = typeof(StatusEffects);
@@ -707,26 +746,30 @@ namespace BunnyMod.Content
 
 			Prefix(t, "SpecialAbilityInterfaceCheck2", g, "StatusEffects_SpecialAbilityInterfaceCheck2", new Type[0] { });
 		}
+
 		public static bool StatusEffects_SpecialAbilityInterfaceCheck2(StatusEffects __instance, ref IEnumerator __result) // Replacement
 		{
 			__result = StatusEffects_SpecialAbilityInterfaceCheck2_Replacement(__instance);
 
 			return false;
 		}
+
 		public static IEnumerator StatusEffects_SpecialAbilityInterfaceCheck2_Replacement(StatusEffects __instance) // Non-Patch
 		{
 			// Sniper Headshot indicators
+
 			#region Vanilla
+
 			__instance.startedSpecialAbilityInterfaceCheck = true;
 
 			if (__instance.startedSpecialAbilityInterfaceCheck)
 			{
 				do
 				{
-					if (GC.loadComplete && 
-						__instance.agent.specialAbilityIndicator != null && 
-						!__instance.agent.disappearedArcade && 
-						__instance.agent.inventory.buffDisplay.specialAbilitySlot != null && 
+					if (GC.loadComplete &&
+						__instance.agent.specialAbilityIndicator != null &&
+						!__instance.agent.disappearedArcade &&
+						__instance.agent.inventory.buffDisplay.specialAbilitySlot != null &&
 						!__instance.agent.ghost)
 					{
 						string specialAbility = __instance.agent.specialAbility;
@@ -735,11 +778,12 @@ namespace BunnyMod.Content
 						{
 							bool flag = false;
 
-							if ((__instance.agent.health < __instance.agent.healthMax || __instance.agent.oma.superSpecialAbility || __instance.hasTrait("BiteFullHealth")) && 
-								__instance.agent.bitingAgent == null && 
+							if ((__instance.agent.health < __instance.agent.healthMax || __instance.agent.oma.superSpecialAbility ||
+									__instance.hasTrait("BiteFullHealth")) &&
+								__instance.agent.bitingAgent == null &&
 								__instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent = (Agent)__instance.FindSpecialAbilityObject();
+								Agent agent = (Agent) __instance.FindSpecialAbilityObject();
 
 								if (agent != null)
 								{
@@ -747,7 +791,7 @@ namespace BunnyMod.Content
 									flag = true;
 								}
 							}
-						
+
 							if (!flag)
 								__instance.agent.specialAbilityIndicator.Revert();
 						}
@@ -777,15 +821,15 @@ namespace BunnyMod.Content
 
 							if (__instance.agent.arrestingAgent == null && __instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent3 = (Agent)__instance.FindSpecialAbilityObject();
-							
+								Agent agent3 = (Agent) __instance.FindSpecialAbilityObject();
+
 								if (agent3 != null)
 								{
 									if (agent3.statusEffects.IsInnocent(__instance.agent) && !__instance.agent.oma.superSpecialAbility)
 										__instance.agent.specialAbilityIndicator.ShowIndicator(agent3, "Handcuffs", "Innocent");
 									else
 										__instance.agent.specialAbilityIndicator.ShowIndicator(agent3, "Handcuffs", "Guilty");
-								
+
 									flag3 = true;
 								}
 							}
@@ -799,8 +843,8 @@ namespace BunnyMod.Content
 
 							if (__instance.agent.arrestingAgent == null && __instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent4 = (Agent)__instance.FindSpecialAbilityObject();
-							
+								Agent agent4 = (Agent) __instance.FindSpecialAbilityObject();
+
 								if (agent4 != null)
 								{
 									__instance.agent.specialAbilityIndicator.ShowIndicator(agent4, "Enslave");
@@ -817,8 +861,8 @@ namespace BunnyMod.Content
 
 							if (__instance.agent.hoistingObject == null && __instance.CanShowSpecialAbilityIndicator())
 							{
-								ObjectReal objectReal = (ObjectReal)__instance.FindSpecialAbilityObject();
-							
+								ObjectReal objectReal = (ObjectReal) __instance.FindSpecialAbilityObject();
+
 								if (objectReal != null)
 								{
 									flag5 = true;
@@ -835,9 +879,10 @@ namespace BunnyMod.Content
 
 							if (__instance.agent.bitingAgent == null && __instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent5 = (Agent)__instance.FindSpecialAbilityObject();
-							
-								if (agent5 != null && (__instance.agent.health < __instance.agent.healthMax || (agent5.agentName == __instance.agent.oma.bigQuestTarget1 && __instance.agent.oma.bigQuestObjectCount == 0)))
+								Agent agent5 = (Agent) __instance.FindSpecialAbilityObject();
+
+								if (agent5 != null && (__instance.agent.health < __instance.agent.healthMax ||
+									(agent5.agentName == __instance.agent.oma.bigQuestTarget1 && __instance.agent.oma.bigQuestObjectCount == 0)))
 								{
 									__instance.agent.specialAbilityIndicator.ShowIndicator(agent5, "Cannibalize");
 									flag6 = true;
@@ -853,8 +898,8 @@ namespace BunnyMod.Content
 
 							if (!__instance.agent.possessing && __instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent6 = (Agent)__instance.FindSpecialAbilityObject();
-							
+								Agent agent6 = (Agent) __instance.FindSpecialAbilityObject();
+
 								if (agent6 != null)
 								{
 									flag7 = true;
@@ -869,10 +914,11 @@ namespace BunnyMod.Content
 						{
 							bool flag8 = false;
 
-							if (__instance.agent.arrestingAgent == null && __instance.agent.inventory.equippedSpecialAbility.invItemCount == 0 && __instance.CanShowSpecialAbilityIndicator())
+							if (__instance.agent.arrestingAgent == null && __instance.agent.inventory.equippedSpecialAbility.invItemCount == 0 &&
+								__instance.CanShowSpecialAbilityIndicator())
 							{
-								Agent agent7 = (Agent)__instance.FindSpecialAbilityObject();
-							
+								Agent agent7 = (Agent) __instance.FindSpecialAbilityObject();
+
 								if (agent7 != null)
 								{
 									__instance.agent.specialAbilityIndicator.ShowIndicator(agent7, "MechTransform");
@@ -892,20 +938,21 @@ namespace BunnyMod.Content
 							else if (__instance.CanShowSpecialAbilityIndicator())
 							{
 								bool flag9 = true;
-							
+
 								for (int i = 0; i < GC.activeBrainAgentList.Count; i++)
 								{
 									Agent agent8 = GC.activeBrainAgentList[i];
-								
+
 									if (agent8 != __instance.agent && !agent8.dead)
 									{
 										Relationship relationship = agent8.relationships.GetRelationship(__instance.agent);
-									
-										if (relationship.HasLOS("") && relationship.relType != "Aligned" && relationship.relType != "Loyal" && agent8.employer != __instance.agent && !agent8.oma.hidden)
+
+										if (relationship.HasLOS("") && relationship.relType != "Aligned" && relationship.relType != "Loyal" &&
+											agent8.employer != __instance.agent && !agent8.oma.hidden)
 										{
 											__instance.agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 											flag9 = false;
-										
+
 											break;
 										}
 									}
@@ -917,7 +964,7 @@ namespace BunnyMod.Content
 									{
 										if (GC.objectRealList[j].objectName == "SecurityCam")
 										{
-											SecurityCam securityCam = (SecurityCam)GC.objectRealList[j];
+											SecurityCam securityCam = (SecurityCam) GC.objectRealList[j];
 
 											if (securityCam.agentsInView.Contains(__instance.agent) && !securityCam.destroyed && securityCam.functional)
 											{
@@ -937,10 +984,11 @@ namespace BunnyMod.Content
 					}
 
 					yield return new WaitForSeconds(0.1f);
-				}
-				while (__instance.startedSpecialAbilityInterfaceCheck);
+				} while (__instance.startedSpecialAbilityInterfaceCheck);
 			}
+
 			#endregion
+
 			if ((__instance.agent.statusEffects.hasTrait(cTrait.Sniper) || __instance.agent.statusEffects.hasTrait(cTrait.Sniper_2)) &&
 				__instance.agent.agentInvDatabase.equippedWeapon.invItemName == vItem.Revolver)
 			{
@@ -948,7 +996,7 @@ namespace BunnyMod.Content
 
 				foreach (Agent targetAgent in GC.agentList)
 				{
-					if (!targetAgent.dead && 
+					if (!targetAgent.dead &&
 						!targetAgent.ghost &&
 						__instance.agent.movement.HasLOSAgent360(targetAgent) &&
 						__instance.agent.movement.GetDistance(__instance.agent.gameObject, targetAgent.gameObject) > 6f)
@@ -960,6 +1008,7 @@ namespace BunnyMod.Content
 
 			yield break;
 		}
+
 		#endregion
 	}
 }

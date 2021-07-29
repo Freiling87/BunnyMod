@@ -44,7 +44,9 @@ namespace BunnyMod.Content
 		{
 			if (GC.challenges.Contains(cChallenge.GhostTown))
 				vanilla *= 0;
-			if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong))
+			else if (GC.challenges.Contains(cChallenge.HordeAlmighty))
+				vanilla *= 2;
+			else if (GC.challenges.Contains(cChallenge.LetMeSeeThatThrong))
 				vanilla *= 4;
 			else if (GC.challenges.Contains(cChallenge.SwarmWelcome))
 				vanilla *= 8;
@@ -65,10 +67,6 @@ namespace BunnyMod.Content
 					return vFloor.Grass;
 				case cChallenge.DiscoCityDanceoff:
 					return vFloor.DanceFloor;
-				case cChallenge.SunkenCity:
-					return vFloor.Water;
-				case cChallenge.TransitExperiment:
-					return vFloor.Ice;
 				default:
 					return null;
 			}
@@ -87,10 +85,6 @@ namespace BunnyMod.Content
 					return vFloorTileGroup.Park;
 				case cChallenge.DiscoCityDanceoff:
 					return vFloorTileGroup.Uptown;
-				case cChallenge.SunkenCity:
-					return vFloorTileGroup.Water;
-				case cChallenge.TransitExperiment:
-					return vFloorTileGroup.Ice;
 				default:
 					return vFloorTileGroup.Building;
 			}
@@ -3607,7 +3601,7 @@ namespace BunnyMod.Content
 						GC.challenges.Contains(cChallenge.AnCapistan))
 						hasFlamingBarrels = true;
 
-					if (GC.challenges.Contains(cChallenge.TransitExperiment) || GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
+					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
 						hasFlamingBarrels = false;
 
 					if (hasFlamingBarrels)
@@ -3656,8 +3650,8 @@ namespace BunnyMod.Content
 					}
 					#endregion
 					#region Flame Grates
-					if (GC.challenges.Contains(cChallenge.TransitExperiment))
-						__instance.hasFlameGrates = false;
+					//if (GC.challenges.Contains(cChallenge.TransitExperiment))
+					//	__instance.hasFlameGrates = false;
 
 					if (__instance.hasFlameGrates)
 					{
@@ -3727,9 +3721,6 @@ namespace BunnyMod.Content
 						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
 						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Barbecue")))
 						hasBarbecues = true;
-
-					if (GC.challenges.Contains(cChallenge.TransitExperiment))
-						hasBarbecues = false;
 
 					if (hasBarbecues)
 					{

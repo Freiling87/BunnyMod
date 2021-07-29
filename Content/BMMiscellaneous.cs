@@ -41,20 +41,20 @@ namespace BunnyMod.Content
 
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.AffectsFires))
 			{
-				if (GC.challenges.Contains(cChallenge.StubbornFires))
+				if (GC.challenges.Contains(cChallenge.NapalmSprings))
 				{
 					lifetime = 20f;
 					spreadTime = 15f;
 					generationCap = 99f;
 				}
-				else if (GC.challenges.Contains(cChallenge.WeakFires))
+				else if (GC.challenges.Contains(cChallenge.Mildfire))
 				{
 					lifetime = 6f;
 					spreadTime = 3f;
 					generationCap = 2;
 				}
 				
-				if (GC.challenges.Contains(cChallenge.FastFires))
+				if (GC.challenges.Contains(cChallenge.GasolineHumidity))
 					spreadTime = lifetime - 2f;
 			}
 

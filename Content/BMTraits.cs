@@ -37,7 +37,7 @@ namespace BunnyMod.Content
             DebugTrait.IsActive = true;
             #region Combat - Melee
             //CustomTrait BlessedStrikes = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes, true,
-            //    new CustomNameInfo("000: Blessed Strikes"),
+            //    new CustomNameInfo("Blessed Strikes"),
             //    new CustomNameInfo("- You can hit Ghosts with your Unarmed attacks\n- Melee damage to all Undead increased 50%"));
             //BlessedStrikes.Available = true;
             //BlessedStrikes.AvailableInCharacterCreation = true;
@@ -50,7 +50,7 @@ namespace BunnyMod.Content
             //BlessedStrikes.Upgrade = cTrait.BlessedStrikes_2;
 
             //CustomTrait BlessedStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.BlessedStrikes_2, true,
-            //    new CustomNameInfo("000: Blessed Strikes +"),
+            //    new CustomNameInfo("Blessed Strikes +"),
             //    new CustomNameInfo("- You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all Undead increased 100%"));
             //BlessedStrikes_2.Available = false;
             //BlessedStrikes_2.AvailableInCharacterCreation = true;
@@ -63,7 +63,7 @@ namespace BunnyMod.Content
             //BlessedStrikes_2.Upgrade = null;
 
             //CustomTrait InfernalStrikes = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes, true,
-            //    new CustomNameInfo("000: Infernal Strikes"),
+            //    new CustomNameInfo("Infernal Strikes"),
             //    new CustomNameInfo("-You can hit Ghosts with your Unarmed attacks\n- Melee damage to all non-Undead increased 25%"));
             //InfernalStrikes.Available = true;
             //InfernalStrikes.AvailableInCharacterCreation = true;
@@ -75,7 +75,7 @@ namespace BunnyMod.Content
             //InfernalStrikes.Upgrade = cTrait.InfernalStrikes_2;
 
             //CustomTrait InfernalStrikes_2 = RogueLibs.CreateCustomTrait(cTrait.InfernalStrikes_2, true,
-            //    new CustomNameInfo("000: Infernal Strikes +"),
+            //    new CustomNameInfo("Infernal Strikes +"),
             //    new CustomNameInfo("-You can hit Ghosts with your Unarmed & Melee attacks\n- Melee damage to all non-Undead increased 50%"));
             //InfernalStrikes_2.Available = false;
             //InfernalStrikes_2.AvailableInCharacterCreation = true;
@@ -138,7 +138,7 @@ namespace BunnyMod.Content
             Sniper.Upgrade = cTrait.Sniper_2;
 
             CustomTrait Sniper_2 = RogueLibs.CreateCustomTrait(cTrait.Sniper_2, true,
-                new CustomNameInfo("000: Sniper +"),
+                new CustomNameInfo("Sniper +"),
                 new CustomNameInfo("Wow, that's a poncho made of garbage, isn't it? Well, whatever it takes to blend into the urban environment.\n\n- Using a silent ranged weapon while hidden behind a Bush or other object will not remove you from cover."));
             Sniper_2.Available = false;
             Sniper_2.AvailableInCharacterCreation = true;
@@ -224,31 +224,6 @@ namespace BunnyMod.Content
             Vegetarian.IsActive = true;
             Vegetarian.Upgrade = null;
             #endregion
-            #region Followers
-            CustomTrait BodyGuarded = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded, true,
-                new CustomNameInfo("Bodyguarded", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy. La de da!\n\n- Two Goons join you on each level"));
-            BodyGuarded.Available = true;
-            BodyGuarded.AvailableInCharacterCreation = true;
-            BodyGuarded.CanRemove = false;
-            BodyGuarded.CanSwap = true;
-            BodyGuarded.Conflicting.AddRange(new string[] { });
-            BodyGuarded.CostInCharacterCreation = 7;
-            BodyGuarded.IsActive = true;
-            BodyGuarded.Upgrade = cTrait.BodyGuarded_2;
-
-            CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
-                new CustomNameInfo("BodyGuarded +", "", "", "", "", "", "", ""),
-                new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
-            BodyGuarded_2.Available = true; // TODO: Set to false after testing
-            BodyGuarded_2.AvailableInCharacterCreation = true;
-            BodyGuarded_2.CanRemove = false;
-            BodyGuarded_2.CanSwap = true;
-            BodyGuarded_2.Conflicting.AddRange(new string[] { });
-            BodyGuarded_2.CostInCharacterCreation = 12;
-            BodyGuarded_2.IsActive = true;
-            BodyGuarded_2.Upgrade = null;
-            #endregion
             #region Equipment Limitations
             CustomTrait AfraidOfLoudNoises = RogueLibs.CreateCustomTrait(cTrait.AfraidOfLoudNoises, true,
                 new CustomNameInfo("Afraid of Loud Noises", "", "", "", "", "Боязнь громких звуков", "", ""),
@@ -291,7 +266,7 @@ namespace BunnyMod.Content
             #endregion
             #region Experience Gain Rate
             CustomTrait Brainiac = RogueLibs.CreateCustomTrait(cTrait.Brainiac, true,
-                new CustomNameInfo("000: Brainiac"),
+                new CustomNameInfo("Brainiac"),
                 new CustomNameInfo("You have a ton of potential, and pretty much nothing else. Hopefully you live past level 1. We're rooting for you, buddy.\n\n-XP gain set to 400%"));
             Brainiac.Available = true;
             Brainiac.AvailableInCharacterCreation = true;
@@ -358,6 +333,31 @@ namespace BunnyMod.Content
             VeryHardOnYourself.Prerequisites.AddRange(new string[] { vTrait.TheLaw, vTrait.Extortionist });
             VeryHardOnYourself.IsActive = true;
             VeryHardOnYourself.Upgrade = null;
+            #endregion
+            #region Followers
+            CustomTrait BodyGuarded = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded, true,
+                new CustomNameInfo("Bodyguarded", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Ooh, look at the big important VIP here. I bet you feel fancy. La de da!\n\n- Two Goons join you on each level"));
+            BodyGuarded.Available = true;
+            BodyGuarded.AvailableInCharacterCreation = true;
+            BodyGuarded.CanRemove = false;
+            BodyGuarded.CanSwap = true;
+            BodyGuarded.Conflicting.AddRange(new string[] { });
+            BodyGuarded.CostInCharacterCreation = 7;
+            BodyGuarded.IsActive = true;
+            BodyGuarded.Upgrade = cTrait.BodyGuarded_2;
+
+            CustomTrait BodyGuarded_2 = RogueLibs.CreateCustomTrait(cTrait.BodyGuarded_2, true,
+                new CustomNameInfo("BodyGuarded +", "", "", "", "", "", "", ""),
+                new CustomNameInfo("Oooooooooooooooh, look even harder at the bigger more important VVIP here. I bet even more that you feel even fancier. La de da deedly doodly da!\n\n- Two Supergoons join you on each level\n- Doubles size of trait description list"));
+            BodyGuarded_2.Available = true; // TODO: Set to false after testing
+            BodyGuarded_2.AvailableInCharacterCreation = true;
+            BodyGuarded_2.CanRemove = false;
+            BodyGuarded_2.CanSwap = true;
+            BodyGuarded_2.Conflicting.AddRange(new string[] { });
+            BodyGuarded_2.CostInCharacterCreation = 12;
+            BodyGuarded_2.IsActive = true;
+            BodyGuarded_2.Upgrade = null;
             #endregion
             #region Luck
             CustomTrait Charmed = RogueLibs.CreateCustomTrait(cTrait.Charmed, true,
@@ -580,7 +580,7 @@ namespace BunnyMod.Content
             EagleEyes.Upgrade = cTrait.EagleEyes_2;
 
             CustomTrait EagleEyes_2 = RogueLibs.CreateCustomTrait(cTrait.EagleEyes_2, true,
-                new CustomNameInfo("000: Eagle Eyes +", "", "", "", "", "Орлиные глаза +", "", ""),
+                new CustomNameInfo("Eagle Eyes +", "", "", "", "", "Орлиные глаза +", "", ""),
                 new CustomNameInfo("You might have been a good sniper, but you were kicked out of training when they didn't believe that you worked better without a rifle scope.", "", "", "", "", "Возможно вы были прекрасным снайпером, но вас выгнали на одной из тренировок, видимо они не поверили что вы стреляете лучше без прицела.", "", ""));
             EagleEyes_2.Available = true; //TODO: Set to false after out of testing
             EagleEyes_2.AvailableInCharacterCreation = true;
@@ -626,8 +626,8 @@ namespace BunnyMod.Content
             BootLicker.AvailableInCharacterCreation = true;
             BootLicker.CanRemove = true;
             BootLicker.CanSwap = false;
-            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.TheLaw, vTrait.Wanted, cTrait.Priors, cTrait.GenerallyUnpleasant, cTrait.ObjectivelyUnpleasant, vTrait.TheLaw });
-            BootLicker.CostInCharacterCreation = 3;
+            BootLicker.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.CorruptionCosts, vTrait.Wanted, cTrait.Priors, cTrait.GenerallyUnpleasant, cTrait.ObjectivelyUnpleasant, vTrait.TheLaw });
+            BootLicker.CostInCharacterCreation = -1;
             BootLicker.IsActive = true;
             BootLicker.Upgrade = null;
                         
@@ -711,7 +711,7 @@ namespace BunnyMod.Content
             Priors.CanRemove = true;
             Priors.CanSwap = true;
             Priors.Conflicting.AddRange(new string[] { vTrait.Charismatic, vTrait.TheLaw });
-            Priors.CostInCharacterCreation = -2;
+            Priors.CostInCharacterCreation = 3;
             Priors.IsActive = true;
             Priors.Upgrade = null;
 
@@ -723,7 +723,7 @@ namespace BunnyMod.Content
             VeiledThreats.CanRemove = false;
             VeiledThreats.CanSwap = true;
             VeiledThreats.Conflicting.AddRange(new string[] { });
-            VeiledThreats.CostInCharacterCreation = 2;
+            VeiledThreats.CostInCharacterCreation = 5;
             VeiledThreats.IsActive = true;
             VeiledThreats.Recommendations.AddRange(new string[] { vTrait.Extortionist, vTrait.Mugger });
             VeiledThreats.Upgrade = null;
@@ -742,7 +742,7 @@ namespace BunnyMod.Content
             #endregion
             #region Spawns
             CustomTrait Haunted = RogueLibs.CreateCustomTrait(cTrait.Haunted, true,
-                new CustomNameInfo("000: Haunted", "", "", "", "", "Призраки", "", ""),
+                new CustomNameInfo("Haunted", "", "", "", "", "Призраки", "", ""),
                 new CustomNameInfo(
                     "You spent too long spelunking in an ancient treasure vault. The local ghosts were very unhappy with you, and you had their legal case dismissed. Now they're taking it into their own hands.", "", "", "", "", 
                     "Вы потратили слишком много времени на спелеологию в древней сокровищнице. Местные призраки очень нерады вашему присутствию и вы перестали этим заниматся. Теперь призраки взяли всё в свои руки.", "", ""));
@@ -755,7 +755,7 @@ namespace BunnyMod.Content
             Haunted.Upgrade = null;
 
             CustomTrait MobDebt = RogueLibs.CreateCustomTrait(cTrait.MobDebt, true,
-                new CustomNameInfo("000: Mob Debt", "", "", "", "", "Долг мафии", "", ""),
+                new CustomNameInfo("Mob Debt", "", "", "", "", "Долг мафии", "", ""),
                 new CustomNameInfo(
                     "You found a sack of money, and the people to whom it belongs want it back with interest. Well, they certainly have your interest, but you've spent the principal. Pay it off at an ATM by Level 10, or else your kneecaps (and the rest of your body) will pay the price.", "", "", "", "", 
                     "Вы нашли мешочек денег, однако его владельцы хотят его вернуть, как жаль что вы уже потратили основную часть этих денег, прийдётся возвращать с процентами. Оплатите сумму в банкомате на 10 этаже, иначе вместо вас будут платить ваши коленные чашечки.", "", ""));
@@ -779,7 +779,7 @@ namespace BunnyMod.Content
             MookMasher.Upgrade = null;
 
             CustomTrait Reinforcements = RogueLibs.CreateCustomTrait(cTrait.Reinforcements, true,
-                new CustomNameInfo("000: Reinforcements", "", "", "", "", "Оснаститель", "", ""),
+                new CustomNameInfo("Reinforcements", "", "", "", "", "Оснаститель", "", ""),
                 new CustomNameInfo("You have worked to create an army for the Resistance. That army now patrols the City secretly, looking for the opportunity to aid the cause.", "", "", "", "", "Вы работали над созданием армии для Сопротивления. На данный момент эта армия тайно патрулирует город, постоянно ищя возможность, чтобы помочь вашему общему делу.", "", ""));
             Reinforcements.Available = true;
             Reinforcements.AvailableInCharacterCreation = true;
@@ -791,7 +791,7 @@ namespace BunnyMod.Content
             Reinforcements.Upgrade = cTrait.Reinforcements_2;
 
             CustomTrait Reinforcements_2 = RogueLibs.CreateCustomTrait(cTrait.Reinforcements_2, true,
-                new CustomNameInfo("000: Reinforcements +", "", "", "", "", "Оснаститель +", "", ""),
+                new CustomNameInfo("Reinforcements +", "", "", "", "", "Оснаститель +", "", ""),
                 new CustomNameInfo("Your allies now have top-of-the-line equipment.", "", "", "", "", "Ваши союзники теперь экипированны лучшим снаряжением.", "", ""));
             Reinforcements_2.Available = true;
             Reinforcements_2.AvailableInCharacterCreation = true;
@@ -816,7 +816,7 @@ namespace BunnyMod.Content
             StealthBastardDeluxe.Upgrade = null;
 
             CustomTrait UnderdarkCitizen = RogueLibs.CreateCustomTrait(cTrait.UnderdarkCitizen, true,
-                new CustomNameInfo("000: Underdark Citizen", "", "", "", "", "Подземный житель", "", ""),
+                new CustomNameInfo("Underdark Citizen", "", "", "", "", "Подземный житель", "", ""),
                 new CustomNameInfo("You can navigate the city's sewers with ease. Their denizens no longer consider you an easy mark.", "", "", "", "", "Вы с лёгкостью оринтируетесь в канализации. Жители этих мест не считают вас лёгкой целью.", "", ""));
             UnderdarkCitizen.Available = true;
             UnderdarkCitizen.AvailableInCharacterCreation = true;

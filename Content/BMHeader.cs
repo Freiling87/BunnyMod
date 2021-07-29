@@ -12,13 +12,13 @@ namespace BunnyMod.Content
 {
 	[BepInPlugin(pluginGuid, pluginName, pluginVersion)]
 	[BepInProcess("StreetsOfRogue.exe")]
-	[BepInDependency(RogueLibs.pluginGuid, "2.0")]
+	[BepInDependency(RogueLibs.GUID, "3.0")]
 
 	public class BMHeader : BaseUnityPlugin
 	{
 		public const string pluginGuid = "freiling87.streetsofrogue.bunnymod";
 		public const string pluginName = "Bunny Mod";
-		public const string pluginVersion = "1.4.0";
+		public const string pluginVersion = "1.5.0a";
 
         public static bool debugMode = true;
 
@@ -86,7 +86,7 @@ namespace BunnyMod.Content
 		public static void InvokeRepeating(object instance, string method, float delay, float interval)
 		{
 			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
-			Task task = InvokeRepeatingAsync(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
+			_ = InvokeRepeatingAsync(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
 		}
 		private static async Task InvokeRepeatingAsync(object instance, MethodInfo method, int delay, int interval)
 		{

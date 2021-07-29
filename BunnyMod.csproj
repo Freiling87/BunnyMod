@@ -52,8 +52,9 @@
     <Reference Include="netstandard">
       <HintPath>Libraries\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="RogueLibs">
-      <HintPath>Libraries\RogueLibs.dll</HintPath>
+    <Reference Include="RogueLibsCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\RogueLibsCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

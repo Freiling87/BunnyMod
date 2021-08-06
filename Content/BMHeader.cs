@@ -2121,25 +2121,6 @@ namespace BunnyMod.Content
             Wall = "WallTiles",
             Water = "WaterTiles";
     }
-    public static class vGoal // Vanilla Agent Goals
-    {
-        public const string
-            CuriousObject = "CuriousObject",
-            Dance = "Dance",
-            Guard = "Guard",
-            IceSkate = "IceSkate",
-            Idle = "Idle",
-            Joke = "Joke",
-            ListenToJokeNPC = "ListenToJokeNPC",
-            None = "None",
-            Patrol = "Patrol",
-            Sit = "Sit",
-            Sleep = "Sleep",
-            Swim = "Swim",
-            Wander = "Wander",
-            WanderFar = "WanderFar",
-            WanderInOwnedProperty = "WanderInOwnedProperty";
-    }
     public static class vHairType // Vanilla Hair
 	{
         public const string

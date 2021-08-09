@@ -141,7 +141,7 @@
     <None Include="Properties\Resources\CryomanticBolt.bin" />
     <None Include="Properties\Resources\ElectromanticDischarge.bin" />
     <None Include="Properties\Resources\MorphomanticGlamor.bin" />
-    <None Include="Staging.md" />
+    <None Include="MD\9.3. Upcoming Features.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

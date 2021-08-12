@@ -429,6 +429,11 @@ namespace BunnyMod.Content
             VeiledThreatsAnnoyed = "ThreatenAnnoyed",
             WarlordSubmission = "WarlordSubmission";
     }
+    public static class cItem // Custom Items
+	{
+        public const string
+            WhiskeyBottle = "WhiskeyBottle";
+	}
     public static class cLevelFeature // Custom Level Features
 	{
         public const string

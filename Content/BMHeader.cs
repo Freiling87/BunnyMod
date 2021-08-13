@@ -432,7 +432,28 @@ namespace BunnyMod.Content
     public static class cItem // Custom Items
 	{
         public const string
-            WhiskeyBottle = "WhiskeyBottle";
+            BearTrapProcessor = "Bear Trap Processor",
+            BeerCan = "Beer Can",
+            Brick = "Brick",
+            BrokenBottle = "Broken Bottle",
+            EnergyDrink = "Energy Drink",
+            FancyHat = "Fancy Hat",
+            FireMine = "Fire Mine",
+            HolySymbol = "Holy Symbol",
+            HolyWaterFlask = "Holy Water Flask",
+            KillArmortizer = "Kill Armortizer",
+            Lunchbox = "Lunchbox",
+            ManholeCover = "Manhole Cover",
+            MultiTool = "Multi-Tool",
+            Repairerator = "Repairerator",
+            RiotHelmet = "Riot Helmet",
+            Sawblade = "Sawblade",
+            Spear = "Spear",
+            StunGun = "Stun-Gun",
+            SugarProcessor = "Sugar Processor",
+            ThrowingKnife = "ThrowingKnives",
+            WhiskeyBottle = "Whiskey Bottle",
+            WireCutters = "Wire Cutters";
 	}
     public static class cLevelFeature // Custom Level Features
 	{

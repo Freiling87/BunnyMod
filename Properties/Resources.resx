@@ -121,8 +121,17 @@
   <data name="BathtubClosed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\BathtubClosed.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="BearTrapProcessor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BearTrapProcessor.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="BeerCan" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\BeerCan.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Brick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Brick.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BrokenBottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BrokenBottle.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ChronomanticDilation" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ChronomanticDilation.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -139,6 +148,18 @@
   <data name="ElectromanticDischarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ElectromanticDischarge.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="EnergyDrink" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\EnergyDrink.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HolySymbol" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\HolySymbol.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HolyWaterFlask" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\HolyWaterFlask.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ManholeCover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ManholeCover.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="MorphomanticGlamor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\MorphomanticGlamor.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -148,7 +169,19 @@
   <data name="PyromanticJet" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\PyromanticJet.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Sawblade" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Sawblade.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Spear" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Spear.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SugarProcessor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SugarProcessor.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="TelemanticBlink" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\TelemanticBlink.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="WhiskeyBottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\WhiskeyBottle.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

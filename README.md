@@ -40,12 +40,20 @@ If you have suggestions or requests, get in contact with me. Most of the content
 
 I make broken things, and nice people patiently correct me. I want to thank those people.
 
-**Abbysssal#2020** - Endless help with RogueLibs, BepInEx, and coding in general
+**Abbysssal#2020** - Endless help with RogueLibs, BepInEx, and coding in general 🌀
 
-**DapperGentleman#5990** - Balancing, Sprites, Bugtesting & sanity checks
+**BlazingTwist#4559** - RogueLibs v3 & v95 updating, bugfixes 🍻
 
-**Cherry🐍🐇#0643** - Release 1.4 Promo video, and hopefully more in the future
+**DapperGentleman#5990** - Balancing, Sprites, Bugtesting & sanity checks 🎩
 
-**The Streets of Rogue Discord Community** - Fun, positive, supportive, and creative people! 🍻
+**Cherry🐍🐇#0643** - Release 1.4 Promo video 🎥
 
-**You, the Very Special Player** - I'm supposed to say cheesy shit like this, right?
+**The Streets of Rogue Discord Community** - Fun, positive, supportive, and creative people! 🐱‍👤
+
+**You, the Very Special Player** - I'm supposed to say cheesy shit like this, right? 👼
+
+**Me** - Look, it's my mod and I'm gonna thank myself if I want 🐰
+
+**The Man Upstairs** - I am too afraid to look in the attic because I think he's feral, but he at least took care of the rat problem 🧔
+
+**The Academy** - Ok, this joke has run its course 🗿

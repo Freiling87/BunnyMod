@@ -56,8 +56,9 @@
     <Reference Include="netstandard">
       <HintPath>Libraries\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="RogueLibsCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\RogueLibsCore.dll</HintPath>
+    <Reference Include="RogueLibsCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\RogueLibsCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -101,6 +102,7 @@
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMCombat.cs" />
+    <Compile Include="Content\BMEffects.cs" />
     <Compile Include="Content\BMInterface.cs" />
     <Compile Include="Content\BMLevelFeelings.cs" />
     <Compile Include="Content\BMLevelGen.cs" />
@@ -229,15 +231,26 @@
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
     <None Include="Properties\Resources\BathtubClosed.bin" />
+    <None Include="Properties\Resources\BearTrapProcessor.bin" />
+    <None Include="Properties\Resources\Brick.bin" />
+    <None Include="Properties\Resources\BrokenBottle.bin" />
     <None Include="Properties\Resources\Donut.bin" />
     <None Include="Properties\Resources\DoorLocker.bin" />
+    <None Include="Properties\Resources\EnergyDrink.bin" />
+    <None Include="Properties\Resources\HolySymbol.bin" />
+    <None Include="Properties\Resources\HolyWaterFlask.bin" />
+    <None Include="Properties\Resources\ManholeCover.bin" />
     <None Include="Properties\Resources\MorphomanticGlamorActive.bin" />
+    <None Include="Properties\Resources\Sawblade.bin" />
+    <None Include="Properties\Resources\Spear.bin" />
+    <None Include="Properties\Resources\SugarProcessor.bin" />
+    <None Include="Properties\Resources\WhiskeyBottle.bin" />
     <None Include="ReadMe.md" />
     <None Include="Properties\Resources\ChronomanticDilation.bin" />
     <None Include="Properties\Resources\CryomanticBolt.bin" />
     <None Include="Properties\Resources\ElectromanticDischarge.bin" />
     <None Include="Properties\Resources\MorphomanticGlamor.bin" />
-    <None Include="Staging.md" />
+    <None Include="MD\9.3. Upcoming Features.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

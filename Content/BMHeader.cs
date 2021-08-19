@@ -88,7 +88,7 @@ namespace BunnyMod.Content
 		public static void InvokeRepeating(object instance, string method, float delay, float interval)
 		{
 			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
-			Task task = InvokeRepeatingAsync(instance, methodAccessed, (int) Mathf.Floor(delay * 1000), (int) Mathf.Floor(interval * 1000));
+			_ = InvokeRepeatingAsync(instance, methodAccessed, (int)Mathf.Floor(delay * 1000), (int)Mathf.Floor(interval * 1000));
 		}
 
 		private static async Task InvokeRepeatingAsync(object instance, MethodInfo method, int delay, int interval)
@@ -119,7 +119,6 @@ namespace BunnyMod.Content
 					.GetProperty(propertyName)
 					.SetValue(obj, propertyValue, null);
 			}
-			;
 		}
 
 		public static void SayDialogue(Agent agent, string customNameInfo, string vNameType)
@@ -2243,26 +2242,6 @@ namespace BunnyMod.Content
 			Uptown = "FloorTilesWealthy",
 			Wall = "WallTiles",
 			Water = "WaterTiles";
-	}
-
-	public static class vGoal // Vanilla Agent Goals
-	{
-		public const string
-			CuriousObject = "CuriousObject",
-			Dance = "Dance",
-			Guard = "Guard",
-			IceSkate = "IceSkate",
-			Idle = "Idle",
-			Joke = "Joke",
-			ListenToJokeNPC = "ListenToJokeNPC",
-			None = "None",
-			Patrol = "Patrol",
-			Sit = "Sit",
-			Sleep = "Sleep",
-			Swim = "Swim",
-			Wander = "Wander",
-			WanderFar = "WanderFar",
-			WanderInOwnedProperty = "WanderInOwnedProperty";
 	}
 
 	public static class vHairType // Vanilla Hair

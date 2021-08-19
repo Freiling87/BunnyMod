@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using BunnyMod.Content.Traits;
 using BunnyMod.Properties;
 using UnityEngine;
 
@@ -16,19 +17,19 @@ namespace BunnyMod.Content
 	[BepInDependency(RogueLibs.GUID, RogueLibs.CompiledVersion)]
 	public class BMHeader : BaseUnityPlugin
 	{
-		public static bool debugMode = true;
+		public const bool debugMode = true;
 
 		public static ManualLogSource ConsoleMessage;
-		public static GameController GC => GameController.gameController;
 		public static BaseUnityPlugin MainInstance;
 
 		public void Awake()
 		{
 			MainInstance = this;
 			ConsoleMessage = Logger;
+			
+			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
 			new BMAbilities().Awake();
-			new BMAgents().Awake();
 			new BMBehaviors().Awake();
 			new BMCombat().Awake();
 			new BMInterface().Awake();
@@ -38,9 +39,10 @@ namespace BunnyMod.Content
 			new BMMiscellaneous().Awake();
 			new BMChallenges().Awake();
 			new BMObjects().Awake();
-			new BMQuests().Awake();
-			//new BMSprites().Awake();
-			new BMTraits().Awake();
+			//new BMQuests().Awake();
+			
+			RogueLibs.LoadFromAssembly();
+			BMTraitsManager.FinalizeTraits();
 		}
 
 		public static void Log(string logMessage) =>
@@ -49,8 +51,8 @@ namespace BunnyMod.Content
 
 	public static class BMHeaderTools
 	{
-		public static GameController GC => GameController.gameController;
-		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
+		private static GameController GC => GameController.gameController;
+		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		public static void AddDictionary(Dictionary<PlayfieldObject, bool> dict, PlayfieldObject objectReal, bool defaultValue)
 		{
@@ -504,7 +506,7 @@ namespace BunnyMod.Content
 			BQMalusUptown = "BQMalusUptown",
 			ElectabilityMalus = "ElectabilityMalus",
 			FreePrisonerFailure = "FreePrisonerFailure",
-			StoleNone = "StoleNone",
+			StoleNone = "StoleNone", // TODO does nothing
 			TookLotsOfDamage = "TookLotsOfDamage";
 	}
 
@@ -2827,18 +2829,6 @@ namespace BunnyMod.Content
 			Null = "";
 	}
 
-	public static class vRelationship // Vanilla Relationships
-	{
-		public const string
-			Aligned = "Aligned",
-			Annoyed = "Annoyed",
-			Friendly = "Friendly",
-			Hostile = "Hateful",
-			Loyal = "Loyal",
-			Neutral = "Neutral",
-			Submissive = "Submissive";
-	}
-
 	public static class vSecurityType // Vanilla Security Types
 	{
 		public const string
@@ -3033,7 +3023,7 @@ namespace BunnyMod.Content
 			Extortionist_2 = "Shakedowner2",
 			FairGame = "EveryoneHatesZombie",
 			FastFood = "CannibalizeFaster",
-			FeatureAct = "JokesMoreSuccessful/JokesAlwaysSuccessful",
+			FeatureAct = "JokesMoreSuccessful/JokesAlwaysSuccessful", // TODO actually two traits
 			FireproofSkin = "FireproofSkin",
 			FireproofSkin2 = "FireproofSkin2",
 			FleshFeast = "FleshFeast",

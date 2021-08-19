@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using BepInEx;
+using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
@@ -76,7 +77,7 @@ namespace BunnyMod.Content
 
 		public static bool InvDatabase_ChooseWeapon(bool noGuns, InvDatabase __instance) // Prefix
 		{
-			if (__instance.agent.isPlayer != 0 && BMTraits.DoesPlayerHaveTraitFromList(__instance.agent, cTrait.LimitWeapons))
+			if (__instance.agent.isPlayer != 0 && BMTraitController.DoesPlayerHaveTraitFromList(__instance.agent, cTrait.LimitWeapons))
 			{
 				Agent agent = __instance.agent;
 

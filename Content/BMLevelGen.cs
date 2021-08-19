@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections;
 using HarmonyLib;
 using System.Reflection;
+using BunnyMod.Content.Traits;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using Light2D;
@@ -33,7 +34,7 @@ namespace BunnyMod.Content
 			SpawnerFloor_00();
 			SpawnerMain_00();
 			SpawnerObject_00();
-			TileInfo_00();
+			// TODO ? TileInfo_00();
 		}
 
 		#region Custom
@@ -352,7 +353,6 @@ namespace BunnyMod.Content
 			Prefix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Prefix", new Type[0] { });
 			Postfix(t, "SetupMore3_3", g, "LoadLevel_SetupMore3_3_Postfix", new Type[0] { });
 			Postfix(t, "SetupMore5_2", g, "LoadLevel_SetupMore5_2", new Type[0] { });
-			Prefix(t, "SetupRels", g, "LoadLevel_SetupRels", new Type[0] { });
 		}
 
 		public static bool
@@ -3519,7 +3519,7 @@ namespace BunnyMod.Content
 						GC.levelFeeling == vLevelFeeling.WarZone)
 						hasManholes = false;
 
-					if (BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen)) // Trait-specific. Normal ones below.
+					if (BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>()) // Trait-specific. Normal ones below.
 					{
 						Debug.Log("Loading Underdark Manholes");
 						int bigTries = (int) ((float) Random.Range(8, 12) * __instance.levelSizeModifier);
@@ -5869,7 +5869,7 @@ namespace BunnyMod.Content
 										foreach (Agent otherAgent in GC.agentList)
 											if (!vAgent.LawEnforcement.Contains(otherAgent.agentName))
 											{
-												agent.relationships.SetRelInitial(otherAgent, vRelationship.Annoyed);
+												agent.relationships.SetRelInitial(otherAgent, nameof(relStatus.Annoyed));
 
 												agent.relationships.SetStrikes(otherAgent, 2);
 											}
@@ -6512,30 +6512,30 @@ namespace BunnyMod.Content
 
 				if (agent.isPlayer > 0)
 				{
-					if (agent.statusEffects.hasTrait(cTrait.Haunted))
-						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, vRelationship.Hostile, 1);
+					if (agent.HasTrait<Haunted>())
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.Ghost, __instance, nameof(relStatus.Hostile), 1);
 
-					if (agent.statusEffects.hasTrait(cTrait.BodyGuarded))
-						BMAgents.SpawnEmployees(agent, 2, vAgent.Goon, __instance, vRelationship.Aligned);
-					else if (agent.statusEffects.hasTrait(cTrait.BodyGuarded_2))
-						BMAgents.SpawnEmployees(agent, 2, vAgent.Supergoon, __instance, vRelationship.Aligned);
+					if (agent.HasTrait<BodyGuarded>())
+						BMAgents.SpawnEmployees(agent, 2, vAgent.Goon, __instance, nameof(relStatus.Aligned));
+					else if (agent.HasTrait<BodyGuarded2>())
+						BMAgents.SpawnEmployees(agent, 2, vAgent.Supergoon, __instance, nameof(relStatus.Aligned));
 
 					if (level >= 10)
-						if (agent.statusEffects.hasTrait(cTrait.MobDebt))
-							BMAgents.SpawnRoamerSquad(agent, (int) ((float) level * 1.66f), vAgent.Mobster, __instance, vRelationship.Hostile, 4);
+						if (agent.HasTrait<MobDebt>())
+							BMAgents.SpawnRoamerSquad(agent, (int) ((float) level * 1.66f), vAgent.Mobster, __instance, nameof(relStatus.Hostile), 4);
 
 					if (level >= 13)
 						if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || GC.challenges.Contains(cChallenge.FloralerFlora))
 							for (int i = 0; i <= level - 11; i++)
 								GC.spawnerMain.SpawnButlerBot();
 
-					if (agent.statusEffects.hasTrait(cTrait.MookMasher))
-						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, vRelationship.Hostile, 4);
+					if (agent.HasTrait<MookMasher>())
+						BMAgents.SpawnRoamerSquad(agent, level * 2, vAgent.Goon, __instance, nameof(relStatus.Hostile), 4);
 
-					if (agent.statusEffects.hasTrait(cTrait.Reinforcements))
-						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, vRelationship.Aligned, 1);
-					else if (agent.statusEffects.hasTrait(cTrait.Reinforcements_2))
-						BMAgents.SpawnRoamerSquad(agent, 8, vAgent.ResistanceLeader, __instance, vRelationship.Aligned, 1);
+					if (agent.HasTrait<Reinforcements>())
+						BMAgents.SpawnRoamerSquad(agent, 4, vAgent.ResistanceLeader, __instance, nameof(relStatus.Aligned), 1);
+					else if (agent.HasTrait<Reinforcements2>())
+						BMAgents.SpawnRoamerSquad(agent, 8, vAgent.ResistanceLeader, __instance, nameof(relStatus.Aligned), 1);
 				}
 			}
 		}
@@ -6545,13 +6545,6 @@ namespace BunnyMod.Content
 			BMLog("LoadLevel_SetupMore5_2");
 
 			BMAbilities.baseTimeScale = GameController.gameController.selectedTimeScale;
-		}
-
-		public static bool LoadLevel_SetupRels() // Prefix
-		{
-			BMTraits.setPlayerInitialRelationshipTraitActive();
-
-			return true;
 		}
 
 		#endregion

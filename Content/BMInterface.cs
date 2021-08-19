@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using BepInEx;
-using HarmonyLib;
 using UnityEngine;
+using BunnyMod.Content.Traits;
 using RogueLibsCore;
-using Random = UnityEngine.Random;
-using UnityEngine.Networking;
-using System.Linq;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace BunnyMod.Content
 {
 	public class BMInterface
 	{
-		public static GameController GC => GameController.gameController;
+		private static GameController GC => GameController.gameController;
 
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+		private static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
 			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
 
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+		private static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
 			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
@@ -41,18 +36,18 @@ namespace BunnyMod.Content
 
 		#region Custom
 
+		// TODO unused
 		public static float GetZoomLevel(Agent playerAgent)
 		{
-			if (playerAgent.statusEffects.hasTrait(cTrait.EagleEyes))
+			if (playerAgent.HasTrait<EagleEyes>())
 				return 0.75f;
-			else if (playerAgent.statusEffects.hasTrait(cTrait.EagleEyes_2))
+			if (playerAgent.HasTrait<EagleEyes2>())
 				return 0.50f;
-			else if (playerAgent.statusEffects.hasTrait(cTrait.Myopic))
+			if (playerAgent.HasTrait<Myopic>())
 				return 1.50f;
-			else if (playerAgent.statusEffects.hasTrait(cTrait.Myopic2))
+			if (playerAgent.HasTrait<Myopic2>())
 				return 2.00f;
-			else
-				return 1f;
+			return 1f;
 		}
 
 		public static float GetZoomLevel()
@@ -64,13 +59,13 @@ namespace BunnyMod.Content
 			if (GC.fourPlayerMode)
 				result = 0.6f;
 
-			if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes))
+			if (BMTraitController.IsPlayerTraitActive<EagleEyes>())
 				result *= 0.70f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.EagleEyes_2))
+			else if (BMTraitController.IsPlayerTraitActive<EagleEyes2>())
 				result *= 0.40f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic))
+			else if (BMTraitController.IsPlayerTraitActive<Myopic>())
 				result *= 1.50f;
-			else if (BMTraits.IsPlayerTraitActive(cTrait.Myopic2))
+			else if (BMTraitController.IsPlayerTraitActive<Myopic2>())
 				result *= 2.00f;
 
 			return result;
@@ -406,7 +401,7 @@ namespace BunnyMod.Content
 					bool flag5 = false;
 
 					if ((__instance.mainGUI.agent.enforcer || __instance.mainGUI.agent.bigQuest == "Cop" ||
-							__instance.mainGUI.agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself)) &&
+							__instance.mainGUI.agent.HasTrait<VeryHardOnYourself>()) &&
 						!agent2.statusEffects.IsInnocent(__instance.mainGUI.agent) && !agent2.dead)
 					{
 						flag5 = true;
@@ -989,7 +984,7 @@ namespace BunnyMod.Content
 
 			#endregion
 
-			if ((__instance.agent.statusEffects.hasTrait(cTrait.Sniper) || __instance.agent.statusEffects.hasTrait(cTrait.Sniper_2)) &&
+			if ((__instance.agent.HasTrait<Sniper>() || __instance.agent.HasTrait<Sniper2>()) &&
 				__instance.agent.agentInvDatabase.equippedWeapon.invItemName == vItem.Revolver)
 			{
 				// Test for reduced range if hidden

@@ -3,6 +3,7 @@ using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BunnyMod.Content.Traits;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -432,7 +433,7 @@ namespace BunnyMod.Content
 			// Ballistician
 			// Sniper
 
-			if (__instance.myBullet.agent != null && BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
+			if (__instance.myBullet.agent != null && BMTraitController.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
 			{
 				float maxBulletRange = GetBulletRange(__instance.myBullet.agent);
 

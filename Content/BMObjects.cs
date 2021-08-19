@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BunnyMod.Content.Traits;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,38 +15,39 @@ namespace BunnyMod.Content
 {
 	public class BMObjects
 	{
-		public static GameController GC => GameController.gameController;
+		private static GameController GC => GameController.gameController;
 
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+		private static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+				BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
 
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+		private static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
-		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
+		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
-		public static MethodInfo ObjectReal_DamagedObject_base =
-			AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
+		private static MethodInfo ObjectReal_DamagedObject_base =
+				AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
 
-		public static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
-		public static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+		private static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+		private static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
 
-		public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction",
-			new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+		private static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction",
+				new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
 
-		public static MethodInfo ObjectReal_PressedButton_base =
-			AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+		private static MethodInfo ObjectReal_PressedButton_base =
+				AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
 
-		public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
-		public static MethodInfo ObjectReal_StopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
+		private static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
+		private static MethodInfo ObjectReal_StopInteraction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "StopInteraction", new Type[0] { });
 
-		public static MethodInfo PlayfieldObject_FinishedOperating_base =
-			AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
+		private static MethodInfo PlayfieldObject_FinishedOperating_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
 
-		public static MethodInfo PlayfieldObject_Interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
+		private static MethodInfo PlayfieldObject_Interact_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
 
-		public static MethodInfo PlayfieldObject_PressedButton_base =
-			AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+		private static MethodInfo PlayfieldObject_PressedButton_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
 
 		#region Main
 
@@ -124,19 +126,19 @@ namespace BunnyMod.Content
 			t = vNameType.Dialogue;
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordAlarmButton, t, new CustomNameInfo("I can't afford this. I should have worked harder!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordElevator, t,
-				new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
+					new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordToilet, t,
-				new CustomNameInfo("I'm too poor (and therefore too lazy and unworthy) for this privilege!"));
+					new CustomNameInfo("I'm too poor (and therefore too lazy and unworthy) for this privilege!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookDamage, t,
-				new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+					new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookNoDamage, t,
-				new CustomNameInfo("Mmmm, toasty. Just like the burning flesh on my fingers!"));
+					new CustomNameInfo("Mmmm, toasty. Just like the burning flesh on my fingers!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
 			_ = RogueLibs.CreateCustomName(cDialogue.PurchaseElevator, t, new CustomNameInfo("PAYMENT ACCEPTED - Thank you for using Evilator Co.!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t,
-				new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+					new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
 
@@ -180,28 +182,28 @@ namespace BunnyMod.Content
 
 				if (buttonLabel.EndsWith("-30"))
 				{
-					newLabel = buttonLabel.Replace("-30", "-" + BMAgents.ToolCost(objectReal.interactingAgent, 30));
+					newLabel = buttonLabel.Replace("-30", "-" + BMTraitController.ApplyToolCostModifiers(objectReal.interactingAgent, 30));
 					flag = true;
 				}
 				else if (buttonLabel.EndsWith("-20"))
 				{
-					newLabel = buttonLabel.Replace("-20", "-" + BMAgents.ToolCost(objectReal.interactingAgent, 20));
+					newLabel = buttonLabel.Replace("-20", "-" + BMTraitController.ApplyToolCostModifiers(objectReal.interactingAgent, 20));
 					flag = true;
 				}
 				else if (buttonLabel == " - 7HP")
 				{
-					newLabel = buttonLabel.Replace(" - 7HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
+					newLabel = buttonLabel.Replace(" - 7HP", " - " + BMTraitController.HealthCost(objectReal.interactingAgent, 7, DamageType.brokenWindow));
 					flag = true;
 				}
 				else if (buttonLabel == " - 15HP")
 				{
-					newLabel = buttonLabel.Replace(" - 15HP", " - " + BMTraits.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
+					newLabel = buttonLabel.Replace(" - 15HP", " - " + BMTraitController.HealthCost(objectReal.interactingAgent, 15, DamageType.brokenWindow));
 					flag = true;
 				}
 				else if (buttonLabel.EndsWith("(Burn hands for 10 damage)"))
 				{
 					newLabel = buttonLabel.Replace("(Burn hands for 10 damage)",
-						"(Burn hands for " + BMTraits.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
+							"(Burn hands for " + BMTraitController.HealthCost(objectReal.interactingAgent, 10, DamageType.burnedFingers) + " damage)");
 					flag = true;
 				}
 
@@ -221,111 +223,14 @@ namespace BunnyMod.Content
 
 		public void ObjectReal_00()
 		{
-			Prefix(typeof(ObjectReal), "DestroyMe", GetType(), "ObjectReal_DestroyMe", new Type[1] { typeof(PlayfieldObject) });
-			Prefix(typeof(ObjectReal), "DestroyMe3", GetType(), "ObjectReal_DestroyMe3", new Type[0] { });
-			Postfix(typeof(ObjectReal), "DetermineButtons", GetType(), "ObjectReal_DetermineButtons", new Type[0]);
 			Prefix(typeof(ObjectReal), "FinishedOperating", GetType(), "ObjectReal_FinishedOperating", new Type[0]);
 			Prefix(typeof(ObjectReal), "Interact", GetType(), "ObjectReal_Interact", new Type[1] { typeof(Agent) });
 			Prefix(typeof(ObjectReal), "MakeNonFunctional", GetType(), "ObjectReal_MakeNonFunctional", new Type[1] { typeof(PlayfieldObject) });
 			Postfix(typeof(ObjectReal), "ObjectAction", GetType(), "ObjectReal_ObjectAction",
-				new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+					new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
 			Prefix(typeof(ObjectReal), "ObjectUpdate", GetType(), "ObjectReal_ObjectUpdate", new Type[0]);
 			Prefix(typeof(ObjectReal), "PressedButton", GetType(), "ObjectReal_PressedButton", new Type[2] { typeof(string), typeof(int) });
 			Postfix(typeof(ObjectReal), "Start", GetType(), "ObjectReal_Start", new Type[0]);
-		}
-
-		public static bool ObjectReal_DestroyMe(PlayfieldObject damagerObject, ObjectReal __instance) // Prefix
-		{
-			BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-
-			if (__instance is Stove)
-				Stove_Variables[(Stove) __instance].savedDamagerObject = damagerObject;
-
-			return true;
-		}
-
-		public static bool ObjectReal_DestroyMe3(ObjectReal __instance) // Prefix
-		{
-			if (__instance is Stove)
-			{
-				if (GC.serverPlayer && !__instance.spawnedExplosion)
-				{
-					__instance.spawnedExplosion = true;
-					Explosion explosion = GC.spawnerMain.SpawnExplosion(Stove_Variables[(Stove) __instance].savedDamagerObject, __instance.tr.position,
-						"FireBomb", false, -1, false, __instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove) __instance].savedDamagerObject));
-
-					if (Stove_Variables[(Stove) __instance].noOwnCheckCountdown)
-						explosion.noOwnCheck = true;
-				}
-				GC.audioHandler.Stop(__instance, "GeneratorHiss");
-			}
-
-			return true;
-		}
-
-		public static void ObjectReal_DetermineButtons(ObjectReal __instance) // Postfix
-		{
-			Agent agent = __instance.interactingAgent;
-
-			if (__instance is FlamingBarrel)
-			{
-				if (__instance.ora.hasParticleEffect)
-				{
-					if (agent.inventory.HasItem(vItem.Fud))
-					{
-						__instance.buttons.Add("GrillFud");
-						__instance.buttonsExtra.Add(" (Burn hands for " + BMTraits.HealthCost(agent, 10, DamageType.burnedFingers) + " damage)");
-					}
-					else
-						BMHeaderTools.SayDialogue(agent, "CantGrillFud", vNameType.Dialogue);
-				}
-				else
-				{
-					if (agent.inventory.HasItem(vItem.CigaretteLighter))
-						__instance.buttons.Add("LightBarbecue");
-					else
-						BMHeaderTools.SayDialogue(agent, "CantOperateBarbecue", vNameType.Dialogue);
-				}
-			}
-			else if (__instance is Manhole)
-			{
-				Manhole manhole = (Manhole) __instance;
-
-				if (!manhole.opened && agent.inventory.HasItem(vItem.Crowbar))
-				{
-					__instance.buttons.Add("UseCrowbar");
-					__instance.buttonsExtra.Add(" (" + agent.inventory.FindItem(vItem.Crowbar).invItemCount + ") -" + BMAgents.ToolCost(agent, 15));
-				}
-
-				if (manhole.opened && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
-					__instance.buttons.Add("FlushYourself");
-			}
-			else if (__instance is Stove && !__instance.startedFlashing)
-			{
-				if (agent.inventory.HasItem(vItem.Wrench))
-				{
-					__instance.buttons.Add("UseWrenchToDetonate");
-					__instance.buttonsExtra.Add(" (" + agent.inventory.FindItem(vItem.Wrench).invItemCount + ") -" + BMAgents.ToolCost(agent, 30));
-				}
-
-				if (agent.inventory.HasItem(vItem.Fud))
-				{
-					if (GC.challenges.Contains(cChallenge.AnCapistan))
-					{
-						__instance.buttons.Add(cButtonText.GrillFudPaid);
-						__instance.buttonPrices.Add(5);
-					}
-					else
-						__instance.buttons.Add("GrillFud");
-				}
-			}
-			else if (__instance is TrashCan) // This is already gated for Diminutive/SBD
-			{
-				__instance.buttons.Add(cButtonText.HideInContainer);
-				__instance.buttons.Add(cButtonText.OpenContainer);
-			}
-			else if (__instance is VendorCart && VendorCartStolenFrom[__instance] == false)
-				__instance.buttons.Add(cButtonText.StealItem);
 		}
 
 		public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
@@ -372,7 +277,7 @@ namespace BunnyMod.Content
 
 			if (__instance is Bathtub || __instance is Plant || __instance is PoolTable || __instance is TableBig)
 			{
-				if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+				if (agent.HasTrait<StealthBastardDeluxe>())
 				{
 					agent.SetInvisible(false);
 					agent.statusEffects.BecomeHidden(__instance);
@@ -426,7 +331,7 @@ namespace BunnyMod.Content
 		}
 
 		public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject,
-			ObjectReal __instance, ref bool ___noMoreObjectActions) // Postfix
+				ObjectReal __instance, ref bool ___noMoreObjectActions) // Postfix
 		{
 			BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
 
@@ -591,14 +496,14 @@ namespace BunnyMod.Content
 		public void PlayfieldObject_00()
 		{
 			Postfix(typeof(PlayfieldObject), "DetermineLuck", GetType(), "PlayfieldObject_DetermineLuck",
-				new Type[3] { typeof(int), typeof(string), typeof(bool) });
+					new Type[3] { typeof(int), typeof(string), typeof(bool) });
 			Prefix(typeof(PlayfieldObject), "Operating", GetType(), "PlayfieldObject_Operating",
-				new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
+					new Type[5] { typeof(Agent), typeof(InvItem), typeof(float), typeof(bool), typeof(string) });
 			Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
 		}
 
 		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance,
-			ref int __result) // Postfix
+				ref int __result) // Postfix
 		{
 			Agent agent = __instance.playfieldObjectAgent;
 
@@ -662,9 +567,9 @@ namespace BunnyMod.Content
 
 			if (RATStargetable)
 			{
-				if (agent.statusEffects.hasTrait(cTrait.RATS))
+				if (agent.HasTrait<RATS>())
 					luckMultiplier += 1;
-				if (agent.statusEffects.hasTrait(cTrait.RATS_2))
+				if (agent.HasTrait<RATS2>())
 					luckMultiplier += 2;
 
 				if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
@@ -672,20 +577,20 @@ namespace BunnyMod.Content
 						luckMultiplier *= 2;
 			}
 
-			if (agent.statusEffects.hasTrait(cTrait.Charmed))
+			if (agent.HasTrait<Charmed>())
 				luckMultiplier += 1;
-			else if (agent.statusEffects.hasTrait(cTrait.Charmed_2))
+			else if (agent.HasTrait<Charmed2>())
 				luckMultiplier += 2;
-			else if (agent.statusEffects.hasTrait(cTrait.Cursed))
+			else if (agent.HasTrait<Cursed>())
 				luckMultiplier += -1;
-			else if (agent.statusEffects.hasTrait(cTrait.Cursed_2))
+			else if (agent.HasTrait<Cursed2>())
 				luckMultiplier += -2;
 
 			__result = Mathf.Clamp(__result + (luckBonus * luckMultiplier), 0, 100);
 		}
 
 		public static bool PlayfieldObject_Operating(Agent myAgent, InvItem item, float timeToUnlock, bool makeNoise, string barType,
-			PlayfieldObject __instance) // Prefix
+				PlayfieldObject __instance) // Prefix
 		{
 			try
 			{
@@ -710,8 +615,8 @@ namespace BunnyMod.Content
 			{
 				Stove stove = (Stove) __instance;
 				return (myItem.invItemName == "Wrench" || myItem.invItemName == "Fud")
-					&& __instance.timer == 0f
-					&& !stove.startedFlashing;
+						&& __instance.timer == 0f
+						&& !stove.startedFlashing;
 			}
 			else
 				return false;
@@ -727,11 +632,11 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Postfix(t, "spawnObjectReal", g, "SpawnerMain_spawnObjectReal",
-				new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
+					new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
 		}
 
 		public static void SpawnerMain_spawnObjectReal(Vector3 objectPos, PlayfieldObject objectSource, string objectType, string myDir,
-			WorldDataObject worldDataObjects, int worldDataElementPosition, SpawnerMain __instance) // Postfix
+				WorldDataObject worldDataObjects, int worldDataElementPosition, SpawnerMain __instance) // Postfix
 		{
 			// LitterallyTheWorst
 			// FloralerFlora
@@ -753,7 +658,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-								vObject.Bush, false);
+									vObject.Bush, false);
 							chance -= 20;
 						}
 
@@ -763,7 +668,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-								vObject.Bush, false);
+									vObject.Bush, false);
 							chance -= 20;
 						}
 
@@ -773,7 +678,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)),
-								vObject.Bush, false);
+									vObject.Bush, false);
 							chance -= 66;
 						}
 
@@ -783,7 +688,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-								vObject.Bush, false);
+									vObject.Bush, false);
 							chance -= 10;
 						}
 
@@ -797,7 +702,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-								vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
+									vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
 							chance -= 10;
 						}
 
@@ -807,7 +712,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.24f, 0.24f), loc.y + Random.Range(-0.12f, 0.12f)),
-								vObject.Bush, true);
+									vObject.Bush, true);
 							chance -= 25;
 						}
 
@@ -820,7 +725,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-								vObject.FlamingBarrel, false);
+									vObject.FlamingBarrel, false);
 							chance -= 15;
 						}
 
@@ -833,7 +738,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)),
-								vObject.FlamingBarrel, false);
+									vObject.FlamingBarrel, false);
 							chance -= 10;
 						}
 
@@ -843,7 +748,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.08f, 0.08f), loc.y + Random.Range(-0.08f, 0.08f)),
-								vObject.Bush, true);
+									vObject.Bush, true);
 							chance -= 50;
 						}
 
@@ -853,7 +758,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)),
-								vObject.FlamingBarrel, false);
+									vObject.FlamingBarrel, false);
 							chance -= 100;
 						}
 
@@ -866,7 +771,7 @@ namespace BunnyMod.Content
 						while (GC.percentChance(chance))
 						{
 							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-								cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
+									cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
 							chance -= 15;
 						}
 
@@ -905,7 +810,7 @@ namespace BunnyMod.Content
 					__instance.buttons.Add("AllAccessAlarmButton");
 
 				if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") ||
-					__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+						__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
 					__instance.buttons.Add("HackExplode");
 			}
 
@@ -959,8 +864,9 @@ namespace BunnyMod.Content
 				}
 
 				if (!__instance.noLockdown && __instance.gc.levelFeeling != "WarZone" && __instance.gc.levelFeeling != "Ooze" &&
-					__instance.gc.levelFeeling != "Riot" && __instance.gc.levelFeeling != "Zombies" && !__instance.gc.challenges.Contains("ZombieMutator") &&
-					!__instance.gc.lockdown)
+						__instance.gc.levelFeeling != "Riot" && __instance.gc.levelFeeling != "Zombies" && !__instance.gc.challenges.Contains("ZombieMutator")
+						&&
+						!__instance.gc.lockdown)
 				{
 					__instance.gc.audioHandler.Play(__instance.gc.playerAgent, "LockdownWallUp");
 
@@ -977,7 +883,7 @@ namespace BunnyMod.Content
 						ObjectReal objectReal = __instance.gc.objectRealList[k];
 
 						if (objectReal.startingChunk == __instance.startingChunk && objectReal.objectName == "Door" && prison != 0 &&
-							prison == __instance.gc.tileInfo.GetTileData(objectReal.tr.position).prison)
+								prison == __instance.gc.tileInfo.GetTileData(objectReal.tr.position).prison)
 						{
 							bool flag = true;
 
@@ -986,7 +892,7 @@ namespace BunnyMod.Content
 								Agent agent = __instance.gc.agentList[l];
 
 								if (agent.curTileData.prison == prison && agent.curTileData.chunkID == __instance.startingChunk &&
-									(agent.ownerID != __instance.owner || agent.startingChunk != __instance.startingChunk) && !agent.upperCrusty)
+										(agent.ownerID != __instance.owner || agent.startingChunk != __instance.startingChunk) && !agent.upperCrusty)
 									flag = false;
 							}
 
@@ -1046,7 +952,7 @@ namespace BunnyMod.Content
 								ObjectReal objectReal2 = __instance.gc.objectRealList[l];
 
 								if (objectReal2.startingChunk == objectReal.startingChunk && objectReal2.objectName == "Door" && prison != 0 &&
-									prison == __instance.gc.tileInfo.GetTileData(objectReal2.tr.position).prison)
+										prison == __instance.gc.tileInfo.GetTileData(objectReal2.tr.position).prison)
 									((Door) objectReal2).OpenDoor(null);
 							}
 						}
@@ -1128,7 +1034,7 @@ namespace BunnyMod.Content
 			if (buttonText == "AllAccessAlarmButton")
 			{
 				if ((!__instance.interactingAgent.oma.superSpecialAbility || !(__instance.interactingAgent.agentName == "Hacker")) &&
-					!__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+						!__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
 					__instance.hackable = false;
 
 				__instance.hacked = true;
@@ -1247,7 +1153,7 @@ namespace BunnyMod.Content
 					__instance.buttons.Add("SpitOutMoney");
 
 				if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") ||
-					__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+						__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
 				{
 					__instance.buttons.Add("HackExplode");
 
@@ -1259,7 +1165,8 @@ namespace BunnyMod.Content
 				bool flag = false;
 
 				if (__instance.readyForDelivery &&
-					(__instance.interactingAgent.inventory.HasItem("CourierPackage") || __instance.interactingAgent.inventory.HasItem("CourierPackageBroken")))
+						(__instance.interactingAgent.inventory.HasItem("CourierPackage")
+								|| __instance.interactingAgent.inventory.HasItem("CourierPackageBroken")))
 				{
 					__instance.buttons.Add("DeliverPackage");
 					__instance.buttonPrices.Add(0);
@@ -1267,9 +1174,9 @@ namespace BunnyMod.Content
 				}
 
 				if (!__instance.gc.challenges.Contains("Sandbox") &&
-					!__instance.gc.challenges.Contains("SpeedRun") &&
-					!__instance.gc.challenges.Contains("SpeedRun2") &&
-					!__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
+						!__instance.gc.challenges.Contains("SpeedRun") &&
+						!__instance.gc.challenges.Contains("SpeedRun2") &&
+						!__instance.gc.customCampaign && !__instance.gc.wasLevelEditing)
 				{
 					__instance.buttons.Add("StoreItem");
 					__instance.buttonPrices.Add(0);
@@ -1278,10 +1185,10 @@ namespace BunnyMod.Content
 				}
 
 				if (!__instance.specialInvDatabase.isEmpty() &&
-					!__instance.gc.challenges.Contains("SpeedRun") &&
-					!__instance.gc.challenges.Contains("SpeedRun2") &&
-					!__instance.gc.customCampaign &&
-					!__instance.gc.wasLevelEditing)
+						!__instance.gc.challenges.Contains("SpeedRun") &&
+						!__instance.gc.challenges.Contains("SpeedRun2") &&
+						!__instance.gc.customCampaign &&
+						!__instance.gc.wasLevelEditing)
 				{
 					__instance.buttons.Add("RetrieveStoredItem");
 					__instance.buttonPrices.Add(0);
@@ -1293,8 +1200,8 @@ namespace BunnyMod.Content
 				}
 
 				if (__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt") ||
-					__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt2") ||
-					__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt3"))
+						__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt2") ||
+						__instance.interactingAgent.statusEffects.hasStatusEffect("InDebt3"))
 				{
 					__instance.buttons.Add("PayBackDebt");
 					__instance.buttonPrices.Add(__instance.interactingAgent.CalculateDebt());
@@ -1303,15 +1210,15 @@ namespace BunnyMod.Content
 				}
 
 				if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1") ||
-					__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-					__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+						__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
+						__instance.interactingAgent.HasTrait<Priors>())
 				{
 					__instance.buttons.Add("PayCops");
 
 					if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops1"))
 						__instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops1"));
 					else if (__instance.interactingAgent.statusEffects.hasStatusEffect("OweCops2") ||
-						__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+							__instance.interactingAgent.HasTrait<Priors>())
 						__instance.buttonPrices.Add(__instance.determineMoneyCost("PayCops2"));
 
 					__instance.buttonsExtra.Add("");
@@ -1340,7 +1247,7 @@ namespace BunnyMod.Content
 
 		public static void ATMMachine_PayCops(ATMMachine __instance) // Postfix
 		{
-			if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.Priors))
+			if (__instance.interactingAgent.HasTrait<Priors>())
 			{
 				if (!__instance.moneySuccess(__instance.determineMoneyCost("PayCops2")))
 				{
@@ -1404,7 +1311,7 @@ namespace BunnyMod.Content
 		public static bool Door_CloseDoor(Agent myAgent, bool remote, Door __instance) // Replacement
 		{
 			if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions &&
-				(__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
+					(__instance.interactingAgent == GC.playerAgent || (myAgent != null && myAgent.oma.mindControlled))))
 			{
 				if (__instance.open && !__instance.destroyed)
 				{
@@ -1452,7 +1359,7 @@ namespace BunnyMod.Content
 					__instance.doorCooldown = 0.25f;
 
 					if (myAgent != null && myAgent.isPlayer > 0 && GC.serverPlayer && !__instance.outsideDoor &&
-						!myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+							!myAgent.HasTrait<StealthBastardDeluxe>())
 						GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
 
 					if (__instance.locked)
@@ -1562,7 +1469,7 @@ namespace BunnyMod.Content
 		{
 			// VeryHardOnYourself
 
-			if (myAgent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+			if (myAgent.HasTrait<VeryHardOnYourself>())
 			{
 				bool someFreed = false;
 
@@ -1579,7 +1486,7 @@ namespace BunnyMod.Content
 			BMLog("Door_OpenDoor");
 
 			if (GC.serverPlayer || GC.clientControlling || (__instance.immediateInteractions &&
-				(__instance.interactingAgent == GC.playerAgent || myAgent != null && myAgent.oma.mindControlled)))
+					(__instance.interactingAgent == GC.playerAgent || myAgent != null && myAgent.oma.mindControlled)))
 			{
 				if (__instance.hasDetonator)
 				{
@@ -1642,10 +1549,10 @@ namespace BunnyMod.Content
 					__instance.lowInteractionPriority = true;
 					__instance.doorCooldown = 0.25f;
 
-					if (GC.serverPlayer && myAgent != null && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+					if (GC.serverPlayer && myAgent != null && !myAgent.HasTrait<StealthBastardDeluxe>())
 						GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.2f, null, null, myAgent);
 
-					if (myAgent != null && !remote && !__instance.boughtKeyInChunk && !myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+					if (myAgent != null && !remote && !__instance.boughtKeyInChunk && !myAgent.HasTrait<StealthBastardDeluxe>())
 					{
 						GC.OwnCheck(myAgent, __instance.go, "Door", 0);
 
@@ -1684,7 +1591,7 @@ namespace BunnyMod.Content
 					if (GC.levelType == "Tutorial" && __instance.interactingAgent == GC.playerAgent && __instance.wasLocked)
 					{
 						if (__instance.interactingAgent.inventory.HasItem("Key") && !___usedTutorialKey && (GC.tutorial.tutorialPart == "UseKeyOnDoor" ||
-							GC.tutorial.tutorialPart == "LoseHealth" || GC.tutorial.tutorialPart == "TranquilizeTarget"))
+								GC.tutorial.tutorialPart == "LoseHealth" || GC.tutorial.tutorialPart == "TranquilizeTarget"))
 						{
 							__instance.DestroyKeyItem("Key");
 							GC.tutorial.UseKeyOnDoor();
@@ -1692,7 +1599,7 @@ namespace BunnyMod.Content
 						}
 					}
 					else if (__instance.wasLocked && !__instance.locked &&
-						((__instance.prisonDoor > 0 && __instance.prisonDoor > 0) || __instance.startingChunkRealDescription == "Hotel"))
+							((__instance.prisonDoor > 0 && __instance.prisonDoor > 0) || __instance.startingChunkRealDescription == "Hotel"))
 						__instance.DestroyKeyItem("Key");
 
 					try
@@ -1805,7 +1712,7 @@ namespace BunnyMod.Content
 				}
 
 				if (__instance.interactingAgent != null && !__instance.boughtKeyInChunk &&
-					!__instance.interactingAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+						!__instance.interactingAgent.HasTrait<StealthBastardDeluxe>())
 					__instance.StartCoroutine(__instance.delayedOwnCheck(__instance.interactingAgent));
 
 				if (!___destroyingDoor)
@@ -2050,7 +1957,7 @@ namespace BunnyMod.Content
 			GC.audioHandler.Play(__instance, "FireHit");
 
 			if (agent.statusEffects.hasTrait(vTrait.ResistFire) || agent.statusEffects.hasTrait(vTrait.FireproofSkin) ||
-				agent.statusEffects.hasTrait(vTrait.FireproofSkin2))
+					agent.statusEffects.hasTrait(vTrait.FireproofSkin2))
 				BMHeaderTools.SayDialogue(agent, cDialogue.FlamingBarrelCookNoDamage, vNameType.Dialogue);
 			else
 			{
@@ -2224,8 +2131,8 @@ namespace BunnyMod.Content
 				{
 					Agent agent = myObject.GetComponent<Agent>();
 
-					if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.statusEffects.hasTrait(cTrait.UnderdarkCitizen) &&
-						!agent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
+					if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.HasTrait<UnderdarkCitizen>() &&
+							!agent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
 					{
 						Manhole_FlushYourself(agent, (Manhole) __instance.GetComponent<ObjectReal>());
 
@@ -2271,7 +2178,7 @@ namespace BunnyMod.Content
 						lightTemp.fancyLight.Color = new Color(0.75f, 0f, 0f, 0.75f);
 
 					lightTemp.transform.position = new Vector3(__instance.transform.position.x, __instance.transform.position.y + 0.24f,
-						lightTemp.transform.position.z);
+							lightTemp.transform.position.z);
 					__instance.StartCoroutine(__instance.WaitToStartAmbientAudio());
 				}
 
@@ -2370,7 +2277,7 @@ namespace BunnyMod.Content
 
 				__instance.interactingAgent.Teleport(exitSpot, false, true);
 				GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-					__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+						__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
 			}
 		}
 
@@ -2443,7 +2350,7 @@ namespace BunnyMod.Content
 
 				__instance.interactingAgent.Teleport(exitSpot, false, true);
 				GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-					__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+						__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
 			}
 		}
 
@@ -2488,7 +2395,7 @@ namespace BunnyMod.Content
 			ObjectReal_Start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
 			if (GC.levelTheme != 3 && !GC.challenges.Contains(vChallenge.MixedUpLevels) && GC.levelFeeling != vLevelFeeling.WarZone &&
-				!BMTraits.IsPlayerTraitActive(cTrait.UnderdarkCitizen) && GC.serverPlayer)
+					!BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>() && GC.serverPlayer)
 			{
 				__instance.objectName = "Manhole";
 				__instance.RemoveMe();
@@ -2530,7 +2437,7 @@ namespace BunnyMod.Content
 				__instance.hole.ObjectHoleAppear("Manhole");
 				GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "HoleAppear");
 				__instance.operatingAgent.inventory.SubtractFromItemCount(__instance.operatingItem,
-					15); // SubtractFromItemCount is Postfixed! ToolCost is already in there.
+						15); // SubtractFromItemCount is Postfixed! ToolCost is already in there.
 			}
 
 			__instance.objectSprite.meshRenderer.enabled = false;
@@ -2633,7 +2540,7 @@ namespace BunnyMod.Content
 			Prefix(t, "MyUpdate", g, "SecurityCam_MyUpdate", new Type[0] { });
 			Prefix(t, "PressedButton", g, "SecurityCam_PressedButton", new Type[2] { typeof(string), typeof(int) });
 			Prefix(t, "ObjectAction", g, "SecurityCam_ObjectAction",
-				new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+					new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
 			Postfix(t, "StartLate", g, "SecurityCam_StartLate", new Type[0] { });
 		}
 
@@ -2692,7 +2599,7 @@ namespace BunnyMod.Content
 
 
 				if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") ||
-					__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+						__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
 				{
 					__instance.buttons.Add("HackExplode");
 					__instance.buttonsExtra.Add("");
@@ -2781,27 +2688,27 @@ namespace BunnyMod.Content
 						Agent agent = __instance.gc.activeBrainAgentList[i];
 
 						if (agent.brain.active && !agent.invisible && !agent.ghost && !agent.objectAgent && !agent.mechEmpty && !agent.dead &&
-							!agent.underBox &&
-							(agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0))
+								!agent.underBox &&
+								(agent.prisoner <= 0 || agent.ownerID != 0 || agent.isPlayer != 0))
 						{
 							if (__instance.targets == "NonOwners")
 								agentFlag =
-									(agent.ownerID != __instance.owner && agent.ownerID != 99) ||
-									(agent.startingChunk != __instance.startingChunk &&
-										(__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
+										(agent.ownerID != __instance.owner && agent.ownerID != 99) ||
+										(agent.startingChunk != __instance.startingChunk &&
+												(__instance.startingSector == 0 || agent.startingSector != __instance.startingSector));
 							else if (__instance.targets == "Owners")
 								agentFlag =
-									((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
-										(agent.startingChunk == __instance.startingChunk ||
-											(__instance.startingSector != 0 && agent.startingSector == __instance.startingSector))) ||
-									((agent.enforcer || agent.statusEffects.hasTrait(vTrait.TheLaw)) && __instance.owner == 85);
+										((agent.ownerID == __instance.owner || agent.ownerID == 99) &&
+												(agent.startingChunk == __instance.startingChunk ||
+														(__instance.startingSector != 0 && agent.startingSector == __instance.startingSector))) ||
+										((agent.enforcer || agent.statusEffects.hasTrait(vTrait.TheLaw)) && __instance.owner == 85);
 							else if (__instance.targets == "Everyone")
 								agentFlag = true;
 							else if (__instance.targets == "Wanted")
 								agentFlag = agent.statusEffects.hasTrait(vTrait.Wanted);
 							else if (__instance.targets == "Guilty")
 								agentFlag = agent.objectMultAgent.mustBeGuilty || agent.statusEffects.hasTrait(vTrait.Wanted) ||
-									agent.statusEffects.hasTrait(cTrait.Priors);
+										agent.HasTrait<Priors>();
 						}
 
 						if (agentFlag && agent.curTileData.chunkID == __instance.startingChunk && agent.curTileData.floorMaterial != floorMaterialType.None)
@@ -2809,12 +2716,12 @@ namespace BunnyMod.Content
 							float num = Vector2.Distance(agent.tr.position, __instance.tr.position);
 
 							if (num > __instance.blindSpotDistance && num < 9f &&
-								__instance.HasLOSObjectNormal(agent, num) &&
-								agent.curOwnerTile == __instance.owner &&
-								!agent.statusEffects.hasTrait("InvisibleToCameras") &&
-								__instance.functional &&
-								!__instance.destroyed &&
-								!__instance.destroying)
+									__instance.HasLOSObjectNormal(agent, num) &&
+									agent.curOwnerTile == __instance.owner &&
+									!agent.statusEffects.hasTrait("InvisibleToCameras") &&
+									__instance.functional &&
+									!__instance.destroyed &&
+									!__instance.destroying)
 								__instance.agentsInView.Add(agent);
 
 							BMLog("\tAgentsInView:\t" + __instance.agentsInView.Count());
@@ -2855,11 +2762,11 @@ namespace BunnyMod.Content
 
 								__instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
 								__instance.gc.spawnerMain.SpawnNoise(__instance.agentsInView[k].tr.position, 4f, __instance, "Alarm",
-									__instance.agentsInView[k]);
+										__instance.agentsInView[k]);
 
 								if ((__instance.targets == "Everyone" || __instance.targets == "Owners") &&
-									(__instance.agentsInView[k].ownerID == __instance.owner || __instance.agentsInView[k].ownerID == 99) &&
-									__instance.agentsInView[k].startingChunk == __instance.startingChunk)
+										(__instance.agentsInView[k].ownerID == __instance.owner || __instance.agentsInView[k].ownerID == 99) &&
+										__instance.agentsInView[k].startingChunk == __instance.startingChunk)
 								{
 									__instance.agentsInView[k].relationships.SetRel(__instance.objectAgent, "Hateful");
 									__instance.agentsInView[k].relationships.SetRelHate(__instance.objectAgent, 5);
@@ -2884,11 +2791,11 @@ namespace BunnyMod.Content
 
 								__instance.gc.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
 								__instance.gc.spawnerMain.SpawnNoise(__instance.agentsInView[j].tr.position, 4f, __instance, "Alarm",
-									__instance.agentsInView[j]);
+										__instance.agentsInView[j]);
 
 								if ((__instance.targets == "Everyone" || __instance.targets == "Owners") &&
-									(__instance.agentsInView[j].ownerID == __instance.owner || __instance.agentsInView[j].ownerID == 99) &&
-									__instance.agentsInView[j].startingChunk == __instance.startingChunk)
+										(__instance.agentsInView[j].ownerID == __instance.owner || __instance.agentsInView[j].ownerID == 99) &&
+										__instance.agentsInView[j].startingChunk == __instance.startingChunk)
 								{
 									__instance.agentsInView[j].relationships.SetRel(__instance.objectAgent, "Hateful");
 									__instance.agentsInView[j].relationships.SetRelHate(__instance.objectAgent, 5);
@@ -3015,10 +2922,10 @@ namespace BunnyMod.Content
 		}
 
 		public static bool SecurityCam_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject,
-			SecurityCam __instance, ref bool ___noMoreObjectActions) // Replacement
+				SecurityCam __instance, ref bool ___noMoreObjectActions) // Replacement
 		{
 			ObjectReal_ObjectAction_base.GetMethodWithoutOverrides<Action<string, string, float, Agent, PlayfieldObject>>(__instance)
-				.Invoke(myAction, extraString, extraFloat, causerAgent, extraObject);
+					.Invoke(myAction, extraString, extraFloat, causerAgent, extraObject);
 
 			if (!___noMoreObjectActions)
 			{
@@ -3103,7 +3010,7 @@ namespace BunnyMod.Content
 				__instance.buttons.Add(cButtonText.SlotMachineHackJackpot);
 
 				if ((__instance.interactingAgent.oma.superSpecialAbility && __instance.interactingAgent.agentName == "Hacker") ||
-					__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
+						__instance.interactingAgent.statusEffects.hasTrait("HacksBlowUpObjects"))
 					__instance.buttons.Add("HackExplode");
 			}
 			else
@@ -3163,7 +3070,7 @@ namespace BunnyMod.Content
 
 			BMLog("\tpayout: " + payout);
 
-			if (payoutMult == 64 || __instance.interactingAgent.statusEffects.hasTrait(cTrait.Debug))
+			if (payoutMult == 64 || __instance.interactingAgent.HasTrait<Debug>())
 				SlotMachine_Jackpot(payout, __instance);
 			else if (payoutMult > 0)
 			{
@@ -3259,7 +3166,7 @@ namespace BunnyMod.Content
 				}
 
 				if (i % 20 == 0 && i != 0)
-					// BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot_ + (i / 20).ToString(), vNameType.Dialogue); // Testing
+						// BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot_ + (i / 20).ToString(), vNameType.Dialogue); // Testing
 					BMHeaderTools.SayDialogue(__instance, cDialogue.SlotMachineJackpot_1, vNameType.Dialogue);
 
 				await Task.Delay(100);
@@ -3503,7 +3410,7 @@ namespace BunnyMod.Content
 			{
 				GC.spawnerMain.SpawnFire(__instance.tossedBy, __instance.tr.position);
 				GC.spawnerMain.SpawnExplosion(Stove_Variables[(Stove) __instance].savedDamagerObject, __instance.tr.position, "FireBomb", false, -1, false,
-					__instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove) __instance].savedDamagerObject));
+						__instance.FindMustSpawnExplosionOnClients(Stove_Variables[(Stove) __instance].savedDamagerObject));
 			}
 			return false;
 		}
@@ -3645,8 +3552,8 @@ namespace BunnyMod.Content
 				if (GC.levelType != "HomeBase")
 				{
 					if ((__instance.interactingAgent.statusEffects.hasTrait("Diminutive") ||
-							__instance.interactingAgent.statusEffects.hasStatusEffect("Shrunk")) &&
-						!__instance.interactingAgent.statusEffects.hasStatusEffect("Giant"))
+									__instance.interactingAgent.statusEffects.hasStatusEffect("Shrunk")) &&
+							!__instance.interactingAgent.statusEffects.hasStatusEffect("Giant"))
 					{
 						__instance.buttons.Add("FlushYourself");
 						__instance.buttonPrices.Add(10);
@@ -3674,11 +3581,11 @@ namespace BunnyMod.Content
 
 		public static bool Toilet_FlushYourself(Toilet __instance) // Replacement
 		{
-			if (__instance.interactingAgent.statusEffects.hasTrait(cTrait.UnderdarkCitizen))
+			if (__instance.interactingAgent.HasTrait<UnderdarkCitizen>())
 			{
 				if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) ||
-						__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Shrunk)) &&
-					!__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
+								__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Shrunk)) &&
+						!__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
 				{
 					List<ObjectReal> exits = new List<ObjectReal>();
 
@@ -3754,7 +3661,7 @@ namespace BunnyMod.Content
 					__instance.interactingAgent.toiletTeleporting = true;
 					__instance.interactingAgent.Teleport(exitSpot, false, true);
 					GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-						__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
+							__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
 				}
 
 				return false;
@@ -3804,7 +3711,7 @@ namespace BunnyMod.Content
 
 		public static bool TrashCan_Interact(Agent agent, TrashCan __instance) // Prefix
 		{
-			if (agent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe) && agent.statusEffects.hasTrait(vTrait.Diminutive))
+			if (agent.HasTrait<StealthBastardDeluxe>() && agent.statusEffects.hasTrait(vTrait.Diminutive))
 			{
 				ObjectReal_Interact_base.GetMethodWithoutOverrides<Action<Agent>>(__instance).Invoke(agent);
 
@@ -3834,11 +3741,11 @@ namespace BunnyMod.Content
 			// Police State
 
 			if ((!brainMustBeActive || myAgent.brain.active) &&
-				!myAgent.invisible &&
-				!myAgent.ghost &&
-				!myAgent.objectAgent &&
-				(myAgent.prisoner <= 0 || myAgent.ownerID != 0) &&
-				!myAgent.statusEffects.hasTrait("InvisibleToCameras"))
+					!myAgent.invisible &&
+					!myAgent.ghost &&
+					!myAgent.objectAgent &&
+					(myAgent.prisoner <= 0 || myAgent.ownerID != 0) &&
+					!myAgent.statusEffects.hasTrait("InvisibleToCameras"))
 			{
 				if (__instance.targets == "Wanted")
 				{
@@ -3918,7 +3825,7 @@ namespace BunnyMod.Content
 				return false;
 			}
 
-			if (!myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+			if (!myAgent.HasTrait<StealthBastardDeluxe>())
 				GC.audioHandler.Play(myAgent, "MeleeHitAgentCutSmallClients");
 
 			__instance.StopInteraction();
@@ -3935,7 +3842,7 @@ namespace BunnyMod.Content
 			else
 				myAgent.tr.position = new Vector3(__instance.tr.position.x, __instance.tr.position.y - 0.32f, myAgent.tr.position.z);
 
-			if (myAgent.statusEffects.hasTrait(cTrait.StealthBastardDeluxe))
+			if (myAgent.HasTrait<StealthBastardDeluxe>())
 				return false;
 
 			float dmg = 15f;

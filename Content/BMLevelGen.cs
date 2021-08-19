@@ -18,10 +18,10 @@ namespace BunnyMod.Content
 		public static GameController GC => GameController.gameController;
 
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+				BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
 
 		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
@@ -162,14 +162,14 @@ namespace BunnyMod.Content
 		}
 
 		public static bool IsNextToLake(Vector2 spot) =>
-			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
-			GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
+				GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y + 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y - 0.64f)).lake ||
+				GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).lake;
 
 		public static string GetActiveFloorMod()
 		{
@@ -308,9 +308,9 @@ namespace BunnyMod.Content
 			Type g = GetType();
 
 			Prefix(t, "Spawn", g, "BasicWall_Spawn_Prefix",
-				new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+					new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 			Postfix(t, "Spawn", g, "BasicWall_Spawn_Postfix",
-				new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
+					new Type[5] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) });
 		}
 
 		public static void BasicWall_Spawn_Prefix(SpawnerBasic spawner, ref string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) // Prefix
@@ -330,7 +330,7 @@ namespace BunnyMod.Content
 				while (GC.percentChance(chance))
 				{
 					GC.spawnerMain.SpawnWreckagePileObject(new Vector2(myPos.x + Random.Range(-0.48f, 0.48f), myPos.y + Random.Range(-0.48f, 0.48f)),
-						vObject.Bush, false);
+							vObject.Bush, false);
 					chance -= 20;
 				}
 			}
@@ -356,7 +356,7 @@ namespace BunnyMod.Content
 		}
 
 		public static bool
-			LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
+				LoadLevel_CreateInitialMap(LoadLevel __instance, ref bool ___placedKey1, ref bool ___placedKey2, ref bool ___placedKey3) // Replacement
 		{
 			// Set Custom Quest Count
 			// Set Custom Map Size 
@@ -380,13 +380,13 @@ namespace BunnyMod.Content
 						int y = (int) (9f - levelEditorTileChunk.posY);
 
 						if (levelEditorTileChunk.tileName == "Randomized11" || levelEditorTileChunk.tileName == "Randomized12" ||
-							levelEditorTileChunk.tileName == "Randomized22")
+								levelEditorTileChunk.tileName == "Randomized22")
 						{
 							__instance.mapChunkArray[x, y].randomTile = true;
 							__instance.mapChunkArray[x, y].customLevelChunk = false;
 						}
 						else if (levelEditorTileChunk.tileName == "Empty11" || levelEditorTileChunk.tileName == "Empty12" ||
-							levelEditorTileChunk.tileName == "Empty22")
+								levelEditorTileChunk.tileName == "Empty22")
 						{
 							__instance.mapChunkArray[x, y].randomTile = false;
 							__instance.mapChunkArray[x, y].customLevelChunk = false;
@@ -417,8 +417,8 @@ namespace BunnyMod.Content
 
 						Debug.Log(string.Concat(new object[]
 						{
-							"Fill Custom Level Tile: ", __instance.mapChunkArray[x, y].chunkName, " - ", levelEditorTileChunk.directionX, " - ",
-							__instance.mapChunkArray[x, y].chunkDirX, " - ", levelEditorTileChunk.rotation
+								"Fill Custom Level Tile: ", __instance.mapChunkArray[x, y].chunkName, " - ", levelEditorTileChunk.directionX, " - ",
+								__instance.mapChunkArray[x, y].chunkDirX, " - ", levelEditorTileChunk.rotation
 						}));
 					}
 				}
@@ -854,8 +854,8 @@ namespace BunnyMod.Content
 
 						string chunkExit2 = GC.Choose<string>("N", "S", new string[]
 						{
-							"E",
-							"W"
+								"E",
+								"W"
 						});
 
 						if (__instance.PlaceChunk(chunkExit2, randC, randD))
@@ -931,7 +931,7 @@ namespace BunnyMod.Content
 							int num20 = Random.Range(0, 10);
 
 							if (__instance.mapChunkArray[num20, randA - 1].chunkID != 0 && __instance.mapChunkArray[num20, randA + 1].chunkID != 0 &&
-								Mathf.Abs(num20 - num17) > 2 && __instance.mapChunkArray[num20, randA].special == "Canal")
+									Mathf.Abs(num20 - num17) > 2 && __instance.mapChunkArray[num20, randA].special == "Canal")
 								num16 = num20;
 
 							num18++;
@@ -946,7 +946,7 @@ namespace BunnyMod.Content
 								int num21 = Random.Range(0, 10);
 
 								if (__instance.mapChunkArray[num21, randA - 1].chunkID != 0 && Mathf.Abs(num21 - num17) > 2 &&
-									__instance.mapChunkArray[num21, randA].special == "Canal")
+										__instance.mapChunkArray[num21, randA].special == "Canal")
 									num16 = num21;
 
 								num18++;
@@ -962,7 +962,7 @@ namespace BunnyMod.Content
 								int num22 = Random.Range(0, 10);
 
 								if (__instance.mapChunkArray[num22, randA + 1].chunkID != 0 && Mathf.Abs(num22 - num17) > 2 &&
-									__instance.mapChunkArray[num22, randA].special == "Canal")
+										__instance.mapChunkArray[num22, randA].special == "Canal")
 									num16 = num22;
 
 								num18++;
@@ -1005,7 +1005,7 @@ namespace BunnyMod.Content
 							int num27 = Random.Range(0, 10);
 
 							if (__instance.mapChunkArray[randB - 1, num27].chunkID != 0 && __instance.mapChunkArray[randB + 1, num27].chunkID != 0 &&
-								Mathf.Abs(num27 - num25) > 2 && __instance.mapChunkArray[randB, num27].special == "CanalNS")
+									Mathf.Abs(num27 - num25) > 2 && __instance.mapChunkArray[randB, num27].special == "CanalNS")
 								num24 = num27;
 
 							num18++;
@@ -1020,7 +1020,7 @@ namespace BunnyMod.Content
 								int num28 = Random.Range(0, 10);
 
 								if (__instance.mapChunkArray[randB - 1, num28].chunkID != 0 && Mathf.Abs(num28 - num25) > 2 &&
-									__instance.mapChunkArray[randB, num28].special == "CanalNS")
+										__instance.mapChunkArray[randB, num28].special == "CanalNS")
 									num24 = num28;
 
 								num18++;
@@ -1036,7 +1036,7 @@ namespace BunnyMod.Content
 								int num29 = Random.Range(0, 10);
 
 								if (__instance.mapChunkArray[randB + 1, num29].chunkID != 0 && Mathf.Abs(num29 - num25) > 2 &&
-									__instance.mapChunkArray[randB, num29].special == "CanalNS")
+										__instance.mapChunkArray[randB, num29].special == "CanalNS")
 									num24 = num29;
 
 								num18++;
@@ -1126,7 +1126,7 @@ namespace BunnyMod.Content
 				for (int num38 = 0; num38 < __instance.levelSizeAxis; num38++)
 				for (int num39 = 0; num39 < __instance.levelSizeAxis; num39++)
 					if (__instance.mapChunkArray[num38, num39].chunkID == num37 && __instance.mapChunkArray[num38, num39].chunkID == __instance.levelSize &&
-						!flag4)
+							!flag4)
 					{
 						__instance.mapChunkArray[num38, num39].exitN = true;
 						__instance.mapChunkArray[num38, num39 - 1].chunkID = __instance.levelSize + 1;
@@ -1151,9 +1151,9 @@ namespace BunnyMod.Content
 					flag5 = true;
 					num46 = GC.Choose<int>(1, 2, new int[]
 					{
-						2,
-						3,
-						3
+							2,
+							3,
+							3
 					});
 
 					if (num46 == 2)
@@ -1216,8 +1216,8 @@ namespace BunnyMod.Content
 
 				Debug.Log(string.Concat(new object[]
 				{
-					"Num Sectors: ", num46, " - Door 1: ", num40, " - Door 2: ", num41, " - End: ", num36, " - Branch 1: ", num42, " - Branch 2: ", num43,
-					" - ranch3: ", num47, " - Branch 4: ", num44, " - Branch 5: ", num45, " - Branch 6: ", num48
+						"Num Sectors: ", num46, " - Door 1: ", num40, " - Door 2: ", num41, " - End: ", num36, " - Branch 1: ", num42, " - Branch 2: ", num43,
+						" - ranch3: ", num47, " - Branch 4: ", num44, " - Branch 5: ", num45, " - Branch 6: ", num48
 				}));
 
 				for (int num49 = 0; num49 < __instance.levelSizeAxis; num49++)
@@ -1226,10 +1226,10 @@ namespace BunnyMod.Content
 					if (__instance.mapChunkArray[num49, num50].chunkID < num40 && __instance.mapChunkArray[num49, num50].chunkID != 0)
 						__instance.mapChunkArray[num49, num50].sector = 1;
 					else if (__instance.mapChunkArray[num49, num50].chunkID > num40 && __instance.mapChunkArray[num49, num50].chunkID < num41 &&
-						__instance.mapChunkArray[num49, num50].chunkID != 0)
+							__instance.mapChunkArray[num49, num50].chunkID != 0)
 						__instance.mapChunkArray[num49, num50].sector = 2;
 					else if (__instance.mapChunkArray[num49, num50].chunkID > num40 && __instance.mapChunkArray[num49, num50].chunkID > num41 &&
-						__instance.mapChunkArray[num49, num50].chunkID < num36 && __instance.mapChunkArray[num49, num50].chunkID != 0)
+							__instance.mapChunkArray[num49, num50].chunkID < num36 && __instance.mapChunkArray[num49, num50].chunkID != 0)
 						__instance.mapChunkArray[num49, num50].sector = 3;
 					else if (__instance.mapChunkArray[num49, num50].chunkID == num40)
 					{
@@ -1248,8 +1248,8 @@ namespace BunnyMod.Content
 				for (int num51 = 0; num51 < __instance.levelSizeAxis; num51++)
 				for (int num52 = 0; num52 < __instance.levelSizeAxis; num52++)
 					if (__instance.mapChunkArray[num51, num52].chunkID == num42 || __instance.mapChunkArray[num51, num52].chunkID == num43 ||
-						__instance.mapChunkArray[num51, num52].chunkID == num47 || __instance.mapChunkArray[num51, num52].chunkID == num44 ||
-						__instance.mapChunkArray[num51, num52].chunkID == num45 || __instance.mapChunkArray[num51, num52].chunkID == num48)
+							__instance.mapChunkArray[num51, num52].chunkID == num47 || __instance.mapChunkArray[num51, num52].chunkID == num44 ||
+							__instance.mapChunkArray[num51, num52].chunkID == num45 || __instance.mapChunkArray[num51, num52].chunkID == num48)
 					{
 						int num53 = 0;
 						int num35 = 0;
@@ -1264,8 +1264,8 @@ namespace BunnyMod.Content
 
 							string text2 = GC.Choose<string>("N", "S", new string[]
 							{
-								"E",
-								"W"
+									"E",
+									"W"
 							});
 
 							if (__instance.PlaceChunk(text2, num33, num34))
@@ -1417,7 +1417,7 @@ namespace BunnyMod.Content
 		}
 
 		public static bool LoadLevel_FillMapChunks_Prefix(LoadLevel __instance, ref IEnumerator __result, ref tk2dTileMap ___tilemapWalls,
-			ref tk2dTileMap ___tilemapFloors2) // Replacement
+				ref tk2dTileMap ___tilemapFloors2) // Replacement
 		{
 			__result = LoadLevel_FillMapChunks_Replacement(__instance, ___tilemapWalls, ___tilemapFloors2);
 
@@ -1425,7 +1425,7 @@ namespace BunnyMod.Content
 		}
 
 		public static IEnumerator
-			LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapWalls, tk2dTileMap ___tilemapFloors2) // Non-Patch
+				LoadLevel_FillMapChunks_Replacement(LoadLevel __instance, tk2dTileMap ___tilemapWalls, tk2dTileMap ___tilemapFloors2) // Non-Patch
 		{
 			// Exterior Floors (confirmed)
 			// This works in two different places, which work on different levels.
@@ -1496,7 +1496,7 @@ namespace BunnyMod.Content
 							for (int n = num8; n > num9; n--)
 							{
 								if (m != 0 && n != 160 && m != (__instance.levelSizeAxis - 1) * 16 + 16 - 1 &&
-									n != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
+										n != 160 - (__instance.levelSizeAxis - 1) * 16 - 16 + 1)
 								{
 									int wallMaterialOffset = 0;
 									int wallMaterialOffsetTop = 0;
@@ -1677,7 +1677,7 @@ namespace BunnyMod.Content
 		}
 
 		public static bool LoadLevel_SetupMore3_3_Prefix(LoadLevel __instance, ref tk2dTileMap ___tilemapFloors4, ref Minimap ___minimap,
-			ref IEnumerator __result) // Prefix
+				ref IEnumerator __result) // Prefix
 		{
 			BMLog("LoadLevel_SetupMore3_3_Prefix");
 
@@ -1716,9 +1716,9 @@ namespace BunnyMod.Content
 					__instance.hasLakes = false;
 
 					if (GC.levelTheme == 2 ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Lake")) ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33) && GC.levelTheme != 3) ||
-						GC.challenges.Contains(cChallenge.LakeItOrLeaveIt))
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Lake")) ||
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33) && GC.levelTheme != 3) ||
+							GC.challenges.Contains(cChallenge.LakeItOrLeaveIt))
 					{
 						Debug.Log("Loading Lakes");
 
@@ -1753,25 +1753,25 @@ namespace BunnyMod.Content
 								spot = GC.tileInfo.FindRandLocationGeneral(0.64f);
 
 								if (findingFactoryLake &&
-									(((spot.x <= factoryChunk.chunkEdgeE ||
-												spot.x >= factoryChunk.chunkEdgeE + __instance.chunkSize) &&
-											(spot.x >= factoryChunk.chunkEdgeW ||
-												spot.x <= factoryChunk.chunkEdgeW - __instance.chunkSize)) ||
-										spot.y <= factoryChunk.chunkEdgeS - __instance.chunkSize ||
-										spot.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) &&
-									(((spot.y <= factoryChunk.chunkEdgeN ||
+										(((spot.x <= factoryChunk.chunkEdgeE ||
+																spot.x >= factoryChunk.chunkEdgeE + __instance.chunkSize) &&
+														(spot.x >= factoryChunk.chunkEdgeW ||
+																spot.x <= factoryChunk.chunkEdgeW - __instance.chunkSize)) ||
+												spot.y <= factoryChunk.chunkEdgeS - __instance.chunkSize ||
 												spot.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) &&
-											(spot.y >= factoryChunk.chunkEdgeS ||
-												spot.y <= factoryChunk.chunkEdgeS - __instance.chunkSize)) ||
-										spot.x <= factoryChunk.chunkEdgeW - __instance.chunkSize ||
-										spot.x >= factoryChunk.chunkEdgeE + __instance.chunkSize))
+										(((spot.y <= factoryChunk.chunkEdgeN ||
+																spot.y >= factoryChunk.chunkEdgeN + __instance.chunkSize) &&
+														(spot.y >= factoryChunk.chunkEdgeS ||
+																spot.y <= factoryChunk.chunkEdgeS - __instance.chunkSize)) ||
+												spot.x <= factoryChunk.chunkEdgeW - __instance.chunkSize ||
+												spot.x >= factoryChunk.chunkEdgeE + __instance.chunkSize))
 									spot = Vector2.zero;
 
 								attempts++;
 								TileData tileData = GC.tileInfo.GetTileData(spot);
 
 								if (tileData.chunkID == GC.startingPoint.startingChunk ||
-									(GC.exitPoint != null && tileData.chunkID == GC.exitPoint.startingChunk))
+										(GC.exitPoint != null && tileData.chunkID == GC.exitPoint.startingChunk))
 									spot = Vector2.zero;
 
 								for (int l = -4; l < 5; l++)
@@ -1795,12 +1795,12 @@ namespace BunnyMod.Content
 								GC.tileInfo.CreateLake(spot, 0, expandLimit, lakeType);
 								Vector2 vector2 = new Vector2((GC.tileInfo.lakeE + GC.tileInfo.lakeW) / 2f, (GC.tileInfo.lakeN + GC.tileInfo.lakeS) / 2f);
 								Vector2 v = new Vector2((GC.tileInfo.lakeE - GC.tileInfo.lakeW) / 0.64f + 0.32f,
-									(GC.tileInfo.lakeN - GC.tileInfo.lakeS) / 0.64f + 0.32f);
+										(GC.tileInfo.lakeN - GC.tileInfo.lakeS) / 0.64f + 0.32f);
 
 								if (lakeType == "Water")
 								{
 									Water water = GC.spawnerMain.SpawnWater(null, vector2, v, __instance.transform.rotation, true,
-										null); // __instance.transform.rotation
+											null); // __instance.transform.rotation
 									water.lakeNTile = GC.tileInfo.lakeNTile;
 									water.lakeSTile = GC.tileInfo.lakeSTile;
 									water.lakeETile = GC.tileInfo.lakeETile;
@@ -1980,9 +1980,9 @@ namespace BunnyMod.Content
 					bool hasExtraPowerBoxes = false;
 
 					if (((GC.sessionDataBig.curLevel >= 2 || GC.levelTheme != 0) && GC.levelTheme != 2) ||
-						(GC.levelTheme == 3 && GC.debugMode) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("PowerBox")) ||
-						GC.challenges.Contains(cChallenge.PowerWhelming))
+							(GC.levelTheme == 3 && GC.debugMode) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("PowerBox")) ||
+							GC.challenges.Contains(cChallenge.PowerWhelming))
 						hasPowerBoxes = true;
 
 					if (GC.quests.CanHaveBigQuest(null))
@@ -2024,7 +2024,7 @@ namespace BunnyMod.Content
 
 								for (int num16 = 0; num16 < GC.objectRealList.Count; num16++)
 									if (GC.objectRealList[num16].objectName == "PowerBox" &&
-										Vector2.Distance(GC.objectRealList[num16].tr.position, vector4) < 28f)
+											Vector2.Distance(GC.objectRealList[num16].tr.position, vector4) < 28f)
 										vector4 = Vector2.zero;
 
 								if (vector4 != Vector2.zero)
@@ -2041,7 +2041,7 @@ namespace BunnyMod.Content
 
 								attempts2++;
 							} while ((vector4 == Vector2.zero || Vector2.Distance(vector4, GC.playerAgent.tr.position) < 5f ||
-								Vector2.Distance(vector4, GC.elevatorDown.tr.position) < 20f) && attempts2 < 100);
+									Vector2.Distance(vector4, GC.elevatorDown.tr.position) < 20f) && attempts2 < 100);
 
 							if (vector4 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector4, null, "PowerBox");
@@ -2064,8 +2064,8 @@ namespace BunnyMod.Content
 					bool hasSlimeBarrels = false;
 
 					if ((GC.levelTheme == 2 || (GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("SlimeBarrel")) ||
-						GC.challenges.Contains(cChallenge.ThePollutionSolution))
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("SlimeBarrel")) ||
+							GC.challenges.Contains(cChallenge.ThePollutionSolution))
 						hasSlimeBarrels = true;
 
 					if (hasSlimeBarrels)
@@ -2092,7 +2092,7 @@ namespace BunnyMod.Content
 									vector5 = GC.tileInfo.FindRandLocationGeneral(0.64f);
 									j++;
 								} while ((vector5 == Vector2.zero || Vector2.Distance(vector5, GC.playerAgent.tr.position) < 5f ||
-									Vector2.Distance(vector5, myLake.tr.position) > 7f) && j < 300);
+										Vector2.Distance(vector5, myLake.tr.position) > 7f) && j < 300);
 
 								if (vector5 != Vector2.zero)
 									GC.spawnerMain.spawnObjectReal(vector5, null, "SlimeBarrel");
@@ -2116,9 +2116,9 @@ namespace BunnyMod.Content
 					bool hasOilSpills = false;
 
 					if (GC.levelTheme == 1 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("OilSpill")) ||
-						GC.challenges.Contains(cChallenge.ThePollutionSolution))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("OilSpill")) ||
+							GC.challenges.Contains(cChallenge.ThePollutionSolution))
 						hasOilSpills = true;
 
 					if (hasOilSpills && GC.serverPlayer)
@@ -2168,8 +2168,8 @@ namespace BunnyMod.Content
 							string objectName = GC.objectRealList[i].objectName;
 
 							if (objectName == "PawnShopMachine" || objectName == "AmmoDispenser" || objectName == "CloneMachine" ||
-								objectName == "CapsuleMachine" || objectName == "LoadoutMachine" || objectName == "ATMMachine" ||
-								objectName == "AugmentationBooth")
+									objectName == "CapsuleMachine" || objectName == "LoadoutMachine" || objectName == "ATMMachine" ||
+									objectName == "AugmentationBooth")
 								machines.Remove(objectName);
 						}
 
@@ -2190,15 +2190,15 @@ namespace BunnyMod.Content
 									TileData tileData2 = GC.tileInfo.GetTileData(spot);
 
 									if (GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).owner == 0)
+											GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).owner == 0)
 										spot = Vector2.zero;
 
 									if (!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x + 0.64f, spot.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x - 0.64f, spot.y), "Wall"))
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y - 0.64f), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x + 0.64f, spot.y), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x - 0.64f, spot.y), "Wall"))
 										spot = Vector2.zero;
 
 									if (GC.tileInfo.IsOverlapping(spot, "ObjectRealSprite", 0.64f))
@@ -2223,25 +2223,25 @@ namespace BunnyMod.Content
 								bool flag5 = false;
 
 								if (GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).owner != 0 &&
-									GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).wallMaterial != wallMaterialType.None)
+										GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).wallMaterial != wallMaterialType.None)
 								{
 									objectReal.direction = "S";
 									flag5 = true;
 								}
 								else if (GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).owner != 0 &&
-									GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).wallMaterial != wallMaterialType.None)
+										GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).wallMaterial != wallMaterialType.None)
 								{
 									objectReal.direction = "N";
 									flag5 = true;
 								}
 								else if (GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).owner != 0 &&
-									GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).wallMaterial != wallMaterialType.None)
+										GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).wallMaterial != wallMaterialType.None)
 								{
 									objectReal.direction = "W";
 									flag5 = true;
 								}
 								else if (GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).owner != 0 &&
-									GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).wallMaterial != wallMaterialType.None)
+										GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).wallMaterial != wallMaterialType.None)
 								{
 									objectReal.direction = "E";
 									flag5 = true;
@@ -2305,29 +2305,36 @@ namespace BunnyMod.Content
 									bool flag6 = true;
 
 									if ((GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y + 0.64f)).wallMaterial == wallMaterialType.None && a == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None && a == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y)).wallMaterial == wallMaterialType.None && a == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y)).wallMaterial != wallMaterialType.None && a == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y - 0.64f)).wallMaterial == wallMaterialType.None && a == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None && a == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y)).wallMaterial == wallMaterialType.None && a == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y)).wallMaterial != wallMaterialType.None && a == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a == "W"))
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None && a == "N")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y)).wallMaterial == wallMaterialType.None && a == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y)).wallMaterial != wallMaterialType.None && a == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y - 0.64f)).wallMaterial == wallMaterialType.None && a == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None && a == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x - 0.64f, zero2.y)).wallMaterial == wallMaterialType.None && a == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y)).wallMaterial != wallMaterialType.None && a == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero2.x + 0.64f, zero2.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a == "W"))
 										flag6 = false;
 
 									if (GC.tileInfo.IsOverlapping(zero2, "Anything"))
@@ -2359,37 +2366,37 @@ namespace BunnyMod.Content
 										flag6 = true;
 
 										if ((GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-												a == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y)).wallMaterial == wallMaterialType.None &&
-												a == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y)).wallMaterial != wallMaterialType.None &&
-												a == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-												a == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y)).wallMaterial == wallMaterialType.None &&
-												a == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y)).wallMaterial != wallMaterialType.None &&
-												a == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a == "W"))
+														a == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y)).wallMaterial == wallMaterialType.None &&
+														a == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y)).wallMaterial != wallMaterialType.None &&
+														a == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y - 0.64f)).wallMaterial == wallMaterialType.None &&
+														a == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x - 0.64f, zero3.y)).wallMaterial == wallMaterialType.None &&
+														a == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y)).wallMaterial != wallMaterialType.None &&
+														a == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero3.x + 0.64f, zero3.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a == "W"))
 											flag6 = false;
 
 										if (GC.tileInfo.IsOverlapping(zero3, "Anything"))
@@ -2428,8 +2435,8 @@ namespace BunnyMod.Content
 					bool hasTrashCans = true;
 
 					if ((GC.customLevel && __instance.customLevel.levelFeatures.Contains("TrashCan")) ||
-						GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) ||
-						GC.challenges.Contains(cChallenge.MACITS))
+							GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.PoliceState) ||
+							GC.challenges.Contains(cChallenge.MACITS))
 						hasTrashCans = true;
 
 					if (GC.challenges.Contains(cChallenge.AnCapistan))
@@ -2456,15 +2463,15 @@ namespace BunnyMod.Content
 									TileData tileData4 = GC.tileInfo.GetTileData(spot);
 
 									if (GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y + 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).owner == 0)
+											GC.tileInfo.GetTileData(new Vector2(spot.x + 0.64f, spot.y)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(spot.x, spot.y - 0.64f)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(spot.x - 0.64f, spot.y)).owner == 0)
 										spot = Vector2.zero;
 
 									if (!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x + 0.64f, spot.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spot.x - 0.64f, spot.y), "Wall"))
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x, spot.y - 0.64f), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x + 0.64f, spot.y), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spot.x - 0.64f, spot.y), "Wall"))
 										spot = Vector2.zero;
 
 									if (GC.tileInfo.IsOverlapping(spot, "ObjectRealSprite", 0.64f))
@@ -2524,29 +2531,36 @@ namespace BunnyMod.Content
 									bool flag9 = true;
 
 									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "W"))
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "W"))
 										flag9 = false;
 
 									if (GC.tileInfo.IsOverlapping(zero4, "Anything"))
@@ -2567,37 +2581,37 @@ namespace BunnyMod.Content
 										flag9 = true;
 
 										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "W"))
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "W"))
 											flag9 = false;
 
 										if (GC.tileInfo.IsOverlapping(zero5, "Anything"))
@@ -2658,9 +2672,9 @@ namespace BunnyMod.Content
 									//	spotCandidate = Vector2.zero;
 
 									if (!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y), "Wall"))
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y), "Wall"))
 										spotCandidate = Vector2.zero;
 
 									if (GC.tileInfo.IsOverlapping(spotCandidate, "ObjectRealSprite", 0.64f))
@@ -2696,21 +2710,21 @@ namespace BunnyMod.Content
 										adjoiningWall = "N";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x + 1.28f, spotCandidate.y);
 										rightOfSpot = new Vector2(spotCandidate.x - 1.28f, spotCandidate.y);
 										adjoiningWall = "S";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
 										adjoiningWall = "E";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
@@ -2721,37 +2735,37 @@ namespace BunnyMod.Content
 									bool isSpotAcceptable = true;
 
 									if ((GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-											adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
-											adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
-											adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-											adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
-											adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
-											adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && adjoiningWall == "W"))
+													adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
+													adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
+													adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
+													adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
+													adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
+													adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && adjoiningWall == "W"))
 										isSpotAcceptable = false;
 
 									if (GC.tileInfo.IsOverlapping(leftOfSpot, "Anything"))
@@ -2772,37 +2786,44 @@ namespace BunnyMod.Content
 										isSpotAcceptable = true;
 
 										if ((GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-												adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial == wallMaterialType.None &&
-												adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial != wallMaterialType.None &&
-												adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-												adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial == wallMaterialType.None &&
-												adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial != wallMaterialType.None &&
-												adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && adjoiningWall == "W"))
+														adjoiningWall == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial
+														!= wallMaterialType.None &&
+														adjoiningWall == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial
+														== wallMaterialType.None &&
+														adjoiningWall == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial
+														!= wallMaterialType.None &&
+														adjoiningWall == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial
+														== wallMaterialType.None &&
+														adjoiningWall == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial
+														!= wallMaterialType.None &&
+														adjoiningWall == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial
+														== wallMaterialType.None &&
+														adjoiningWall == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial
+														!= wallMaterialType.None &&
+														adjoiningWall == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && adjoiningWall == "W"))
 											isSpotAcceptable = false;
 
 										if (GC.tileInfo.IsOverlapping(rightOfSpot, "Anything"))
@@ -2868,9 +2889,9 @@ namespace BunnyMod.Content
 
 									// What is the purpose of this one if we're using FindRandLocationNearWall(0.64f) above??
 									if (!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y), "Wall"))
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y), "Wall"))
 									{
 										spotCandidate = Vector2.zero;
 									}
@@ -2915,7 +2936,7 @@ namespace BunnyMod.Content
 										securityCam.direction = "S";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x, spotCandidate.y - 0.64f)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x + 1.28f, spotCandidate.y);
 										rightOfSpot = new Vector2(spotCandidate.x - 1.28f, spotCandidate.y);
@@ -2923,7 +2944,7 @@ namespace BunnyMod.Content
 										securityCam.direction = "N";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x + 0.64f, spotCandidate.y)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
@@ -2931,7 +2952,7 @@ namespace BunnyMod.Content
 										securityCam.direction = "W";
 									}
 									else if (GC.tileInfo.GetTileData(new Vector2(spotCandidate.x - 0.64f, spotCandidate.y)).wallMaterial !=
-										wallMaterialType.None)
+											wallMaterialType.None)
 									{
 										leftOfSpot = new Vector2(spotCandidate.x, spotCandidate.y + 1.28f);
 										rightOfSpot = new Vector2(spotCandidate.x, spotCandidate.y - 1.28f);
@@ -2996,37 +3017,37 @@ namespace BunnyMod.Content
 									#endregion
 
 									if ((GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-											wallEdge == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											wallEdge == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
-											wallEdge == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
-											wallEdge == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-											wallEdge == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											wallEdge == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
-											wallEdge == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
-											wallEdge == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
-											wallMaterialType.None && wallEdge == "W"))
+													wallEdge == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													wallEdge == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
+													wallEdge == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
+													wallEdge == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
+													wallEdge == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x, leftOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													wallEdge == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x - 0.64f, leftOfSpot.y)).wallMaterial == wallMaterialType.None &&
+													wallEdge == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y)).wallMaterial != wallMaterialType.None &&
+													wallEdge == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y + 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(leftOfSpot.x + 0.64f, leftOfSpot.y - 0.64f)).wallMaterial !=
+													wallMaterialType.None && wallEdge == "W"))
 										isSpotAcceptable = false;
 
 									if (GC.tileInfo.IsOverlapping(leftOfSpot, "Anything"))
@@ -3051,37 +3072,44 @@ namespace BunnyMod.Content
 										isSpotAcceptable = true;
 
 										if ((GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-												wallEdge == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												wallEdge == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial == wallMaterialType.None &&
-												wallEdge == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial != wallMaterialType.None &&
-												wallEdge == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-												wallEdge == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												wallEdge == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial == wallMaterialType.None &&
-												wallEdge == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial != wallMaterialType.None &&
-												wallEdge == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
-												wallMaterialType.None && wallEdge == "W"))
+														wallEdge == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial
+														!= wallMaterialType.None &&
+														wallEdge == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial
+														== wallMaterialType.None &&
+														wallEdge == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial
+														!= wallMaterialType.None &&
+														wallEdge == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y - 0.64f)).wallMaterial
+														== wallMaterialType.None &&
+														wallEdge == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x, rightOfSpot.y + 0.64f)).wallMaterial
+														!= wallMaterialType.None &&
+														wallEdge == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x - 0.64f, rightOfSpot.y)).wallMaterial
+														== wallMaterialType.None &&
+														wallEdge == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y)).wallMaterial
+														!= wallMaterialType.None &&
+														wallEdge == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y + 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(rightOfSpot.x + 0.64f, rightOfSpot.y - 0.64f)).wallMaterial !=
+														wallMaterialType.None && wallEdge == "W"))
 											isSpotAcceptable = false;
 
 										if (GC.tileInfo.IsOverlapping(rightOfSpot, "Anything"))
@@ -3122,7 +3150,7 @@ namespace BunnyMod.Content
 					#region Mod - LitterallyTheWorst / Litter
 
 					if ((GC.customLevel && __instance.customLevel.levelFeatures.Contains(cLevelFeature.Litter)) ||
-						GC.challenges.Contains(cChallenge.LitterallyTheWorst))
+							GC.challenges.Contains(cChallenge.LitterallyTheWorst))
 					{
 						Debug.Log("Loading Litter");
 
@@ -3143,7 +3171,7 @@ namespace BunnyMod.Content
 
 							if (spot != Vector2.zero)
 								GC.spawnerMain.SpawnWreckagePileObject(spot,
-									GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter, vObject.VendorCart), false);
+										GC.Choose<string>(vObject.Shelf, vObject.Lamp, vObject.Counter, vObject.VendorCart), false);
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
 							{
@@ -3161,8 +3189,8 @@ namespace BunnyMod.Content
 					#region Mod - BadNeighborhoods / Broken Windows
 
 					if ((GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains(cLevelFeature.BrokenWindows)) ||
-						GC.challenges.Contains(cChallenge.BadNeighborhoods))
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains(cLevelFeature.BrokenWindows)) ||
+							GC.challenges.Contains(cChallenge.BadNeighborhoods))
 					{
 						BMLog("Breaking Windows");
 
@@ -3184,8 +3212,8 @@ namespace BunnyMod.Content
 					bool hasVendorCarts = false;
 
 					if (GC.levelTheme == 2 ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("VendorCart")) ||
-						GC.challenges.Contains(cChallenge.CartOfTheDeal))
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("VendorCart")) ||
+							GC.challenges.Contains(cChallenge.CartOfTheDeal))
 						hasVendorCarts = true;
 
 					if (GC.levelFeeling == "HarmAtIntervals" || GC.levelFeeling == "Lockdown" || GC.levelFeeling == "WarZone")
@@ -3208,7 +3236,7 @@ namespace BunnyMod.Content
 
 								for (int num24 = 0; num24 < GC.objectRealList.Count; num24++)
 									if (GC.objectRealList[num24].objectName == "VendorCart" &&
-										Vector2.Distance(GC.objectRealList[num24].tr.position, vector8) < 28f)
+											Vector2.Distance(GC.objectRealList[num24].tr.position, vector8) < 28f)
 										vector8 = Vector2.zero;
 
 								if (vector8 != Vector2.zero)
@@ -3276,9 +3304,9 @@ namespace BunnyMod.Content
 					bool hasPoliceBoxes = false;
 
 					if (GC.levelTheme == 3 || GC.levelTheme == 4 || __instance.hasLockdownWalls ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)) ||
-						GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("PoliceBox")))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(20)) ||
+							GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("PoliceBox")))
 						hasPoliceBoxes = true;
 
 					if (GC.challenges.Contains(cChallenge.AnCapistan))
@@ -3303,7 +3331,7 @@ namespace BunnyMod.Content
 
 									for (int num27 = 0; num27 < GC.objectRealList.Count; num27++)
 										if (GC.objectRealList[num27].objectName == "PoliceBox" &&
-											Vector2.Distance(GC.objectRealList[num27].tr.position, vector10) < 14f)
+												Vector2.Distance(GC.objectRealList[num27].tr.position, vector10) < 14f)
 											vector10 = Vector2.zero;
 
 									if (vector10 != Vector2.zero)
@@ -3353,7 +3381,7 @@ namespace BunnyMod.Content
 
 									for (int num29 = 0; num29 < GC.objectRealList.Count; num29++)
 										if (GC.objectRealList[num29].objectName == "PoliceBox" &&
-											Vector2.Distance(GC.objectRealList[num29].tr.position, vector11) < 14f)
+												Vector2.Distance(GC.objectRealList[num29].tr.position, vector11) < 14f)
 											vector11 = Vector2.zero;
 
 									if (vector11 != Vector2.zero)
@@ -3393,8 +3421,8 @@ namespace BunnyMod.Content
 					bool hasAlarmButtons = false;
 
 					if (GC.levelTheme == 3 || GC.levelTheme == 4 || hasPoliceBoxes ||
-						GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("AlarmButton")))
+							GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("AlarmButton")))
 						hasAlarmButtons = true;
 
 					if (GC.challenges.Contains(cChallenge.AnCapistan))
@@ -3417,7 +3445,7 @@ namespace BunnyMod.Content
 
 								for (int num31 = 0; num31 < GC.objectRealList.Count; num31++)
 									if (GC.objectRealList[num31].objectName == "AlarmButton" &&
-										Vector2.Distance(GC.objectRealList[num31].tr.position, vector12) < 14f)
+											Vector2.Distance(GC.objectRealList[num31].tr.position, vector12) < 14f)
 										vector12 = Vector2.zero;
 
 								if (vector12 != Vector2.zero)
@@ -3470,7 +3498,7 @@ namespace BunnyMod.Content
 
 								for (int num33 = 0; num33 < GC.objectRealList.Count; num33++)
 									if (GC.objectRealList[num33].objectName == "Manhole" &&
-										Vector2.Distance(GC.objectRealList[num33].tr.position, vector13) < 14f)
+											Vector2.Distance(GC.objectRealList[num33].tr.position, vector13) < 14f)
 										vector13 = Vector2.zero;
 
 								if (vector13 != Vector2.zero)
@@ -3487,10 +3515,10 @@ namespace BunnyMod.Content
 
 								num32++;
 							} while ((vector13 == Vector2.zero || Vector2.Distance(vector13, GC.elevatorDown.tr.position) < 20f ||
-								Vector2.Distance(vector13, GC.elevatorUp.tr.position) < 20f) && num32 < 100);
+									Vector2.Distance(vector13, GC.elevatorUp.tr.position) < 20f) && num32 < 100);
 
 							if (vector13 != Vector2.zero && Vector2.Distance(vector13, GC.elevatorDown.tr.position) >= 20f &&
-								Vector2.Distance(vector13, GC.elevatorUp.tr.position) >= 20f)
+									Vector2.Distance(vector13, GC.elevatorUp.tr.position) >= 20f)
 								GC.spawnerMain.spawnObjectReal(vector13, null, "Manhole");
 
 							if (Time.realtimeSinceStartup - chunkStartTime > maxChunkTime)
@@ -3511,12 +3539,12 @@ namespace BunnyMod.Content
 					bool hasManholes = false;
 
 					if ((GC.levelTheme == 3 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Manhole"))))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Manhole"))))
 						hasManholes = true;
 
 					if (GC.challenges.Contains(cChallenge.AnCapistan) ||
-						GC.levelFeeling == vLevelFeeling.WarZone)
+							GC.levelFeeling == vLevelFeeling.WarZone)
 						hasManholes = false;
 
 					if (BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>()) // Trait-specific. Normal ones below.
@@ -3638,7 +3666,7 @@ namespace BunnyMod.Content
 
 								for (int j = 0; j < GC.objectRealList.Count; j++)
 									if (GC.objectRealList[j].objectName == "Manhole" &&
-										Vector2.Distance(GC.objectRealList[j].tr.position, locationCandidate) < 14f)
+											Vector2.Distance(GC.objectRealList[j].tr.position, locationCandidate) < 14f)
 										locationCandidate = Vector2.zero;
 
 								if (locationCandidate != Vector2.zero)
@@ -3655,7 +3683,7 @@ namespace BunnyMod.Content
 
 								num34++;
 							} while ((locationCandidate == Vector2.zero || Vector2.Distance(locationCandidate, GC.playerAgent.tr.position) < 5f) &&
-								num34 < 100);
+									num34 < 100);
 
 							if (locationCandidate != Vector2.zero && Vector2.Distance(locationCandidate, GC.playerAgent.tr.position) >= 5f)
 								GC.spawnerMain.spawnObjectReal(locationCandidate, null, "Manhole");
@@ -3705,7 +3733,7 @@ namespace BunnyMod.Content
 									string text3 = GC.Choose<string>("Thief", "Thief", "Thief", "Cannibal");
 
 									if ((!(text3 == "Thief") || !GC.challenges.Contains("ThiefNoSteal")) &&
-										(!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
+											(!(text3 == "Cannibal") || !GC.challenges.Contains("CannibalsDontAttack")))
 									{
 										Agent agent2 = GC.spawnerMain.SpawnAgent(manhole.tr.position, manhole, text3);
 										agent2.SetDefaultGoal("Idle");
@@ -3734,8 +3762,8 @@ namespace BunnyMod.Content
 					bool hasFireHydrants = false;
 
 					if (GC.levelTheme != 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("FireHydrant")))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("FireHydrant")))
 						hasFireHydrants = true;
 
 					if (GC.challenges.Contains(cChallenge.AnCapistan))
@@ -3758,7 +3786,7 @@ namespace BunnyMod.Content
 
 								for (int num40 = 0; num40 < GC.objectRealList.Count; num40++)
 									if (GC.objectRealList[num40].objectName == "FireHydrant" &&
-										Vector2.Distance(GC.objectRealList[num40].tr.position, vector15) < 14f)
+											Vector2.Distance(GC.objectRealList[num40].tr.position, vector15) < 14f)
 										vector15 = Vector2.zero;
 
 								if (vector15 != Vector2.zero)
@@ -3795,9 +3823,9 @@ namespace BunnyMod.Content
 					#region Exploding & Slime Barrels
 
 					if (GC.levelTheme == 1 ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel")) ||
-						GC.challenges.Contains(cChallenge.ThePollutionSolution) ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("ExplodingSlimeBarrel")) ||
+							GC.challenges.Contains(cChallenge.ThePollutionSolution) ||
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 					{
 						Debug.Log("Loading Exploding and Slime Barrels");
 						int numObjects = (int) ((float) Random.Range(11, 16) * __instance.levelSizeModifier);
@@ -3837,9 +3865,9 @@ namespace BunnyMod.Content
 					bool hasFlamingBarrels = false;
 
 					if (GC.levelTheme < 3 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("FlamingBarrel")) ||
-						GC.challenges.Contains(cChallenge.AnCapistan))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("FlamingBarrel")) ||
+							GC.challenges.Contains(cChallenge.AnCapistan))
 						hasFlamingBarrels = true;
 
 					if (GC.challenges.Contains(cChallenge.PoliceState) || GC.challenges.Contains(cChallenge.MACITS))
@@ -3915,14 +3943,14 @@ namespace BunnyMod.Content
 								flag17 = false;
 
 								if (vector18 != Vector2.zero && (GC.tileInfo.GetTileData(new Vector3(vector18.x, vector18.y, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x, vector18.y + 0.64f, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x, vector18.y - 0.64f, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y + 0.64f, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y - 0.64f, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y + 0.64f, 0f)).spillOil ||
-									GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y - 0.64f, 0f)).spillOil))
+										GC.tileInfo.GetTileData(new Vector3(vector18.x, vector18.y + 0.64f, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x, vector18.y - 0.64f, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y + 0.64f, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x + 0.64f, vector18.y - 0.64f, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y + 0.64f, 0f)).spillOil ||
+										GC.tileInfo.GetTileData(new Vector3(vector18.x - 0.64f, vector18.y - 0.64f, 0f)).spillOil))
 									flag17 = true;
 
 								GC.tileInfo.GetTileData(vector18);
@@ -3962,8 +3990,8 @@ namespace BunnyMod.Content
 					bool hasBarbecues = false;
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Barbecue")))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Barbecue")))
 						hasBarbecues = true;
 
 					if (hasBarbecues)
@@ -3983,7 +4011,7 @@ namespace BunnyMod.Content
 
 								for (int num45 = 0; num45 < GC.objectRealList.Count; num45++)
 									if (GC.objectRealList[num45].objectName == "Barbecue" &&
-										Vector2.Distance(GC.objectRealList[num45].tr.position, vector19) < 14f)
+											Vector2.Distance(GC.objectRealList[num45].tr.position, vector19) < 14f)
 										vector19 = Vector2.zero;
 
 								num44++;
@@ -4024,7 +4052,7 @@ namespace BunnyMod.Content
 
 								for (int num47 = 0; num47 < GC.objectRealList.Count; num47++)
 									if (GC.objectRealList[num47].objectName == "Fountain" &&
-										Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
+											Vector2.Distance(GC.objectRealList[num47].tr.position, vector20) < (14f * LevelSizeRatio()))
 										vector20 = Vector2.zero;
 
 								num46++;
@@ -4069,15 +4097,15 @@ namespace BunnyMod.Content
 									TileData tileData4 = GC.tileInfo.GetTileData(vector7);
 
 									if (GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y + 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).owner == 0 &&
-										GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).owner == 0)
+											GC.tileInfo.GetTileData(new Vector2(vector7.x + 0.64f, vector7.y)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(vector7.x, vector7.y - 0.64f)).owner == 0 &&
+											GC.tileInfo.GetTileData(new Vector2(vector7.x - 0.64f, vector7.y)).owner == 0)
 										vector7 = Vector2.zero;
 
 									if (!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y + 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y - 0.64f), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x + 0.64f, vector7.y), "Wall") &&
-										!GC.tileInfo.IsOverlapping(new Vector2(vector7.x - 0.64f, vector7.y), "Wall"))
+											!GC.tileInfo.IsOverlapping(new Vector2(vector7.x, vector7.y - 0.64f), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(vector7.x + 0.64f, vector7.y), "Wall") &&
+											!GC.tileInfo.IsOverlapping(new Vector2(vector7.x - 0.64f, vector7.y), "Wall"))
 										vector7 = Vector2.zero;
 
 									if (GC.tileInfo.IsOverlapping(vector7, "ObjectRealSprite", 0.64f))
@@ -4136,29 +4164,36 @@ namespace BunnyMod.Content
 									bool flag9 = true;
 
 									if ((GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial == wallMaterialType.None && a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "N") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "E") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "S") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "W") ||
-										(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-											a2 == "W"))
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None && a2 == "N")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "N") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "E")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "E") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y - 0.64f)).wallMaterial == wallMaterialType.None && a2 == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None && a2 == "S")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "S") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x - 0.64f, zero4.y)).wallMaterial == wallMaterialType.None && a2 == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y)).wallMaterial != wallMaterialType.None && a2 == "W")
+											||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "W") ||
+											(GC.tileInfo.GetTileData(new Vector2(zero4.x + 0.64f, zero4.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+													a2 == "W"))
 										flag9 = false;
 
 									if (GC.tileInfo.IsOverlapping(zero4, "Anything"))
@@ -4179,37 +4214,37 @@ namespace BunnyMod.Content
 										flag9 = true;
 
 										if ((GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial == wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "N") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "E") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "S") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "W") ||
-											(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
-												a2 == "W"))
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "N") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "E") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y - 0.64f)).wallMaterial == wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "S") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x - 0.64f, zero5.y)).wallMaterial == wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y)).wallMaterial != wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y + 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "W") ||
+												(GC.tileInfo.GetTileData(new Vector2(zero5.x + 0.64f, zero5.y - 0.64f)).wallMaterial != wallMaterialType.None &&
+														a2 == "W"))
 											flag9 = false;
 
 										if (GC.tileInfo.IsOverlapping(zero5, "Anything"))
@@ -4263,7 +4298,7 @@ namespace BunnyMod.Content
 
 								for (int num16 = 0; num16 < GC.objectRealList.Count; num16++)
 									if (GC.objectRealList[num16].objectName == vObject.Turntables &&
-										Vector2.Distance(GC.objectRealList[num16].tr.position, vector4) < 28f)
+											Vector2.Distance(GC.objectRealList[num16].tr.position, vector4) < 28f)
 										vector4 = Vector2.zero;
 
 								if (vector4 != Vector2.zero)
@@ -4280,7 +4315,7 @@ namespace BunnyMod.Content
 
 								num15++;
 							} while ((vector4 == Vector2.zero || Vector2.Distance(vector4, GC.playerAgent.tr.position) < 5f ||
-								Vector2.Distance(vector4, GC.elevatorDown.tr.position) < 20f) && num15 < 100);
+									Vector2.Distance(vector4, GC.elevatorDown.tr.position) < 20f) && num15 < 100);
 
 							if (vector4 != Vector2.zero)
 								GC.spawnerMain.spawnObjectReal(vector4, null, vObject.Turntables);
@@ -4301,9 +4336,9 @@ namespace BunnyMod.Content
 					#region Trees
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Tree")) ||
-						(GC.challenges.Contains(cChallenge.ArcologyEcology)))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Tree")) ||
+							(GC.challenges.Contains(cChallenge.ArcologyEcology)))
 					{
 						Debug.Log("Loading Trees");
 
@@ -4322,13 +4357,13 @@ namespace BunnyMod.Content
 							} while ((vector21 == Vector2.zero || Vector2.Distance(vector21, GC.playerAgent.tr.position) < 5f) && num48 < 100);
 
 							if (vector21 != Vector2.zero && (GC.tileInfo.GetTileData(new Vector2(vector21.x, vector21.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x, vector21.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y)).lake))
+									GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y + 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y + 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x + 0.64f, vector21.y)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x, vector21.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector21.x - 0.64f, vector21.y)).lake))
 								vector21 = Vector2.zero;
 
 							if (vector21 != Vector2.zero)
@@ -4350,9 +4385,9 @@ namespace BunnyMod.Content
 					#region Boulders
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						GC.customLevel && __instance.customLevel.levelFeatures.Contains("Boulder") ||
-						GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.SpelunkyDory))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							GC.customLevel && __instance.customLevel.levelFeatures.Contains("Boulder") ||
+							GC.challenges.Contains(cChallenge.ArcologyEcology) || GC.challenges.Contains(cChallenge.SpelunkyDory))
 					{
 						Debug.Log("Loading Boulders");
 						int numObjects = (int) ((float) Random.Range(10, 20) * __instance.levelSizeModifier);
@@ -4370,13 +4405,13 @@ namespace BunnyMod.Content
 							} while ((vector22 == Vector2.zero || Vector2.Distance(vector22, GC.playerAgent.tr.position) < 5f) && num49 < 100);
 
 							if (vector22 != Vector2.zero && (GC.tileInfo.GetTileData(new Vector2(vector22.x, vector22.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y + 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x, vector22.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y - 0.64f)).lake ||
-								GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y)).lake))
+									GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y + 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y + 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x + 0.64f, vector22.y)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x, vector22.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y - 0.64f)).lake ||
+									GC.tileInfo.GetTileData(new Vector2(vector22.x - 0.64f, vector22.y)).lake))
 								vector22 = Vector2.zero;
 
 							if (vector22 != Vector2.zero)
@@ -4424,9 +4459,9 @@ namespace BunnyMod.Content
 					#region Bushes
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Bush")) ||
-						GC.challenges.Contains(cChallenge.ArcologyEcology))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Bush")) ||
+							GC.challenges.Contains(cChallenge.ArcologyEcology))
 					{
 						Debug.Log("Loading Bushes");
 						Random.InitState(__instance.randomSeedNum);
@@ -4444,7 +4479,7 @@ namespace BunnyMod.Content
 
 								for (int num52 = 0; num52 < GC.objectRealList.Count; num52++)
 									if (GC.objectRealList[num52].objectName == "VendorCart" &&
-										Vector2.Distance(GC.objectRealList[num52].tr.position, vector24) < 4f)
+											Vector2.Distance(GC.objectRealList[num52].tr.position, vector24) < 4f)
 										vector24 = Vector2.zero;
 
 								num51++;
@@ -4537,8 +4572,8 @@ namespace BunnyMod.Content
 					#region Land Mines
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Mine")))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("Mine")))
 					{
 						Debug.Log("Loading Mines");
 
@@ -4564,44 +4599,44 @@ namespace BunnyMod.Content
 
 											if
 											(
-												(
 													(
-														(
-															vector25.x <= __instance.levelChunks[bigTries].chunkEdgeE ||
-															vector25.x >= __instance.levelChunks[bigTries].chunkEdgeE + __instance.chunkSize
-														)
-														&&
-														(
-															vector25.x >= __instance.levelChunks[bigTries].chunkEdgeW ||
-															vector25.x <= __instance.levelChunks[bigTries].chunkEdgeW - __instance.chunkSize
-														)
-													) ||
-													vector25.y <= __instance.levelChunks[bigTries].chunkEdgeS - __instance.chunkSize ||
-													vector25.y >= __instance.levelChunks[bigTries].chunkEdgeN + __instance.chunkSize
-												)
-												&&
-												(
-													(
-														(
-															vector25.y <= __instance.levelChunks[bigTries].chunkEdgeN ||
+															(
+																	(
+																			vector25.x <= __instance.levelChunks[bigTries].chunkEdgeE ||
+																			vector25.x >= __instance.levelChunks[bigTries].chunkEdgeE + __instance.chunkSize
+																	)
+																	&&
+																	(
+																			vector25.x >= __instance.levelChunks[bigTries].chunkEdgeW ||
+																			vector25.x <= __instance.levelChunks[bigTries].chunkEdgeW - __instance.chunkSize
+																	)
+															) ||
+															vector25.y <= __instance.levelChunks[bigTries].chunkEdgeS - __instance.chunkSize ||
 															vector25.y >= __instance.levelChunks[bigTries].chunkEdgeN + __instance.chunkSize
-														)
-														&&
-														(
-															vector25.y >= __instance.levelChunks[bigTries].chunkEdgeS ||
-															vector25.y <= __instance.levelChunks[bigTries].chunkEdgeS - __instance.chunkSize
-														)
 													)
-													||
-													vector25.x <= __instance.levelChunks[bigTries].chunkEdgeW - __instance.chunkSize ||
-													vector25.x >= __instance.levelChunks[bigTries].chunkEdgeE + __instance.chunkSize
-												)
+													&&
+													(
+															(
+																	(
+																			vector25.y <= __instance.levelChunks[bigTries].chunkEdgeN ||
+																			vector25.y >= __instance.levelChunks[bigTries].chunkEdgeN + __instance.chunkSize
+																	)
+																	&&
+																	(
+																			vector25.y >= __instance.levelChunks[bigTries].chunkEdgeS ||
+																			vector25.y <= __instance.levelChunks[bigTries].chunkEdgeS - __instance.chunkSize
+																	)
+															)
+															||
+															vector25.x <= __instance.levelChunks[bigTries].chunkEdgeW - __instance.chunkSize ||
+															vector25.x >= __instance.levelChunks[bigTries].chunkEdgeE + __instance.chunkSize
+													)
 											)
 												vector25 = Vector2.zero;
 
 											for (int num57 = 0; num57 < GC.objectRealList.Count; num57++)
 												if (GC.objectRealList[num57].objectName == "Mine" &&
-													Vector2.Distance(GC.objectRealList[num57].tr.position, vector25) < 1.92f)
+														Vector2.Distance(GC.objectRealList[num57].tr.position, vector25) < 1.92f)
 													vector25 = Vector2.zero;
 										} while ((vector25 == Vector2.zero || Vector2.Distance(vector25, GC.playerAgent.tr.position) < 5f) && num56 < 100);
 
@@ -4637,7 +4672,7 @@ namespace BunnyMod.Content
 
 									for (int num59 = 0; num59 < GC.objectRealList.Count; num59++)
 										if (GC.objectRealList[num59].objectName == "Mine" &&
-											Vector2.Distance(GC.objectRealList[num59].tr.position, vector26) < 1.92f)
+												Vector2.Distance(GC.objectRealList[num59].tr.position, vector26) < 1.92f)
 											vector26 = Vector2.zero;
 
 									num58++;
@@ -4663,8 +4698,8 @@ namespace BunnyMod.Content
 					#region Bear Traps
 
 					if (GC.levelTheme == 2 ||
-						(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
-						(GC.customLevel && __instance.customLevel.levelFeatures.Contains("BearTrap")))
+							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)) ||
+							(GC.customLevel && __instance.customLevel.levelFeatures.Contains("BearTrap")))
 					{
 						Debug.Log("Loading Bear Traps");
 						int bigTries = (int) ((float) Random.Range(10, 20) * __instance.levelSizeModifier);
@@ -4833,17 +4868,17 @@ namespace BunnyMod.Content
 							if (chunk.shape == 6)
 							{
 								Vector2 v2 = new Vector2(
-									(chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f,
-									(chunk.chunkLeash1Tr.y + chunk.chunkLeash2Tr.y + chunk.chunkLeash3Tr.y + chunk.chunkLeash4Tr.y) / 4f);
+										(chunk.chunkLeash1Tr.x + chunk.chunkLeash2Tr.x + chunk.chunkLeash3Tr.x + chunk.chunkLeash4Tr.x) / 4f,
+										(chunk.chunkLeash1Tr.y + chunk.chunkLeash2Tr.y + chunk.chunkLeash3Tr.y + chunk.chunkLeash4Tr.y) / 4f);
 								GC.spawnerMain.spawnObjectReal(v2, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject =
-									ambience + "_Huge";
+										ambience + "_Huge";
 							}
 							else if (chunk.shape == 5)
 								GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject =
-									ambience + "_Long";
+										ambience + "_Long";
 							else
 								GC.spawnerMain.spawnObjectReal(chunk.chunkLeash1Tr, null, "AmbientObject").GetComponent<AmbientObject>().ambientAudioForObject =
-									ambience;
+										ambience;
 						}
 					}
 
@@ -5170,7 +5205,7 @@ namespace BunnyMod.Content
 
 							for (int num76 = 0; num76 < GC.agentList.Count; num76++)
 								if (GC.agentList[num76].startingChunk == mayorAgent.startingChunk && !GC.agentList[num76].isMayor &&
-									!list8.Contains(GC.agentList[num76]))
+										!list8.Contains(GC.agentList[num76]))
 									list8.Add(GC.agentList[num76]);
 
 							while (list8.Count > 0)
@@ -5266,7 +5301,7 @@ namespace BunnyMod.Content
 							hasGenericRoamers = __instance.customLevel.levelFeatures.Contains(vAgent.SlumDweller);
 
 						if (hasGenericRoamers && GC.levelFeeling != vLevelFeeling.Riot && GC.levelFeeling != vLevelFeeling.Lockdown &&
-							GC.levelFeeling != vLevelFeeling.WarZone)
+								GC.levelFeeling != vLevelFeeling.WarZone)
 						{
 							Debug.Log("Loading Roamers");
 
@@ -5701,7 +5736,7 @@ namespace BunnyMod.Content
 						bool hasMusician = false;
 
 						if ((GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5 ||
-							(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && GC.percentChance(33))
+								(GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33))) && GC.percentChance(33))
 							hasMusician = true;
 
 						if (GC.customLevel)
@@ -5711,7 +5746,7 @@ namespace BunnyMod.Content
 							hasMusician = true;
 
 						if (hasMusician && GC.levelFeeling != "Riot" && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" &&
-							GC.levelFeeling != "WarZone")
+								GC.levelFeeling != "WarZone")
 						{
 							Debug.Log("Loading Musician");
 							int bigTries = 1;
@@ -5762,7 +5797,7 @@ namespace BunnyMod.Content
 											if (GC.challenges.Contains(cChallenge.DiscoCityDanceoff))
 												agentType10 = vAgent.Musician;
 											else if ((!GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 9) ||
-												(GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 6))
+													(GC.challenges.Contains("QuickGame") && GC.sessionDataBig.curLevelEndless > 6))
 												agentType10 = vAgent.Goon;
 											else
 												agentType10 = vAgent.Supergoon;
@@ -5820,7 +5855,7 @@ namespace BunnyMod.Content
 							hasCops = true;
 
 						if (GC.challenges.Contains(cChallenge.PoliceState) || (GC.levelTheme == 3 || GC.levelTheme == 4 || GC.levelTheme == 5) &&
-							!GC.challenges.Contains("NoCops") && GC.debugMode)
+								!GC.challenges.Contains("NoCops") && GC.debugMode)
 							hasCops = true;
 
 						if (GC.customLevel)
@@ -5852,7 +5887,7 @@ namespace BunnyMod.Content
 									string agentName = vAgent.Cop;
 
 									if (GC.levelTheme == 4 || GC.levelTheme == 5 || GC.challenges.Contains(vChallenge.SupercopLand) ||
-										GC.challenges.Contains(cChallenge.PoliceState))
+											GC.challenges.Contains(cChallenge.PoliceState))
 										agentName = vAgent.SuperCop;
 
 									if (__instance.replaceCopWithGangbanger)
@@ -6090,7 +6125,7 @@ namespace BunnyMod.Content
 						bool findingFactoryLake = false;
 
 						if ((GC.sessionDataBig.curLevel >= 2 && (GC.levelTheme == 0 || GC.levelTheme == 1 || GC.levelTheme == 2 || GC.levelTheme == 3)) ||
-							(GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
+								(GC.sessionDataBig.curLevel >= 2 && GC.challenges.Contains("MixedUpLevels") && GC.percentChance(33)))
 							hasGangbangers = true;
 
 						if (GC.levelTheme == 2 || GC.levelTheme == 4)
@@ -6120,7 +6155,7 @@ namespace BunnyMod.Content
 							hasGangbangers = true;
 
 						if (hasGangbangers && GC.levelFeeling != "HarmAtIntervals" && GC.levelFeeling != "Lockdown" && GC.levelFeeling != "WarZone" &&
-							GC.levelFeeling != "Riot")
+								GC.levelFeeling != "Riot")
 						{
 							Debug.Log("Loading Roving Gangs");
 
@@ -6304,7 +6339,7 @@ namespace BunnyMod.Content
 
 					for (int num98 = 0; num98 < GC.agentList.Count; num98++)
 						if (GC.agentList[num98].isPlayer > 0 && (GC.agentList[num98].statusEffects.hasStatusEffect("InDebt3") ||
-							(GC.agentList[num98].isPlayer == 1 && GC.challenges.Contains("AssassinsEveryLevel"))))
+								(GC.agentList[num98].isPlayer == 1 && GC.challenges.Contains("AssassinsEveryLevel"))))
 							__instance.SpawnAssassins(GC.agentList[num98], GC.agentList[num98].CalculateDebt());
 
 					#endregion
@@ -6599,7 +6634,7 @@ namespace BunnyMod.Content
 		}
 
 		public static bool SpawnerFloor_spawn(string floorName, SpawnerFloor __instance, ref tk2dTileMap ___tilemapFloors, ref tk2dTileMap ___tilemapFloors3,
-			ref tk2dTileMap ___tilemapFloors4) // Replacement
+				ref tk2dTileMap ___tilemapFloors4) // Replacement
 		{
 			// Floor Mods
 			// Seems to affect only Home Base
@@ -6753,9 +6788,9 @@ namespace BunnyMod.Content
 					if (floorName == "ConveyorBelt")
 					{
 						if (GC.levelTheme != 1 && GC.levelTheme != 2 &&
-							(GC.levelTheme < 3 || !(__instance.transform.parent.GetComponent<Chunk>().description == "Mall")) &&
-							(!__instance.transform.parent.GetComponent<Chunk>().userCreated ||
-								!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+								(GC.levelTheme < 3 || !(__instance.transform.parent.GetComponent<Chunk>().description == "Mall")) &&
+								(!__instance.transform.parent.GetComponent<Chunk>().userCreated ||
+										!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
 						{
 							Object.Destroy(__instance.gameObject);
 							return false;
@@ -6765,7 +6800,7 @@ namespace BunnyMod.Content
 						__instance.tileInfo.tileArray[num, num2].conveyorBelt = true;
 						list.Add(__instance.tileInfo.tileArray[num, num2]);
 						list2.Add(Object.Instantiate<GameObject>(GC.spawnerMain.conveyorBeltImagePrefab, new Vector2((float) num * 0.64f, (float) num2 * 0.64f),
-							Quaternion.Euler(0f, 0f, 0f)));
+								Quaternion.Euler(0f, 0f, 0f)));
 						__instance.floorLayer = 2;
 						floorMaterialType = floorMaterialType.ConveyorBelt;
 					}
@@ -6812,7 +6847,7 @@ namespace BunnyMod.Content
 					else if (floorName == "FlamePit")
 					{
 						if (GC.levelTheme != 1 && (!__instance.transform.parent.GetComponent<Chunk>().userCreated ||
-							!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+								!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
 						{
 							Object.Destroy(__instance.gameObject);
 
@@ -6848,8 +6883,8 @@ namespace BunnyMod.Content
 					else if (floorName == "Hole")
 					{
 						if (GC.levelTheme != 1 && GC.levelTheme != 2 && GC.levelTheme != 4 && GC.levelTheme != 5 &&
-							(!__instance.transform.parent.GetComponent<Chunk>().userCreated ||
-								!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
+								(!__instance.transform.parent.GetComponent<Chunk>().userCreated ||
+										!(__instance.transform.parent.GetComponent<Chunk>().description != "Hideout")))
 						{
 							Object.Destroy(__instance.gameObject);
 
@@ -7042,7 +7077,7 @@ namespace BunnyMod.Content
 
 			if (floorName == "Hole" || (floorName == "Canal" && GC.canalHoles))
 				GC.spawnerMain.StartCoroutine(GC.spawnerMain.SpawnHoleLate(null, __instance.transform.position, __instance.transform.localScale,
-					__instance.transform.rotation, true, false));
+						__instance.transform.rotation, true, false));
 			else if (floorName == "Water" || floorName == "Canal" || floorName == "Pool")
 			{
 				Chunk component2 = __instance.transform.parent.GetComponent<Chunk>();
@@ -7051,7 +7086,7 @@ namespace BunnyMod.Content
 					component2 = __instance.transform.parent.transform.parent.GetComponent<Chunk>();
 
 				Water water = GC.spawnerMain.SpawnWater(null, __instance.transform.position, __instance.transform.localScale, __instance.transform.rotation,
-					true, component2);
+						true, component2);
 
 				for (int i = 0; i < list3.Count; i++)
 				{
@@ -7099,7 +7134,7 @@ namespace BunnyMod.Content
 					}
 
 					GameObject gameObject = GC.spawnerMain.SpawnConveyorBelt(null, __instance.transform.position, __instance.transform.localScale,
-						__instance.transform.rotation, text, true, component3).gameObject;
+							__instance.transform.rotation, text, true, component3).gameObject;
 					ConveyorBelt component4 = gameObject.GetComponent<ConveyorBelt>();
 
 					for (int j = 0; j < list.Count; j++)
@@ -7120,7 +7155,7 @@ namespace BunnyMod.Content
 					{
 						Vector3 position = new Vector3(__instance.transform.position.x, __instance.transform.position.y, -0.7f);
 						GameObject gameObject2 =
-							Object.Instantiate<GameObject>(GC.spawnerMain.ownerPropertyColliderPrefab, position, Quaternion.Euler(0f, 0f, 0f));
+								Object.Instantiate<GameObject>(GC.spawnerMain.ownerPropertyColliderPrefab, position, Quaternion.Euler(0f, 0f, 0f));
 						BoxCollider2D component5 = gameObject2.GetComponent<BoxCollider2D>();
 
 						if (__instance.transform.rotation.z > 0f)
@@ -7187,12 +7222,12 @@ namespace BunnyMod.Content
 
 		static List<Color32> discoColors = new List<Color32>()
 		{
-			discoBlueColor,
-			discoGreenColor,
-			discoOrangeColor,
-			discoPurpleColor,
-			discoRedColor,
-			discoYellowColor,
+				discoBlueColor,
+				discoGreenColor,
+				discoOrangeColor,
+				discoPurpleColor,
+				discoRedColor,
+				discoYellowColor,
 		};
 
 		#endregion

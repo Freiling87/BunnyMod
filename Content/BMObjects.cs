@@ -13,22 +13,42 @@ using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
-    public class BMObjects
-    {
-        public static GameController GC => GameController.gameController;
-        public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-        public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
-        public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
-        public static MethodInfo ObjectReal_DamagedObject_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
-        public static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
-        public static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
-        public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-        public static MethodInfo ObjectReal_PressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
-        public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
-        public static MethodInfo PlayfieldObject_StopInteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), nameof(PlayfieldObject.StopInteraction), new Type[0] { });
-        public static MethodInfo PlayfieldObject_FinishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
-        public static MethodInfo PlayfieldObject_Interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
-        public static MethodInfo PlayfieldObject_PressedButton_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+	public class BMObjects
+	{
+		public static GameController GC => GameController.gameController;
+
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+				BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
+		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
+
+		public static MethodInfo ObjectReal_DamagedObject_base =
+				AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
+
+		public static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
+		public static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
+
+		public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction",
+				new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+
+		public static MethodInfo ObjectReal_PressedButton_base =
+				AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+
+		public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
+
+		public static MethodInfo PlayfieldObject_StopInteraction_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), nameof(PlayfieldObject.StopInteraction), new Type[0] { });
+
+		public static MethodInfo PlayfieldObject_FinishedOperating_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
+
+		public static MethodInfo PlayfieldObject_Interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
+
+		public static MethodInfo PlayfieldObject_PressedButton_base =
+				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
 
 		#region Main
 

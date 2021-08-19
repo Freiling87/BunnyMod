@@ -15,10 +15,10 @@ namespace BunnyMod.Content
 		public static GameController GC => GameController.gameController;
 
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+				BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
 
 		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
 
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
@@ -135,26 +135,26 @@ namespace BunnyMod.Content
 					//    BMLog("\tContains: " + itemCandidate.contents[itemCandidate.contents.IndexOf(a)]); // Works
 
 					if (itemCandidate.itemType == "WeaponProjectile" &&
-						itemCandidate.hierarchy2 > num &&
-						(!noGuns || itemCandidate.Categories.Contains("NotRealWeapons")) &&
-						(!noWeapons || itemCandidate.Categories.Contains("NonViolent")) &&
-						(!noLoud || !(vItem.loud.Contains(itemCandidate.invItemName) || itemCandidate.contents.Contains(vItem.Silencer))) &&
-						itemCandidate.invItemCount > 0 &&
-						(!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) &&
-						(__instance.agent.isPlayer <= 0 || !(itemCandidate.itemType != __instance.lastEquippedWeaponType)) &&
-						(!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
+							itemCandidate.hierarchy2 > num &&
+							(!noGuns || itemCandidate.Categories.Contains("NotRealWeapons")) &&
+							(!noWeapons || itemCandidate.Categories.Contains("NonViolent")) &&
+							(!noLoud || !(vItem.loud.Contains(itemCandidate.invItemName) || itemCandidate.contents.Contains(vItem.Silencer))) &&
+							itemCandidate.invItemCount > 0 &&
+							(!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) &&
+							(__instance.agent.isPlayer <= 0 || !(itemCandidate.itemType != __instance.lastEquippedWeaponType)) &&
+							(!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
 					{
 						invItem = itemCandidate;
 						num = itemCandidate.hierarchy2;
 					}
 
 					if (itemCandidate.itemType == "WeaponMelee" && itemCandidate.hierarchy2 > num2 &&
-						!flag &&
-						(!flag3 || itemCandidate.Categories.Contains("NonViolent")) &&
-						(!noLoud || (vItem.loud.Contains(itemCandidate.invItemName) && !itemCandidate.contents.Contains(vItem.Silencer))) &&
-						itemCandidate.invItemCount > 0 &&
-						(!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) &&
-						(!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
+							!flag &&
+							(!flag3 || itemCandidate.Categories.Contains("NonViolent")) &&
+							(!noLoud || (vItem.loud.Contains(itemCandidate.invItemName) && !itemCandidate.contents.Contains(vItem.Silencer))) &&
+							itemCandidate.invItemCount > 0 &&
+							(!itemCandidate.dontAutomaticallySelect || __instance.agent.isPlayer <= 0) &&
+							(!itemCandidate.dontSelectNPC || __instance.agent.isPlayer != 0))
 					{
 						invItem2 = itemCandidate;
 						num2 = itemCandidate.hierarchy2;
@@ -162,8 +162,8 @@ namespace BunnyMod.Content
 				}
 
 				if (invItem != null &&
-					(__instance.agent.isPlayer <= 0 || !(__instance.equippedWeapon.itemType == "WeaponMelee") ||
-						__instance.equippedWeapon == __instance.fist) && !__instance.equippedWeapon.Categories.Contains("NonViolent"))
+						(__instance.agent.isPlayer <= 0 || !(__instance.equippedWeapon.itemType == "WeaponMelee") ||
+								__instance.equippedWeapon == __instance.fist) && !__instance.equippedWeapon.Categories.Contains("NonViolent"))
 					__instance.EquipWeapon(invItem);
 				else if (invItem2 != null)
 					__instance.EquipWeapon(invItem2);
@@ -189,17 +189,17 @@ namespace BunnyMod.Content
 			bool fist = (item.invItemName == vItem.Fist);
 
 			__result = (
-					(!(item.itemType == "WeaponProjectile") || !agent.statusEffects.hasTrait(vTrait.StubbyFingers) ||
-						item.Categories.Contains("NotRealWeapons")) &&
-					(fist || item.Categories.Contains("NonViolent") || item.Categories.Contains("NotRealWeapons") ||
-						!agent.statusEffects.hasTrait(vTrait.Pacifist)) &&
-					(fist || !agent.statusEffects.hasTrait(vTrait.SausageFingers)) &&
-					(fist || !agent.statusEffects.hasTrait(vTrait.Harmless)) &&
-					(fist || !agent.statusEffects.hasTrait(vTrait.NearHarmless)) &&
-					(!vItem.piercing.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.DrawNoBlood)) &&
-					(!vItem.loud.Contains(item.invItemName) || item.contents.Contains(vItem.Silencer) ||
-						!agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))) ||
-				(agent.isPlayer != 0 && !agent.localPlayer);
+							(!(item.itemType == "WeaponProjectile") || !agent.statusEffects.hasTrait(vTrait.StubbyFingers) ||
+									item.Categories.Contains("NotRealWeapons")) &&
+							(fist || item.Categories.Contains("NonViolent") || item.Categories.Contains("NotRealWeapons") ||
+									!agent.statusEffects.hasTrait(vTrait.Pacifist)) &&
+							(fist || !agent.statusEffects.hasTrait(vTrait.SausageFingers)) &&
+							(fist || !agent.statusEffects.hasTrait(vTrait.Harmless)) &&
+							(fist || !agent.statusEffects.hasTrait(vTrait.NearHarmless)) &&
+							(!vItem.piercing.Contains(item.invItemName) || !agent.statusEffects.hasTrait(cTrait.DrawNoBlood)) &&
+							(!vItem.loud.Contains(item.invItemName) || item.contents.Contains(vItem.Silencer) ||
+									!agent.statusEffects.hasTrait(cTrait.AfraidOfLoudNoises))) ||
+					(agent.isPlayer != 0 && !agent.localPlayer);
 
 			return false;
 		}
@@ -384,74 +384,79 @@ namespace BunnyMod.Content
 				return false;
 			}
 
-            return true;
-        }
-        #endregion
-        
-        #region Item
-        public void Item_00()
-		{
-            Prefix(typeof(Item), "SpecialDamage", GetType(), "Item_SpecialDamage", new Type[1] { typeof(PlayfieldObject) });
+			return true;
 		}
-        public static List<string> customThrowables = new List<string>()
-        {
-            cItem.Brick,
-            cItem.BeerCan,
-            cItem.Lunchbox,
-            cItem.ManholeCover,
-            cItem.Sawblade,
-            cItem.ThrowingKnife,
-            cItem.WhiskeyBottle
-        };
-        public static bool Item_SpecialDamage(PlayfieldObject damagerObject, Item __instance)
+
+		#endregion
+
+		#region Item
+
+		public void Item_00()
 		{
-            string itemName = __instance.invItem.invItemName;
+			Prefix(typeof(Item), "SpecialDamage", GetType(), "Item_SpecialDamage", new Type[1] { typeof(PlayfieldObject) });
+		}
 
-            if (customThrowables.Contains(itemName) && damagerObject.CompareTag("Agent"))
+		public static List<string> customThrowables = new List<string>()
+		{
+				cItem.Brick,
+				cItem.BeerCan,
+				cItem.Lunchbox,
+				cItem.ManholeCover,
+				cItem.Sawblade,
+				cItem.ThrowingKnife,
+				cItem.WhiskeyBottle
+		};
+
+		public static bool Item_SpecialDamage(PlayfieldObject damagerObject, Item __instance)
+		{
+			string itemName = __instance.invItem.invItemName;
+
+			if (customThrowables.Contains(itemName) && damagerObject.CompareTag("Agent"))
 			{
-                Agent agent = (Agent)damagerObject;
+				Agent agent = (Agent) damagerObject;
 
-                if (itemName == cItem.BeerCan)
-                    GC.audioHandler.Play(agent, vAudioClip.BulletHitObject);
-                else if (itemName == cItem.ManholeCover)
-                    GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentLarge);
-                else if (itemName == cItem.Sawblade)
-                    GC.audioHandler.Play(agent, vAudioClip.SawBladeHit);
-                else if (itemName == cItem.ThrowingKnife)
-                    GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentCutSmall2);
-                else if (itemName == cItem.WhiskeyBottle)
-                    GC.audioHandler.Play(agent, vAudioClip.WindowDamage);
-                else
-                    GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentLarge);
+				if (itemName == cItem.BeerCan)
+					GC.audioHandler.Play(agent, vAudioClip.BulletHitObject);
+				else if (itemName == cItem.ManholeCover)
+					GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentLarge);
+				else if (itemName == cItem.Sawblade)
+					GC.audioHandler.Play(agent, vAudioClip.SawBladeHit);
+				else if (itemName == cItem.ThrowingKnife)
+					GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentCutSmall2);
+				else if (itemName == cItem.WhiskeyBottle)
+					GC.audioHandler.Play(agent, vAudioClip.WindowDamage);
+				else
+					GC.audioHandler.Play(agent, vAudioClip.MeleeHitAgentLarge);
 
-                GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.tr.position, __instance.tr.eulerAngles.z);
+				GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.tr.position, __instance.tr.eulerAngles.z);
 
-                if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-                {
-                    GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.tr.eulerAngles.z);
-                    GC.playerAgent.objectMultPlayfield.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.tr.eulerAngles.z, false, agent);
-                }
-                else
-                {
-                    GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.tr.eulerAngles.z);
-                    GC.playerAgent.objectMultPlayfield.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.tr.eulerAngles.z, false, agent);
-                }
+				if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
+				{
+					GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.tr.eulerAngles.z);
+					GC.playerAgent.objectMultPlayfield.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.tr.eulerAngles.z, false, agent);
+				}
+				else
+				{
+					GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.tr.eulerAngles.z);
+					GC.playerAgent.objectMultPlayfield.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.tr.eulerAngles.z, false, agent);
+				}
 
-                __instance.DestroyMeFromClient();
+				__instance.DestroyMeFromClient();
 
-                return false;
+				return false;
 			}
 
-            return true;
+			return true;
 		}
-        #endregion
-        
+
+		#endregion
+
 		#region ItemFunctions
 
 		public void ItemFunctions_00()
 		{
 			Postfix(typeof(ItemFunctions), "DetermineHealthChange", GetType(), "ItemFunctions_DetermineHealthChange",
-				new Type[2] { typeof(InvItem), typeof(Agent) });
+					new Type[2] { typeof(InvItem), typeof(Agent) });
 			Prefix(typeof(ItemFunctions), "UseItem", GetType(), "ItemFunctions_UseItem", new Type[2] { typeof(InvItem), typeof(Agent) });
 		}
 
@@ -461,10 +466,10 @@ namespace BunnyMod.Content
 			StatusEffects traits = agent.statusEffects;
 			if
 			(
-				(cats.Contains("Alcohol") && (traits.hasTrait(cTrait.FriendOfBill) || traits.hasTrait(cTrait.Teetotaller))) ||
-				(cats.Contains("Drugs") && (traits.hasTrait(cTrait.DAREdevil) || traits.hasTrait(cTrait.Teetotaller))) ||
-				(cats.Contains("Vegetarian") && traits.hasTrait(cTrait.Carnivore)) ||
-				(cats.Contains("NonVegetarian") && traits.hasTrait(cTrait.Vegetarian))
+					(cats.Contains("Alcohol") && (traits.hasTrait(cTrait.FriendOfBill) || traits.hasTrait(cTrait.Teetotaller))) ||
+					(cats.Contains("Drugs") && (traits.hasTrait(cTrait.DAREdevil) || traits.hasTrait(cTrait.Teetotaller))) ||
+					(cats.Contains("Vegetarian") && traits.hasTrait(cTrait.Carnivore)) ||
+					(cats.Contains("NonVegetarian") && traits.hasTrait(cTrait.Vegetarian))
 			)
 				__result = 0;
 			if (traits.hasTrait(cTrait.Fatass))
@@ -476,13 +481,13 @@ namespace BunnyMod.Content
 			if (item.itemType == "Consumable")
 			{
 				if (vItem.alcohol.Contains(item.invItemName) &&
-					((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
+						((agent.statusEffects.hasTrait(cTrait.FriendOfBill) || agent.statusEffects.hasTrait(cTrait.Teetotaller))))
 				{
 					BMHeaderTools.SayDialogue(agent, cDialogue.CantDrinkAlcohol, vNameType.Dialogue);
 					goto terminus;
 				}
 				else if (vItem.drugs.Contains(item.invItemName) &&
-					(agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
+						(agent.statusEffects.hasTrait(cTrait.DAREdevil) || agent.statusEffects.hasTrait(cTrait.Teetotaller)))
 				{
 					BMHeaderTools.SayDialogue(agent, cDialogue.CantUseDrug, vNameType.Dialogue);
 					goto terminus;
@@ -523,550 +528,577 @@ namespace BunnyMod.Content
 		}
 
 		#endregion
-    }
-	
-	    [ItemCategories(RogueCategories.Technology, RogueCategories.Usable)]
-    public class BearTrapProcessor : CustomItem, IItemCombinable
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<BearTrapProcessor>()
-                .WithDescription(new CustomNameInfo("You can stick pretty much anything in here, and a Bear Trap will pop out once it reaches a value threshold of 100."))
-                .WithName(new CustomNameInfo(cItem.BearTrapProcessor))
-                .WithSprite(Properties.Resources.BearTrapProcessor)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 4,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 4,
-                    Prerequisites = { vItem.FoodProcessor, vItem.Beartrap },
-                    UnlockCost = 4
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = true;
-            Item.hasCharges = true;
-            Item.initCount = 0;
-            Item.itemValue = 200;
-            Item.itemType = ItemTypes.Combine;
-            Item.rewardCount = 0;
-            Item.stackable = true;
-            Item.thiefCantSteal = true;
-        }
-        public bool CombineFilter(InvItem other) =>
-            other.contents.Count > 0 &&
-            other.itemValue > 0 &&
-            other.invItemName != vItem.Money &&
-            !other.cantDrop &&
-            !other.questItem;
-        public bool CombineItems(InvItem other)
-        {
-            if (!CombineFilter(other)) return false;
+	}
 
-            if (Owner.agentInvDatabase.equippedWeapon == other)
-                Owner.agentInvDatabase.UnequipWeapon();
-            else if (Owner.agentInvDatabase.equippedArmor == other)
-                Owner.agentInvDatabase.UnequipArmor();
-            else if (Owner.agentInvDatabase.equippedArmorHead == other)
-                Owner.agentInvDatabase.UnequipArmorHead();
-
-            if (other.isArmor || other.isArmorHead || other.hasCharges ||
-                (other.isWeapon && other.itemType != ItemTypes.WeaponThrown))
-                Owner.agentInvDatabase.DestroyItem(other);
-            else
-                Owner.agentInvDatabase.SubtractFromItemCount(other, 1);
-
-            int unitsMade = 0;
-            int totalOutput = Item.invItemCount;
-            totalOutput += Owner.determineMoneyCost(other, other.itemValue, vItem.BombProcessor);
-
-            while (totalOutput >= 100)
-            {
-                totalOutput -= 100;
-                unitsMade++;
-            }
-
-            Item.invItemCount = totalOutput;
-
-            for (int j = 0; j < unitsMade; j++)
-            {
-                InvItem sugar = new InvItem();
-                sugar.invItemName = vItem.Beartrap;
-                sugar.invItemCount = 1;
-                sugar.contents.Clear();
-                sugar.SetupDetails(false);
-
-                Owner.inventory.AddItemOrDrop(sugar);
-            }
-
-            gc.audioHandler.Play(Owner, vAudioClip.CombineItem);
-
-            return true;
-        }
-        public CustomTooltip CombineTooltip(InvItem other) => default;
-        public CustomTooltip CombineCursorText(InvItem other) => default;
-    }
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
-    public class BeerCan : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<BeerCan>()
-                .WithName(new CustomNameInfo("Beer Can"))
-                .WithDescription(new CustomNameInfo("No, you can't crack someone's skull with it. It won't break windows. And the worst part: there's no beer in it."))
-                .WithSprite(Properties.Resources.BeerCan)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 1,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 1,
-                    Prerequisites = { vItem.Beer },
-                    UnlockCost = 1
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = true;
-            Item.hasCharges = false;
-            Item.initCount = 10;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 3;
-            Item.rewardCount = 10;
-            Item.stackable = true;
-            Item.throwDistance = 4;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 0;
-            Item.weaponCode = weaponType.WeaponThrown;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
-    public class Brick : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<Brick>()
-                .WithName(new CustomNameInfo("Brick"))
-                .WithDescription(new CustomNameInfo("Look around you. That wall? Brick. That fireplace? Brick. Everything is made of brick. Brick is the fundamental 'building block' of the universe. I think. I didn't do a lot of research on this."))
-                .WithSprite(Properties.Resources.Brick)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 2,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 2,
-                    Prerequisites = { },
-                    UnlockCost = 2
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = true;
-            Item.hasCharges = false;
-            Item.initCount = 10;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 5;
-            Item.rewardCount = 10;
-            Item.stackable = true;
-            Item.throwDistance = 6;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 8;
-            Item.weaponCode = weaponType.WeaponThrown;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, RogueCategories.Melee, "Trash")]
-    public class BrokenBottle : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<BrokenBottle>()
-                .WithName(new CustomNameInfo("Broken Bottle"))
-                .WithDescription(new CustomNameInfo("Hmm, what could you do with this? Recycle it? Make an art installation? It's probably too sharp for a windchime. Think about it."))
-                .WithSprite(Properties.Resources.BrokenBottle)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 1,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 1,
-                    Prerequisites = { cItem.WhiskeyBottle },
-                    UnlockCost = 1
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = true;
-            Item.hitSoundType = vAudioClip.MeleeHitAgentCutSmall2;
-            Item.hasCharges = false;
-            Item.initCount = 40;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponMelee;
-            Item.itemValue = 1;
-            Item.meleeDamage = 4;
-            Item.rewardCount = 40;
-            Item.stackable = false;
-            Item.weaponCode = weaponType.WeaponMelee;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Food, RogueCategories.Usable)]
-    public class EnergyDrink : CustomItem
+	[ItemCategories(RogueCategories.Technology, RogueCategories.Usable)]
+	public class BearTrapProcessor : CustomItem, IItemCombinable
 	{
-        [RLSetup]
-        public static void Setup()
+		[RLSetup]
+		public static void Setup()
 		{
-            RogueLibs.CreateCustomItem<EnergyDrink>()
-                .WithDescription(new CustomNameInfo(""))
-                .WithName(new CustomNameInfo(""))
-                .WithSprite(Properties.Resources.EnergyDrink)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 3,
-                    LoadoutCost = 3,
-                    Prerequisites = { },
-                    UnlockCost = 3
-                });
+			RogueLibs.CreateCustomItem<BearTrapProcessor>()
+					.WithDescription(new CustomNameInfo(
+							"You can stick pretty much anything in here, and a Bear Trap will pop out once it reaches a value threshold of 100."))
+					.WithName(new CustomNameInfo(cItem.BearTrapProcessor))
+					.WithSprite(Properties.Resources.BearTrapProcessor)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 4,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 4,
+							Prerequisites = { vItem.FoodProcessor, vItem.Beartrap },
+							UnlockCost = 4
+					});
 		}
 
 		public override void SetupDetails()
 		{
-            Item.goesInToolbar = true;
-            Item.healthChange = 5;
-            Item.initCount = 1;
-            Item.itemType = ItemTypes.Consumable;
-            Item.itemValue = 20;
-            Item.rewardCount = 3;
-            Item.stackable = true;
+			Item.cantBeCloned = true;
+			Item.hasCharges = true;
+			Item.initCount = 0;
+			Item.itemValue = 200;
+			Item.itemType = ItemTypes.Combine;
+			Item.rewardCount = 0;
+			Item.stackable = true;
+			Item.thiefCantSteal = true;
 		}
 
-        [IgnoreChecks("FullHealth")]
-        public bool UseItem()
+		public bool CombineFilter(InvItem other) =>
+				other.contents.Count > 0 &&
+				other.itemValue > 0 &&
+				other.invItemName != vItem.Money &&
+				!other.cantDrop &&
+				!other.questItem;
+
+		public bool CombineItems(InvItem other)
 		{
-            if (Owner.electronic)
+			if (!CombineFilter(other)) return false;
+
+			if (Owner.agentInvDatabase.equippedWeapon == other)
+				Owner.agentInvDatabase.UnequipWeapon();
+			else if (Owner.agentInvDatabase.equippedArmor == other)
+				Owner.agentInvDatabase.UnequipArmor();
+			else if (Owner.agentInvDatabase.equippedArmorHead == other)
+				Owner.agentInvDatabase.UnequipArmorHead();
+
+			if (other.isArmor || other.isArmorHead || other.hasCharges ||
+					(other.isWeapon && other.itemType != ItemTypes.WeaponThrown))
+				Owner.agentInvDatabase.DestroyItem(other);
+			else
+				Owner.agentInvDatabase.SubtractFromItemCount(other, 1);
+
+			int unitsMade = 0;
+			int totalOutput = Item.invItemCount;
+			totalOutput += Owner.determineMoneyCost(other, other.itemValue, vItem.BombProcessor);
+
+			while (totalOutput >= 100)
 			{
-                Owner.SayDialogue("");
-                gc.audioHandler.Play(Owner, vAudioClip.CantDo);
-     
-                return false;
+				totalOutput -= 100;
+				unitsMade++;
 			}
 
-            Owner.AddEffect<ChronomanticDilation>(15);
-            gc.audioHandler.Play(Owner, vAudioClip.UseDrink);
-            Count--;
+			Item.invItemCount = totalOutput;
 
-            return true;
+			for (int j = 0; j < unitsMade; j++)
+			{
+				InvItem sugar = new InvItem();
+				sugar.invItemName = vItem.Beartrap;
+				sugar.invItemCount = 1;
+				sugar.contents.Clear();
+				sugar.SetupDetails(false);
+
+				Owner.inventory.AddItemOrDrop(sugar);
+			}
+
+			gc.audioHandler.Play(Owner, vAudioClip.CombineItem);
+
+			return true;
+		}
+
+		public CustomTooltip CombineTooltip(InvItem other) => default;
+		public CustomTooltip CombineCursorText(InvItem other) => default;
+	}
+
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
+	public class BeerCan : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<BeerCan>()
+					.WithName(new CustomNameInfo("Beer Can"))
+					.WithDescription(
+							new CustomNameInfo(
+									"No, you can't crack someone's skull with it. It won't break windows. And the worst part: there's no beer in it."))
+					.WithSprite(Properties.Resources.BeerCan)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 1,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 1,
+							Prerequisites = { vItem.Beer },
+							UnlockCost = 1
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = true;
+			Item.hasCharges = false;
+			Item.initCount = 10;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 3;
+			Item.rewardCount = 10;
+			Item.stackable = true;
+			Item.throwDistance = 4;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 0;
+			Item.weaponCode = weaponType.WeaponThrown;
 		}
 	}
 
-    [ItemCategories(RogueCategories.Passive, "Blessed")]
-    public class HolySymbol : CustomItem
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
+	public class Brick : CustomItem
 	{
-        [RLSetup]
-        public static void Setup()
+		[RLSetup]
+		public static void Setup()
 		{
-            RogueLibs.CreateCustomItem<HolySymbol>()
-                .WithDescription(new CustomNameInfo("Shiny!\n\nHoly!\n\nThat's it!"))
-                .WithName(new CustomNameInfo("Holy Symbol"))
-                .WithSprite(Properties.Resources.HolySymbol)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 3,
-                    LoadoutCost = 3,
-                    UnlockCost = 5,
-                    Prerequisites = { }
-                });
+			RogueLibs.CreateCustomItem<Brick>()
+					.WithName(new CustomNameInfo("Brick"))
+					.WithDescription(new CustomNameInfo(
+							"Look around you. That wall? Brick. That fireplace? Brick. Everything is made of brick. Brick is the fundamental 'building block' of the universe. I think. I didn't do a lot of research on this."))
+					.WithSprite(Properties.Resources.Brick)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 2,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 2,
+							Prerequisites = { },
+							UnlockCost = 2
+					});
 		}
+
 		public override void SetupDetails()
 		{
-            Item.itemType = ItemTypes.Tool;
-            Item.itemValue = 80;
-            Item.cantBeCloned = true;
-            Item.goesInToolbar = false;
-        }
-	}
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Blessed")]
-    public class HolyWaterFlask : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<BeerCan>()
-                .WithName(new CustomNameInfo("Holy Water Flask"))
-                .WithDescription(new CustomNameInfo("It's soapy water. An old man mumbled over it. Vampires and Zombies seem to take it seriously though, so whatever."))
-                .WithSprite(Properties.Resources.HolyWaterFlask)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 1,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 1,
-                    Prerequisites = { },
-                    UnlockCost = 1
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = false;
-            Item.hasCharges = false;
-            Item.initCount = 3;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 15;
-            Item.rewardCount = 3;
-            Item.stackable = true;
-            Item.throwDistance = 7;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 0;
-            Item.weaponCode = weaponType.WeaponThrown;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons)]
-    public class ManholeCover : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<ManholeCover>()
-                .WithName(new CustomNameInfo("Manhole Cover"))
-                .WithDescription(new CustomNameInfo("Wow, this seems a little large for a manhole, but I guess some people do go kinda crazy.\n\nOh, you mean those things in the ground..."))
-                .WithSprite(Properties.Resources.ManholeCover)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 2,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 2,
-                    Prerequisites = { },
-                    UnlockCost = 2
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = true;
-            Item.hasCharges = false;
-            Item.initCount = 1;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 25;
-            Item.stackable = false;
-            Item.throwDistance = 6;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 20;
-            Item.weaponCode = weaponType.WeaponThrown;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Weapons)]
-    public class Sawblade : CustomItem
-    {
-        [RLSetup]
-        public static void Setup()
-        {
-            RogueLibs.CreateCustomItem<Sawblade>()
-                .WithName(new CustomNameInfo("Sawblade"))
-                .WithDescription(new CustomNameInfo("Sawblade? Yeah, but Blade: Trinity kinda sucked."))
-                .WithSprite(Properties.Resources.Sawblade)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 3,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 3,
-                    Prerequisites = { },
-                    UnlockCost = 3
-                });
-        }
-        public override void SetupDetails()
-        {
-            Item.cantBeCloned = false;
-            Item.hasCharges = false;
-            Item.initCount = 1;
-            Item.isWeapon = true;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 50;
-            Item.rewardCount = 3;
-            Item.stackable = true;
-            Item.throwDistance = 8;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 25;
-        }
-    }
-
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.Melee)]
-    public class Spear : CustomItem
-	{
-        [RLSetup]
-        public static void Setup()
-		{
-            RogueLibs.CreateCustomItem<Spear>()
-                .WithDescription(new CustomNameInfo("Make sure the pointy end goes toward the bad guy and you're all set. Can you handle that?"))
-                .WithName(new CustomNameInfo(cItem.Spear))
-                .WithSprite(Properties.Resources.Spear)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 2,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 2,
-                    Prerequisites = { vItem.Knife },
-                    UnlockCost = 3
-                });
-		}
-		public override void SetupDetails()
-        {
-            Item.hasCharges = false;
-            Item.hitSoundType = vAudioClip.MeleeHitAgentCutLarge;
-            Item.initCount = 100;
-            Item.isWeapon = true;
-            Item.itemType = ItemTypes.WeaponMelee;
-            Item.itemValue = 60;
-            Item.meleeDamage = 8;
-            Item.stackable = false;
-            Item.weaponCode = weaponType.WeaponMelee;
+			Item.cantBeCloned = true;
+			Item.hasCharges = false;
+			Item.initCount = 10;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 5;
+			Item.rewardCount = 10;
+			Item.stackable = true;
+			Item.throwDistance = 6;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 8;
+			Item.weaponCode = weaponType.WeaponThrown;
 		}
 	}
 
-    [ItemCategories(RogueCategories.Drugs, RogueCategories.Technology, RogueCategories.Usable)]
-    public class SugarProcessor : CustomItem, IItemCombinable
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, RogueCategories.Melee, "Trash")]
+	public class BrokenBottle : CustomItem
 	{
-        [RLSetup]
-        public static void Setup()
+		[RLSetup]
+		public static void Setup()
 		{
-            RogueLibs.CreateCustomItem<SugarProcessor>()
-                .WithDescription(new CustomNameInfo("You can stick pretty much anything in here, and a bag of Sugar will pop out once it reaches a value threshold of 100."))
-                .WithName(new CustomNameInfo(cItem.SugarProcessor))
-                .WithSprite(Properties.Resources.SugarProcessor)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 4,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 4,
-                    Prerequisites = { vItem.FoodProcessor, vItem.Sugar },
-                    UnlockCost = 4
-                });
+			RogueLibs.CreateCustomItem<BrokenBottle>()
+					.WithName(new CustomNameInfo("Broken Bottle"))
+					.WithDescription(new CustomNameInfo(
+							"Hmm, what could you do with this? Recycle it? Make an art installation? It's probably too sharp for a windchime. Think about it."))
+					.WithSprite(Properties.Resources.BrokenBottle)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 1,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 1,
+							Prerequisites = { cItem.WhiskeyBottle },
+							UnlockCost = 1
+					});
 		}
+
 		public override void SetupDetails()
 		{
-            Item.cantBeCloned = true;
-            Item.hasCharges = true;
-            Item.initCount = 0;
-            Item.itemValue = 200;
-            Item.itemType = ItemTypes.Combine;
-            Item.rewardCount = 0;
-            Item.stackable = true;
-            Item.thiefCantSteal = true;
+			Item.cantBeCloned = true;
+			Item.hitSoundType = vAudioClip.MeleeHitAgentCutSmall2;
+			Item.hasCharges = false;
+			Item.initCount = 40;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponMelee;
+			Item.itemValue = 1;
+			Item.meleeDamage = 4;
+			Item.rewardCount = 40;
+			Item.stackable = false;
+			Item.weaponCode = weaponType.WeaponMelee;
 		}
-        public bool CombineFilter(InvItem other) => 
-            other.contents.Count > 0 &&
-            other.itemValue > 0 &&
-            other.invItemName != vItem.Money &&
-            !other.cantDrop &&
-            !other.questItem;
-        public bool CombineItems(InvItem other)
-		{
-            if (!CombineFilter(other)) return false;
-
-            if (Owner.agentInvDatabase.equippedWeapon == other)
-                Owner.agentInvDatabase.UnequipWeapon();
-            else if (Owner.agentInvDatabase.equippedArmor == other)
-                Owner.agentInvDatabase.UnequipArmor();
-            else if (Owner.agentInvDatabase.equippedArmorHead == other)
-                Owner.agentInvDatabase.UnequipArmorHead();
-            
-            if (other.isArmor || other.isArmorHead || other.hasCharges || 
-                (other.isWeapon && other.itemType != ItemTypes.WeaponThrown))
-                Owner.agentInvDatabase.DestroyItem(other);
-            else
-                Owner.agentInvDatabase.SubtractFromItemCount(other, 1);
-
-            int unitsMade = 0;
-            int totalOutput = Item.invItemCount;
-            totalOutput += Owner.determineMoneyCost(other, other.itemValue, vItem.BombProcessor) / 2;
-
-            while (totalOutput >= 100)
-            {
-                totalOutput -= 100;
-                unitsMade++;
-            }
-
-            Item.invItemCount = totalOutput;
-
-            for (int j = 0; j < unitsMade; j++)
-            {
-                InvItem sugar = new InvItem();
-                sugar.invItemName = vItem.Sugar;
-                sugar.invItemCount = 1;
-                sugar.contents.Clear();
-                sugar.SetupDetails(false);
-
-                Owner.inventory.AddItemOrDrop(sugar);
-            }
-
-            gc.audioHandler.Play(Owner, vAudioClip.CombineItem);
-
-            return true;
-        }
-        public CustomTooltip CombineTooltip(InvItem other) => default;
-        public CustomTooltip CombineCursorText(InvItem other) => default;
 	}
 
-    [ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
-    public class WhiskeyBottle : CustomItem
+	[ItemCategories(RogueCategories.Food, RogueCategories.Usable)]
+	public class EnergyDrink : CustomItem
 	{
-        [RLSetup]
-        public static void Setup()
+		[RLSetup]
+		public static void Setup()
 		{
-            RogueLibs.CreateCustomItem<WhiskeyBottle>()
-                .WithName(new CustomNameInfo("Whiskey Bottle"))
-                .WithDescription(new CustomNameInfo("No, it's just the bottle, you see. Stop shaking it. No, don't put your tongue in it, you degenerate! Even I don't know where that's been. Just throw it at people like a normal person."))
-                .WithSprite(Properties.Resources.WhiskeyBottle)
-                .WithUnlock(new ItemUnlock
-                {
-                    CharacterCreationCost = 3,
-                    IsAvailable = true,
-                    IsAvailableInCC = true,
-                    IsAvailableInItemTeleporter = true,
-                    LoadoutCost = 3,
-                    Prerequisites = { vItem.Whiskey },
-                    UnlockCost = 3
-                });
+			RogueLibs.CreateCustomItem<EnergyDrink>()
+					.WithDescription(new CustomNameInfo(""))
+					.WithName(new CustomNameInfo(""))
+					.WithSprite(Properties.Resources.EnergyDrink)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 3,
+							LoadoutCost = 3,
+							Prerequisites = { },
+							UnlockCost = 3
+					});
 		}
+
 		public override void SetupDetails()
 		{
-            Item.cantBeCloned = true;
-            Item.hasCharges = false;
-            Item.initCount = 5;
-            Item.isWeapon = false;
-            Item.itemType = ItemTypes.WeaponThrown;
-            Item.itemValue = 5;
-            Item.rewardCount = 5;
-            Item.stackable = true;
-            Item.throwDistance = 8;
-            Item.throwExtraDist = true;
-            Item.throwDamage = 5;
+			Item.goesInToolbar = true;
+			Item.healthChange = 5;
+			Item.initCount = 1;
+			Item.itemType = ItemTypes.Consumable;
+			Item.itemValue = 20;
+			Item.rewardCount = 3;
+			Item.stackable = true;
+		}
+
+		[IgnoreChecks("FullHealth")]
+		public bool UseItem()
+		{
+			if (Owner.electronic)
+			{
+				Owner.SayDialogue("");
+				gc.audioHandler.Play(Owner, vAudioClip.CantDo);
+
+				return false;
+			}
+
+			Owner.AddEffect<ChronomanticDilation>(15);
+			gc.audioHandler.Play(Owner, vAudioClip.UseDrink);
+			Count--;
+
+			return true;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Passive, "Blessed")]
+	public class HolySymbol : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<HolySymbol>()
+					.WithDescription(new CustomNameInfo("Shiny!\n\nHoly!\n\nThat's it!"))
+					.WithName(new CustomNameInfo("Holy Symbol"))
+					.WithSprite(Properties.Resources.HolySymbol)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 3,
+							LoadoutCost = 3,
+							UnlockCost = 5,
+							Prerequisites = { }
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.itemType = ItemTypes.Tool;
+			Item.itemValue = 80;
+			Item.cantBeCloned = true;
+			Item.goesInToolbar = false;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Blessed")]
+	public class HolyWaterFlask : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<BeerCan>()
+					.WithName(new CustomNameInfo("Holy Water Flask"))
+					.WithDescription(
+							new CustomNameInfo(
+									"It's soapy water. An old man mumbled over it. Vampires and Zombies seem to take it seriously though, so whatever."))
+					.WithSprite(Properties.Resources.HolyWaterFlask)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 1,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 1,
+							Prerequisites = { },
+							UnlockCost = 1
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = false;
+			Item.hasCharges = false;
+			Item.initCount = 3;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 15;
+			Item.rewardCount = 3;
+			Item.stackable = true;
+			Item.throwDistance = 7;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 0;
+			Item.weaponCode = weaponType.WeaponThrown;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons)]
+	public class ManholeCover : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<ManholeCover>()
+					.WithName(new CustomNameInfo("Manhole Cover"))
+					.WithDescription(new CustomNameInfo(
+							"Wow, this seems a little large for a manhole, but I guess some people do go kinda crazy.\n\nOh, you mean those things in the ground..."))
+					.WithSprite(Properties.Resources.ManholeCover)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 2,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 2,
+							Prerequisites = { },
+							UnlockCost = 2
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = true;
+			Item.hasCharges = false;
+			Item.initCount = 1;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 25;
+			Item.stackable = false;
+			Item.throwDistance = 6;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 20;
+			Item.weaponCode = weaponType.WeaponThrown;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Weapons)]
+	public class Sawblade : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<Sawblade>()
+					.WithName(new CustomNameInfo("Sawblade"))
+					.WithDescription(new CustomNameInfo("Sawblade? Yeah, but Blade: Trinity kinda sucked."))
+					.WithSprite(Properties.Resources.Sawblade)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 3,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 3,
+							Prerequisites = { },
+							UnlockCost = 3
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = false;
+			Item.hasCharges = false;
+			Item.initCount = 1;
+			Item.isWeapon = true;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 50;
+			Item.rewardCount = 3;
+			Item.stackable = true;
+			Item.throwDistance = 8;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 25;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.Melee)]
+	public class Spear : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<Spear>()
+					.WithDescription(new CustomNameInfo("Make sure the pointy end goes toward the bad guy and you're all set. Can you handle that?"))
+					.WithName(new CustomNameInfo(cItem.Spear))
+					.WithSprite(Properties.Resources.Spear)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 2,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 2,
+							Prerequisites = { vItem.Knife },
+							UnlockCost = 3
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.hasCharges = false;
+			Item.hitSoundType = vAudioClip.MeleeHitAgentCutLarge;
+			Item.initCount = 100;
+			Item.isWeapon = true;
+			Item.itemType = ItemTypes.WeaponMelee;
+			Item.itemValue = 60;
+			Item.meleeDamage = 8;
+			Item.stackable = false;
+			Item.weaponCode = weaponType.WeaponMelee;
+		}
+	}
+
+	[ItemCategories(RogueCategories.Drugs, RogueCategories.Technology, RogueCategories.Usable)]
+	public class SugarProcessor : CustomItem, IItemCombinable
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<SugarProcessor>()
+					.WithDescription(new CustomNameInfo(
+							"You can stick pretty much anything in here, and a bag of Sugar will pop out once it reaches a value threshold of 100."))
+					.WithName(new CustomNameInfo(cItem.SugarProcessor))
+					.WithSprite(Properties.Resources.SugarProcessor)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 4,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 4,
+							Prerequisites = { vItem.FoodProcessor, vItem.Sugar },
+							UnlockCost = 4
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = true;
+			Item.hasCharges = true;
+			Item.initCount = 0;
+			Item.itemValue = 200;
+			Item.itemType = ItemTypes.Combine;
+			Item.rewardCount = 0;
+			Item.stackable = true;
+			Item.thiefCantSteal = true;
+		}
+
+		public bool CombineFilter(InvItem other) =>
+				other.contents.Count > 0 &&
+				other.itemValue > 0 &&
+				other.invItemName != vItem.Money &&
+				!other.cantDrop &&
+				!other.questItem;
+
+		public bool CombineItems(InvItem other)
+		{
+			if (!CombineFilter(other)) return false;
+
+			if (Owner.agentInvDatabase.equippedWeapon == other)
+				Owner.agentInvDatabase.UnequipWeapon();
+			else if (Owner.agentInvDatabase.equippedArmor == other)
+				Owner.agentInvDatabase.UnequipArmor();
+			else if (Owner.agentInvDatabase.equippedArmorHead == other)
+				Owner.agentInvDatabase.UnequipArmorHead();
+
+			if (other.isArmor || other.isArmorHead || other.hasCharges ||
+					(other.isWeapon && other.itemType != ItemTypes.WeaponThrown))
+				Owner.agentInvDatabase.DestroyItem(other);
+			else
+				Owner.agentInvDatabase.SubtractFromItemCount(other, 1);
+
+			int unitsMade = 0;
+			int totalOutput = Item.invItemCount;
+			totalOutput += Owner.determineMoneyCost(other, other.itemValue, vItem.BombProcessor) / 2;
+
+			while (totalOutput >= 100)
+			{
+				totalOutput -= 100;
+				unitsMade++;
+			}
+
+			Item.invItemCount = totalOutput;
+
+			for (int j = 0; j < unitsMade; j++)
+			{
+				InvItem sugar = new InvItem();
+				sugar.invItemName = vItem.Sugar;
+				sugar.invItemCount = 1;
+				sugar.contents.Clear();
+				sugar.SetupDetails(false);
+
+				Owner.inventory.AddItemOrDrop(sugar);
+			}
+
+			gc.audioHandler.Play(Owner, vAudioClip.CombineItem);
+
+			return true;
+		}
+
+		public CustomTooltip CombineTooltip(InvItem other) => default;
+		public CustomTooltip CombineCursorText(InvItem other) => default;
+	}
+
+	[ItemCategories(RogueCategories.Weapons, RogueCategories.NotRealWeapons, "Trash")]
+	public class WhiskeyBottle : CustomItem
+	{
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomItem<WhiskeyBottle>()
+					.WithName(new CustomNameInfo("Whiskey Bottle"))
+					.WithDescription(new CustomNameInfo(
+							"No, it's just the bottle, you see. Stop shaking it. No, don't put your tongue in it, you degenerate! Even I don't know where that's been. Just throw it at people like a normal person."))
+					.WithSprite(Properties.Resources.WhiskeyBottle)
+					.WithUnlock(new ItemUnlock
+					{
+							CharacterCreationCost = 3,
+							IsAvailable = true,
+							IsAvailableInCC = true,
+							IsAvailableInItemTeleporter = true,
+							LoadoutCost = 3,
+							Prerequisites = { vItem.Whiskey },
+							UnlockCost = 3
+					});
+		}
+
+		public override void SetupDetails()
+		{
+			Item.cantBeCloned = true;
+			Item.hasCharges = false;
+			Item.initCount = 5;
+			Item.isWeapon = false;
+			Item.itemType = ItemTypes.WeaponThrown;
+			Item.itemValue = 5;
+			Item.rewardCount = 5;
+			Item.stackable = true;
+			Item.throwDistance = 8;
+			Item.throwExtraDist = true;
+			Item.throwDamage = 5;
 		}
 	}
 }

@@ -19,5 +19,10 @@ namespace BunnyMod.Content.Extensions
 		{
 			return agent.agentName == agentNameType.GetName();
 		}
+
+		public static bool HasTrait(this Agent agent, StatusEffectNameDB.rowIds vanillaTraitType)
+		{
+			return agent.HasTrait(vanillaTraitType.GetName());
+		}
 	}
 }

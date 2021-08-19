@@ -33,9 +33,9 @@ namespace BunnyMod.Content.Traits
 
 		public override void OnRemoved() { }
 		
-		public static double GetToolCostFactor(Agent agent)
+		public static float GetToolCostFactor(Agent agent)
 		{
-			return agent.HasTrait<TamperTantrum2>() ? 0d : 1d;
+			return agent.HasTrait<TamperTantrum2>() ? 0f : 1f;
 		}
 		
 		public static void AgentInteractions_AddButton_Prefix(string buttonName, ref string extraCost, Agent mostRecentInteractingAgent)

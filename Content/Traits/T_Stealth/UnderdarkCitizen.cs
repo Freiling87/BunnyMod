@@ -34,7 +34,7 @@ namespace BunnyMod.Content.Traits
 
 		public static void Handle_StatusEffects_BecomeHidden(StatusEffects instance, ObjectReal hiddenInObject)
 		{
-			if (BMTraits_Old.IsPlayerTraitActive<UnderdarkCitizen>())
+			if (BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>())
 			{
 				if (instance.agent.isPlayer == 0 && hiddenInObject.objectName == nameof(ObjectNameDB.rowIds.Manhole))
 				{

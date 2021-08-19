@@ -26,6 +26,11 @@ namespace BunnyMod.Content.Traits
 			// TODO conflict: vTrait.Loud, vTrait.Bulky
 			BMTraitsManager.RegisterTrait<StealthBastardDeluxe>(new BMTraitInfo(name, traitBuilder));
 		}
+		
+		public static float GetBrokenWindowHealthCostFactor(Agent agent)
+		{
+			return agent.HasTrait<StealthBastardDeluxe>() ? 0f : 1f;
+		}
 
 		public override void OnAdded() { }
 

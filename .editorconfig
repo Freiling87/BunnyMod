@@ -1,4 +1,4 @@
-﻿
+
 [*]
 charset=utf-8
 end_of_line=crlf
@@ -39,7 +39,7 @@ resharper_align_multline_type_parameter_list=true
 resharper_allow_comment_after_lbrace=true
 resharper_apply_auto_detected_rules=false
 resharper_autodetect_indent_settings=true
-resharper_continuous_indent_multiplier=1
+resharper_continuous_indent_multiplier=2
 resharper_csharp_empty_block_style=together_same_line
 resharper_csharp_indent_style=tab
 resharper_for_other_types=use_explicit_type

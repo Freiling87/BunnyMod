@@ -1,122 +1,34 @@
 ﻿using HarmonyLib;
-using RogueLibsCore;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BunnyMod.Content.Traits;
+using RogueLibsCore;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content
 {
 	public class BMQuests
 	{
-		public static GameController GC => GameController.gameController;
+		private static GameController GC => GameController.gameController;
 
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
-
-		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
-
-		public void Awake()
-		{
-			ExitPoint_00();
-			Quests_00();
-			SkillPoints_00();
-			StatsScreen_00();
-		}
-
-		#region ExitPoint
-
-		public void ExitPoint_00()
-		{
-			Prefix(typeof(ExitPoint), "DetermineIfCanExit", GetType(), "ExitPoint_DetermineIfCanExit", new Type[0] { });
-		}
-
-		public static bool ExitPoint_DetermineIfCanExit(ref bool __result, ExitPoint __instance) // Prefix
-		{
-			if (GC.challenges.Contains(cChallenge.RushinRevolution))
-			{
-				__result = true;
-				return false;
-			}
-
-			return true;
-		}
-
-		#endregion
-
-		#region Quests
-
-		public void Quests_00()
-		{
-			Type t = typeof(Quests);
-			Type g = GetType();
-
-			Prefix(t, "GetLevelExitChallengeItem", g, "Quests_GetLevelExitChallengeItem", new Type[0] { });
-		}
-
-		public static bool Quests_GetLevelExitChallengeItem(Quests __instance, ref InvItem __result) // Prefix
-		{
-			// DoublePlyRewards
-			// UnpaidInternship
-
-			bool flag = false;
-			string item = "";
-
-			if (GC.challenges.Contains(cChallenge.UnpaidInternship))
-			{
-				item = GC.Choose<string>(vItem.Banana, vItem.HamSandwich);
-				flag = true;
-			}
-			else if (GC.challenges.Contains(cChallenge.DoublePlyRewards))
-			{
-				item = GC.Choose<string>(vItem.FreeItemVoucher, vItem.HiringVoucher);
-				flag = true;
-			}
-
-			if (flag)
-			{
-				InvItem invItem3 = new InvItem();
-				invItem3.invItemName = item;
-				invItem3.SetupDetails(false);
-				invItem3.invItemCount = 1;
-				__instance.questItemsGiven.Add(item);
-
-				__result = invItem3;
-				return false;
-			}
-
-			return true;
-		}
-
-		#endregion
+		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		#region SkillPoints
 
-		public void SkillPoints_00()
-		{
-			Prefix(typeof(SkillPoints), "AddPointsLate", GetType(), "SkillPoints_AddPointsLate", new Type[2] { typeof(string), typeof(int) });
-		}
-
+		// TODO soon to be replaced with transpiler - (i.e. currently not working)
 		public static bool SkillPoints_AddPointsLate(string pointsType, int extraNum, ref IEnumerator __result, SkillPoints __instance,
-			ref Agent ___agent) // Prefix
+				ref Agent ___agent) // Prefix
 		{
 			BMLog("SkillPoints_AddPointsLate");
 
-			__result = SkillPoints_AddPointsLate_IEnumerator(pointsType, extraNum, __result, __instance, ___agent);
+			__result = SkillPoints_AddPointsLate_IEnumerator(pointsType, extraNum, __instance, ___agent);
 
 			return false;
 		}
 
-		private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, IEnumerator __result, SkillPoints __instance,
-			Agent ___agent) // Non-Patch
+		private static IEnumerator SkillPoints_AddPointsLate_IEnumerator(string pointsType, int extraNum, SkillPoints __instance,
+				Agent ___agent) // Non-Patch
 		{
 			BMLog("SkillPoints_AddPointsLate_IEnumerator:");
 			BMLog("\tpointsType = " + pointsType);
@@ -145,8 +57,8 @@ namespace BunnyMod.Content
 					xpReward = 100;
 					break;
 				case "ArrestedPointsInnocent":
-					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+					if (___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility ||
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						if (___agent.statusEffects.hasTrait(vTrait.Crooked))
 							xpReward = 0;
@@ -179,31 +91,31 @@ namespace BunnyMod.Content
 				case "BigQuestBonusUptown":
 					xpReward = 500;
 					break;
-				case cSkillPoints.BQMalusDowntown:
+				case cSkillPoints.BQMalusDowntown: // TODO is new
 					xpReward = -500;
 					break;
-				case cSkillPoints.BQMalusFloor:
+				case cSkillPoints.BQMalusFloor: // TODO is new
 					xpReward = 300;
 					break;
-				case cSkillPoints.BQMalusGame:
+				case cSkillPoints.BQMalusGame: // TODO is new
 					xpReward = -1000;
 					break;
-				case cSkillPoints.BQMalusIndustrial:
+				case cSkillPoints.BQMalusIndustrial: // TODO is new
 					xpReward = -500;
 					break;
-				case cSkillPoints.BQMalusPark:
+				case cSkillPoints.BQMalusPark: // TODO is new
 					xpReward = -500;
 					break;
-				case cSkillPoints.BQMalusSlums:
+				case cSkillPoints.BQMalusSlums: // TODO is new
 					xpReward = -500;
 					break;
-				case cSkillPoints.BQMalusUptown:
+				case cSkillPoints.BQMalusUptown: // TODO is new
 					xpReward = -500;
 					break;
 				case "CompleteMission":
 					xpReward = 300;
 
-					if (GC.challenges.Contains(cChallenge.UnpaidInternship))
+					if (GC.challenges.Contains(cChallenge.UnpaidInternship)) // TODO is new
 						xpReward *= 2;
 
 					break;
@@ -213,7 +125,7 @@ namespace BunnyMod.Content
 				case "CompleteMissionReduced":
 					xpReward = 150;
 
-					if (GC.challenges.Contains(cChallenge.UnpaidInternship))
+					if (GC.challenges.Contains(cChallenge.UnpaidInternship)) // TODO is new
 						xpReward *= 2;
 
 					break;
@@ -234,7 +146,7 @@ namespace BunnyMod.Content
 				case "ElectabilityBonus":
 					xpReward = 100;
 					break;
-				case cSkillPoints.ElectabilityMalus:
+				case cSkillPoints.ElectabilityMalus: // TODO is new
 					xpReward = -100;
 					break;
 				case "Enslaved":
@@ -262,7 +174,7 @@ namespace BunnyMod.Content
 						pointsType = "FreedSlaves";
 
 					break;
-				case cSkillPoints.FreePrisonerFailure:
+				case cSkillPoints.FreePrisonerFailure: // TODO is new
 					xpReward = -50 * extraNum;
 					break;
 				case "HackPoints":
@@ -273,7 +185,7 @@ namespace BunnyMod.Content
 					break;
 				case "IndirectlyKillInnocent":
 					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						if (___agent.statusEffects.hasTrait(vTrait.Crooked))
 							xpReward = 0;
@@ -299,7 +211,7 @@ namespace BunnyMod.Content
 					break;
 				case "KillPointsInnocent":
 					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						if (___agent.statusEffects.hasTrait(vTrait.Crooked2))
 							xpReward = 0;
@@ -320,7 +232,7 @@ namespace BunnyMod.Content
 					break;
 				case "KnockOutPointsInnocent":
 					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						if (___agent.statusEffects.hasTrait(vTrait.Crooked))
 							xpReward = 0;
@@ -348,13 +260,13 @@ namespace BunnyMod.Content
 				case "NoAngerLevel":
 					xpReward = 100;
 					break;
-				case cSkillPoints.AngeredMany:
-					xpReward *= -100;
+				case cSkillPoints.AngeredMany: // TODO is new
+					xpReward *= -100; // TODO '*' by mistake?
 					break;
 				case "NoDamageTaken":
 					xpReward = 100;
 					break;
-				case cSkillPoints.TookLotsOfDamage:
+				case cSkillPoints.TookLotsOfDamage: // TODO is new
 					xpReward = 100;
 					break;
 				case "NoDestruction":
@@ -377,8 +289,8 @@ namespace BunnyMod.Content
 					break;
 				case "PickpocketPoints":
 					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility &&
-							!___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt)) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+									!___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt)) ||
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						if (___agent.statusEffects.hasTrait(vTrait.Crooked))
 							xpReward = 0;
@@ -413,8 +325,8 @@ namespace BunnyMod.Content
 					xpReward = extraNum * 10;
 
 					if ((___agent.statusEffects.hasTrait(vTrait.TheLaw) && !___agent.oma.superSpecialAbility &&
-							!___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt)) ||
-						___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
+									!___agent.statusEffects.hasTrait(vTrait.PromiseIllReturnIt)) ||
+							___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
 					{
 						xpReward *= -1;
 
@@ -452,7 +364,7 @@ namespace BunnyMod.Content
 					xpReward = 20;
 					break;
 				case "WonElectionPoints":
-					xpReward = 100;
+					xpReward = 100; // TODO missing a '0' here?
 					break;
 			}
 
@@ -460,7 +372,7 @@ namespace BunnyMod.Content
 			{
 				float xpModifier = 1.00f;
 
-				if (___agent.statusEffects.hasTrait(cTrait.SmoothBrained))
+				if (___agent.HasTrait<SmoothBrained>()) // TODO is new
 					xpModifier = 0.00f;
 				else if (xpReward > 0)
 				{
@@ -468,18 +380,17 @@ namespace BunnyMod.Content
 						xpModifier = 1.30f;
 					else if (___agent.statusEffects.hasTrait(vTrait.SuperStudious))
 						xpModifier = 1.50f;
-					else if (___agent.statusEffects.hasTrait(cTrait.DimBulb))
+					else if (___agent.HasTrait<DimBulb>()) // TODO is new
 						xpModifier = 0.75f;
-					else if (___agent.statusEffects.hasTrait(cTrait.MoronTheMerrier))
+					else if (___agent.HasTrait<MoronTheMerrier>()) // TODO is new
 						xpModifier = 0.50f;
-					else if (___agent.statusEffects.hasTrait(cTrait.Brainiac))
+					else if (___agent.HasTrait<Brainiac>()) // TODO is new
 						xpModifier = 4.00f;
 				}
-				else if (xpReward < 0)
-					if (___agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself))
-						xpModifier = 2.00f;
+				else if (___agent.HasTrait<VeryHardOnYourself>()) // TODO is new
+					xpModifier = 2.00f;
 
-				xpReward = (int) ((float) xpReward * xpModifier);
+				xpReward = (int) (xpReward * xpModifier);
 
 				float floorXpAcceleration = 0.075f;
 				int cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 16);
@@ -490,7 +401,7 @@ namespace BunnyMod.Content
 					cityFloor = Mathf.Clamp(GC.sessionDataBig.curLevelEndless, 1, 11);
 				}
 
-				xpReward = (int) ((float) xpReward * (1f + (float) (cityFloor - 1) * floorXpAcceleration));
+				xpReward = (int) (xpReward * (1f + (cityFloor - 1) * floorXpAcceleration));
 				GC.sessionData.skillPoints[___agent.isPlayer] += xpReward;
 				Color32 myColor;
 
@@ -518,7 +429,8 @@ namespace BunnyMod.Content
 
 					//__instance.StartCoroutine(__instance.CancelJustGainedLevel()); // Original Private Method Inaccessible
 
-					MethodInfo CancelJustGainedLevel = AccessTools.DeclaredMethod(typeof(SkillPoints), "CancelJustGainedLevel", new Type[0] { });
+					// TODO this is a Coroutine, you'll have to StartCoroutine it. - although that doesn't really matter since this will be replaced with a transpiler
+					MethodInfo CancelJustGainedLevel = AccessTools.DeclaredMethod(typeof(SkillPoints), "CancelJustGainedLevel");
 					CancelJustGainedLevel.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
 					if (GC.unlocks.CanDoUnlocks())
@@ -580,14 +492,14 @@ namespace BunnyMod.Content
 						}
 
 						if (GC.sessionData.skillLevel[___agent.isPlayer] % 2 == 0 && (agent.strengthStatMod != 3 || agent.enduranceStatMod != 3 ||
-							agent.accuracyStatMod != 3 || agent.speedStatMod != 3))
+								agent.accuracyStatMod != 3 || agent.speedStatMod != 3))
 						{
 							string randStatMod;
 							bool bonusStat;
 
 							do
 							{
-								randStatMod = GC.Choose<string>("Strength", "Endurance", "Accuracy", "Speed");
+								randStatMod = GC.Choose("Strength", "Endurance", "Accuracy", "Speed");
 								bonusStat = true;
 
 								if (randStatMod == "Strength" && agent.strengthStatMod == 3)
@@ -706,27 +618,18 @@ namespace BunnyMod.Content
 			}
 
 			BMLog("\txpReward = " + xpReward);
-
-			yield break;
 		}
 
 		#endregion
 
 		#region StatsScreen
 
-		public void StatsScreen_00()
-		{
-			Type t = typeof(StatsScreen);
-			Type g = GetType();
-
-			Prefix(t, "DoStatsScreenUnlocks", g, "StatsScreen_DoStatsScreenUnlocks", new Type[1] { typeof(int) });
-		}
-
+		// TODO soon to be replaced with transpiler - (i.e. currently not working)
 		public static bool StatsScreen_DoStatsScreenUnlocks(int agentNum, StatsScreen __instance) // Replacement
 		{
 			// Limited strictly to VeryHardOnYourself, to add negative XP rewards
 
-			bool veryHardOnYourself = __instance.agent.statusEffects.hasTrait(cTrait.VeryHardOnYourself);
+			bool veryHardOnYourself = __instance.agent.HasTrait<VeryHardOnYourself>();
 
 			bool quickGame = GC.challenges.Contains("QuickGame");
 			bool bigQuestThemeComplete = false;
@@ -737,21 +640,21 @@ namespace BunnyMod.Content
 				if (GC.quests.BigQuestBasedOnTotal(__instance.agent))
 				{
 					if (GC.quests.CheckIfBigQuestCompleteFloor(__instance.agent) && __instance.agent.health > 0f &&
-						(!(__instance.agent.bigQuest == "Firefighter") || __instance.agent.needArsonist > 1))
+							(!(__instance.agent.bigQuest == "Firefighter") || __instance.agent.needArsonist > 1))
 						__instance.agent.skillPoints.AddPoints("BigQuestBonusFloor");
-					else if (veryHardOnYourself)
-						__instance.agent.skillPoints.AddPoints(cSkillPoints.BQMalusFloor);
+					else if (veryHardOnYourself) // TODO is new
+						__instance.agent.skillPoints.AddPoints(cSkillPoints.BQMalusFloor); // TODO is new
 
 					if (((!quickGame && (GC.sessionDataBig.curLevel == 3 || GC.sessionDataBig.curLevel == 6 || GC.sessionDataBig.curLevel == 9 ||
-								GC.sessionDataBig.curLevel == 12 || GC.sessionDataBig.curLevel == 15)) ||
-							(quickGame && (GC.sessionDataBig.curLevel == 2 || GC.sessionDataBig.curLevel == 4 || GC.sessionDataBig.curLevel == 6 ||
-								GC.sessionDataBig.curLevel == 8 || GC.sessionDataBig.curLevel == 10))) &&
-						GC.quests.CheckIfBigQuestCompleteTheme(__instance.agent, false))
+											GC.sessionDataBig.curLevel == 12 || GC.sessionDataBig.curLevel == 15)) ||
+									(quickGame && (GC.sessionDataBig.curLevel == 2 || GC.sessionDataBig.curLevel == 4 || GC.sessionDataBig.curLevel == 6 ||
+											GC.sessionDataBig.curLevel == 8 || GC.sessionDataBig.curLevel == 10))) &&
+							GC.quests.CheckIfBigQuestCompleteTheme(__instance.agent, false))
 						bigQuestThemeComplete = true;
 
 					if (((!quickGame && GC.sessionDataBig.curLevel == 15) ||
-							(quickGame && GC.sessionDataBig.curLevel == 10)) &&
-						GC.quests.CheckIfBigQuestCompleteRun(__instance.agent, false) && !GC.challenges.Contains("Endless"))
+									(quickGame && GC.sessionDataBig.curLevel == 10)) &&
+							GC.quests.CheckIfBigQuestCompleteRun(__instance.agent, false) && !GC.challenges.Contains("Endless"))
 						bigQuestRunComplete = true;
 				}
 				else if (__instance.agent.oma.bigQuestObjectCountTotal != 0)
@@ -767,12 +670,12 @@ namespace BunnyMod.Content
 						if (GC.quests.CheckIfBigQuestCompleteRun(__instance.agent, false) && !GC.challenges.Contains("Endless"))
 							bigQuestRunComplete = true;
 					}
-					else if (veryHardOnYourself)
+					else if (veryHardOnYourself) // TODO is new | bad refactoring ? not having veryHardOnYourself breaks vanilla execution here
 					{
 						__instance.agent.skillPoints.AddPoints(cSkillPoints.BQMalusFloor);
 
 						if (GC.sessionData.bigQuestStatusGame[__instance.agent.isPlayer - 1] != "QuestWaitForNextGame" &&
-							GC.sessionData.bigQuestStatusGame[__instance.agent.isPlayer - 1] != "QuestStartFromBeginning")
+								GC.sessionData.bigQuestStatusGame[__instance.agent.isPlayer - 1] != "QuestStartFromBeginning")
 							GC.sessionData.bigQuestStatusGame[__instance.agent.isPlayer - 1] = "QuestFailed";
 
 						if (GC.sessionData.bigQuestStatusTheme[__instance.agent.isPlayer - 1] != "QuestWaitForNextArea")
@@ -808,7 +711,7 @@ namespace BunnyMod.Content
 							break;
 					}
 				}
-				else if (!bigQuestThemeComplete && __instance.agent.health > 0f && veryHardOnYourself)
+				else if (!bigQuestThemeComplete && __instance.agent.health > 0f && veryHardOnYourself) // TODO is new
 				{
 					switch (GC.levelTheme)
 					{
@@ -871,7 +774,7 @@ namespace BunnyMod.Content
 							__instance.agent.skillPoints.AddPoints("BigQuestBonusGame");
 					}
 				}
-				else if (veryHardOnYourself)
+				else if (veryHardOnYourself) // TODO is new
 					__instance.agent.skillPoints.AddPoints(cSkillPoints.BQMalusGame);
 			}
 
@@ -898,12 +801,12 @@ namespace BunnyMod.Content
 
 				if (GC.stats.stoleItems[agentNum] >= 15)
 					__instance.agent.skillPoints.AddPoints("StoleLots");
-				else if (GC.stats.stoleItems[agentNum] == 0)
+				else if (GC.stats.stoleItems[agentNum] == 0) // TODO is new
 					__instance.agent.skillPoints.AddPoints(cSkillPoints.StoleNone);
 
 				if (GC.stats.angered[agentNum] == 0)
 					__instance.agent.skillPoints.AddPoints("NoAngerLevel");
-				else if (GC.stats.angered[agentNum] >= (GC.agentCount * 4 / 5))
+				else if (GC.stats.angered[agentNum] >= (GC.agentCount * 4 / 5)) // TODO is new
 					__instance.agent.skillPoints.AddPoints(cSkillPoints.AngeredMany);
 
 				if (GC.stats.killed[agentNum] == 0 && GC.stats.indirectlyKilled[agentNum] == 0)
@@ -919,7 +822,7 @@ namespace BunnyMod.Content
 
 				if (GC.stats.damageTaken[agentNum] == 0)
 					__instance.agent.skillPoints.AddPoints("NoDamageTaken");
-				else if (GC.stats.damageTaken[agentNum] >= 400)
+				else if (GC.stats.damageTaken[agentNum] >= 400) // TODO is new
 					__instance.agent.skillPoints.AddPoints(cSkillPoints.TookLotsOfDamage);
 
 				if (GC.stats.timeTaken[agentNum] < 120f)
@@ -931,9 +834,9 @@ namespace BunnyMod.Content
 
 				GC.unlocks.DoUnlock("CompleteAnyLevel", "Extra");
 
-				if (!GC.challenges.Contains("NoSlums") && !GC.challenges.Contains("NoIndustrial") && !GC.challenges.Contains("NoPark") &&
-					!GC.challenges.Contains("NoDowntown") && !GC.challenges.Contains("NoUptown") && !GC.challenges.Contains("RandomLevelThemes") &&
-					!GC.challenges.Contains("QuickGame"))
+				if (!GC.challenges.Contains("NoSlums") && !GC.challenges.Contains("NoIndustrial") && !GC.challenges.Contains("NoPark")
+						&& !GC.challenges.Contains("NoDowntown") && !GC.challenges.Contains("NoUptown") && !GC.challenges.Contains("RandomLevelThemes")
+						&& !GC.challenges.Contains("QuickGame"))
 				{
 					if (GC.sessionDataBig.curLevelEndless == 3)
 					{
@@ -988,7 +891,7 @@ namespace BunnyMod.Content
 						text = __instance.agent.agentRealName;
 
 					if (!GC.challenges.Contains("NoSlums") && !GC.challenges.Contains("NoIndustrial") && !GC.challenges.Contains("NoPark") &&
-						!GC.challenges.Contains("NoDowntown") && !GC.challenges.Contains("NoUptown") && !GC.challenges.Contains("RandomLevelThemes"))
+							!GC.challenges.Contains("NoDowntown") && !GC.challenges.Contains("NoUptown") && !GC.challenges.Contains("RandomLevelThemes"))
 					{
 						if (GC.sessionDataBig.curLevelEndless == 3 && !quickGame)
 							GC.unlocks.DoUnlockProgress("Floor2", "Floor", text);
@@ -1034,7 +937,7 @@ namespace BunnyMod.Content
 							Agent agent2 = GC.agentList[i];
 
 							if (agent2.isPlayer == 0 && !agent2.dead && __instance.agent.employer == null && !__instance.agent.objectAgent &&
-								agent2.relationships.GetRel(agent) != "Hateful")
+									agent2.relationships.GetRel(agent) != "Hateful")
 							{
 								flag6 = false;
 
@@ -1070,7 +973,7 @@ namespace BunnyMod.Content
 			}
 			else if (__instance.currentLevelElectionScore < 0)
 			{
-				if (veryHardOnYourself)
+				if (veryHardOnYourself) // TODO is new
 					__instance.agent.skillPoints.AddPoints(cSkillPoints.ElectabilityMalus);
 
 				try

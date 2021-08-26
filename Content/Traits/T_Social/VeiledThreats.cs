@@ -66,21 +66,21 @@ namespace BunnyMod.Content.Traits
 		{
 			if (!interactingAgent.HasTrait<VeiledThreats>() || AlreadyUsedOnAgent(agent))
 			{
-				return false;
+				return true;
 			}
 
 			BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
 			agent.relationships.SetRel(interactingAgent, nameof(relStatus.Annoyed));
 			agent.relationships.SetRelHate(interactingAgent, 2);
 			veiledThreadsUsedOn.Add(agent);
-			return true;
+			return false;
 		}
 
 		private static bool HandleThreatenAskFailed(Agent agent, Agent interactingAgent)
 		{
 			if (!interactingAgent.HasTrait<VeiledThreats>() || AlreadyUsedOnAgent(agent))
 			{
-				return false;
+				return true;
 			}
 
 			BMHeaderTools.SayDialogue(agent, cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue);
@@ -88,7 +88,7 @@ namespace BunnyMod.Content.Traits
 			agent.relationships.SetRelHate(interactingAgent, 2);
 			agent.oma.didAsk = true;
 			veiledThreadsUsedOn.Add(agent);
-			return true;
+			return false;
 		}
 
 		private static CodeReplacementPatch GetInteractionPatch(ILGenerator generator, string handler)
@@ -124,7 +124,7 @@ namespace BunnyMod.Content.Traits
 							new CodeInstruction(OpCodes.Ldarg_1), // agent
 							new CodeInstruction(OpCodes.Ldarg_2), // interactingAgent
 							new CodeInstruction(OpCodes.Call, handlerMethod), // HandleThreatenFailed(agent, interactingAgent)
-							new CodeInstruction(OpCodes.Brfalse_S, continueLabel), // skip the return statement if HandleThreatenFailed returned false
+							new CodeInstruction(OpCodes.Brtrue_S, continueLabel), // skip the return statement if HandleThreatenFailed returned false
 							new CodeInstruction(OpCodes.Ret), // exit method early
 							new CodeInstruction(OpCodes.Nop) { labels = new List<Label> { continueLabel } } // Nop instruction to attach continueLabel to
 					},

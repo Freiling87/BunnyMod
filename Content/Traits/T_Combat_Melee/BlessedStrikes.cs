@@ -7,10 +7,10 @@ namespace BunnyMod.Content.Traits
 	public class BlessedStrikes : CustomTrait
 	{
 		private const string name = nameof(BlessedStrikes);
-		
+
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<BlessedStrikes>()
 					.Localize<BlessedStrikes>()

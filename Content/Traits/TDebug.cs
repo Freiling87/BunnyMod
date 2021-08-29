@@ -10,7 +10,7 @@ namespace BunnyMod.Content.Traits
 
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<TDebug>()
 					.WithName(new CustomNameInfo("00_Debug"))

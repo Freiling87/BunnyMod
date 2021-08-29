@@ -11,7 +11,7 @@ namespace BunnyMod.Content.Traits
 
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<Polarizing2>()
 					.Localize<Polarizing2>()

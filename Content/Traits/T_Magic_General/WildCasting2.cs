@@ -10,7 +10,7 @@ namespace BunnyMod.Content.Traits
 
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<WildCasting2>()
 					.Localize<WildCasting2>()

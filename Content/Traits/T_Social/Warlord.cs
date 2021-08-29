@@ -11,7 +11,7 @@ namespace BunnyMod.Content.Traits
 
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			// TODO move this somewhere else, add localization
 			RogueLibs.CreateCustomName(cDialogue.WarlordSubmission, vNameType.Dialogue, new CustomNameInfo("Okay, okay! You're the boss now!"));

@@ -17,7 +17,7 @@ namespace BunnyMod.Content.Traits
 
 		[RLSetup]
 		[UsedImplicitly]
-		public static void Setup()
+		private static void Setup()
 		{
 			// TODO move this somewhere else, add localization
 			RogueLibs.CreateCustomName(cDialogue.VeiledThreatsAnnoyed, vNameType.Dialogue, new CustomNameInfo("Did you just... threaten me?"));

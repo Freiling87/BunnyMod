@@ -3,6 +3,7 @@ using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BunnyMod.Content.Traits;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,8 +12,13 @@ namespace BunnyMod.Content
 	public class BMCombat
 	{
 		public static GameController GC => GameController.gameController;
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		public void Awake()
@@ -26,6 +32,7 @@ namespace BunnyMod.Content
 			PlayfieldObject_00();
 			SpawnerMain_00();
 		}
+
 		public void Initialize_Names()
 		{
 			string t = vNameType.StatusEffect;
@@ -33,6 +40,7 @@ namespace BunnyMod.Content
 		}
 
 		#region Custom
+
 		public static bool CanAgentMeleeHitGhost(Agent agent)
 		{
 			if (agent.statusEffects.hasTrait(cTrait.BlessedStrikes_2) || agent.statusEffects.hasTrait(cTrait.InfernalStrikes_2))
@@ -42,6 +50,7 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+
 		public static float GetBulletRange(Agent agent)
 		{
 			float maxBulletRange = 13.44f;
@@ -55,6 +64,7 @@ namespace BunnyMod.Content
 
 			return maxBulletRange;
 		}
+
 		public static float GetGlobalKnockBackMultiplier()
 		{
 			float baseAmt = 1f;
@@ -70,9 +80,11 @@ namespace BunnyMod.Content
 
 			return baseAmt;
 		}
+
 		#endregion
 
 		#region Bullet
+
 		public void Bullet_00()
 		{
 			Type t = typeof(Bullet);
@@ -81,13 +93,14 @@ namespace BunnyMod.Content
 			Postfix(t, "SetupBullet", g, "Bullet_SetupBullet", new Type[0] { });
 			Prefix(t, "LateUpdateBullet", g, "Bullet_LateUpdateBullet", new Type[0] { });
 		}
+
 		public static void Bullet_SetupBullet(Bullet __instance) // Postfix
 		{
 			if (__instance.bulletType == bulletStatus.Shotgun || __instance.bulletType == bulletStatus.Normal)
 			{
 				if (GC.challenges.Contains(cChallenge.ScaryGuns))
 				{
-					__instance.damage = Mathf.Max(1, (int)(__instance.damage * Random.Range(0.25f, 5f)));
+					__instance.damage = Mathf.Max(1, (int) (__instance.damage * Random.Range(0.25f, 5f)));
 					__instance.speed = Mathf.Min(65, __instance.speed * 3);
 				}
 				else if (__instance.agent.statusEffects.hasTrait(cTrait.Ballistician))
@@ -96,6 +109,7 @@ namespace BunnyMod.Content
 				// Highest good number: 39
 			}
 		}
+
 		public static bool Bullet_LateUpdateBullet(Bullet __instance, Transform ___bulletSpriteTr) // Replacement
 		{
 			// Bullet Range mods
@@ -118,7 +132,7 @@ namespace BunnyMod.Content
 					__instance.bulletType != bulletStatus.ResearchGun &&
 					__instance.bulletType != bulletStatus.FireExtinguisher)
 					maxBulletDistance = GetBulletRange(__instance.agent);
-				else 
+				else
 					maxBulletDistance = 13f;
 
 				BMLog("\tLog: " + logger++);
@@ -150,7 +164,7 @@ namespace BunnyMod.Content
 
 					if (GC.coopMode)
 					{
-						if (Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance && 
+						if (Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance &&
 							Vector2.Distance(GC.cameraScriptS2.containerTr.position, vector) > maxBulletDistance)
 						{
 							if (GC.activePooling)
@@ -161,10 +175,10 @@ namespace BunnyMod.Content
 							return false;
 						}
 					}
-					else if (GC.fourPlayerMode && 
-						Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance && 
-						Vector2.Distance(GC.cameraScriptS2.containerTr.position, vector) > maxBulletDistance && 
-						Vector2.Distance(GC.cameraScriptS3.containerTr.position, vector) > maxBulletDistance && 
+					else if (GC.fourPlayerMode &&
+						Vector2.Distance(GC.cameraScriptS1.containerTr.position, vector) > maxBulletDistance &&
+						Vector2.Distance(GC.cameraScriptS2.containerTr.position, vector) > maxBulletDistance &&
+						Vector2.Distance(GC.cameraScriptS3.containerTr.position, vector) > maxBulletDistance &&
 						Vector2.Distance(GC.cameraScriptS4.containerTr.position, vector) > maxBulletDistance)
 					{
 						if (GC.activePooling)
@@ -184,11 +198,11 @@ namespace BunnyMod.Content
 
 				BMLog("\tLog: " + logger++);
 
-				if (__instance.bulletType == bulletStatus.Fire || 
-					__instance.bulletType == bulletStatus.Water || 
-					__instance.bulletType == bulletStatus.Water2 || 
-					__instance.bulletType == bulletStatus.LeafBlower || 
-					__instance.bulletType == bulletStatus.ResearchGun || 
+				if (__instance.bulletType == bulletStatus.Fire ||
+					__instance.bulletType == bulletStatus.Water ||
+					__instance.bulletType == bulletStatus.Water2 ||
+					__instance.bulletType == bulletStatus.LeafBlower ||
+					__instance.bulletType == bulletStatus.ResearchGun ||
 					__instance.bulletType == bulletStatus.FireExtinguisher)
 				{
 					BMLog("\tLog C: " + logger++);
@@ -271,11 +285,12 @@ namespace BunnyMod.Content
 							__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.target.transform.eulerAngles.z);
 						else
 							__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
-						
+
 						if (__instance.FindStoppingPoint() != Vector2.zero)
 						{
 							__instance.movement.MoveForwardTransform(__instance.stoppingPointDistance / 2f);
-							__instance.tr.localScale = new Vector3(__instance.tr.localScale.x, __instance.stoppingPointDistance / 2f, __instance.tr.localScale.z);
+							__instance.tr.localScale = new Vector3(__instance.tr.localScale.x, __instance.stoppingPointDistance / 2f,
+								__instance.tr.localScale.z);
 							__instance.particles.GetComponent<ParticleSystem>().emissionRate = __instance.stoppingPointDistance * 150f;
 							ParticleSystem.ShapeModule a = __instance.particles.GetComponent<ParticleSystem>().shape;
 							a.length = __instance.stoppingPointDistance - 0.32f;
@@ -312,7 +327,7 @@ namespace BunnyMod.Content
 								__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.target.transform.eulerAngles.z);
 							else
 								__instance.tr.rotation = Quaternion.Euler(0f, 0f, __instance.agent.gun.FindWeaponAngleGamepad() - 90f);
-							
+
 							__instance.movement.MoveForwardTransform(6.72f);
 							__instance.tr.localScale = new Vector3(__instance.tr.localScale.x, 6.72f, __instance.tr.localScale.z);
 							__instance.particles.GetComponent<ParticleSystem>().emissionRate = 2015.9999f;
@@ -330,15 +345,16 @@ namespace BunnyMod.Content
 							flag2 = true;
 							__instance.timeToDamage = 0f;
 						}
-						
+
 						if (GC.multiplayerMode && __instance.agent.isPlayer != 0)
 						{
 							__instance.timeToSendAimPoint += Time.deltaTime;
-						
-							if (__instance.timeToSendAimPoint >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) && (GC.serverPlayer || __instance.agent.isPlayer != 0))
+
+							if (__instance.timeToSendAimPoint >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) &&
+								(GC.serverPlayer || __instance.agent.isPlayer != 0))
 							{
 								Vector3 v = Vector3.zero;
-							
+
 								if (__instance.agent.controllerType == "Keyboard")
 								{
 									if (GC.sessionDataBig.trackpadMode)
@@ -358,7 +374,7 @@ namespace BunnyMod.Content
 									__instance.dirHelper.localPosition = new Vector3(0f, 0.32f, 0f);
 									v = __instance.dirHelper.position;
 								}
-								
+
 								__instance.agent.objectMult.SendHoldAttackAimPoint(v);
 								__instance.timeToSendAimPoint = 0f;
 							}
@@ -366,14 +382,15 @@ namespace BunnyMod.Content
 
 						if (__instance.stoppingPointObject != null && flag2)
 							__instance.RayHit(__instance.stoppingPointObject);
-						
-						if (__instance.timeSinceLaunch >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) && (GC.serverPlayer || __instance.agent.isPlayer != 0))
+
+						if (__instance.timeSinceLaunch >= 0.1f && (__instance.agent.isPlayer == 0 || __instance.agent.localPlayer) &&
+							(GC.serverPlayer || __instance.agent.isPlayer != 0))
 						{
 							__instance.bulletFireStopped = true;
 							__instance.agent.objectMult.StopHoldAttack();
 							__instance.DestroyMe();
 						}
-						
+
 						if (__instance.agent.gun.stopHoldAttack)
 						{
 							GC.audioHandler.Fade(__instance.agent, "GhostGibberFire");
@@ -395,8 +412,11 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+
 		#endregion
+
 		#region BulletHitbox
+
 		public void BulletHitbox_00()
 		{
 			Type t = typeof(BulletHitbox);
@@ -406,12 +426,14 @@ namespace BunnyMod.Content
 			Prefix(t, "HitObject", g, "BulletHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
 			Prefix(t, "OnTriggerEnter2D", g, "BulletHitbox_OnTriggerEnter2D", new Type[1] { typeof(Collider2D) });
 		}
-		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result, ref RaycastHit2D[] ___hitsAlloc) // Prefix
+
+		public static bool BulletHitbox_HasLOSBullet(PlayfieldObject playfieldObject, BulletHitbox __instance, ref bool __result,
+			ref RaycastHit2D[] ___hitsAlloc) // Prefix
 		{
 			// Ballistician
 			// Sniper
 
-			if (__instance.myBullet.agent != null && BMTraits.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
+			if (__instance.myBullet.agent != null && BMTraitController.DoesPlayerHaveTraitFromList(__instance.myBullet.agent, cTrait.BulletRange))
 			{
 				float maxBulletRange = GetBulletRange(__instance.myBullet.agent);
 
@@ -420,7 +442,7 @@ namespace BunnyMod.Content
 				Vector2 vector = playfieldObject.transform.position - position;
 				int hitsInPath = Physics2D.RaycastNonAlloc(position, vector.normalized, ___hitsAlloc, maxBulletRange, __instance.myLayerMask);
 				float closestHit = 1000000f;
-				
+
 				for (int i = 0; i < hitsInPath; i++)
 				{
 					RaycastHit2D raycastHit2D = ___hitsAlloc[i];
@@ -430,7 +452,7 @@ namespace BunnyMod.Content
 				}
 
 				__instance.myBullet.dirHelper.localPosition = new Vector3(0f, -0.32f, 0f);
-				
+
 				__result = Vector2.Distance(playfieldObject.tr.position, position) < closestHit;
 
 				return false;
@@ -438,6 +460,7 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+
 		public static bool BulletHitbox_HitObject(GameObject hitObject, bool fromClient, BulletHitbox __instance) // Replacement
 		{
 			// Vanilla
@@ -456,9 +479,9 @@ namespace BunnyMod.Content
 
 				if (agent.localPlayer || (!GC.serverPlayer && agent.mindControlAgent == GC.playerAgent))
 					bulletShotByMindSlave = true;
-			
+
 				playerNumber = agent.isPlayer;
-				
+
 				if (agent.mindControlAgent != null && agent.mindControlAgent != GC.playerAgent)
 					playerNumber = -1;
 			}
@@ -468,30 +491,31 @@ namespace BunnyMod.Content
 				Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
 				__instance.HitAftermath(hitAgent, playerNumber, bulletShotByMindSlave, fromClient);
 			}
-			
+
 			if (myBullet.fakeDestroyed)
 				return false;
-			
+
 			if (GC.multiplayerMode && GC.serverPlayer && !bulletShotByMindSlave && playerNumber != 0 && !fromClient)
 			{
 				bool isSpecialBulletType = true;
-			
-				if (!hitObject.CompareTag("ObjectRealSprite") && !hitObject.CompareTag("AgentSprite") && !hitObject.CompareTag("ItemImage") && !hitObject.CompareTag("BulletHitbox"))
+
+				if (!hitObject.CompareTag("ObjectRealSprite") && !hitObject.CompareTag("AgentSprite") && !hitObject.CompareTag("ItemImage") &&
+					!hitObject.CompareTag("BulletHitbox"))
 					return false;
-				
+
 				if (hitObject.CompareTag("AgentSprite"))
 				{
 					Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
-				
+
 					if (hitAgent == agent)
 						isSpecialBulletType = false;
-					
+
 					if (hitAgent.localPlayer && playerNumber != 0 && !bulletShotByMindSlave)
 						isSpecialBulletType = false;
 				}
 				else if (hitObject.CompareTag("BulletHitbox"))
 					isSpecialBulletType = bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher;
-				
+
 				if (isSpecialBulletType)
 					myBullet.doingFakeHit = true;
 			}
@@ -499,7 +523,7 @@ namespace BunnyMod.Content
 			if (!__instance.ObjectListContains(hitObject))
 			{
 				__instance.objectList.Add(hitObject);
-			
+
 				if (bulletType != bulletStatus.GhostBlaster)
 				{
 					if (hitObject.CompareTag("ObjectRealSprite") &&
@@ -507,7 +531,7 @@ namespace BunnyMod.Content
 						bulletType != bulletStatus.ResearchGun)
 					{
 						ObjectReal objectReal;
-				
+
 						if (hitObject.name.Contains("ExtraSprite"))
 							objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
 						else
@@ -522,101 +546,101 @@ namespace BunnyMod.Content
 
 						if (!GC.serverPlayer && !bulletShotByMindSlave)
 							myBullet.doingFakeHit = true;
-						
-						if ((__instance.HasLOSBullet(objectReal) || objectReal.isDoor || objectReal.isWindow) && 
-							objectReal.spr.GetComponent<MeshRenderer>().enabled && 
+
+						if ((__instance.HasLOSBullet(objectReal) || objectReal.isDoor || objectReal.isWindow) &&
+							objectReal.spr.GetComponent<MeshRenderer>().enabled &&
 							objectReal != myBullet.objectReal)
 						{
 							bool bulletBreakingWindow = false;
-						
+
 							if (objectReal.objectName == "Window")
 							{
-								Window window = (Window)objectReal;
-							
+								Window window = (Window) objectReal;
+
 								if (!window.hitWindowOnce)
 								{
 									bool WindowStopsBullet = true;
-								
-									if (agent != null && 
+
+									if (agent != null &&
 										agent.statusEffects.hasTrait("BulletsPassThroughObjects") &&
 										bulletType != bulletStatus.Rocket &&
 										bulletType != bulletStatus.MindControl)
 										WindowStopsBullet = false;
-									
+
 									if (bulletType == bulletStatus.Tranquilizer)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.Taser)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.Dart)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.Shrink)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.FreezeRay)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.WaterPistol)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.Water2)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.FireExtinguisher)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.LeafBlower)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.ResearchGun)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
 									else if (bulletType == bulletStatus.ZombieSpit)
 									{
 										myBullet.BulletHitEffect(hitObject);
-									
+
 										if (WindowStopsBullet)
 											__instance.DestroyBullet(hitObject);
 									}
@@ -630,78 +654,78 @@ namespace BunnyMod.Content
 
 							bool bulletPassingObject = true;
 							bool bulletIsFire = true;
-							
+
 							if (objectReal.bulletsCanPass && !bulletBreakingWindow)
 								bulletPassingObject = false;
-							
+
 							if (objectReal.bulletsCanPass && bulletType != bulletStatus.Fire)
 								bulletIsFire = false;
-							
-							if (!objectReal.notRealObject && 
-								!objectReal.OnFloor && 
+
+							if (!objectReal.notRealObject &&
+								!objectReal.OnFloor &&
 								(bulletPassingObject || bulletIsFire) &&
 								!sniperShootFromCover) // Sniper_2
 							{
 								if (bulletType == bulletStatus.Tranquilizer)
 								{
 									myBullet.BulletHitEffect(hitObject);
-							
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.Taser)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.Dart)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.Shrink)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.FreezeRay)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.WaterPistol)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.Water)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.Water2)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
 								else if (bulletType == bulletStatus.FireExtinguisher)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
@@ -712,7 +736,7 @@ namespace BunnyMod.Content
 								else if (bulletType == bulletStatus.ZombieSpit)
 								{
 									myBullet.BulletHitEffect(hitObject);
-								
+
 									if (GC.serverPlayer)
 										objectReal.DamagedObject(null, 0f);
 								}
@@ -721,10 +745,11 @@ namespace BunnyMod.Content
 									if (!myBullet.doingFakeHit)
 									{
 										objectReal.Damage(myBullet, fromClient);
-								
+
 										if (myBullet.gun != null && !objectReal.noDamageNoise && myBullet.gun.invItemName != "TranquilizerGun")
-											GC.spawnerMain.SpawnNoise(objectReal.FindDamageNoisePos(objectReal.tr.position), (float)objectReal.noiseHitVol, null, null, myBullet.agent, true).bulletMadeNoise = true;
-										
+											GC.spawnerMain.SpawnNoise(objectReal.FindDamageNoisePos(objectReal.tr.position), (float) objectReal.noiseHitVol,
+												null, null, myBullet.agent, true).bulletMadeNoise = true;
+
 										if (myBullet.agent != null)
 										{
 											if (bulletType == bulletStatus.Fire)
@@ -745,16 +770,18 @@ namespace BunnyMod.Content
 											else
 												GC.OwnCheck(myBullet.agent, hitObject, "Normal", 1);
 										}
-										
-										if ((objectReal.destroying || objectReal.justDamaged) && myBullet.agent != null && (playerNumber != 0 && bulletShotByMindSlave))
+
+										if ((objectReal.destroying || objectReal.justDamaged) && myBullet.agent != null &&
+											(playerNumber != 0 && bulletShotByMindSlave))
 										{
 											GC.ScreenShake(0.2f, 80f, myBullet.tr.position, myBullet.agent);
-										
+
 											if (objectReal.destroying && !objectReal.noDestroyEffects)
 												GC.FreezeFrames(1);
 										}
 
-										if (objectReal.destroying && (bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && !objectReal.fireProof)
+										if (objectReal.destroying && (bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) &&
+											!objectReal.fireProof)
 											objectReal.burnt = true;
 									}
 
@@ -767,19 +794,20 @@ namespace BunnyMod.Content
 								if (!myBullet.doingFakeHit)
 								{
 									bool causeFire = false;
-							
-									if (myBullet.agent != null && 
+
+									if (myBullet.agent != null &&
 										__instance.CanCauseFire())
 										causeFire = true;
-									
-									if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || causeFire) && 
-										!objectReal.fireProof && 
+
+									if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || causeFire) &&
+										!objectReal.fireProof &&
 										!objectReal.ora.onFire)
 										GC.spawnerMain.SpawnFire(myBullet, objectReal.gameObject);
 								}
 
-								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser) && 
-									!myBullet.fakeDestroyed && 
+								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver ||
+										bulletType == bulletStatus.Laser) &&
+									!myBullet.fakeDestroyed &&
 									!myBullet.playedBulletHitEffect)
 								{
 									if (bulletType == bulletStatus.Laser)
@@ -787,18 +815,18 @@ namespace BunnyMod.Content
 									else
 										GC.spawnerMain.SpawnParticleEffect("BulletHit", myBullet.tr.position, myBullet.tr.eulerAngles.z);
 								}
-								
+
 								bool bulletDestroyedHere = true;
-								
+
 								if (myBullet.agent != null &&
 									myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") &&
 									bulletType != bulletStatus.Rocket &&
-									bulletType != bulletStatus.MindControl && 
+									bulletType != bulletStatus.MindControl &&
 									objectReal.damageAccumulates)
 									bulletDestroyedHere = false;
-								
-								if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher) && 
-									objectReal.objectName != "Door" && 
+
+								if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher) &&
+									objectReal.objectName != "Door" &&
 									objectReal.objectName != "Window")
 									bulletDestroyedHere = false;
 
@@ -806,7 +834,7 @@ namespace BunnyMod.Content
 								if (myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2) &&
 									myBullet.agent.hiddenInObject == objectReal)
 									bulletDestroyedHere = false;
-								
+
 								if (bulletDestroyedHere)
 									__instance.DestroyBullet(hitObject);
 							}
@@ -814,11 +842,12 @@ namespace BunnyMod.Content
 							if (!myBullet.doingFakeHit && bulletIsFire)
 							{
 								bool canCauseFire = false;
-							
+
 								if (myBullet.agent != null && __instance.CanCauseFire())
 									canCauseFire = true;
-							
-								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || canCauseFire) && !objectReal.fireProof && !objectReal.ora.onFire)
+
+								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || canCauseFire) && !objectReal.fireProof &&
+									!objectReal.ora.onFire)
 									GC.spawnerMain.SpawnFire(myBullet, objectReal.gameObject);
 							}
 
@@ -832,18 +861,19 @@ namespace BunnyMod.Content
 								else if (objectReal.fire != null)
 									__instance.PutOutFire(objectReal.fire, bulletShotByMindSlave);
 							}
-							
+
 							if (!GC.serverPlayer && bulletShotByMindSlave)
 							{
 								if (myBullet.agent.localPlayer)
 								{
 									myBullet.agent.objectMult.CallCmdBulletHitObjectReal(objectReal.objectNetID, myBullet.bulletNetID);
-							
+
 									return false;
 								}
 
-								GC.playerAgent.objectMult.CallCmdBulletHitObjectRealNPC(myBullet.agent.objectNetID, objectReal.objectNetID, myBullet.bulletNetID);
-								
+								GC.playerAgent.objectMult.CallCmdBulletHitObjectRealNPC(myBullet.agent.objectNetID, objectReal.objectNetID,
+									myBullet.bulletNetID);
+
 								return false;
 							}
 						}
@@ -851,36 +881,42 @@ namespace BunnyMod.Content
 					else if (hitObject.CompareTag("AgentSprite"))
 					{
 						Agent agent3 = hitObject.GetComponent<ObjectSprite>().agent;
-						
-						if (__instance.HasLOSBullet(agent3) && (!agent3.bulletsCanPass || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.LeafBlower || bulletType == bulletStatus.ResearchGun) && !agent3.ghost && !agent3.fellInHole)
+
+						if (__instance.HasLOSBullet(agent3) && (!agent3.bulletsCanPass || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water ||
+							bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.LeafBlower ||
+							bulletType == bulletStatus.ResearchGun) && !agent3.ghost && !agent3.fellInHole)
 						{
 							bool flag10 = true;
-						
+
 							if (myBullet.agent != null && bulletType != bulletStatus.ResearchGun)
 								flag10 = myBullet.agent.DontHitAlignedCheck(agent3, bulletType, myBullet.statusEffect);
-							
+
 							if (agent3 != myBullet.agent && flag10)
 							{
 								if (GC.multiplayerMode)
 								{
 									if (GC.serverPlayer && bulletShotByMindSlave && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != myBullet.agent)
 										myBullet.doingFakeHit = true;
-							
+
 									if (GC.serverPlayer && playerNumber == 0 && agent3.isPlayer > 0 && !agent3.localPlayer && agent3 != myBullet.agent)
 										myBullet.doingFakeHit = true;
-									
+
 									if (myBullet.agent != null)
 									{
-										if (!GC.serverPlayer && playerNumber == 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+										if (!GC.serverPlayer && playerNumber == 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent &&
+											agent3 != myBullet.agent)
 											myBullet.doingFakeHit = true;
-									
-										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+
+										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && !agent3.localPlayer &&
+											myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
 											myBullet.doingFakeHit = true;
-										
-										if (!GC.serverPlayer && bulletShotByMindSlave && agent3.isPlayer > 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+
+										if (!GC.serverPlayer && bulletShotByMindSlave && agent3.isPlayer > 0 && !agent3.localPlayer &&
+											myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
 											myBullet.doingFakeHit = true;
-										
-										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && agent3.isPlayer != 0 && !agent3.localPlayer && myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
+
+										if (!GC.serverPlayer && playerNumber != 0 && !bulletShotByMindSlave && agent3.isPlayer != 0 && !agent3.localPlayer &&
+											myBullet.agent.mindControlAgent != GC.playerAgent && agent3 != myBullet.agent)
 											myBullet.doingFakeHit = true;
 									}
 								}
@@ -888,7 +924,7 @@ namespace BunnyMod.Content
 								if ((bulletType == bulletStatus.Rocket || bulletType == bulletStatus.MindControl) && !myBullet.doingFakeHit)
 								{
 									agent3.hitByRocket = new Vector3(myBullet.tr.eulerAngles.x, myBullet.tr.eulerAngles.y, myBullet.tr.eulerAngles.z);
-								
+
 									if (GC.serverPlayer && agent3.localPlayer)
 										myBullet.mustExplode = true;
 									else if (!GC.serverPlayer && agent3.localPlayer && !bulletShotByMindSlave)
@@ -899,10 +935,11 @@ namespace BunnyMod.Content
 									else if (GC.serverPlayer && !agent3.localPlayer && agent3.isPlayer != 0 && !bulletShotByMindSlave && playerNumber != 0)
 										myBullet.mustExplode = true;
 								}
-								
+
 								bool flag11 = false;
-								
-								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.Fireball) && agent3.dead)
+
+								if ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 ||
+									bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.Fireball) && agent3.dead)
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
@@ -911,7 +948,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-								
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TranquilizerHitAgent");
 								}
@@ -919,7 +956,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-								
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TaserHitAgent");
 								}
@@ -927,7 +964,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-									
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "TranquilizerHitAgent");
 								}
@@ -935,7 +972,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-								
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "BulletHitAgent");
 								}
@@ -943,7 +980,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-								
+
 									if (!myBullet.fakeDestroyed)
 									{
 										if (agent3.preventStatusEffects)
@@ -956,7 +993,7 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-									
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "WaterPistolHitAgent");
 								}
@@ -984,27 +1021,31 @@ namespace BunnyMod.Content
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 										__instance.HitAftermath(agent3, playerNumber, bulletShotByMindSlave, fromClient);
-								
+
 									if (!myBullet.fakeDestroyed)
 										GC.audioHandler.Play(agent3, "BulletHitAgent");
 								}
-								else if (bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.Fireball || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser)
+								else if (bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Fire ||
+									bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher ||
+									bulletType == bulletStatus.Fireball || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser)
 								{
 									if (!myBullet.doingFakeHit && !fromClient)
 									{
-										if (agent3.statusEffects.hasTrait("MeleeHoldDeflectsBullets") && agent3.inventory.equippedWeapon != agent3.inventory.fist && agent3.inventory.equippedWeapon.weaponCode == weaponType.WeaponMelee)
+										if (agent3.statusEffects.hasTrait("MeleeHoldDeflectsBullets") &&
+											agent3.inventory.equippedWeapon != agent3.inventory.fist &&
+											agent3.inventory.equippedWeapon.weaponCode == weaponType.WeaponMelee)
 										{
 											agent3.inventory.DepleteMelee(5);
-									
+
 											if (agent3.movement.HasLOSPositionNormal(myBullet.tr.position))
 											{
 												flag11 = true;
-											
+
 												if (bulletType == bulletStatus.Laser)
 													GC.spawnerMain.SpawnParticleEffect("BulletHitLaser", agent3.tr.position, myBullet.tr.eulerAngles.z);
 												else
 													GC.spawnerMain.SpawnParticleEffect("BulletHit", agent3.tr.position, myBullet.tr.eulerAngles.z);
-												
+
 												if (agent3.inventory.equippedWeapon.hitSoundType == "Cut")
 													GC.audioHandler.Play(agent3, "MeleeHitMeleeBlade");
 												else
@@ -1031,7 +1072,8 @@ namespace BunnyMod.Content
 									}
 								}
 
-								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver || bulletType == bulletStatus.Laser) && agent3.tickEndDamage == 0 && !myBullet.fakeDestroyed && !flag11)
+								if ((bulletType == bulletStatus.Normal || bulletType == bulletStatus.Shotgun || bulletType == bulletStatus.Revolver ||
+									bulletType == bulletStatus.Laser) && agent3.tickEndDamage == 0 && !myBullet.fakeDestroyed && !flag11)
 								{
 									if (agent3.inhuman || agent3.mechFilled || agent3.mechEmpty)
 										GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent3.tr.position, myBullet.tr.eulerAngles.z);
@@ -1039,13 +1081,16 @@ namespace BunnyMod.Content
 										GC.spawnerMain.SpawnParticleEffect("BloodHit", agent3.tr.position, myBullet.tr.eulerAngles.z);
 								}
 
-								if (bulletType != bulletStatus.Fire && (!agent3.dead || bulletType != bulletStatus.FireExtinguisher && bulletType != bulletStatus.Water2) && bulletType != bulletStatus.ResearchGun)
+								if (bulletType != bulletStatus.Fire &&
+									(!agent3.dead || bulletType != bulletStatus.FireExtinguisher && bulletType != bulletStatus.Water2) &&
+									bulletType != bulletStatus.ResearchGun)
 								{
 									bool flag12 = true;
-								
-									if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") && bulletType != bulletStatus.Rocket && bulletType != bulletStatus.MindControl)
+
+									if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsPassThroughObjects") &&
+										bulletType != bulletStatus.Rocket && bulletType != bulletStatus.MindControl)
 										flag12 = false;
-									
+
 									if (flag12)
 										__instance.DestroyBullet(hitObject);
 								}
@@ -1060,10 +1105,11 @@ namespace BunnyMod.Content
 									Vector3 position = myBullet.dirHelper.position;
 									myBullet.dirHelper.localPosition = Vector3.zero;
 									int num2 = 30;
-									
+
 									if (agent3.dead && bulletType == bulletStatus.Fire)
 										num2 = 0;
-									else if (bulletType != bulletStatus.Normal && bulletType != bulletStatus.Shotgun && bulletType != bulletStatus.Fire && bulletType != bulletStatus.Fireball && bulletType != bulletStatus.Revolver && bulletType != bulletStatus.Laser)
+									else if (bulletType != bulletStatus.Normal && bulletType != bulletStatus.Shotgun && bulletType != bulletStatus.Fire &&
+										bulletType != bulletStatus.Fireball && bulletType != bulletStatus.Revolver && bulletType != bulletStatus.Laser)
 										num2 = 0;
 									else if (agent3.statusEffects.hasTrait("KnockbackLess2"))
 										num2 = 0;
@@ -1073,19 +1119,21 @@ namespace BunnyMod.Content
 										num2 = 0;
 									else if (agent3.justDied)
 										num2 = Mathf.Abs(agent3.lastDamageVal) * 30;
-									
+
 									if (myBullet.agent.statusEffects.hasTrait("CauseBiggerKnockback"))
 										num2 *= 2;
-									
+
 									if (myBullet.agent.localPlayer)
 									{
-										myBullet.agent.objectMult.CallCmdBulletHitAgent(agent3.objectNetID, myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
-									
+										myBullet.agent.objectMult.CallCmdBulletHitAgent(agent3.objectNetID, myBullet.bulletNetID, position, num2,
+											agent3.tr.position, agent3.rb.velocity);
+
 										return false;
 									}
 
-									GC.playerAgent.objectMult.CallCmdBulletHitAgentNPC(myBullet.agent.objectNetID, agent3.objectNetID, myBullet.bulletNetID, position, num2, agent3.tr.position, agent3.rb.velocity);
-									
+									GC.playerAgent.objectMult.CallCmdBulletHitAgentNPC(myBullet.agent.objectNetID, agent3.objectNetID, myBullet.bulletNetID,
+										position, num2, agent3.tr.position, agent3.rb.velocity);
+
 									return false;
 								}
 							}
@@ -1095,21 +1143,23 @@ namespace BunnyMod.Content
 					{
 						Item item = hitObject.GetComponent<ItemHitbox>().item;
 
-						if (bulletType == bulletStatus.LeafBlower || ((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || bulletType == bulletStatus.ResearchGun) && item.invItem.canCatchFire))
+						if (bulletType == bulletStatus.LeafBlower ||
+							((bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball || bulletType == bulletStatus.ResearchGun) &&
+								item.invItem.canCatchFire))
 						{
 							if (!GC.serverPlayer && !bulletShotByMindSlave)
 								myBullet.doingFakeHit = true;
-						
+
 							if (!myBullet.doingFakeHit)
 							{
 								if (bulletType == bulletStatus.LeafBlower)
 								{
 									if (item.startingOwner != 0)
 										GC.OwnCheck(myBullet.agent, item.go, "Normal", 1);
-							
+
 									item.thrower = myBullet.agent;
 									item.StartCoroutine(item.HitCauserCoroutine(myBullet.agent));
-									
+
 									if (__instance.HasLOSBullet(item))
 										item.movement.KnockBackBullet(myBullet.go, 200f, false, myBullet);
 								}
@@ -1117,7 +1167,7 @@ namespace BunnyMod.Content
 								{
 									if (item.startingOwner != 0)
 										GC.OwnCheck(myBullet.agent, item.go, "Normal", 1);
-								
+
 									if (!item.burnt)
 										GC.spawnerMain.SpawnFire(myBullet, item.go, item.tr.position, true);
 								}
@@ -1128,19 +1178,20 @@ namespace BunnyMod.Content
 								if (myBullet.agent.localPlayer)
 								{
 									myBullet.agent.objectMult.CallCmdBulletHitItem(item.objectNetID, myBullet.bulletNetID);
-							
+
 									return false;
 								}
 
 								GC.playerAgent.objectMult.CallCmdBulletHitItemNPC(myBullet.agent.objectNetID, item.objectNetID, myBullet.bulletNetID);
-								
+
 								return false;
 							}
 						}
 					}
 					else if (hitObject.CompareTag("Fire"))
 					{
-						if (bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher || bulletType == bulletStatus.FreezeRay)
+						if (bulletType == bulletStatus.Water || bulletType == bulletStatus.Water2 || bulletType == bulletStatus.FireExtinguisher ||
+							bulletType == bulletStatus.FreezeRay)
 						{
 							__instance.PutOutFire(hitObject.GetComponent<Fire>(), bulletShotByMindSlave);
 
@@ -1153,29 +1204,30 @@ namespace BunnyMod.Content
 						{
 							myBullet.BulletHitEffect(hitObject);
 							__instance.DestroyBullet(hitObject);
-							
+
 							return false;
 						}
 					}
 					else if (hitObject.CompareTag("BulletHitbox"))
 					{
 						Bullet collidingBullet = hitObject.GetComponent<BulletHitbox>().myBullet;
-						
+
 						if (!myBullet.streamBullet)
 						{
-							if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets") && myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
+							if (myBullet.agent != null && myBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets") &&
+								myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
 							{
 								bool flag13 = false;
-						
+
 								if (collidingBullet.agent != null && collidingBullet.agent.statusEffects.hasTrait("BulletsDestroyOtherBullets"))
 									flag13 = true;
-								
+
 								if (bulletType != bulletStatus.Rocket || flag13)
 								{
 									myBullet.BulletHitEffect(hitObject);
 									__instance.DestroyBullet(hitObject);
 								}
-								
+
 								collidingBullet.BulletHitEffect(__instance.gameObject);
 								collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 							}
@@ -1188,31 +1240,39 @@ namespace BunnyMod.Content
 								collidingBullet.alteredSpeed = true;
 							}
 						}
-						else if (bulletType == bulletStatus.Water2 && (myBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || myBullet.agent.oma.superSpecialAbility || collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball) && myBullet.agent != collidingBullet.agent)
+						else if (bulletType == bulletStatus.Water2 &&
+							(myBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || myBullet.agent.oma.superSpecialAbility ||
+								collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball) &&
+							myBullet.agent != collidingBullet.agent)
 						{
 							collidingBullet.BulletHitEffect(__instance.gameObject);
 							collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
 
-						if (collidingBullet.bulletType == bulletStatus.Water2 && (collidingBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || collidingBullet.agent.oma.superSpecialAbility || bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && collidingBullet.agent != myBullet.agent)
+						if (collidingBullet.bulletType == bulletStatus.Water2 &&
+							(collidingBullet.agent.statusEffects.hasTrait("StrongerWaterCannon") || collidingBullet.agent.oma.superSpecialAbility ||
+								bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball) && collidingBullet.agent != myBullet.agent)
 						{
 							myBullet.BulletHitEffect(__instance.gameObject);
 							myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
-						
-						if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.FireExtinguisher) && (collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball))
+
+						if ((bulletType == bulletStatus.Water || bulletType == bulletStatus.FireExtinguisher) &&
+							(collidingBullet.bulletType == bulletStatus.Fire || collidingBullet.bulletType == bulletStatus.Fireball))
 						{
 							collidingBullet.BulletHitEffect(__instance.gameObject);
 							collidingBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
-						
-						if ((collidingBullet.bulletType == bulletStatus.Water || collidingBullet.bulletType == bulletStatus.FireExtinguisher) && (bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball))
+
+						if ((collidingBullet.bulletType == bulletStatus.Water || collidingBullet.bulletType == bulletStatus.FireExtinguisher) &&
+							(bulletType == bulletStatus.Fire || bulletType == bulletStatus.Fireball))
 						{
 							myBullet.BulletHitEffect(__instance.gameObject);
 							myBullet.bulletHitboxScript.DestroyBullet(__instance.gameObject);
 						}
-						
-						if (collidingBullet.bulletType == bulletStatus.LeafBlower && !myBullet.alteredSpeed && myBullet.agent != collidingBullet.agent && !collidingBullet.streamBullet)
+
+						if (collidingBullet.bulletType == bulletStatus.LeafBlower && !myBullet.alteredSpeed && myBullet.agent != collidingBullet.agent &&
+							!collidingBullet.streamBullet)
 						{
 							myBullet.speed /= 2;
 							myBullet.alteredSpeed = true;
@@ -1225,16 +1285,26 @@ namespace BunnyMod.Content
 
 			return false;
 		}
+
 		public static bool BulletHitbox_OnTriggerEnter2D(Collider2D other, BulletHitbox __instance) // Prefix
 		{
 			// Sniper +
 
 			BMLog("BulletHitbox_OnTriggerEnter2D");
 
-			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null && __instance.myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2) && __instance.myBullet.agent.hiddenInObject != null)
+			if (other.CompareTag("ObjectRealSprite") && __instance.myBullet.agent != null &&
+				__instance.myBullet.agent.statusEffects.hasTrait(cTrait.Sniper_2) && __instance.myBullet.agent.hiddenInObject != null)
 			{
-				try { BMLog("\tname: " + other.name); } catch { }
-				try { BMLog("\thiddenIn: " + __instance.myBullet.agent.hiddenInObject.name); } catch { }
+				try
+				{
+					BMLog("\tname: " + other.name);
+				}
+				catch { }
+				try
+				{
+					BMLog("\thiddenIn: " + __instance.myBullet.agent.hiddenInObject.name);
+				}
+				catch { }
 
 				BMLog("\tObject detected");
 				ObjectReal obj = other.GetComponent<ObjectReal>();
@@ -1249,8 +1319,11 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+
 		#endregion
+
 		#region MeleeHitbox
+
 		public void MeleeHitbox_00()
 		{
 			Type t = typeof(MeleeHitbox);
@@ -1259,6 +1332,7 @@ namespace BunnyMod.Content
 			Prefix(t, "HitObject", g, "MeleeHitbox_HitObject", new Type[2] { typeof(GameObject), typeof(bool) });
 			Prefix(t, "MeleeHitEffect", g, "MeleeHitbox_MeleeHitEffect", new Type[1] { typeof(GameObject) });
 		}
+
 		public static bool MeleeHitbox_HitObject(GameObject hitObject, bool fromClient, MeleeHitbox __instance) // Replacement
 		{
 			// Spectral Strikes
@@ -1284,40 +1358,42 @@ namespace BunnyMod.Content
 					if (hitObject.CompareTag("ObjectRealSprite"))
 					{
 						ObjectReal objectReal;
-					
+
 						if (hitObject.name.Contains("ExtraSprite"))
 							objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
 						else
 							objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
-						
+
 						if (objectReal.objectName == "Window")
 						{
-							Window window = (Window)objectReal;
-						
+							Window window = (Window) objectReal;
+
 							if (window.FindDamage(__instance.myMelee, false, true, fromClient) >= 30)
 								__instance.justHitWindow = true;
 							else
 							{
 								if (window.hitWindowOnce)
 									return false;
-							
+
 								__instance.justHitWindow = true;
 							}
 						}
 
-						if (!objectReal.objectSprite.meshRenderer.enabled || !objectReal.notRealObject || !objectReal.OnFloor || !objectReal.meleeCanPass || !objectReal.tempNoMeleeHits)
+						if (!objectReal.objectSprite.meshRenderer.enabled || !objectReal.notRealObject || !objectReal.OnFloor || !objectReal.meleeCanPass ||
+							!objectReal.tempNoMeleeHits)
 							return false;
 					}
 
-					if (!hitObject.CompareTag("ObjectRealSprite") && !hitObject.CompareTag("AgentSprite") && !hitObject.CompareTag("ItemImage") && !hitObject.CompareTag("Wall"))
+					if (!hitObject.CompareTag("ObjectRealSprite") && !hitObject.CompareTag("AgentSprite") && !hitObject.CompareTag("ItemImage") &&
+						!hitObject.CompareTag("Wall"))
 						flag = false;
 					else if (hitObject.CompareTag("AgentSprite"))
 					{
 						Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
-					
+
 						if (agent == hittingAgent)
 							flag = false;
-						
+
 						if (agent.localPlayer && hittingAgent.isPlayer > 0 && !hittingAgent.localPlayer)
 							flag = false;
 					}
@@ -1325,12 +1401,13 @@ namespace BunnyMod.Content
 					if (flag)
 					{
 						__instance.FakeHit(hitObject);
-					
+
 						return false;
 					}
 				}
 
 				#region Sorted by target type
+
 				if (hitObject.CompareTag("MeleeHitbox"))
 				{
 					if (hittingAgent.statusEffects.hasTrait("BlocksSometimesHit2"))
@@ -1346,7 +1423,7 @@ namespace BunnyMod.Content
 					else
 					{
 						Agent agent2 = hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee.agent;
-					
+
 						if (agent2.statusEffects.hasTrait("BlocksSometimesHit2"))
 						{
 							if (GC.percentChance(60))
@@ -1360,37 +1437,39 @@ namespace BunnyMod.Content
 				if (hitObject.CompareTag("ObjectRealSprite") && !__instance.myMelee.invItem.meleeNoHit)
 				{
 					ObjectReal objectReal2;
-				
+
 					if (hitObject.name.Contains("ExtraSprite"))
 						objectReal2 = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
 					else
 						objectReal2 = hitObject.GetComponent<ObjectSprite>().objectReal;
-					
+
 					if (objectReal2.extraSprites.Count > 0)
 						for (int i = 0; i < objectReal2.extraSprites.Count; i++)
 							__instance.objectList.Add(objectReal2.extraSprites[i].gameObject);
 					else
 						__instance.objectList.Add(hitObject);
-					
-					if (!GC.serverPlayer && !hittingAgent.localPlayer && hittingAgent.mindControlAgent != GC.playerAgent && objectReal2.objectSprite.meshRenderer.enabled && !objectReal2.notRealObject && !objectReal2.OnFloor && !objectReal2.meleeCanPass && !objectReal2.tempNoMeleeHits)
+
+					if (!GC.serverPlayer && !hittingAgent.localPlayer && hittingAgent.mindControlAgent != GC.playerAgent &&
+						objectReal2.objectSprite.meshRenderer.enabled && !objectReal2.notRealObject && !objectReal2.OnFloor && !objectReal2.meleeCanPass &&
+						!objectReal2.tempNoMeleeHits)
 					{
 						__instance.FakeHit(hitObject);
-					
+
 						return false;
 					}
 
 					if (__instance.HasLOSMelee(objectReal2) && objectReal2.objectMeshRenderer.enabled)
 					{
 						bool flag2 = false;
-					
+
 						if (hittingAgent.statusEffects.hasTrait("HitObjectsNoNoise"))
 							flag2 = true;
-						
+
 						if (objectReal2.objectName == "Window")
 						{
 							if (objectReal2.FindDamage(__instance.myMelee, false, true, fromClient) >= 30)
 								__instance.justHitWindow = true;
-						
+
 							if (flag2)
 							{
 								Window component = objectReal2.GetComponent<Window>();
@@ -1398,22 +1477,25 @@ namespace BunnyMod.Content
 							}
 						}
 
-						if (!objectReal2.notRealObject && !objectReal2.OnFloor && (!objectReal2.meleeCanPass || __instance.justHitWindow) && !objectReal2.tempNoMeleeHits)
+						if (!objectReal2.notRealObject && !objectReal2.OnFloor && (!objectReal2.meleeCanPass || __instance.justHitWindow) &&
+							!objectReal2.tempNoMeleeHits)
 						{
 							objectReal2.Damage(__instance.myMelee, fromClient);
-						
+
 							if (!objectReal2.noDamageNoise && !__instance.myMelee.successfullySleepKilled && !flag2)
-								GC.spawnerMain.SpawnNoise(objectReal2.FindDamageNoisePos(objectReal2.tr.position), (float)objectReal2.noiseHitVol, null, null, hittingAgent);
-							
+								GC.spawnerMain.SpawnNoise(objectReal2.FindDamageNoisePos(objectReal2.tr.position), (float) objectReal2.noiseHitVol, null, null,
+									hittingAgent);
+
 							if (hittingAgent != null && GC.serverPlayer)
 								GC.OwnCheck(hittingAgent, hitObject, "Normal", 1);
-							
+
 							if (__instance.justHitWindow)
 								__instance.justHitWindow = false;
-							
+
 							if (__instance.myMelee.hitParticlesTr != null && __instance.myMelee.meleeContainerTr != null)
-								GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-							
+								GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position,
+									__instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
 							if (objectReal2.destroying || objectReal2.justDamaged)
 							{
 								if (hittingAgent.isPlayer > 0 && hittingAgent.localPlayer && !objectReal2.noDestroyEffects)
@@ -1427,28 +1509,29 @@ namespace BunnyMod.Content
 								GC.ScreenShake(0.1f, 80f, hittingAgent.tr.position, hittingAgent);
 								GC.FreezeFrames(0);
 							}
-							
+
 							GC.alienFX.HitObject(hittingAgent);
 							__instance.MeleeHitEffect(hitObject);
-							GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float)objectReal2.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)objectReal2.damagedAmount / 132f + 0.05f, 0f, 0.2f));
-							
+							GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float) objectReal2.damagedAmount / 100f + 0.05f, 0f, 0.25f),
+								Mathf.Clamp((float) objectReal2.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+
 							if (!GC.serverPlayer && (hittingAgent.isPlayer > 0 || hittingAgent.mindControlAgent == GC.playerAgent))
 							{
 								if (hittingAgent.isPlayer != 0)
 								{
 									hittingAgent.objectMult.CallCmdMeleeHitObjectReal(objectReal2.objectNetID);
-							
+
 									return false;
 								}
 
 								GC.playerAgent.objectMult.CallCmdMeleeHitObjectRealNPC(hittingAgent.objectNetID, objectReal2.objectNetID);
-								
+
 								return false;
 							}
 							else if (GC.serverPlayer && GC.multiplayerMode)
 							{
 								hittingAgent.objectMult.CallRpcMeleeHitObjectFake(objectReal2.objectNetID);
-								
+
 								return false;
 							}
 						}
@@ -1458,15 +1541,19 @@ namespace BunnyMod.Content
 				{
 					__instance.objectList.Add(hitObject);
 					Agent hitAgent = hitObject.GetComponent<ObjectSprite>().agent;
-					
+
 					if (GC.multiplayerMode)
 						if ((GC.serverPlayer && hittingAgent.localPlayer && hitAgent.isPlayer > 0 && !hitAgent.localPlayer) ||
 							(GC.serverPlayer && hittingAgent.isPlayer == 0 && hitAgent.isPlayer > 0 && !hitAgent.localPlayer) ||
-							(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && hitAgent.isPlayer == 0 && hittingAgent.mindControlAgent != null && hittingAgent.mindControlAgent != GC.playerAgent && !hitAgent.dead) ||
-							(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && hitAgent.isPlayer == 0 && hitAgent.mindControlAgent != null && hitAgent.mindControlAgent != GC.playerAgent && !hitAgent.dead) ||
-							(!GC.serverPlayer && hittingAgent.isPlayer == 0 && !hitAgent.localPlayer && hittingAgent != hitAgent && ((hittingAgent.mindControlAgent != GC.playerAgent && hitAgent.mindControlAgent != GC.playerAgent) || hitAgent.dead)) ||
+							(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && hitAgent.isPlayer == 0 &&
+								hittingAgent.mindControlAgent != null && hittingAgent.mindControlAgent != GC.playerAgent && !hitAgent.dead) ||
+							(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && hitAgent.isPlayer == 0 &&
+								hitAgent.mindControlAgent != null && hitAgent.mindControlAgent != GC.playerAgent && !hitAgent.dead) ||
+							(!GC.serverPlayer && hittingAgent.isPlayer == 0 && !hitAgent.localPlayer && hittingAgent != hitAgent &&
+								((hittingAgent.mindControlAgent != GC.playerAgent && hitAgent.mindControlAgent != GC.playerAgent) || hitAgent.dead)) ||
 							(!GC.serverPlayer && hittingAgent.isPlayer > 0 && !hittingAgent.localPlayer && !hitAgent.localPlayer) ||
-							(!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent) && hitAgent.isPlayer > 0 && !hitAgent.localPlayer) ||
+							(!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent) && hitAgent.isPlayer > 0 &&
+								!hitAgent.localPlayer) ||
 							(!GC.serverPlayer && hittingAgent.isPlayer != 0 && !hittingAgent.localPlayer && hitAgent.isPlayer != 0 && !hitAgent.localPlayer))
 						{
 							__instance.FakeHit(hitObject);
@@ -1474,7 +1561,7 @@ namespace BunnyMod.Content
 							return false;
 						}
 
-					if (hittingAgent != hitAgent && 
+					if (hittingAgent != hitAgent &&
 						(!hitAgent.ghost || CanAgentMeleeHitGhost(hittingAgent)) &&
 						!hitAgent.fellInHole && !GC.cinematic && __instance.HasLOSMelee(hitAgent))
 					{
@@ -1484,7 +1571,8 @@ namespace BunnyMod.Content
 						{
 							Relationship relationship = hitAgent.relationships.GetRelationship(hittingAgent);
 
-							if (!hitAgent.movement.HasLOSObjectBehind(hittingAgent) || hitAgent.sleeping || hittingAgent.isPlayer == 0 || hittingAgent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && hittingAgent.oma.superSpecialAbility))
+							if (!hitAgent.movement.HasLOSObjectBehind(hittingAgent) || hitAgent.sleeping || hittingAgent.isPlayer == 0 ||
+								hittingAgent.invisible || (__instance.myMelee.invItem.invItemName == "StealingGlove" && hittingAgent.oma.superSpecialAbility))
 							{
 								__instance.canHitMore = false;
 
@@ -1500,7 +1588,7 @@ namespace BunnyMod.Content
 									else if (hittingAgent.movement.HasLOSObject(hitAgent, "360", false, true))
 									{
 										hitAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
-								
+
 										if ((!GC.tileInfo.IsOverlapping(hitAgent.agentHelperTr.position, "Wall") || hitAgent.sleeping) && !fromClient)
 											__instance.HitAftermath(hitObject, fromClient, hitAgent, __instance.myMelee.invItem.invItemName);
 									}
@@ -1508,45 +1596,49 @@ namespace BunnyMod.Content
 							}
 							else
 							{
-								if (__instance.myMelee.invItem.invItemName == "StealingGlove" && relationship.relType != "Aligned" && relationship.relType != "Submissive" && hittingAgent.movement.HasLOSObject(hitAgent, "360", false, true) && !fromClient)
+								if (__instance.myMelee.invItem.invItemName == "StealingGlove" && relationship.relType != "Aligned" &&
+									relationship.relType != "Submissive" && hittingAgent.movement.HasLOSObject(hitAgent, "360", false, true) && !fromClient)
 									__instance.HitAftermath(hitObject, fromClient, hitAgent, "StealingGloveFail");
-							
+
 								if (GC.serverPlayer)
 									GC.spawnerMain.SpawnNoise(hittingAgent.tr.position, 0f, null, null, hittingAgent);
 							}
-						
-							if ((__instance.myMelee.invItem.invItemName == "ChloroformHankie" || __instance.myMelee.invItem.invItemName == "Handcuffs") && relationship.relType != "Aligned" && relationship.relType != "Submissive" && !fromClient)
+
+							if ((__instance.myMelee.invItem.invItemName == "ChloroformHankie" || __instance.myMelee.invItem.invItemName == "Handcuffs") &&
+								relationship.relType != "Aligned" && relationship.relType != "Submissive" && !fromClient)
 								__instance.HitAftermath(hitObject, fromClient, hitAgent, "ChloroformHankieFail");
 						}
 
 						bool flag3 = !__instance.myMelee.invItem.meleeNoHit && hittingAgent.DontHitAlignedCheck(hitAgent);
-						
+
 						if (flag3)
 						{
 							hitAgent.melee.meleeHitbox.objectList.Add(__instance.gameObject);
 							hitAgent.melee.meleeHitbox.objectList.Add(hittingAgent.sprTr.gameObject);
-						
+
 							if (hittingAgent.zombified && hitAgent.isPlayer == 0 && !hitAgent.oma.bodyGuarded)
 								hitAgent.zombieWhenDead = true;
-							
-							if (hitAgent.isPlayer == 0 && hittingAgent.isPlayer != 0 && !hitAgent.dead && hitAgent.agentName != "Zombie" && !hitAgent.inhuman && !hitAgent.mechEmpty && !hitAgent.mechFilled && hittingAgent.localPlayer && !hitAgent.statusEffects.hasStatusEffect("Invincible"))
+
+							if (hitAgent.isPlayer == 0 && hittingAgent.isPlayer != 0 && !hitAgent.dead && hitAgent.agentName != "Zombie" && !hitAgent.inhuman &&
+								!hitAgent.mechEmpty && !hitAgent.mechFilled && hittingAgent.localPlayer &&
+								!hitAgent.statusEffects.hasStatusEffect("Invincible"))
 							{
 								if (hittingAgent.statusEffects.hasTrait("FleshFeast2"))
 									hittingAgent.statusEffects.ChangeHealth(6f);
 								else if (hittingAgent.statusEffects.hasTrait("FleshFeast"))
 									hittingAgent.statusEffects.ChangeHealth(3f);
 							}
-							
+
 							if (GC.serverPlayer || hitAgent.health > 0f || hitAgent.dead)
 								hitAgent.Damage(__instance.myMelee, fromClient);
-							
+
 							hittingAgent.relationships.FollowerAlert(hitAgent);
 
 							if (hitAgent.statusEffects.hasTrait("AttacksDamageAttacker2") &&
 								(!hittingAgent.ghost || CanAgentMeleeHitGhost(hittingAgent)))
 							{
 								int myChance = hitAgent.DetermineLuck(20, "AttacksDamageAttacker", true);
-							
+
 								if (GC.percentChance(myChance))
 								{
 									hittingAgent.lastHitByAgent = hitAgent;
@@ -1561,7 +1653,7 @@ namespace BunnyMod.Content
 								(!hittingAgent.ghost || CanAgentMeleeHitGhost(hittingAgent)))
 							{
 								int myChance2 = hitAgent.DetermineLuck(20, "AttacksDamageAttacker", true);
-								
+
 								if (GC.percentChance(myChance2))
 								{
 									hittingAgent.lastHitByAgent = hitAgent;
@@ -1573,7 +1665,8 @@ namespace BunnyMod.Content
 								}
 							}
 
-							if (hitAgent.justDied && hittingAgent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode && GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
+							if (hitAgent.justDied && hittingAgent.isPlayer > 0 && !GC.coopMode && !GC.fourPlayerMode && !GC.multiplayerMode &&
+								GC.sessionDataBig.slowMotionCinematic && GC.percentChance(25))
 							{
 								if (GC.challenges.Contains("LowHealth"))
 								{
@@ -1585,39 +1678,40 @@ namespace BunnyMod.Content
 							}
 
 							float num = 0f;
-							
+
 							if (__instance.myMelee.successfullySleepKilled || __instance.myMelee.successfullyBackstabbed)
 								num = 0f;
 							else if ((!hitAgent.dead || hitAgent.justDied) && !hitAgent.disappeared)
-								num = (float)Mathf.Clamp(hitAgent.damagedAmount * 20, 80, 9999);
+								num = (float) Mathf.Clamp(hitAgent.damagedAmount * 20, 80, 9999);
 							else if (!hitAgent.disappeared)
 								num = 80f;
-							
+
 							if (hittingAgent.statusEffects.hasTrait("CauseBiggerKnockback"))
 								num *= 2f;
-							
+
 							Vector3 position = hitAgent.tr.position;
-							
+
 							if (!hitAgent.disappeared && !fromClient)
 								hitAgent.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, num, true, hittingAgent);
-							
+
 							bool flag4 = false;
-							
-							if (hitAgent.hasEmployer && hitAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && hitAgent.employer.objectMult.chargingSpecialLunge)
+
+							if (hitAgent.hasEmployer && hitAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") &&
+								hitAgent.employer.objectMult.chargingSpecialLunge)
 								flag4 = true;
-							
+
 							if (hitAgent.statusEffects.hasSpecialAbility("ProtectiveShell") && hitAgent.objectMult.chargingSpecialLunge)
 								flag4 = true;
-							
+
 							if (flag4)
 							{
 								bool flag5 = true;
-							
+
 								if (GC.multiplayerMode && GC.serverPlayer)
 								{
 									if (hitAgent.isPlayer != 0 && !hitAgent.localPlayer && hittingAgent.isPlayer == 0)
 										flag5 = false;
-								
+
 									if (hittingAgent.isPlayer != 0 && !hittingAgent.localPlayer && hitAgent.isPlayer == 0)
 										flag5 = false;
 								}
@@ -1625,21 +1719,22 @@ namespace BunnyMod.Content
 								if (flag5)
 								{
 									hittingAgent.movement.KnockBackBullet(hitAgent.gameObject, 240f, true, hitAgent);
-								
+
 									if (GC.serverPlayer && hittingAgent.isPlayer == 0 && invItem.invItemName != "Fist" && !hitAgent.warZoneAgent)
 									{
 										int myChance3 = hitAgent.DetermineLuck(15, "ChanceToKnockWeapons", true);
-									
+
 										if (GC.percentChance(myChance3))
 										{
 											InvItem invItem2 = hittingAgent.inventory.FindItem(invItem.invItemName);
 											hittingAgent.inventory.DestroyItem(invItem2);
 											GC.spawnerMain.SpillItem(__instance.tr.position, invItem2);
 											GC.spawnerMain.SpawnStatusText(hittingAgent, "OutOfAmmo", invItem2.invItemName, "Item");
-										
+
 											if (!GC.serverPlayer && (hittingAgent.isPlayer != 0 || hittingAgent.mindControlAgent == GC.playerAgent))
-												hittingAgent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item", hittingAgent.objectNetID, "", "");
-											
+												hittingAgent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem2.invItemName, "Item",
+													hittingAgent.objectNetID, "", "");
+
 											hittingAgent.statusEffects.CreateBuffText("DroppedWeapon", hittingAgent.objectNetID);
 											hittingAgent.dontPickUpWeapons = true;
 										}
@@ -1653,7 +1748,8 @@ namespace BunnyMod.Content
 								Quaternion localRotation = __instance.myMelee.meleeHelperTr.localRotation;
 								__instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
 								__instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
-								__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
+								__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x,
+									__instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
 								Vector3 position2 = __instance.myMelee.meleeHelperTr.position;
 								__instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
 								__instance.myMelee.meleeHelperTr.localRotation = localRotation;
@@ -1661,26 +1757,28 @@ namespace BunnyMod.Content
 								if (!hittingAgent.testingNewClientLerps)
 								{
 									if (hittingAgent.isPlayer != 0)
-										hittingAgent.objectMult.CallCmdMeleeHitAgent(hitAgent.objectNetID, position2, (int)num, position, hitAgent.rb.velocity);
+										hittingAgent.objectMult.CallCmdMeleeHitAgent(hitAgent.objectNetID, position2, (int) num, position,
+											hitAgent.rb.velocity);
 									else
-										GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(hittingAgent.objectNetID, hitAgent.objectNetID, position2, (int)num, position, hitAgent.rb.velocity);
+										GC.playerAgent.objectMult.CallCmdMeleeHitAgentNPC(hittingAgent.objectNetID, hitAgent.objectNetID, position2, (int) num,
+											position, hitAgent.rb.velocity);
 								}
 							}
 							else if (GC.multiplayerMode && GC.serverPlayer)
 								hittingAgent.objectMult.CallRpcMeleeHitObjectFake(hitAgent.objectNetID);
-							
+
 							if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (hitAgent.isPlayer > 0 && hitAgent.localPlayer))
 							{
 								if (hitAgent.justDied)
-									GC.ScreenShake(0.25f, (float)Mathf.Clamp(15 * hitAgent.damagedAmount, 160, 500), Vector2.zero, hittingAgent);
+									GC.ScreenShake(0.25f, (float) Mathf.Clamp(15 * hitAgent.damagedAmount, 160, 500), Vector2.zero, hittingAgent);
 								else
-									GC.ScreenShake(0.2f, (float)Mathf.Clamp(15 * hitAgent.damagedAmount, 0, 500), Vector2.zero, hittingAgent);
+									GC.ScreenShake(0.2f, (float) Mathf.Clamp(15 * hitAgent.damagedAmount, 0, 500), Vector2.zero, hittingAgent);
 							}
-							
+
 							GC.alienFX.PlayerHitEnemy(hittingAgent);
 							hittingAgent.combat.meleeJustHitCooldown = hittingAgent.combat.meleeJustHitTimeStart;
 							hittingAgent.combat.meleeJustHitCloseCooldown = hittingAgent.combat.meleeJustHitCloseTimeStart;
-							
+
 							if (GC.serverPlayer)
 							{
 								if (__instance.myMelee.successfullyBackstabbed)
@@ -1690,12 +1788,13 @@ namespace BunnyMod.Content
 							}
 
 							__instance.MeleeHitEffect(hitObject);
-							GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float)hitAgent.damagedAmount / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)hitAgent.damagedAmount / 132f + 0.05f, 0f, 0.2f));
-							
+							GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float) hitAgent.damagedAmount / 100f + 0.05f, 0f, 0.25f),
+								Mathf.Clamp((float) hitAgent.damagedAmount / 132f + 0.05f, 0f, 0.2f));
+
 							if (GC.levelType == "Tutorial")
 							{
 								GC.tutorial.MeleeTarget(hitAgent);
-							
+
 								return false;
 							}
 						}
@@ -1709,45 +1808,48 @@ namespace BunnyMod.Content
 					if (!GC.serverPlayer && !hittingAgent.localPlayer && hittingAgent.mindControlAgent != GC.playerAgent)
 					{
 						__instance.FakeHit(hitObject);
-					
+
 						return false;
 					}
 
-					if (!component2.justSpilled && !__instance.myMelee.invItem.meleeNoHit && component2.itemObject == null && __instance.HasLOSMelee(component2))
+					if (!component2.justSpilled && !__instance.myMelee.invItem.meleeNoHit && component2.itemObject == null &&
+						__instance.HasLOSMelee(component2))
 					{
 						Vector3 position3 = component2.tr.position;
-					
+
 						if (!fromClient)
 							component2.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, 250f, true, hittingAgent);
-						
+
 						component2.Damage(__instance.myMelee, fromClient);
-						
+
 						if (component2.invItem.reactOnTouch)
 							component2.TouchMe(hittingAgent, "MeleeHitbox");
-						
+
 						component2.thrower = hittingAgent;
-						
+
 						if (component2.go.activeSelf)
 							component2.StartCoroutine(component2.HitCauserCoroutine(hittingAgent));
-						
+
 						if (GC.serverPlayer && !__instance.myMelee.successfullySleepKilled && !hittingAgent.statusEffects.hasTrait("HitObjectsNoNoise"))
 							GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, hittingAgent);
-						
+
 						if (component2.startingOwner != 0 && GC.serverPlayer && !hittingAgent.statusEffects.hasTrait("NoStealPenalty"))
 							GC.OwnCheck(hittingAgent, hitObject.transform.parent.gameObject, "Normal", 1);
-						
+
 						Physics2D.IgnoreCollision(component2.myCollider2D, hittingAgent.myCollider2D, true);
 						Physics2D.IgnoreCollision(component2.myCollider2D, hittingAgent.agentItemCollider, true);
 						__instance.MeleeHitEffect(hitObject);
-						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
-						
+						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f),
+							Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
+
 						if (!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent))
 						{
 							hittingAgent.objectMultPlayfield.TempDisableNetworkTransform(component2);
 							Quaternion localRotation2 = __instance.myMelee.meleeHelperTr.localRotation;
 							__instance.myMelee.meleeHelperTr.rotation = __instance.myMelee.meleeContainerTr.rotation;
 							__instance.myMelee.meleeHelperTr.position = __instance.myMelee.meleeContainerTr.position;
-							__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x, __instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
+							__instance.myMelee.meleeHelperTr.localPosition = new Vector3(__instance.myMelee.meleeHelperTr.localPosition.x,
+								__instance.myMelee.meleeHelperTr.localPosition.y + 10f, __instance.myMelee.meleeHelperTr.localPosition.z);
 							Vector3 position4 = __instance.myMelee.meleeHelperTr.position;
 							__instance.myMelee.meleeHelperTr.localPosition = Vector3.zero;
 							__instance.myMelee.meleeHelperTr.localRotation = localRotation2;
@@ -1755,18 +1857,19 @@ namespace BunnyMod.Content
 							if (hittingAgent.isPlayer != 0)
 							{
 								hittingAgent.objectMult.CallCmdMeleeHitItem(component2.objectNetID, position4, 250, position3, component2.rb.velocity);
-							
+
 								return false;
 							}
 
-							GC.playerAgent.objectMult.CallCmdMeleeHitItemNPC(hittingAgent.objectNetID, component2.objectNetID, position4, 250, position3, component2.rb.velocity);
-							
+							GC.playerAgent.objectMult.CallCmdMeleeHitItemNPC(hittingAgent.objectNetID, component2.objectNetID, position4, 250, position3,
+								component2.rb.velocity);
+
 							return false;
 						}
 						else if (GC.multiplayerMode)
 						{
 							bool serverPlayer = GC.serverPlayer;
-							
+
 							return false;
 						}
 					}
@@ -1775,29 +1878,34 @@ namespace BunnyMod.Content
 				{
 					Melee melee = hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee;
 					__instance.objectList.Add(melee.meleeHitbox.gameObject);
-					
+
 					if ((__instance.myMelee.invItem.invItemName == "StealingGlove" || __instance.myMelee.invItem.invItemName == "ChloroformHankie") ||
-						(melee.invItem.invItemName == "StealingGlove" || melee.invItem.invItemName == "ChloroformHankie") )
+						(melee.invItem.invItemName == "StealingGlove" || melee.invItem.invItemName == "ChloroformHankie"))
 						return false;
-					
+
 					Agent agent4 = hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee.agent;
-					
+
 					if ((GC.serverPlayer && hittingAgent.isPlayer == 0 && agent4.isPlayer > 0 && !agent4.localPlayer) ||
-						(!GC.serverPlayer && hittingAgent.isPlayer == 0 && !agent4.localPlayer && hittingAgent != agent4 && ((agent4.mindControlAgent != GC.playerAgent && hittingAgent.mindControlAgent != GC.playerAgent) || agent4.dead)) )
+						(!GC.serverPlayer && hittingAgent.isPlayer == 0 && !agent4.localPlayer && hittingAgent != agent4 &&
+							((agent4.mindControlAgent != GC.playerAgent && hittingAgent.mindControlAgent != GC.playerAgent) || agent4.dead)))
 						return false;
-					
-					if ((GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && agent4.isPlayer == 0 && hittingAgent.mindControlAgent != null && hittingAgent.mindControlAgent != GC.playerAgent && !agent4.dead) ||
-						(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && agent4.isPlayer == 0 && agent4.mindControlAgent != null && agent4.mindControlAgent != GC.playerAgent && !agent4.dead))
+
+					if ((GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && agent4.isPlayer == 0 && hittingAgent.mindControlAgent != null &&
+							hittingAgent.mindControlAgent != GC.playerAgent && !agent4.dead) ||
+						(GC.multiplayerMode && GC.serverPlayer && hittingAgent.isPlayer == 0 && agent4.isPlayer == 0 && agent4.mindControlAgent != null &&
+							agent4.mindControlAgent != GC.playerAgent && !agent4.dead))
 					{
 						__instance.FakeHit(hitObject);
 						return false;
 					}
 
-					if ((!GC.serverPlayer && hittingAgent.isPlayer > 0 && !hittingAgent.localPlayer && !agent4.localPlayer) || 
-							(!hittingAgent.DontHitAlignedCheck(agent4)))
+					if ((!GC.serverPlayer && hittingAgent.isPlayer > 0 && !hittingAgent.localPlayer && !agent4.localPlayer) ||
+						(!hittingAgent.DontHitAlignedCheck(agent4)))
 						return false;
-					
-					if (hittingAgent != agent4 && hittingAgent.agentSpriteTransform.localScale.x != 3f && agent4.agentSpriteTransform.localScale.x != 3f && hittingAgent.agentSpriteTransform.localScale.x > 0.34f && agent4.agentSpriteTransform.localScale.x > 0.34f && !__instance.myMelee.invItem.meleeNoHit && __instance.HasLOSMelee(melee.agent))
+
+					if (hittingAgent != agent4 && hittingAgent.agentSpriteTransform.localScale.x != 3f && agent4.agentSpriteTransform.localScale.x != 3f &&
+						hittingAgent.agentSpriteTransform.localScale.x > 0.34f && agent4.agentSpriteTransform.localScale.x > 0.34f &&
+						!__instance.myMelee.invItem.meleeNoHit && __instance.HasLOSMelee(melee.agent))
 					{
 						melee.meleeHitbox.objectList.Add(__instance.gameObject);
 						__instance.objectList.Add(agent4.sprTr.gameObject);
@@ -1811,30 +1919,30 @@ namespace BunnyMod.Content
 							num5 = Mathf.Clamp(300, 100, 200);
 						else
 							num5 = Mathf.Clamp(num2 * 10, 100, 200);
-						
+
 						if (__instance.myMelee.specialLunge && !fromClient)
 							num4 = Mathf.Clamp(300, 100, 200);
 						else if (!fromClient)
 							num4 = Mathf.Clamp(num3 * 10, 100, 200);
-						
+
 						Vector3 position5 = agent4.tr.position;
 						bool flag6 = true;
-						
+
 						if (GC.multiplayerMode && GC.serverPlayer)
 						{
 							if (agent4.isPlayer != 0 && !agent4.localPlayer && hittingAgent.isPlayer == 0)
 								flag6 = false;
-						
+
 							if (hittingAgent.isPlayer != 0 && !hittingAgent.localPlayer && agent4.isPlayer == 0)
 								flag6 = false;
 						}
 
 						if (flag6)
 						{
-							hittingAgent.movement.KnockBackBullet(melee.meleeContainerTr.gameObject, (float)num5, true, melee.agent);
-							
+							hittingAgent.movement.KnockBackBullet(melee.meleeContainerTr.gameObject, (float) num5, true, melee.agent);
+
 							if (!fromClient)
-								agent4.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, (float)num4, true, hittingAgent);
+								agent4.movement.KnockBackBullet(__instance.myMelee.meleeContainerTr.gameObject, (float) num4, true, hittingAgent);
 						}
 
 						if (!GC.serverPlayer)
@@ -1852,14 +1960,15 @@ namespace BunnyMod.Content
 								agent5 = agent4;
 								agent6 = hittingAgent;
 							}
-							
+
 							if (agent5 != null)
 							{
 								agent5.objectMultPlayfield.TempDisableNetworkTransform(agent6);
 								Quaternion localRotation3 = agent5.melee.meleeHelperTr.localRotation;
 								agent5.melee.meleeHelperTr.rotation = agent5.melee.meleeContainerTr.rotation;
 								agent5.melee.meleeHelperTr.position = agent5.melee.meleeContainerTr.position;
-								agent5.melee.meleeHelperTr.localPosition = new Vector3(agent5.melee.meleeHelperTr.localPosition.x, agent5.melee.meleeHelperTr.localPosition.y + 10f, agent5.melee.meleeHelperTr.localPosition.z);
+								agent5.melee.meleeHelperTr.localPosition = new Vector3(agent5.melee.meleeHelperTr.localPosition.x,
+									agent5.melee.meleeHelperTr.localPosition.y + 10f, agent5.melee.meleeHelperTr.localPosition.z);
 								Vector3 position6 = agent5.melee.meleeHelperTr.position;
 								Debug.Log(string.Concat("MeleeHitMelee KnockToPosition: ", position6, " - ", position5));
 								agent5.melee.meleeHelperTr.localPosition = Vector3.zero;
@@ -1868,7 +1977,8 @@ namespace BunnyMod.Content
 								if (agent5.isPlayer != 0)
 									agent5.objectMult.CallCmdMeleeHitMelee(agent6.objectNetID, position6, num5, position5, agent6.rb.velocity);
 								else
-									GC.playerAgent.objectMult.CallCmdMeleeHitMeleeNPC(agent5.objectNetID, agent6.objectNetID, position6, num5, position5, agent6.rb.velocity);
+									GC.playerAgent.objectMult.CallCmdMeleeHitMeleeNPC(agent5.objectNetID, agent6.objectNetID, position6, num5, position5,
+										agent6.rb.velocity);
 							}
 						}
 						else if (GC.multiplayerMode && GC.serverPlayer)
@@ -1891,7 +2001,7 @@ namespace BunnyMod.Content
 								{
 									if (hittingAgent.zombified && agent4.isPlayer == 0 && !agent4.oma.bodyGuarded)
 										agent4.zombieWhenDead = true;
-									
+
 									agent4.statusEffects.ChangeHealth(-1f);
 								}
 							}
@@ -1909,7 +2019,7 @@ namespace BunnyMod.Content
 								{
 									if (agent4.zombified && hittingAgent.isPlayer == 0 && !hittingAgent.oma.bodyGuarded)
 										hittingAgent.zombieWhenDead = true;
-									
+
 									hittingAgent.statusEffects.ChangeHealth(-1f);
 								}
 							}
@@ -1918,62 +2028,66 @@ namespace BunnyMod.Content
 						hittingAgent.inventory.DepleteMelee(5);
 						agent4.inventory.DepleteMelee(5);
 						__instance.MeleeHitEffect(hitObject);
-						
+
 						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (melee.agent.isPlayer > 0 && melee.agent.localPlayer))
 						{
 							GC.ScreenShake(0.2f, 80f, hittingAgent.tr.position, hittingAgent);
 							GC.FreezeFrames(1);
 						}
-						
+
 						GC.alienFX.BlockAttack(hittingAgent);
 						GC.alienFX.BlockAttack(melee.agent);
-						
+
 						if (!hittingAgent.killerRobot && !melee.agent.killerRobot)
 						{
 							GC.EnforcerAlertAttack(hittingAgent, melee.agent, 7.4f);
 							GC.EnforcerAlertAttack(melee.agent, hittingAgent, 7.4f);
 						}
-						
-						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
+
+						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f),
+							Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
 						hittingAgent.combat.meleeJustBlockedCooldown = hittingAgent.combat.meleeJustBlockedTimeStart;
 						agent4.combat.meleeJustBlockedCooldown = agent4.combat.meleeJustBlockedTimeStart;
-						
+
 						if (GC.serverPlayer)
 							GC.spawnerMain.SpawnNoise(__instance.tr.position, 1f, null, null, hittingAgent);
-						
+
 						if (__instance.myMelee.hitParticlesTr != null && __instance.myMelee.meleeContainerTr != null)
-							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						
-						if ((hittingAgent.statusEffects.hasTrait("ChanceToKnockWeapons") || hittingAgent.statusEffects.hasTrait("KnockWeapons")) && GC.serverPlayer && agent4.isPlayer == 0 && agent4.inventory.equippedWeapon.invItemName != "Fist" && !agent4.warZoneAgent)
+							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position,
+								__instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
+						if ((hittingAgent.statusEffects.hasTrait("ChanceToKnockWeapons") || hittingAgent.statusEffects.hasTrait("KnockWeapons")) &&
+							GC.serverPlayer && agent4.isPlayer == 0 && agent4.inventory.equippedWeapon.invItemName != "Fist" && !agent4.warZoneAgent)
 						{
 							int myChance4 = 15;
 							bool knockWeapons = hittingAgent.statusEffects.hasTrait("KnockWeapons");
-						
+
 							if (!knockWeapons)
 								myChance4 = hittingAgent.DetermineLuck(15, "ChanceToKnockWeapons", true);
-							
+
 							if (GC.percentChance(myChance4) || knockWeapons)
 							{
 								InvItem invItem3 = agent4.inventory.FindItem(agent4.inventory.equippedWeapon.invItemName);
 								agent4.inventory.DestroyItem(invItem3);
 								GC.spawnerMain.SpillItem(__instance.tr.position, invItem3);
 								GC.spawnerMain.SpawnStatusText(agent4, "OutOfAmmo", invItem3.invItemName, "Item");
-							
+
 								if (!GC.serverPlayer)
 									agent4.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem3.invItemName, "Item", hittingAgent.objectNetID, "", "");
-								
+
 								agent4.statusEffects.CreateBuffText("DroppedWeapon");
 								agent4.dontPickUpWeapons = true;
 							}
 						}
 
-						if ((agent4.statusEffects.hasTrait("ChanceToKnockWeapons") || agent4.statusEffects.hasTrait("KnockWeapons")) && GC.serverPlayer && hittingAgent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent4.warZoneAgent)
+						if ((agent4.statusEffects.hasTrait("ChanceToKnockWeapons") || agent4.statusEffects.hasTrait("KnockWeapons")) && GC.serverPlayer &&
+							hittingAgent.isPlayer == 0 && invItem.invItemName != "Fist" && !agent4.warZoneAgent)
 						{
 							int myChance5 = 15;
-						
+
 							if (!agent4.statusEffects.hasTrait("KnockWeapons"))
 								myChance5 = agent4.DetermineLuck(15, "ChanceToKnockWeapons", true);
-							
+
 							if (GC.percentChance(myChance5) || agent4.statusEffects.hasTrait("KnockWeapons"))
 							{
 								InvItem invItem4 = hittingAgent.inventory.FindItem(invItem.invItemName);
@@ -1982,11 +2096,12 @@ namespace BunnyMod.Content
 								GC.spawnerMain.SpawnStatusText(hittingAgent, "OutOfAmmo", invItem4.invItemName, "Item");
 
 								if (!GC.serverPlayer && (hittingAgent.isPlayer != 0 || hittingAgent.mindControlAgent == GC.playerAgent))
-									hittingAgent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem4.invItemName, "Item", hittingAgent.objectNetID, "", "");
-								
+									hittingAgent.objectMultPlayfield.SpawnStatusText("OutOfAmmo", invItem4.invItemName, "Item", hittingAgent.objectNetID, "",
+										"");
+
 								hittingAgent.statusEffects.CreateBuffText("DroppedWeapon", hittingAgent.objectNetID);
 								hittingAgent.dontPickUpWeapons = true;
-								
+
 								return false;
 							}
 						}
@@ -1999,7 +2114,7 @@ namespace BunnyMod.Content
 					if (hittingAgent.isPlayer > 0)
 					{
 						bool localPlayer = hittingAgent.localPlayer;
-					
+
 						return false;
 					}
 				}
@@ -2012,15 +2127,15 @@ namespace BunnyMod.Content
 						__instance.hitWall = true;
 						bool flag8 = false;
 						int damage = hittingAgent.FindDamage(__instance.myMelee, true, fromClient);
-					
+
 						if (hittingAgent.agentSpriteTransform.localScale.x > 1f)
 						{
 							damage = 200;
 							TileData tileData = GC.tileInfo.GetTileData(hitObject.transform.position);
-						
+
 							if (tileData.wallMaterial != wallMaterialType.Steel && tileData.wallMaterial != wallMaterialType.Glass)
 								__instance.hitWall = false;
-						
+
 							if (__instance.hitWall2 == 0)
 								__instance.hitWall2 = 1;
 						}
@@ -2031,7 +2146,7 @@ namespace BunnyMod.Content
 						int num9 = 50;
 						int num10 = 50;
 						int num11 = 200;
-						
+
 						if (GC.challenges.Contains("WallsEasilySmashed"))
 						{
 							num7 = 5;
@@ -2062,31 +2177,33 @@ namespace BunnyMod.Content
 						{
 							TileData tileData2 = GC.tileInfo.GetTileData(hitObject.transform.position);
 
-							if ((tileData2.wallMaterial == wallMaterialType.Wood && damage >= num7) || 
-								(tileData2.wallMaterial == wallMaterialType.Normal && damage >= num8) || 
-								(tileData2.wallMaterial == wallMaterialType.Steel && damage >= num11) || 
-								(tileData2.wallMaterial == wallMaterialType.Border && damage >= num10) || 
-								(tileData2.wallMaterial == wallMaterialType.Glass && damage >= num9) || 
-								(damage == num11 && tileData2.wallMaterial != wallMaterialType.Steel) || 
-								(damage == num10 && tileData2.wallMaterial != wallMaterialType.Border && tileData2.wallMaterial != wallMaterialType.Steel && tileData2.wallMaterial != wallMaterialType.LockdownWall))
+							if ((tileData2.wallMaterial == wallMaterialType.Wood && damage >= num7) ||
+								(tileData2.wallMaterial == wallMaterialType.Normal && damage >= num8) ||
+								(tileData2.wallMaterial == wallMaterialType.Steel && damage >= num11) ||
+								(tileData2.wallMaterial == wallMaterialType.Border && damage >= num10) ||
+								(tileData2.wallMaterial == wallMaterialType.Glass && damage >= num9) ||
+								(damage == num11 && tileData2.wallMaterial != wallMaterialType.Steel) ||
+								(damage == num10 && tileData2.wallMaterial != wallMaterialType.Border && tileData2.wallMaterial != wallMaterialType.Steel &&
+									tileData2.wallMaterial != wallMaterialType.LockdownWall))
 							{
 								Door.freerAgent = hittingAgent;
-								GC.tileInfo.DestroyWallTileAtPosition(hitObject.transform.position.x, hitObject.transform.position.y, Vector3.zero, true, hittingAgent, false, true, false, hittingAgent, false);
+								GC.tileInfo.DestroyWallTileAtPosition(hitObject.transform.position.x, hitObject.transform.position.y, Vector3.zero, true,
+									hittingAgent, false, true, false, hittingAgent, false);
 								GC.audioHandler.Play(hittingAgent, "WallDestroy");
 
 								if (hitObject.name.Contains("Glass"))
 									GC.audioHandler.Play(hittingAgent, "WallDestroyGlass");
-								
+
 								hitObject.layer = 1;
-								
+
 								if (!hitObject.name.Contains("Border"))
 									GC.stats.AddDestructionQuestPoints();
-								
+
 								if (hittingAgent.isPlayer > 0 && hittingAgent.localPlayer)
 									GC.stats.AddToStat(hittingAgent, "Destruction", 1);
-								
+
 								GC.ScreenShake(0.25f, 160f, hittingAgent.tr.position, hittingAgent);
-								
+
 								if (__instance.hitWall2 == 1)
 								{
 									GC.FreezeFrames(3);
@@ -2094,9 +2211,9 @@ namespace BunnyMod.Content
 								}
 								else if (damage != 200)
 									GC.FreezeFrames(3);
-								
+
 								flag8 = true;
-								
+
 								if (invItem.invItemName != "Fist")
 								{
 									if (__instance.myMelee.depletedDuringThisAttack && invItem.invItemCount > 0)
@@ -2104,7 +2221,7 @@ namespace BunnyMod.Content
 										__instance.myMelee.depletedDuringThisAttack = false;
 										invItem.invItemCount += __instance.myMelee.depletedDuringThisAttackAmount;
 									}
-								
+
 									if (hittingAgent.statusEffects.hasTrait("MeleeDestroysWalls2"))
 										hittingAgent.inventory.DepleteMelee(10);
 									else
@@ -2114,28 +2231,31 @@ namespace BunnyMod.Content
 						}
 
 						if (__instance.myMelee.hitParticlesTr != null && __instance.myMelee.meleeContainerTr != null)
-							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						
-						if (!__instance.myMelee.successfullySleepKilled && !hittingAgent.statusEffects.hasTrait("HitObjectsNoNoise") && (GC.serverPlayer || (!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent))))
+							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", __instance.myMelee.hitParticlesTr.position,
+								__instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+
+						if (!__instance.myMelee.successfullySleepKilled && !hittingAgent.statusEffects.hasTrait("HitObjectsNoNoise") && (GC.serverPlayer ||
+							(!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent))))
 						{
 							GC.spawnerMain.SpawnNoise(hittingAgent.tr.position, 1f, null, null, hittingAgent);
-						
+
 							if (flag8)
 								GC.spawnerMain.SpawnNoise(hitObject.transform.position, 1f, null, null, hittingAgent);
 						}
 
 						if (flag8 && hittingAgent != null)
 							GC.OwnCheck(hittingAgent, hitObject, "Normal", 0);
-						
+
 						GC.audioHandler.Play(hittingAgent, "BulletHitWall");
-						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f), Mathf.Clamp((float)__instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
-						
+						GC.playerControl.Vibrate(hittingAgent.isPlayer, Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 100f + 0.05f, 0f, 0.25f),
+							Mathf.Clamp((float) __instance.myMelee.invItem.meleeDamage / 132f + 0.05f, 0f, 0.2f));
+
 						if (!GC.serverPlayer && (hittingAgent.localPlayer || hittingAgent.mindControlAgent == GC.playerAgent))
 						{
 							if (hittingAgent.isPlayer != 0)
 							{
 								hittingAgent.objectMult.CallCmdMeleeHitWall(hitObject.transform.position);
-						
+
 								return false;
 							}
 
@@ -2143,11 +2263,13 @@ namespace BunnyMod.Content
 						}
 					}
 				}
+
 				#endregion
 			}
 
 			return false;
 		}
+
 		public static bool MeleeHitbox_MeleeHitEffect(GameObject hitObject, MeleeHitbox __instance) // Prefix
 		{
 			// Spectral Strikes
@@ -2167,30 +2289,30 @@ namespace BunnyMod.Content
 						invItem = hittingAgent.inventory.fist;
 				}
 				catch { }
-				
+
 				if (hitObject.CompareTag("ObjectRealSprite"))
 				{
 					ObjectReal objectReal;
-					
+
 					if (hitObject.name.Contains("ExtraSprite"))
 						objectReal = hitObject.transform.parent.transform.parent.GetComponent<ObjectReal>();
 					else
 						objectReal = hitObject.GetComponent<ObjectSprite>().objectReal;
-					
+
 					if (__instance.myMelee.recentFakeHitObjects.Contains(objectReal.go))
 						return false;
-					
+
 					if (objectReal.damagedAmount < objectReal.damageThreshold && !objectReal.damageAccumulates)
 					{
 						if (objectReal.noMetallicSound)
 						{
 							GC.audioHandler.Play(objectReal, "BulletHitWall");
-					
+
 							return false;
 						}
 
 						GC.audioHandler.Play(objectReal, "BulletHitIndestructibleObject");
-						
+
 						return false;
 					}
 					else if (!objectReal.noDamageSound)
@@ -2198,12 +2320,12 @@ namespace BunnyMod.Content
 						if (objectReal.specialDamageSound != "" && objectReal.specialDamageSound != null)
 						{
 							GC.audioHandler.Play(hittingAgent, objectReal.specialDamageSound);
-						
+
 							return false;
 						}
 
 						GC.audioHandler.Play(hittingAgent, "BulletHitObject");
-						
+
 						return false;
 					}
 				}
@@ -2211,24 +2333,24 @@ namespace BunnyMod.Content
 				{
 					if (__instance.myMelee.fakeHitAgent)
 						return false;
-					
+
 					Agent agent = hitObject.GetComponent<ObjectSprite>().agent;
-					
+
 					if (__instance.myMelee.recentFakeHitObjects.Contains(agent.go))
 						return false;
-					
+
 					if (agent.hologram || agent.objectAgent)
 						return false;
-					
+
 					bool flag = false;
-					
+
 					if (invItem.hitSoundType == "Cut")
 					{
 						if (agent.damagedAmount < 12)
 							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentCutSmall");
 						else
 							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentCutLarge");
-					
+
 						flag = true;
 					}
 
@@ -2237,7 +2359,7 @@ namespace BunnyMod.Content
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-					
+
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
@@ -2252,17 +2374,18 @@ namespace BunnyMod.Content
 						if (agent.damagedAmount > 0)
 						{
 							if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-								GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+								GC.spawnerMain.SpawnParticleEffect("BloodHitYellow", agent.tr.position,
+									__instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 							else
 								GC.spawnerMain.SpawnParticleEffect("BloodHit", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						}
 						else
 							GC.spawnerMain.SpawnParticleEffect("ObjectDestroyed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						
+
 						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(1);
-						
+
 							return false;
 						}
 					}
@@ -2271,7 +2394,7 @@ namespace BunnyMod.Content
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-							
+
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
@@ -2287,11 +2410,11 @@ namespace BunnyMod.Content
 							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						else
 							GC.spawnerMain.SpawnParticleEffect("BloodHitMed", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						
+
 						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(2);
-						
+
 							return false;
 						}
 					}
@@ -2300,7 +2423,7 @@ namespace BunnyMod.Content
 						if (!flag)
 						{
 							string hitSoundType = invItem.hitSoundType;
-							
+
 							if (!(hitSoundType == "Normal"))
 							{
 								if (!(hitSoundType == "WerewolfSlash"))
@@ -2310,19 +2433,20 @@ namespace BunnyMod.Content
 							}
 							else
 								GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
-							
+
 							GC.audioHandler.Play(hittingAgent, "MeleeHitAgentLarge");
 						}
-						
+
 						if (agent.inhuman || agent.mechFilled || agent.mechEmpty)
-							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
+							GC.spawnerMain.SpawnParticleEffect("BloodHitYellowLarge", agent.tr.position,
+								__instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
 						else
 							GC.spawnerMain.SpawnParticleEffect("BloodHitLarge", agent.tr.position, __instance.myMelee.meleeContainerTr.eulerAngles.z - 90f);
-						
+
 						if ((hittingAgent.isPlayer > 0 && hittingAgent.localPlayer) || (agent.isPlayer > 0 && agent.localPlayer))
 						{
 							GC.FreezeFrames(3);
-						
+
 							return false;
 						}
 					}
@@ -2330,39 +2454,42 @@ namespace BunnyMod.Content
 				else if (hitObject.CompareTag("ItemImage"))
 				{
 					GC.audioHandler.Play(hittingAgent, "BulletHitWall");
-					
+
 					if (hittingAgent.isPlayer > 0 && hittingAgent.localPlayer)
 					{
 						GC.ScreenShake(0.1f, 80f, hittingAgent.tr.position, hittingAgent);
 						GC.FreezeFrames(0);
-					
+
 						return false;
 					}
 				}
 				else if (hitObject.CompareTag("MeleeHitbox"))
 				{
 					Agent agent2 = hitObject.GetComponent<MeleeColliderBox>().meleeHitbox.myMelee.agent;
-					
+
 					if (__instance.myMelee.recentFakeHitObjects.Contains(agent2.go))
 						return false;
-					
+
 					if (invItem.hitSoundType == "Cut" || agent2.inventory.equippedWeapon.hitSoundType == "Cut")
 					{
 						GC.audioHandler.Play(hittingAgent, "MeleeHitMeleeBlade");
-					
+
 						return false;
 					}
 
 					GC.audioHandler.Play(hittingAgent, "MeleeHitMelee");
 				}
-				
+
 				return false;
 			}
 
 			return true;
 		}
+
 		#endregion
+
 		#region Movement
+
 		public void Movement_00()
 		{
 			Type t = typeof(Movement);
@@ -2370,18 +2497,25 @@ namespace BunnyMod.Content
 
 			Postfix(t, "FindKnockBackStrength", g, "Movement_FindKnockBackStrength", new Type[1] { typeof(float) });
 		}
+
 		public static void Movement_FindKnockBackStrength(float strength, ref float __result) // Postfix
 		{
 			if (BMChallenges.IsChallengeFromListActive(cChallenge.Knockback))
 				__result *= GetGlobalKnockBackMultiplier();
 		}
+
 		#endregion
+
 		#region PlayfieldObject
+
 		public void PlayfieldObject_00()
 		{
-			Prefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage", new Type[4] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) });
+			Prefix(typeof(PlayfieldObject), "FindDamage", GetType(), "PlayfieldObject_FindDamage",
+				new Type[4] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) });
 		}
-		public static bool PlayfieldObject_FindDamage(PlayfieldObject damagerObject, bool generic, bool testOnly, bool fromClient, PlayfieldObject __instance, ref int __result) // Replacement
+
+		public static bool PlayfieldObject_FindDamage(PlayfieldObject damagerObject, bool generic, bool testOnly, bool fromClient, PlayfieldObject __instance,
+			ref int __result) // Replacement
 		{
 			// Not sure what Generic is, but it does not ever seem to be anything but false.
 
@@ -2402,15 +2536,15 @@ namespace BunnyMod.Content
 
 			if (__instance.isAgent && !generic)
 			{
-				damagedAgent = (Agent)__instance;
+				damagedAgent = (Agent) __instance;
 				instanceIsAgent = true;
 			}
 			else if (__instance.isObjectReal && !generic)
 			{
-				objectReal = (ObjectReal)__instance;
+				objectReal = (ObjectReal) __instance;
 				instanceIsObject = true;
 			}
-			
+
 			Agent damagerAgent = null;
 			float dmg = 0f;
 			string type = "";
@@ -2422,6 +2556,7 @@ namespace BunnyMod.Content
 			bool flag9 = false;
 
 			#region Setup
+
 			if (damagerObject.isAgent)
 			{
 				damagerAgent = damagerObject.GetComponent<Agent>();
@@ -2432,7 +2567,7 @@ namespace BunnyMod.Content
 				else if (damagerAgent.statusEffects.hasStatusEffect("ElectroTouch"))
 				{
 					dmg = 15f;
-				
+
 					if (instanceIsAgent)
 					{
 						if (damagedAgent.underWater || GC.tileInfo.GetTileData(damagedAgent.tr.position).spillWater)
@@ -2441,7 +2576,7 @@ namespace BunnyMod.Content
 								dmg *= 3f;
 							else
 								dmg *= 1.5f;
-							
+
 							if (damagerAgent.localPlayer && damagerAgent.isPlayer != 0)
 								GC.unlocks.DoUnlockEarly("ElectrocuteInWater", "Extra");
 						}
@@ -2468,7 +2603,7 @@ namespace BunnyMod.Content
 							dmg = 10f;
 						else
 							dmg = 20f;
-						
+
 						if (!damagedAgent.dead && !testOnly)
 						{
 							damagedAgent.deathMethod = "Charge";
@@ -2482,11 +2617,11 @@ namespace BunnyMod.Content
 					dmg = 5f;
 				else
 					dmg = 30f;
-				
+
 				if (instanceIsAgent && damagedAgent.shrunk && !damagerAgent.shrunk)
 				{
 					dmg = 200f;
-				
+
 					if (!damagedAgent.dead && !testOnly)
 					{
 						damagedAgent.deathMethod = "Stomping";
@@ -2505,30 +2640,32 @@ namespace BunnyMod.Content
 				{
 					flag2 = true;
 
-					if (instanceIsAgent && component.agent.objectAgent && component.bulletType == bulletStatus.Fire && damagedAgent.knockedByObject != null && damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
+					if (instanceIsAgent && component.agent.objectAgent && component.bulletType == bulletStatus.Fire && damagedAgent.knockedByObject != null &&
+						damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
 						damagerAgent = damagedAgent.lastHitByAgent;
 				}
-				
-				dmg = (float)component.damage;
+
+				dmg = (float) component.damage;
 				type = "Bullet";
-				
+
 				if (component.bulletType == bulletStatus.Fire || component.bulletType == bulletStatus.Fireball)
 					type = "Fire";
-				
-				if (component.bulletType == bulletStatus.Shotgun && (__instance.tickEndObject == null || __instance.tickEndObject.bulletType == bulletStatus.Shotgun))
+
+				if (component.bulletType == bulletStatus.Shotgun &&
+					(__instance.tickEndObject == null || __instance.tickEndObject.bulletType == bulletStatus.Shotgun))
 					isShotgunDamage = true;
-				
+
 				if (component.bulletType == bulletStatus.GhostBlaster)
 					isGhostBlasterDamage = true;
-				
+
 				if (instanceIsAgent)
 				{
 					if (flag2)
 					{
 						if (!damagerAgent.objectAgent)
 						{
-							float num2 = (float)damagerAgent.accuracyStatMod;
-							num2 += (float)component.moreAccuracy;
+							float num2 = (float) damagerAgent.accuracyStatMod;
+							num2 += (float) component.moreAccuracy;
 							dmg *= 0.6f + num2 / 5f;
 							float x = damagerAgent.agentSpriteTransform.localScale.x;
 
@@ -2583,13 +2720,13 @@ namespace BunnyMod.Content
 					invItem = damagerAgent.inventory.fist;
 				else
 					invItem = melee.invItem;
-				
-				dmg = (float)invItem.meleeDamage;
-				dmg *= 1f + (float)damagerAgent.strengthStatMod / 3f;
+
+				dmg = (float) invItem.meleeDamage;
+				dmg *= 1f + (float) damagerAgent.strengthStatMod / 3f;
 				float x2 = damagerAgent.agentSpriteTransform.localScale.x;
 				dmg *= x2;
 				type = "Melee";
-				
+
 				if (flag2 && instanceIsAgent)
 				{
 					if (!damagedAgent.dead && !testOnly)
@@ -2616,20 +2753,25 @@ namespace BunnyMod.Content
 				if (explosion.agent != null)
 				{
 					flag2 = true;
-				
+
 					if (instanceIsAgent)
 					{
-						if (explosion.realSource != null && explosion.realSource.isItem && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+						if (explosion.realSource != null && explosion.realSource.isItem && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) ||
+							Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
+							explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
-					
-						if (explosion.sourceObject != null && explosion.sourceObject.isBullet && explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) > explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+
+						if (explosion.sourceObject != null && explosion.sourceObject.isBullet &&
+							explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" &&
+							(!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
+								explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 				}
 
-				dmg = (float)explosion.damage;
+				dmg = (float) explosion.damage;
 				type = "Explosion";
-				
+
 				if (flag2 && instanceIsAgent)
 				{
 					if (!damagedAgent.dead && !testOnly)
@@ -2656,14 +2798,15 @@ namespace BunnyMod.Content
 				if (fire.agent != null)
 				{
 					flag2 = true;
-				
-					if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(fire.agent) || Vector2.Distance(damagedAgent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+
+					if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(fire.agent) ||
+						Vector2.Distance(damagedAgent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 						flag4 = false;
 				}
 
-				dmg = (float)fire.damage;
+				dmg = (float) fire.damage;
 				type = "Fire";
-				
+
 				if (instanceIsAgent)
 				{
 					if (flag2)
@@ -2671,7 +2814,7 @@ namespace BunnyMod.Content
 						if (!damagedAgent.dead && !testOnly)
 						{
 							damagedAgent.deathMethod = "Fire";
-				
+
 							if (!damagerAgent.objectAgent)
 								damagedAgent.deathKiller = damagerAgent.agentName;
 						}
@@ -2686,15 +2829,16 @@ namespace BunnyMod.Content
 			else if (damagerObject.isObjectReal)
 			{
 				ObjectReal objectReal2 = damagerObject.playfieldObjectReal;
-				dmg = (float)objectReal2.hazardDamage;
+				dmg = (float) objectReal2.hazardDamage;
 				type = "Hazard";
 
-				if (instanceIsAgent && damagedAgent.knockedByObject != null && damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
+				if (instanceIsAgent && damagedAgent.knockedByObject != null && damagedAgent.bouncy &&
+					damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
 				{
 					damagerAgent = damagedAgent.lastHitByAgent;
 					flag2 = true;
 				}
-				
+
 				if (flag2 && instanceIsAgent)
 				{
 					if (!damagedAgent.dead && !testOnly)
@@ -2702,7 +2846,7 @@ namespace BunnyMod.Content
 						damagedAgent.deathMethodItem = objectReal2.objectName;
 						damagedAgent.deathMethodObject = objectReal2.objectName;
 						damagedAgent.deathMethod = objectReal2.objectName;
-				
+
 						if (!damagerAgent.objectAgent)
 							damagedAgent.deathKiller = damagerAgent.agentName;
 					}
@@ -2735,12 +2879,13 @@ namespace BunnyMod.Content
 					{
 						damagerAgent = item.owner;
 						flag2 = true;
-				
-						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
+
+						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) ||
+							Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 
-					dmg = (float)item.invItem.otherDamage;
+					dmg = (float) item.invItem.otherDamage;
 				}
 				else if (item.invItem.touchDamage > 0 && __instance.playfieldObjectType == "Agent")
 				{
@@ -2753,16 +2898,17 @@ namespace BunnyMod.Content
 					{
 						damagerAgent = item.owner;
 						flag2 = true;
-					
-						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) || Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
+
+						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) ||
+							Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
-					
+
 					if (item.invItem.touchDamage > 0)
-						dmg = (float)item.invItem.touchDamage;
+						dmg = (float) item.invItem.touchDamage;
 					else if (item.invItem.otherDamage > 0)
-						dmg = (float)item.invItem.otherDamage;
-					
+						dmg = (float) item.invItem.otherDamage;
+
 					if (item.thrower != null)
 						type = "Throw";
 				}
@@ -2773,12 +2919,13 @@ namespace BunnyMod.Content
 						damagerAgent = item.thrower;
 						flag2 = true;
 					}
-				
-					dmg = (float)item.invItem.throwDamage;
-					
-					if (flag2 && item.invItem.invItemName == "TossItem" && (damagerAgent.oma.superSpecialAbility || damagerAgent.statusEffects.hasTrait("GoodThrower")))
+
+					dmg = (float) item.invItem.throwDamage;
+
+					if (flag2 && item.invItem.invItemName == "TossItem" &&
+						(damagerAgent.oma.superSpecialAbility || damagerAgent.statusEffects.hasTrait("GoodThrower")))
 						dmg *= 2f;
-					
+
 					type = "Throw";
 				}
 
@@ -2788,7 +2935,7 @@ namespace BunnyMod.Content
 					flag2 = true;
 					type = "Throw";
 				}
-				
+
 				if (flag2 && instanceIsAgent)
 				{
 					if (!damagedAgent.dead && !testOnly)
@@ -2796,7 +2943,7 @@ namespace BunnyMod.Content
 						damagedAgent.deathMethodItem = item.invItem.invItemName;
 						damagedAgent.deathMethodObject = item.invItem.invItemName;
 						damagedAgent.deathMethod = item.invItem.invItemName;
-				
+
 						if (!damagerAgent.objectAgent)
 							damagedAgent.deathKiller = damagerAgent.agentName;
 					}
@@ -2809,6 +2956,7 @@ namespace BunnyMod.Content
 					damagedAgent.deathKiller = "Nature";
 				}
 			}
+
 			#endregion
 
 			bool playerDamagedByNpc = false;
@@ -2817,27 +2965,29 @@ namespace BunnyMod.Content
 			{
 				if (damagerAgent.isPlayer != 0 && !damagerAgent.localPlayer)
 					playerDamagedByNpc = true;
-			
+
 				if (instanceIsAgent && damagedAgent.isPlayer != 0 && damagerAgent.isPlayer != 0 && !GC.pvp)
 					flag6 = false;
 			}
 
 			#region Hit types
+
 			if (type == "Melee")
 			{
 				if (damagerAgent.statusEffects.hasTrait("Strength"))
 					dmg *= 1.5f;
-				
+
 				if (damagerAgent.statusEffects.hasTrait("StrengthSmall"))
 					dmg *= 1.25f;
-				
+
 				if (damagerAgent.statusEffects.hasTrait("Weak"))
 					dmg *= 0.5f;
-				
+
 				if (damagerAgent.statusEffects.hasTrait("Withdrawal"))
 					dmg *= 0.75f;
 
 				#region Blessed / Infernal Strikes
+
 				if (instanceIsAgent)
 				{
 					BMLog("\tdamagedAgent Name: " + damagedAgent.agentName);
@@ -2858,6 +3008,7 @@ namespace BunnyMod.Content
 							dmg *= 1.50f;
 					}
 				}
+
 				#endregion
 
 				if (damagerAgent.melee.specialLunge)
@@ -2867,14 +3018,14 @@ namespace BunnyMod.Content
 					else
 						dmg *= 2f;
 				}
-				
+
 				if (damagerAgent.inventory.equippedWeapon.invItemName == "Fist" || damagerAgent.inventory.equippedWeapon.itemType == "WeaponProjectile")
 				{
 					if (damagerAgent.statusEffects.hasTrait("StrongFists2"))
 						dmg *= 1.8f;
 					else if (damagerAgent.statusEffects.hasTrait("StrongFists"))
 						dmg *= 1.4f;
-				
+
 					if (damagerAgent.statusEffects.hasTrait("CantAttack") && __instance.isAgent)
 					{
 						dmg = 0f;
@@ -2889,30 +3040,36 @@ namespace BunnyMod.Content
 
 				if (!playerDamagedByNpc && flag6)
 				{
-					if (damagerAgent.inventory.equippedArmor != null && !testOnly && (damagerAgent.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead && !damagedAgent.mechEmpty && !damagedAgent.butlerBot)
-						damagerAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg / 2f), 0, 12));
-				
-					if (damagerAgent.inventory.equippedArmorHead != null && !testOnly && (damagerAgent.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead && !damagedAgent.mechEmpty && !damagedAgent.butlerBot)
-						damagerAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg / 2f), 0, 12));
+					if (damagerAgent.inventory.equippedArmor != null && !testOnly &&
+						(damagerAgent.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
+						!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+						damagerAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int) (dmg / 2f), 0, 12));
+
+					if (damagerAgent.inventory.equippedArmorHead != null && !testOnly &&
+						(damagerAgent.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
+						!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+						damagerAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int) (dmg / 2f), 0, 12));
 				}
 
 				if (instanceIsAgent)
 				{
 					float num3 = dmg / damagerAgent.agentSpriteTransform.localScale.x;
-				
+
 					if (!damagedAgent.dead && !testOnly && !playerDamagedByNpc && flag6 && !damagedAgent.butlerBot && !damagedAgent.mechEmpty)
-						damagerAgent.inventory.DepleteMelee(Mathf.Clamp((int)num3, 0, 15), damagerObject.playfieldObjectMelee.invItem);
-					
+						damagerAgent.inventory.DepleteMelee(Mathf.Clamp((int) num3, 0, 15), damagerObject.playfieldObjectMelee.invItem);
+
 					if ((damagerAgent.statusEffects.hasTrait("SleepKiller") || damagerAgent.statusEffects.hasTrait("Backstabber")) && damagedAgent.sleeping)
 					{
 						dmg = 200f;
 						damagedAgent.agentHitboxScript.wholeBodyMode = 0;
 						damagerAgent.melee.successfullySleepKilled = true;
-					
+
 						if (damagerAgent.statusEffects.hasTrait("Backstabber"))
 							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
 					}
-					else if ((damagerAgent.melee.mustDoBackstab && dmg != 200f && !damagedAgent.dead) || (damagerAgent.statusEffects.hasTrait("Backstabber") && ((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) && !damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.sleeping && dmg != 200f && !damagedAgent.dead))
+					else if ((damagerAgent.melee.mustDoBackstab && dmg != 200f && !damagedAgent.dead) || (damagerAgent.statusEffects.hasTrait("Backstabber") &&
+						((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) &&
+						!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.sleeping && dmg != 200f && !damagedAgent.dead))
 					{
 						damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
 
@@ -2920,8 +3077,9 @@ namespace BunnyMod.Content
 						{
 							damagedAgent.agentHelperTr.localPosition = Vector3.zero;
 							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
-						
-							if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
+
+							if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") &&
+								damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
 							{
 								dmg *= 10f;
 								damagerAgent.melee.successfullyBackstabbed = true;
@@ -2937,8 +3095,9 @@ namespace BunnyMod.Content
 
 						if (instanceIsAgent && damagedAgent.dead)
 							flag11 = true;
-						
-						if (!playerDamagedByNpc && !flag11 && !damagerAgent.oma.superSpecialAbility && !damagerAgent.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
+
+						if (!playerDamagedByNpc && !flag11 && !damagerAgent.oma.superSpecialAbility &&
+							!damagerAgent.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
 							damagerAgent.statusEffects.RemoveInvisibleLimited();
 					}
 				}
@@ -2971,12 +3130,13 @@ namespace BunnyMod.Content
 						bool doubleTap = false;
 						bool sniped = false;
 						bool hidden = (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null));
-						bool invisible = (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
-											hidden);
+						bool invisible = (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") ||
+							(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+							hidden);
 						bool hasLOSBehind = damagedAgent.movement.HasLOSObjectBehind(damagerAgent);
 						bool hasLOSAgent = damagedAgent.movement.HasLOSAgent(damagerAgent);
 						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
-						Bullet bullet = (Bullet)damagerObject;
+						Bullet bullet = (Bullet) damagerObject;
 
 						BMLog("\theadshot:\t" + headShot);
 						BMLog("\tdoubleTap:\t" + doubleTap);
@@ -2998,7 +3158,7 @@ namespace BunnyMod.Content
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) && bullet.cameFromWeapon == vItem.Revolver &&
 							(((!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && distance >= 4.00f) ||
-							distance >= 8.00f))
+								distance >= 8.00f))
 						{
 							headShot = true;
 							sniped = true;
@@ -3017,7 +3177,7 @@ namespace BunnyMod.Content
 							else
 							{
 								damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
-								 
+
 								if (!GC.tileInfo.IsOverlapping(damagedAgent.agentHelperTr.position, "Wall"))
 								{
 									damagedAgent.agentHelperTr.localPosition = Vector3.zero;
@@ -3032,7 +3192,7 @@ namespace BunnyMod.Content
 											GC.OwnCheck(damagerAgent, damagedAgent.go, "Normal", 0);
 										}
 										else
-											dmg *= 2f; 
+											dmg *= 2f;
 									}
 									else if (sniped)
 										dmg *= distance;
@@ -3060,8 +3220,9 @@ namespace BunnyMod.Content
 				{
 					if (damagedAgent.statusEffects.hasTrait("ResistFire"))
 						dmg /= 1.5f;
-					
-					if ((damagedAgent.oma.superSpecialAbility && damagedAgent.agentName == "Firefighter") || damagedAgent.statusEffects.hasTrait("FireproofSkin2"))
+
+					if ((damagedAgent.oma.superSpecialAbility && damagedAgent.agentName == "Firefighter") ||
+						damagedAgent.statusEffects.hasTrait("FireproofSkin2"))
 					{
 						dmg = 0f;
 						flag8 = true;
@@ -3076,7 +3237,7 @@ namespace BunnyMod.Content
 				{
 					if (damagerAgent.statusEffects.hasTrait("GoodThrower"))
 						dmg *= 2f;
-					
+
 					if (instanceIsAgent && damagerAgent.statusEffects.hasTrait("KillerThrower") && item.throwerReal == item.thrower)
 					{
 						if (damagedAgent != item.thrower)
@@ -3093,30 +3254,31 @@ namespace BunnyMod.Content
 			}
 			else if (!(type == "Explosion"))
 				_ = type == "Hazard";
+
 			#endregion
 
 			if (flag2 && instanceIsAgent && !testOnly)
 			{
 				if (damagerAgent.statusEffects.hasTrait("BloodyMess"))
 					damagedAgent.bloodyMessed = true;
-			
+
 				if ((damagerAgent.invisible && !damagerAgent.oma.hidden) || damagerAgent.ghost)
 				{
 					damagerAgent.gc.spawnerMain.SpawnDanger(damagerAgent, "Targeted", "Spooked", damagedAgent);
 					relStatus relCode = damagerAgent.relationships.GetRelCode(damagedAgent);
-				
+
 					if (relCode != relStatus.Aligned && relCode != relStatus.Loyal)
 					{
 						List<Agent> agentList = GC.agentList;
-					
+
 						for (int i = 0; i < agentList.Count; i++)
 						{
 							Agent agent3 = agentList[i];
-						
+
 							if (agent3.employer == damagerAgent)
 							{
 								relStatus relCode2 = agent3.relationships.GetRelCode(damagedAgent);
-							
+
 								if (relCode2 != relStatus.Aligned && relCode2 != relStatus.Loyal)
 									agent3.relationships.SetRelHate(damagedAgent, 5);
 								else if (relCode2 == relStatus.Aligned && agent3.relationships.GetRelCode(damagerAgent) == relStatus.Loyal)
@@ -3134,57 +3296,60 @@ namespace BunnyMod.Content
 			{
 				if (damagedAgent.statusEffects.hasTrait("NumbToPain"))
 					dmg /= 3f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("ResistDamageSmall"))
 					dmg /= 1.25f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("ResistDamageMed"))
 					dmg /= 1.5f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("ResistDamageLarge"))
 					dmg /= 2f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("Giant"))
 					dmg /= 3f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("Shrunk"))
 					dmg *= 3f;
-				
+
 				if (damagedAgent.statusEffects.hasTrait("Diminutive"))
 					dmg *= 1.5f;
-				
+
 				if (damagedAgent.frozen)
 					dmg *= 2f;
-				
+
 				if (damagedAgent.statusEffects.hasSpecialAbility("ProtectiveShell") && damagedAgent.objectMult.chargingSpecialLunge)
 					dmg /= 8f;
-				
-				if (damagedAgent.hasEmployer && damagedAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") && damagedAgent.employer.objectMult.chargingSpecialLunge)
+
+				if (damagedAgent.hasEmployer && damagedAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") &&
+					damagedAgent.employer.objectMult.chargingSpecialLunge)
 					dmg /= 8f;
-				
-				if (damagedAgent.oma.mindControlled && damagedAgent.mindControlAgent != null && (damagedAgent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") || (damagedAgent.mindControlAgent.oma.superSpecialAbility && damagedAgent.mindControlAgent.agentName == "Alien")))
+
+				if (damagedAgent.oma.mindControlled && damagedAgent.mindControlAgent != null &&
+					(damagedAgent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") ||
+						(damagedAgent.mindControlAgent.oma.superSpecialAbility && damagedAgent.mindControlAgent.agentName == "Alien")))
 					dmg /= 1.5f;
-				
+
 				if (flag2 && flag6 && !damagerAgent.dead)
 				{
 					if (damagerAgent.statusEffects.hasTrait("MoreDamageWhenHealthLow") && damagerAgent.agentID != damagedAgent.agentID)
 					{
-						int num4 = (int)(damagerAgent.healthMax / 4f);
-				
-						if (damagerAgent.health <= (float)num4)
+						int num4 = (int) (damagerAgent.healthMax / 4f);
+
+						if (damagerAgent.health <= (float) num4)
 						{
-							float num5 = damagerAgent.health / (float)num4;
+							float num5 = damagerAgent.health / (float) num4;
 							num5 = (1f - num5) * dmg * 1.5f;
 							dmg += num5;
 						}
 					}
 					else if (damagerAgent.statusEffects.hasTrait("MoreDamageWhenHealthLow2") && damagerAgent.agentID != damagedAgent.agentID)
 					{
-						int num6 = (int)(damagerAgent.healthMax / 2f);
-						
-						if (damagerAgent.health <= (float)num6)
+						int num6 = (int) (damagerAgent.healthMax / 2f);
+
+						if (damagerAgent.health <= (float) num6)
 						{
-							float num7 = damagerAgent.health / (float)num6;
+							float num7 = damagerAgent.health / (float) num6;
 							num7 = (1f - num7) * dmg * 1.5f;
 							dmg += num7;
 						}
@@ -3200,58 +3365,62 @@ namespace BunnyMod.Content
 							dmg *= 2f;
 							damagedAgent.critted = true;
 						}
-						
+
 						if (damagerAgent.statusEffects.hasTrait("ChanceToSlowEnemies2"))
 						{
 							int myChance = damagerAgent.DetermineLuck(20, "ChanceToSlowEnemies", true);
-						
+
 							if (GC.percentChance(myChance))
 								damagedAgent.statusEffects.AddStatusEffect("Slow");
 						}
 						else if (damagerAgent.statusEffects.hasTrait("ChanceToSlowEnemies"))
 						{
 							int myChance2 = damagerAgent.DetermineLuck(8, "ChanceToSlowEnemies", true);
-						
+
 							if (GC.percentChance(myChance2))
 								damagedAgent.statusEffects.AddStatusEffect("Slow");
 						}
 					}
 
-					if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage") || damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
+					if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage") ||
+						damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
 					{
 						float num9 = 1.2f;
 
 						if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
 							num9 = 1.4f;
-						
+
 						float num10 = dmg;
 						int num11 = 0;
-						
+
 						for (int j = 0; j < GC.agentList.Count; j++)
 						{
 							Agent agent4 = GC.agentList[j];
-						
-							if (agent4.hasEmployer && agent4.employer == damagerAgent && Vector2.Distance(agent4.tr.position, damagedAgent.tr.position) < 10.24f)
+
+							if (agent4.hasEmployer && agent4.employer == damagerAgent &&
+								Vector2.Distance(agent4.tr.position, damagedAgent.tr.position) < 10.24f)
 							{
 								dmg += num10 * num9 - num10;
 								num11++;
-							
+
 								if (num11 >= 3 && !GC.challenges.Contains("NoLimits"))
 									break;
 							}
 						}
 					}
 
-					if (damagerAgent.oma.mindControlled && damagerAgent.mindControlAgent != null && (damagerAgent.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") || (damagerAgent.mindControlAgent.oma.superSpecialAbility && damagerAgent.mindControlAgent.agentName == "Alien")))
+					if (damagerAgent.oma.mindControlled && damagerAgent.mindControlAgent != null &&
+						(damagerAgent.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") ||
+							(damagerAgent.mindControlAgent.oma.superSpecialAbility && damagerAgent.mindControlAgent.agentName == "Alien")))
 						dmg *= 1.5f;
 				}
 
 				int num12 = 0;
-				
+
 				if (damagedAgent.inventory.equippedArmor != null && !testOnly && flag6)
 				{
 					InvItem equippedArmor = damagedAgent.inventory.equippedArmor;
-				
+
 					if (equippedArmor.armorDepletionType == "Everything")
 						num12++;
 					else if (equippedArmor.armorDepletionType == "Bullet" && type == "Bullet")
@@ -3265,7 +3434,7 @@ namespace BunnyMod.Content
 				if (damagedAgent.inventory.equippedArmorHead != null && !testOnly && flag6)
 				{
 					InvItem equippedArmorHead = damagedAgent.inventory.equippedArmorHead;
-				
+
 					if (equippedArmorHead.armorDepletionType == "Everything")
 						num12++;
 					else if (equippedArmorHead.armorDepletionType == "Bullet" && type == "Bullet")
@@ -3279,15 +3448,15 @@ namespace BunnyMod.Content
 				if (damagedAgent.inventory.equippedArmor != null && !testOnly && flag6)
 				{
 					InvItem equippedArmor2 = damagedAgent.inventory.equippedArmor;
-				
+
 					if (equippedArmor2.armorDepletionType == "Everything")
-						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmor2.armorDepletionType == "Bullet" && type == "Bullet")
-						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmor2.armorDepletionType == "Fire" && type == "Fire")
-						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmor2.armorDepletionType == "FireAndEverything")
-						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 				}
 
 				if (damagedAgent.inventory.equippedArmorHead != null && !testOnly && flag6)
@@ -3295,32 +3464,33 @@ namespace BunnyMod.Content
 					InvItem equippedArmorHead2 = damagedAgent.inventory.equippedArmorHead;
 
 					if (equippedArmorHead2.armorDepletionType == "Everything")
-						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmorHead2.armorDepletionType == "Bullet" && type == "Bullet")
-						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmorHead2.armorDepletionType == "Fire" && type == "Fire")
-						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 					else if (equippedArmorHead2.armorDepletionType == "FireAndEverything")
-						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg * 2f), 0, 12) / num12);
+						damagedAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int) (dmg * 2f), 0, 12) / num12);
 				}
 
-				if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer") || damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
+				if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer") ||
+					damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
 				{
 					int num13 = 0;
 					float num14 = 1.2f;
-				
+
 					if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
 						num14 = 1.4f;
-					
+
 					for (int k = 0; k < GC.agentList.Count; k++)
 					{
 						Agent agent5 = GC.agentList[k];
-					
+
 						if (agent5.hasEmployer && agent5.employer == damagedAgent && Vector2.Distance(agent5.tr.position, damagedAgent.tr.position) < 10.24f)
 						{
 							dmg /= num14;
 							num13++;
-						
+
 							if (num13 >= 3 && !GC.challenges.Contains("NoLimits"))
 								break;
 						}
@@ -3338,69 +3508,71 @@ namespace BunnyMod.Content
 				else if (damagerAgent.statusEffects.hasTrait("MeleeDestroysWalls") && __instance.objectName == "BarbedWire")
 					dmg = 99f;
 			}
-			
+
 			if (dmg > 200f)
 				dmg = 200f;
-			
-			int num15 = Mathf.Clamp((int)dmg, 1, 1000);
-			
+
+			int num15 = Mathf.Clamp((int) dmg, 1, 1000);
+
 			if ((damagerObject.isItem && type == "Throw" && dmg == 0f) || flag8)
 				num15 = 0;
 			else if (flag9)
 				num15 = 1;
-			
+
 			if (flag2 && instanceIsAgent && !testOnly)
 			{
-				if ((float)num15 < damagedAgent.health)
+				if ((float) num15 < damagedAgent.health)
 				{
 					Relationship relationship = damagedAgent.relationships.GetRelationship(damagerAgent);
 					relStatus myRel = relStatus.Neutral;
 					bool flag12 = false;
-			
+
 					if (relationship != null)
 					{
 						myRel = relationship.relTypeCode;
 						flag12 = relationship.sawBecomeHidden;
 					}
-					
+
 					if ((!damagerAgent.invisible || flag12) && flag4)
 					{
-						if ((damagerAgent.isPlayer <= 0 || damagerAgent.localPlayer || damagerObject.isItem || damagerObject.isExplosion || damagerAgent.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) && !damagedAgent.mechEmpty)
+						if ((damagerAgent.isPlayer <= 0 || damagerAgent.localPlayer || damagerObject.isItem || damagerObject.isExplosion ||
+								damagerAgent.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) &&
+							!damagedAgent.mechEmpty)
 						{
 							damagedAgent.justHitByAgent3 = true;
 							damagedAgent.relationships.AddRelHate(damagerAgent, Mathf.Clamp(num15, 5, 200));
 							damagedAgent.justHitByAgent3 = false;
 						}
-					
+
 						damagedAgent.relationships.PotentialAlignmentCheck(myRel);
 					}
 				}
 
 				if (flag4)
 					damagedAgent.SetJustHitByAgent(damagerAgent);
-				
+
 				damagedAgent.justHitByAgent2 = damagerAgent;
 				damagedAgent.lastHitByAgent = damagerAgent;
-				
+
 				if (!damagerAgent.killerRobot && !damagedAgent.killerRobot)
 				{
 					relStatus relCode3 = damagerAgent.relationships.GetRelCode(damagedAgent);
-				
+
 					if (damagerObject.isExplosion)
 					{
-						Explosion explosion2 = (Explosion)damagerObject;
-					
+						Explosion explosion2 = (Explosion) damagerObject;
+
 						if (explosion2.explosionType == "Huge" || explosion2.explosionType == "Ridiculous")
 						{
 							GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 10.8f, explosion2.tr.position);
-						
+
 							if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
 								GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 10.8f, explosion2.tr.position);
 						}
 						else
 						{
 							GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 10.8f, explosion2.tr.position);
-						
+
 							if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
 								GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 10.8f, explosion2.tr.position);
 						}
@@ -3408,17 +3580,17 @@ namespace BunnyMod.Content
 					else
 					{
 						GC.EnforcerAlertAttack(damagerAgent, damagedAgent, 7.4f);
-						
+
 						if (damagerAgent.ownerID != 0 && relCode3 == relStatus.Hostile)
 							GC.EnforcerAlertAttack(damagedAgent, damagerAgent, 7.4f);
 					}
 				}
 
 				damagedAgent.damagedAmount = num15;
-				
+
 				if (damagedAgent.agentName == "Slave")
 					__instance.StartCoroutine(damagedAgent.agentInteractions.OwnCheckSlaveOwners(damagedAgent, damagerAgent));
-				
+
 				if (damagedAgent.isPlayer == 0 && !damagedAgent.hasEmployer && !damagedAgent.zombified && !damagedAgent.noEnforcerAlert)
 					damagerAgent.oma.hasAttacked = true;
 			}
@@ -3431,7 +3603,7 @@ namespace BunnyMod.Content
 					{
 						objectReal.lastHitByAgent = damagerAgent;
 						objectReal.damagedAmount = num15;
-			
+
 						if (objectReal.useForQuest != null || objectReal.destroyForQuest != null)
 							GC.OwnCheck(damagerAgent, objectReal.gameObject, "Normal", 0);
 					}
@@ -3451,28 +3623,30 @@ namespace BunnyMod.Content
 				__result = num15;
 				return false;
 			}
-			
+
 			__instance.tickEndDamage += num15;
 			__instance.tickEndObject = damagerObject;
 			__instance.tickEndRotation = damagerObject.tr.rotation;
-			
+
 			if (fromClient)
 				__instance.tickEndDamageFromClient = true;
 			else
 				__instance.tickEndDamageFromClient = false;
-			
+
 			if (__instance.tickEndObject.isBullet)
-				__instance.tickEndBullet = (Bullet)__instance.tickEndObject;
-			
+				__instance.tickEndBullet = (Bullet) __instance.tickEndObject;
+
 			__result = 9999;
 
 			return false;
 		}
+
 		#endregion
+
 		#region SpawnerMain
-		public void SpawnerMain_00()
-		{
-		}
+
+		public void SpawnerMain_00() { }
+
 		#endregion
 	}
 }

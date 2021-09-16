@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,7 +47,10 @@
     <Reference Include="BepInEx">
       <HintPath>Libraries\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime">
+    <Reference Include="BTHarmonyUtils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>Libraries\BTHarmonyUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="com.unity.multiplayer-hlapi.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>Libraries\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
@@ -85,7 +89,13 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Libraries\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>Libraries\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e">
+      <HintPath>packages\YamlDotNet.11.2.1\lib\net45\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\BMAbilities.cs" />
@@ -99,12 +109,102 @@
     <Compile Include="Content\BMMiscellaneous.cs" />
     <Compile Include="Content\BMChallenges.cs" />
     <Compile Include="Content\BMQuests.cs" />
-    <Compile Include="Content\BMSprites.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
-    <Compile Include="Content\BMTraits.cs" />
+    <Compile Include="Content\Extensions\AgentExtensions.cs" />
+    <Compile Include="Content\Extensions\EnumExtensions.cs" />
+    <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
+    <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
+    <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
+    <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
+    <Compile Include="Content\Localization\BMLocalizationManager.cs" />
+    <Compile Include="Content\Localization\TraitsLocalization.cs" />
+    <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
+    <Compile Include="Content\ObjectBehaviour\ManholeController.cs" />
+    <Compile Include="Content\ObjectBehaviour\StoveController.cs" />
+    <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
+    <Compile Include="Content\Patches\AgentInteractionsPatches.cs" />
+    <Compile Include="Content\Patches\AgentPatches.cs" />
+    <Compile Include="Content\Patches\CharacterCreationPatches.cs" />
+    <Compile Include="Content\Patches\CharacterSelectPatches.cs" />
+    <Compile Include="Content\Patches\ExitPointPatches.cs" />
+    <Compile Include="Content\Patches\GameResourcesPatches.cs" />
+    <Compile Include="Content\Patches\ObjectMultPatches.cs" />
+    <Compile Include="Content\Patches\ObjectRealPatches.cs" />
+    <Compile Include="Content\Patches\QuestsPatches.cs" />
+    <Compile Include="Content\Patches\RelationshipsPatches.cs" />
+    <Compile Include="Content\Patches\ScrollingMenuPatches.cs" />
+    <Compile Include="Content\Patches\StatusEffectsPatches.cs" />
+    <Compile Include="Content\Traits\BMTraitController.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\DoubleTapper.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper2.cs" />
+    <Compile Include="Content\Traits\T_Drug_Limitations\DareDevil.cs" />
+    <Compile Include="Content\Traits\T_Drug_Limitations\FriendOfBill.cs" />
+    <Compile Include="Content\Traits\T_Drug_Limitations\TeeTotaller.cs" />
+    <Compile Include="Content\Traits\ETraitConflictGroup.cs" />
+    <Compile Include="Content\Traits\BMTraitInfo.cs" />
+    <Compile Include="Content\Traits\BMTraitsManager.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes2.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes2.cs" />
+    <Compile Include="Content\Traits\TDebug.cs" />
+    <Compile Include="Content\Traits\T_Equipment_Limitations\AfraidOfLoudNoises.cs" />
+    <Compile Include="Content\Traits\T_Equipment_Limitations\DrawNoBlood.cs" />
+    <Compile Include="Content\Traits\T_Equipment_Limitations\FatHead.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\DimBulb.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\Brainiac.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\MoronTheMerrier.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\SmoothBrained.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\VeryHardOnYourself.cs" />
+    <Compile Include="Content\Traits\T_Followers\BodyGuarded.cs" />
+    <Compile Include="Content\Traits\T_Followers\BodyGuarded2.cs" />
+    <Compile Include="Content\Traits\T_Food_Limitations\Carnivore.cs" />
+    <Compile Include="Content\Traits\T_Food_Limitations\Vegetarian.cs" />
+    <Compile Include="Content\Traits\T_Luck\Charmed.cs" />
+    <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
+    <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
+    <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
+    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS.cs" />
+    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\Archmage.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\MagicTraining.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\MagicTraining2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\ManaBattery.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\ManaBattery2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\WildCasting.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\WildCasting2.cs" />
+    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes.cs" />
+    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes2.cs" />
+    <Compile Include="Content\Traits\T_Miscellaneous\Myopic.cs" />
+    <Compile Include="Content\Traits\T_Miscellaneous\Myopic2.cs" />
+    <Compile Include="Content\Traits\T_Social\BootLicker.cs" />
+    <Compile Include="Content\Traits\T_Social\Domineering.cs" />
+    <Compile Include="Content\Traits\T_Social\Domineering2.cs" />
+    <Compile Include="Content\Traits\T_Social\GenerallyUnpleasant.cs" />
+    <Compile Include="Content\Traits\T_Social\ObjectivelyUnpleasant.cs" />
+    <Compile Include="Content\Traits\T_Social\Polarizing.cs" />
+    <Compile Include="Content\Traits\T_Social\Polarizing2.cs" />
+    <Compile Include="Content\Traits\T_Social\Priors.cs" />
+    <Compile Include="Content\Traits\T_Social\VeiledThreats.cs" />
+    <Compile Include="Content\Traits\T_Social\Warlord.cs" />
+    <Compile Include="Content\Traits\T_Spawns\Haunted.cs" />
+    <Compile Include="Content\Traits\T_Spawns\MobDebt.cs" />
+    <Compile Include="Content\Traits\T_Spawns\MookMasher.cs" />
+    <Compile Include="Content\Traits\T_Spawns\Reinforcements.cs" />
+    <Compile Include="Content\Traits\T_Spawns\Reinforcements2.cs" />
+    <Compile Include="Content\Traits\T_Stealth\StealthBastardDeluxe.cs" />
+    <Compile Include="Content\Traits\T_Stealth\UnderdarkCitizen.cs" />
+    <Compile Include="Content\Traits\T_Tampering\TamperTantrum.cs" />
+    <Compile Include="Content\Traits\T_Tampering\TamperTantrum2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Content\BMItems.cs" />
+    <Compile Include="Properties\ModInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -115,9 +215,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -176,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Hosted\UnityEngine.Networking.dll" />
+    <Content Include="Localizations\TraitsLocalization.yaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

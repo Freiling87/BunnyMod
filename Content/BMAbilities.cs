@@ -11,8 +11,13 @@ namespace BunnyMod.Content
 	public class BMAbilities
 	{
 		public static GameController GC => GameController.gameController;
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) => BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
+
+		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
+			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
+
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		public void Awake()
@@ -22,21 +27,25 @@ namespace BunnyMod.Content
 			Agent_00();
 			StatusEffects_00();
 		}
+
 		public static void InitializeAbilities()
 		{
 			MSA_CD_Initialize();
 			MSA_PJ_Initialize();
 			MSA_TB_Initialize();
 		}
+
 		public static void InitializeNames()
 		{
 			string t;
 
 			t = vNameType.Dialogue;
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo1, t, new CustomNameInfo("I need to take a \"time out!\" Get it? But seriously, my heart will stop."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo1, t,
+				new CustomNameInfo("I need to take a \"time out!\" Get it? But seriously, my heart will stop."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo2, t, new CustomNameInfo("I'm gonna take the blue pill for a sec."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo3, t, new CustomNameInfo("I think this is giving me dementia."));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo4, t, new CustomNameInfo("Slow your roll! If I create a spacetime singularity people are gonna be mad."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_CantDo4, t,
+				new CustomNameInfo("Slow your roll! If I create a spacetime singularity people are gonna be mad."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast1, t, new CustomNameInfo("Stop right there! Okay, slowing down is cool too."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast2, t, new CustomNameInfo("Swallow this, clock-suckers!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Cast3, t, new CustomNameInfo("Nothing can slow me down!"));
@@ -44,11 +53,13 @@ namespace BunnyMod.Content
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast1, t, new CustomNameInfo("Back to boring normal time."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast2, t, new CustomNameInfo("I guess there is a spoon."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast3, t, new CustomNameInfo("There can't always be Morpheus. Sometimes you get Lesspheus."));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast4, t, new CustomNameInfo("You can only dilate time so much, or else everything just falls out."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Decast4, t,
+				new CustomNameInfo("You can only dilate time so much, or else everything just falls out."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast1, t, new CustomNameInfo("Iii ttthhhiiinnnkkk Iii mmmeeesssssseeeddd uuuppp..."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast2, t, new CustomNameInfo("Bullet Time? More like Bullshit Time!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast3, t, new CustomNameInfo("(Slow Motion Noises)"));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t, new CustomNameInfo("I dilated time too much, and it turned into a chronological prolapse!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Miscast4, t,
+				new CustomNameInfo("I dilated time too much, and it turned into a chronological prolapse!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge1, t, new CustomNameInfo("It's Slowing-down-time... time!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge2, t, new CustomNameInfo("Not many time puns left. Uh... clock-a-doodle-doo?"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_CD_Recharge3, t, new CustomNameInfo("All wound up and ready to run. Like a clock."));
@@ -67,13 +78,16 @@ namespace BunnyMod.Content
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast3, t, new CustomNameInfo("Flame off! Flame off!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Miscast4, t, new CustomNameInfo("I shidded an farded an bursteded into flames."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge1, t, new CustomNameInfo("Ready to burn!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge2, t, new CustomNameInfo("I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do a lot of burning."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge2, t,
+				new CustomNameInfo("I'm here to burn things and chew bubblegum. I'm not out of gum, but I'm still gonna do a lot of burning."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge3, t, new CustomNameInfo("(Laughs maniacally)"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_PJ_Recharge4, t, new CustomNameInfo("Why are the innocent so fun to burn?"));
 
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo1, t, new CustomNameInfo("I need to give it a rest or my head will explode. I've seen it happen."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo1, t,
+				new CustomNameInfo("I need to give it a rest or my head will explode. I've seen it happen."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo2, t, new CustomNameInfo("Slow down! Haven't you seen The Fly?"));
-			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo3, t, new CustomNameInfo("Don't abuse Spacetime too much, or you'll blink out of existence."));
+			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo3, t,
+				new CustomNameInfo("Don't abuse Spacetime too much, or you'll blink out of existence."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_CantDo4, t, new CustomNameInfo("Let me stay here for a sec."));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast1, t, new CustomNameInfo("Vwip!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MSA_TB_Cast2, t, new CustomNameInfo("Nothing personal, kid."));
@@ -90,6 +104,7 @@ namespace BunnyMod.Content
 		}
 
 		#region Magic General
+
 		public static int CalcMaxMana(Agent agent)
 		{
 			if (agent.statusEffects.hasTrait(cTrait.ManaBattery))
@@ -101,15 +116,20 @@ namespace BunnyMod.Content
 			else
 				return 100;
 		}
+
 		public static Vector2 MouseIngamePosition()
 		{
 			Plane plane = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 0));
 			Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-			return plane.Raycast(ray, out float enter) ? (Vector2)ray.GetPoint(enter) : default;
+			return plane.Raycast(ray, out float enter) ? (Vector2) ray.GetPoint(enter) : default;
 		}
+
 		#endregion
+
 		#region Chronomantic Dilation
+
 		#region Chronomantic Dilation - Bits
+
 		public static bool MSA_CD_IsCast(Agent agent)
 		{
 			try
@@ -121,16 +141,20 @@ namespace BunnyMod.Content
 				return false;
 			}
 		}
+
 		public static bool MSA_CD_IsMiscast(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
+
 		public static bool MSA_CD_IsWindingUp(Agent agent) =>
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
+
 		public static void MSA_CD_LogVariables(Agent agent)
 		{
 			BMLog("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
 			BMLog("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
 			BMLog("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
 		}
+
 		public static void MSA_CD_SetCast(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetCast " + value);
@@ -138,6 +162,7 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
+
 		public static void MSA_CD_SetMiscast(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetMiscast " + value);
@@ -145,6 +170,7 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
+
 		public static void MSA_CD_SetWindingUp(Agent agent, bool value)
 		{
 			//BunnyHeader.Log("SetWindingUp" + value);
@@ -152,8 +178,11 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
+
 		#endregion
+
 		#region Chronomantic Dilation - Dialogue
+
 		public static void MSA_CD_DialogueCantDo(Agent agent)
 		{
 			if (GC.percentChance(75))
@@ -171,6 +200,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_CD_DialogueCast(Agent agent)
 		{
 			agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
@@ -189,6 +219,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_CD_DialogueDecast(Agent agent)
 		{
 			GameController.gameController.audioHandler.Play(agent, "MakeOffering");
@@ -206,6 +237,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_CD_DialogueMiscast(Agent agent)
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
@@ -224,6 +256,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_CD_DialogueRecharge(Agent agent)
 		{
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
@@ -242,16 +275,22 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		#endregion
+
 		public static float baseTimeScale;
+
 		public static void MSA_CD_Initialize()
 		{
 			Sprite spriteChronomanticDilation = RogueUtilities.ConvertToSprite(Properties.Resources.ChronomanticDilation);
 
 			CustomAbility chronomanticDilation = RogueLibs.CreateCustomAbility(cSpecialAbility.ChronomanticDilation, spriteChronomanticDilation, true,
-				new CustomNameInfo("Chronomantic Dilation","","","","", "Хрономантический сдвиг","",""),
-				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself.", "", "", "", "", "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\nНеудача: Ускоряет всё кроме вас.", "", ""),
-				delegate (InvItem item)
+				new CustomNameInfo("Chronomantic Dilation", "", "", "", "", "Хрономантический сдвиг", "", ""),
+				new CustomNameInfo("Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself.", "",
+					"", "", "",
+					"Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\nНеудача: Ускоряет всё кроме вас.",
+					"", ""),
+				delegate(InvItem item)
 				{
 					item.cantDrop = true;
 					item.Categories.Add("Usable");
@@ -271,13 +310,13 @@ namespace BunnyMod.Content
 			chronomanticDilation.AvailableInCharacterCreation = true;
 			chronomanticDilation.CostInCharacterCreation = 10;
 
-			chronomanticDilation.OnPressed = delegate (InvItem item, Agent agent)
+			chronomanticDilation.OnPressed = delegate(InvItem item, Agent agent)
 			{
 				if (MSA_CD_IsWindingUp(agent) || MSA_CD_IsMiscast(agent))
 					MSA_CD_DialogueCantDo(agent);
 				else if (MSA_CD_IsCast(agent))
 					MSA_CD_StartDecast(agent);
-				else if (MSA_CD_RollMiscast(agent, (float)((CalcMaxMana(agent) - item.invItemCount) / 100f)))
+				else if (MSA_CD_RollMiscast(agent, (float) ((CalcMaxMana(agent) - item.invItemCount) / 100f)))
 					MSA_CD_StartMiscast(agent, MSA_CD_RollTimescale(agent, true));
 				else
 					MSA_CD_StartCast(agent, MSA_CD_RollTimescale(agent, false));
@@ -303,6 +342,7 @@ namespace BunnyMod.Content
 			chronomanticDilation.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
+
 		public static int MSA_CD_RollManaCost(Agent agent)
 		{
 			int manaCost = 15;
@@ -320,6 +360,7 @@ namespace BunnyMod.Content
 
 			return manaCost;
 		}
+
 		public static bool MSA_CD_RollMiscast(Agent agent, float percentMod)
 		{
 			float risk = 1.0f + percentMod;
@@ -342,6 +383,7 @@ namespace BunnyMod.Content
 
 			return (UnityEngine.Random.Range(0f, 100f) <= risk);
 		}
+
 		public static float MSA_CD_RollTimescale(Agent agent, bool MisCast)
 		{
 			float timescale = 1.000f;
@@ -390,6 +432,7 @@ namespace BunnyMod.Content
 
 			return timescale;
 		}
+
 		public static void MSA_CD_StartCast(Agent agent, float speedupfactor)
 		{
 			MSA_CD_SetCast(agent, true);
@@ -397,10 +440,11 @@ namespace BunnyMod.Content
 
 			GC.selectedTimeScale = baseTimeScale / speedupfactor;
 			GC.mainTimeScale = baseTimeScale / speedupfactor;
-			agent.speedMax = agent.FindSpeed() * (int)speedupfactor;
+			agent.speedMax = agent.FindSpeed() * (int) speedupfactor;
 
 			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
+
 		public static async void MSA_CD_StartDecast(Agent agent)
 		{
 			agent.speedMax = agent.FindSpeed();
@@ -418,6 +462,7 @@ namespace BunnyMod.Content
 
 			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
+
 		public static async void MSA_CD_StartMiscast(Agent agent, float slowdownFactor)
 		{
 			BMLog("ChronomancyStartMiscast: " + slowdownFactor);
@@ -433,7 +478,7 @@ namespace BunnyMod.Content
 
 			GC.selectedTimeScale = baseTimeScale / slowdownFactor;
 			GC.mainTimeScale = baseTimeScale / slowdownFactor;
-			agent.speedMax = (int)((float)agent.FindSpeed() * slowdownFactor);
+			agent.speedMax = (int) ((float) agent.FindSpeed() * slowdownFactor);
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeNotUsable();
 
@@ -444,6 +489,7 @@ namespace BunnyMod.Content
 			MSA_CD_SetMiscast(agent, false);
 			MSA_CD_StartDecast(agent);
 		}
+
 		public static void MSA_CD_StartRecharge(Agent agent, bool routine)
 		{
 			BMLog("ChronomancyStartRecharge");
@@ -469,6 +515,7 @@ namespace BunnyMod.Content
 
 			BMLog("Timescale: " + GC.mainTimeScale.ToString());
 		}
+
 		public static async Task MSA_CD_StartWindingUp(Agent agent)
 		{
 			MSA_CD_SetWindingUp(agent, true);
@@ -487,40 +534,48 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				duration -= 2000f;
 
-			await Task.Delay((int)duration);
+			await Task.Delay((int) duration);
 
 			while (MSA_CD_IsMiscast(agent))
-				await Task.Delay(1000); 
-			
+				await Task.Delay(1000);
+
 			MSA_CD_StartRecharge(agent, true);
 		}
+
 		#endregion
+
 		#region Pyromantic Jet
+
 		#region Pyromantic Jet - Bits
+
 		public static bool MSA_PJ_IsBurnedOut(Agent agent)
 		{
 			BMLog("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
+
 		public static bool MSA_PJ_IsCoolingDown(Agent agent)
 		{
 			BMLog("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
+
 		public static bool MSA_PJ_IsMiscast(Agent agent)
 		{
 			BMLog("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		}
+
 		public static void MSA_PJ_LogBooleans(Agent agent)
 		{
 			BMLog("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
 			BMLog("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
 			BMLog("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
 		}
+
 		public static void MSA_PJ_SetBurnedOut(Agent agent, bool value)
 		{
 			BMLog("PyromancySetBurnedOut " + value);
@@ -528,6 +583,7 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
+
 		public static void MSA_PJ_SetCoolingDown(Agent agent, bool value)
 		{
 			BMLog("PyromancySetCoolingDown " + value);
@@ -535,6 +591,7 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
+
 		public static void MSA_PJ_SetMiscast(Agent agent, bool value)
 		{
 			BMLog("PyromancySetMiscast " + value);
@@ -542,8 +599,11 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
 		}
+
 		#endregion
+
 		#region Pyromantic Jet - Dialogue
+
 		public static void MSA_PJ_DialogueCantDo(Agent agent)
 		{
 			GC.audioHandler.Play(agent, "CantDo");
@@ -561,6 +621,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_PJ_DialogueCast(Agent agent)
 		{
 			if (GC.percentChance(99))
@@ -578,6 +639,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_PJ_DialogueMiscast(Agent agent)
 		{
 			if (GC.percentChance(75))
@@ -593,6 +655,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_PJ_DialogueRecharge(Agent agent)
 		{
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
@@ -611,15 +674,18 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		#endregion
+
 		public static void MSA_PJ_Initialize()
 		{
 			Sprite spritePyromanticJet = RogueUtilities.ConvertToSprite(Properties.Resources.PyromanticJet);
 
 			CustomAbility pyromanticJet = RogueLibs.CreateCustomAbility(cSpecialAbility.PyromanticJet, spritePyromanticJet, true,
 				new CustomNameInfo("Pyromantic Jet", "", "", "", "", "Огненная струя", "", ""),
-				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat??", "", "", "", "", "Заклинание: Удерживайте кнопку Супер-способности, чтобы выстрелить пламенем.\nНеудача: Из вас течёт Напалм.. что вы ели??", "", ""),
-				delegate (InvItem item)
+				new CustomNameInfo("Cast: Hold to shoot flames.\nMiscast: Excrete Napalm from all your pores. What did you eat??", "", "", "", "",
+					"Заклинание: Удерживайте кнопку Супер-способности, чтобы выстрелить пламенем.\nНеудача: Из вас течёт Напалм.. что вы ели??", "", ""),
+				delegate(InvItem item)
 				{
 					item.cantDrop = true;
 					item.Categories.Add("NPCsCantPickUp");
@@ -642,7 +708,7 @@ namespace BunnyMod.Content
 
 			int pjTimeHeld = 0;
 
-			pyromanticJet.OnHeld = delegate (InvItem item, Agent agent, ref float time)
+			pyromanticJet.OnHeld = delegate(InvItem item, Agent agent, ref float time)
 			{
 				pjTimeHeld++;
 
@@ -666,7 +732,7 @@ namespace BunnyMod.Content
 					MSA_PJ_DialogueCantDo(agent);
 			};
 
-			pyromanticJet.OnReleased = delegate (InvItem item, Agent agent)
+			pyromanticJet.OnReleased = delegate(InvItem item, Agent agent)
 			{
 				if (pjTimeHeld > 0 && !MSA_PJ_IsBurnedOut(agent) && !MSA_PJ_IsCoolingDown(agent) && !MSA_PJ_IsMiscast(agent))
 					MSA_PJ_StartCoolingDown(agent);
@@ -686,6 +752,7 @@ namespace BunnyMod.Content
 			pyromanticJet.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(0.1f) : null;
 		}
+
 		public static float MSA_PJ_RollFireRate(Agent agent)
 		{
 			float divisor = 5.000f;
@@ -708,6 +775,7 @@ namespace BunnyMod.Content
 
 			return divisor;
 		}
+
 		public static int MSA_PJ_RollManaCost(Agent agent)
 		{
 			if (agent.statusEffects.hasTrait(cTrait.Archmage))
@@ -742,8 +810,9 @@ namespace BunnyMod.Content
 				max -= 0.500f;
 			}
 
-			return (int)UnityEngine.Random.Range(min, max);
+			return (int) UnityEngine.Random.Range(min, max);
 		}
+
 		public static bool MSA_PJ_RollMiscast(Agent agent, float modifier)
 		{
 			float risk = 1.000f + modifier;
@@ -766,6 +835,7 @@ namespace BunnyMod.Content
 
 			return risk >= Random.Range(0f, 100f);
 		}
+
 		public static void MSA_PJ_StartBurnout(Agent agent)
 		{
 			if (!agent.statusEffects.hasTrait(cTrait.WildCasting) && !agent.statusEffects.hasTrait(cTrait.WildCasting_2))
@@ -778,6 +848,7 @@ namespace BunnyMod.Content
 
 			MSA_PJ_SetBurnedOut(agent, false); // 202103301952
 		}
+
 		public static void MSA_PJ_StartCast(Agent agent)
 		{
 			BMLog("PyromancyStartCast");
@@ -812,6 +883,7 @@ namespace BunnyMod.Content
 
 			MSA_PJ_DialogueCast(agent);
 		}
+
 		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
 		{
 			BMLog("PyromancyStartCoolingDown");
@@ -837,11 +909,12 @@ namespace BunnyMod.Content
 
 				duration = Mathf.Max(0f, duration);
 
-				await Task.Delay((int)duration);
+				await Task.Delay((int) duration);
 
 				MSA_PJ_SetCoolingDown(agent, false);
 			}
 		}
+
 		public static void MSA_PJ_StartMiscast(Agent agent, int degree)
 		{
 			BMLog("PyromancyStartMiscast");
@@ -852,6 +925,7 @@ namespace BunnyMod.Content
 
 			MSA_PJ_StartBurnout(agent);
 		}
+
 		public static void MSA_PJ_CompleteRecharge(Agent agent, bool routine)
 		{
 			BMLog("PyromancyStartRecharge");
@@ -867,26 +941,33 @@ namespace BunnyMod.Content
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
+
 		#endregion
+
 		#region Telemantic Blink
+
 		#region Telemantic Blink - Bits
+
 		public static bool MSA_TB_IsReturning(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
+
 		public static bool MSA_TB_IsMiscast(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
+
 		public static void MSA_TB_LogBits(Agent agent)
 		{
 			BMLog("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
 			BMLog("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
 		}
+
 		public static void MSA_TB_SetReturning(Agent agent, bool value)
 		{
 			BMLog("TelemancySetReturning: " + value);
@@ -894,6 +975,7 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
+
 		public static void MSA_TB_SetMiscast(Agent agent, bool value)
 		{
 			BMLog("TelemancySetMiscast: " + value);
@@ -901,8 +983,11 @@ namespace BunnyMod.Content
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
+
 		#endregion
+
 		#region Telemantic Blink - Dialogue
+
 		public static void MSA_TB_DialogueCantDo(Agent agent)
 		{
 			GC.audioHandler.Play(agent, "CantDo");
@@ -920,6 +1005,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
@@ -938,11 +1024,13 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
 			GC.audioHandler.Play(agent, "Hypnotize");
-					}
+		}
+
 		public static void MSA_TB_DialogueMiscast(Agent agent)
 		{
 			GC.audioHandler.Play(agent, "ZombieSpitFire");
@@ -960,6 +1048,7 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
@@ -978,15 +1067,21 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
+
 		#endregion
+
 		public static void MSA_TB_Initialize()
 		{
 			Sprite spriteTelemanticBlink = RogueUtilities.ConvertToSprite(Properties.Resources.TelemanticBlink);
 
 			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility(cSpecialAbility.TelemanticBlink, spriteTelemanticBlink, true,
 				new CustomNameInfo("Telemantic Blink", "", "", "", "", "Телепортация", "", ""),
-				new CustomNameInfo("Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke.", "", "", "", "", "Заклинание: Удерживайте кнопку Супер-способности, наведите курсор на место в которое хотите переместится. Удерживание кнопки Супер-способности повышает точность, но и шанс на неудачный каст.\nНеудача: Небольшой удар.", "", ""),
-				delegate (InvItem item)
+				new CustomNameInfo(
+					"Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke.", "",
+					"", "", "",
+					"Заклинание: Удерживайте кнопку Супер-способности, наведите курсор на место в которое хотите переместится. Удерживание кнопки Супер-способности повышает точность, но и шанс на неудачный каст.\nНеудача: Небольшой удар.",
+					"", ""),
+				delegate(InvItem item)
 				{
 					item.cantDrop = true;
 					item.Categories.Add("NPCsCantPickup");
@@ -1010,7 +1105,7 @@ namespace BunnyMod.Content
 			int tbNetCharge = 0; // Net total of post-ability charge level
 			bool tbFullChargeIndicated = false; // Whether particle effect showing full charge is active.
 
-			telemanticBlink.OnPressed = delegate (InvItem item, Agent agent)
+			telemanticBlink.OnPressed = delegate(InvItem item, Agent agent)
 			{
 				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0)
 					agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
@@ -1018,7 +1113,7 @@ namespace BunnyMod.Content
 					MSA_TB_DialogueCantDo(agent);
 			};
 
-			telemanticBlink.OnHeld = delegate (InvItem item, Agent agent, ref float timeHeld)
+			telemanticBlink.OnHeld = delegate(InvItem item, Agent agent, ref float timeHeld)
 			{
 				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0 && tbNetCharge < 100)
 				{
@@ -1044,7 +1139,7 @@ namespace BunnyMod.Content
 				}
 			};
 
-			telemanticBlink.OnReleased = delegate (InvItem item, Agent agent)
+			telemanticBlink.OnReleased = delegate(InvItem item, Agent agent)
 			{
 				if (tbNetCharge > 0 && !MSA_TB_IsReturning(agent) && !MSA_TB_TryMiscast(agent, tbNetCharge))
 				{
@@ -1071,6 +1166,7 @@ namespace BunnyMod.Content
 			telemanticBlink.RechargeInterval = (item, myAgent) =>
 				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
 		}
+
 		public static int MSA_TB_RollChargeRate(Agent agent)
 		{
 			float rate = 1.000f;
@@ -1091,8 +1187,9 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				rate *= 3.000f;
 
-			return (int)rate;
+			return (int) rate;
 		}
+
 		public static Vector2 MSA_TB_RollDestination(Agent agent, float minError, float maxError)
 		{
 			TileInfo tileInfo = GC.tileInfo;
@@ -1116,6 +1213,7 @@ namespace BunnyMod.Content
 			}
 			return currentPosition;
 		}
+
 		public static int MSA_TB_RollManaCost(Agent agent)
 		{
 			BMLog("TelemancyRollManaCost");
@@ -1157,8 +1255,9 @@ namespace BunnyMod.Content
 				max *= 1.500f;
 			}
 
-			return (int)UnityEngine.Random.Range(min, max);
+			return (int) UnityEngine.Random.Range(min, max);
 		}
+
 		public static int MSA_TB_RollRechargeRate(Agent agent)
 		{
 			float min = 5.00f;
@@ -1198,8 +1297,9 @@ namespace BunnyMod.Content
 				max *= 4.000f;
 			}
 
-			return (int)UnityEngine.Random.Range(min, max);
+			return (int) UnityEngine.Random.Range(min, max);
 		}
+
 		public static int MSA_TB_RollReturnDuration(Agent agent)
 		{
 			float duration = 4000f;
@@ -1220,20 +1320,21 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				duration *= 0.000f;
 
-			return (int)duration;
+			return (int) duration;
 		}
+
 		public static void MSA_TB_StartCast(Agent agent, float charge)
 		{
 			float maxError = 200.000f;
 
 			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
-				maxError -=  25.000f;
+				maxError -= 25.000f;
 			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
-				maxError -=  50.000f;
+				maxError -= 50.000f;
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
-				maxError +=  25.000f;
+				maxError += 25.000f;
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
-				maxError +=  50.000f;
+				maxError += 50.000f;
 
 			maxError = (maxError - charge) / 20f;
 
@@ -1242,6 +1343,7 @@ namespace BunnyMod.Content
 
 			MSA_TB_DialogueCast(agent);
 		}
+
 		public static void MSA_TB_StartRecharge(Agent agent, bool routine)
 		{
 			if (true) // Not checking for routine/nonroutine yet.
@@ -1249,6 +1351,7 @@ namespace BunnyMod.Content
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
+
 		public static async void MSA_TB_StartReturn(Agent agent, int mSecs)
 		{
 			MSA_TB_SetReturning(agent, true);
@@ -1257,7 +1360,8 @@ namespace BunnyMod.Content
 
 			MSA_TB_SetReturning(agent, false);
 		}
-		public static bool MSA_TB_TryMiscast(Agent agent, float netCharge) 
+
+		public static bool MSA_TB_TryMiscast(Agent agent, float netCharge)
 		{
 			if (agent.statusEffects.hasTrait(cTrait.Archmage))
 				return false;
@@ -1278,7 +1382,7 @@ namespace BunnyMod.Content
 			netCharge -= UnityEngine.Random.Range(0f, 100f);
 			netCharge /= 25;
 
-			int severity = (int)Mathf.Clamp(netCharge, 0, 4);
+			int severity = (int) Mathf.Clamp(netCharge, 0, 4);
 
 			if (severity == 0)
 				return false;
@@ -1356,23 +1460,30 @@ namespace BunnyMod.Content
 
 			return true;
 		}
+
 		#endregion
 
 		#region Agent
+
 		public void Agent_00()
 		{
 			Postfix(typeof(Agent), "FindOperatingTime", GetType(), "Agent_FindOperatingTime", new Type[2] { typeof(PlayfieldObject), typeof(float) });
 		}
+
 		public static void Agent_FindOperatingTime(PlayfieldObject operatingOnObject, float timeToUnlock, Agent __instance, ref float __result) // Postfix
 		{
 			__result *= GC.selectedTimeScale;
 		}
+
 		#endregion
+
 		#region StatusEffects
+
 		public void StatusEffects_00()
 		{
 			Postfix(typeof(StatusEffects), "GiveSpecialAbility", GetType(), "StatusEffects_GiveSpecialAbility", new Type[1] { typeof(String) });
 		}
+
 		public static void StatusEffects_GiveSpecialAbility(string abilityName, StatusEffects __instance) // Postfix
 		{
 			if (__instance.agent.inventory.equippedSpecialAbility != null)
@@ -1380,11 +1491,11 @@ namespace BunnyMod.Content
 				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;
 				Agent agent = __instance.agent;
 
-				string[] magicAbilities = 
-				{ 
-					cSpecialAbility.ChronomanticDilation, 
-					cSpecialAbility.PyromanticJet, 
-					cSpecialAbility.TelemanticBlink 
+				string[] magicAbilities =
+				{
+					cSpecialAbility.ChronomanticDilation,
+					cSpecialAbility.PyromanticJet,
+					cSpecialAbility.TelemanticBlink
 				};
 
 				if (magicAbilities.Contains(abilityName))
@@ -1397,6 +1508,7 @@ namespace BunnyMod.Content
 				}
 			}
 		}
+
 		#endregion
 	}
 }

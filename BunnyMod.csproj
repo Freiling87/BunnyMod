@@ -98,7 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\Abilities\A_Magic\Shared.cs" />
+    <Compile Include="Content\Abilities\Shared.cs" />
     <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
     <Compile Include="Content\BMAbilities.cs" />
     <Compile Include="Content\BMAgents.cs" />

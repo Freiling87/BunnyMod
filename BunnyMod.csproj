@@ -121,6 +121,18 @@
     <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
     <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
+    <Compile Include="Content\Items\I_Combineable\BearTrapProcessor.cs" />
+    <Compile Include="Content\Items\I_Combineable\SugarProcessor.cs" />
+    <Compile Include="Content\Items\I_Consumable\EnergyDrink.cs" />
+    <Compile Include="Content\Items\I_Passive\HolySymbol.cs" />
+    <Compile Include="Content\Items\I_Weapons_Melee\BrokenBottle.cs" />
+    <Compile Include="Content\Items\I_Weapons_Melee\Spear.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\BeerCan.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\Brick.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\HolyWaterFlask.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\ManholeCover.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\Sawblade.cs" />
+    <Compile Include="Content\Items\I_Weapons_Thrown\WhiskeyBottle.cs" />
     <Compile Include="Content\Localization\AbilityLocalization.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
@@ -137,6 +149,7 @@
     <Compile Include="Content\Patches\P_CharacterSelect.cs" />
     <Compile Include="Content\Patches\P_ExitPoint.cs" />
     <Compile Include="Content\Patches\P_GameResources.cs" />
+    <Compile Include="Content\Patches\P_InvDatabase.cs" />
     <Compile Include="Content\Patches\P_InvInterface.cs" />
     <Compile Include="Content\Patches\P_Item.cs" />
     <Compile Include="Content\Patches\P_LoadLevel.cs" />
@@ -291,6 +304,11 @@
     <Content Include="Localizations\TraitsLocalization.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Items\I_Tool\" />
+    <Folder Include="Content\Items\I_Weapons_Ranged\" />
+    <Folder Include="Content\Items\I_Wearable_Body\" />
+    <Folder Include="Content\Items\I_Wearable_Head\" />
+    <Folder Include="Content\Items\I_Wearable_Other\" />
     <Folder Include="Content\StatusEffects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

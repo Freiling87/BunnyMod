@@ -131,11 +131,15 @@
     <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
     <Compile Include="Content\Patches\P_AgentInteractions.cs" />
     <Compile Include="Content\Patches\P_Agent.cs" />
+    <Compile Include="Content\Patches\P_Bullet.cs" />
+    <Compile Include="Content\Patches\P_BulletHitbox.cs" />
     <Compile Include="Content\Patches\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_CharacterSelect.cs" />
     <Compile Include="Content\Patches\P_ExitPoint.cs" />
     <Compile Include="Content\Patches\P_GameResources.cs" />
     <Compile Include="Content\Patches\P_LoadLevel.cs" />
+    <Compile Include="Content\Patches\P_MeleeHitbox.cs" />
+    <Compile Include="Content\Patches\P_Movement.cs" />
     <Compile Include="Content\Patches\P_ObjectMult.cs" />
     <Compile Include="Content\Patches\P_ObjectReal.cs" />
     <Compile Include="Content\Patches\P_PlayfieldObject.cs" />

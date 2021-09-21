@@ -4,6 +4,7 @@ using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
+using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content.Patches
 {
@@ -11,6 +12,7 @@ namespace BunnyMod.Content.Patches
 	public static class P_Agent
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+		public static GameController GC => GameController.gameController;
 
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Agent.CanShakeDown))]
 		private static bool CanShakeDown_Prefix(ref bool __result, Agent __instance)

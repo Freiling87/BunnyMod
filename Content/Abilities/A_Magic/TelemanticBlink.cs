@@ -1,64 +1,162 @@
 using RogueLibsCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using BepInEx.Logging;
+using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BunnyMod.Content
+namespace BunnyMod.Content.Abilities.A_Magic
 {
-	public class BMAbilities
+	public class TelemanticBlink : CustomAbility, IAbilityRechargeable, IAbilityChargeable
 	{
-		#region Telemantic Blink
+		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
+		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
+		private static ManualLogSource _logger;
 
-		#region Telemantic Blink - Bits
+		private int tbHeldCounter = 0; // Seconds ability held to charge
+		private int tbNetCharge = 0; // Net total of post-ability charge level
+		private bool tbFullChargeIndicated = false; // Whether particle effect showing full charge is active.
 
+		// TODO: Add conflict for "No Teleports" trait
+
+		#region Main
+		[RLSetup]
+		public static void Setup()
+		{
+			RogueLibs.CreateCustomAbility<TelemanticBlink>()
+				.WithDescription(new CustomNameInfo
+				{
+					[LanguageCode.English] = "Cast: Hold to charge, point cursor at destination. Charge increases accuracy and chance of miscast.\n\nMiscast: Have a small stroke, with varying effects.",
+					[LanguageCode.Russian] = "Заклинание: Удерживайте кнопку Супер-способности, наведите курсор на место в которое хотите переместится. Удерживание кнопки Супер-способности повышает точность, но и шанс на неудачный каст.\n\nНеудача: Небольшой удар.",
+				})
+				.WithName(new CustomNameInfo
+				{
+					[LanguageCode.English] = "Telemantic Blink",
+					[LanguageCode.Russian] = "Телепортация",
+				})
+				.WithSprite(Properties.Resources.TelemanticBlink)
+				.WithUnlock(new AbilityUnlock
+				{
+					CharacterCreationCost = 8,
+					IsAvailable = true,
+					IsAvailableInCC = true,
+					UnlockCost = 8,
+				});
+		}
+		public override void OnAdded()
+		{
+		}
+		public void OnHeld(AbilityHeldArgs e)
+		{
+			if (!MSA_TB_IsMiscast(Item.agent) && !MSA_TB_IsReturning(Item.agent) && Item.invItemCount > 0 && tbNetCharge < 100)
+			{
+				if (e.HeldTime * MSA_TB_RollChargeRate(Item.agent) >= tbHeldCounter)
+				{
+					tbHeldCounter++;
+
+					Logger.LogDebug("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + e.HeldTime);
+
+					int manaCost = Mathf.Min(MSA_TB_RollManaCost(Item.agent), 100 - tbNetCharge);
+
+					Item.invItemCount -= manaCost;
+					tbNetCharge += manaCost;
+
+					if (tbNetCharge == 100)
+						MSA_TB_DialogueFullyCharged(Item.agent);
+				}
+			}
+			else if (tbNetCharge == 100 & !tbFullChargeIndicated)
+			{
+				Item.agent.SpawnParticleEffect("ExplosionEMP", Item.agent.curPosition);
+				tbFullChargeIndicated = true;
+			}
+		}
+		public override void OnPressed()
+		{
+			if (!MSA_TB_IsMiscast(Item.agent) && !MSA_TB_IsReturning(Item.agent) && Item.invItemCount > 0)
+				Item.agent.SpawnParticleEffect("ExplosionMindControl", Item.agent.curPosition);
+			else
+				MSA_TB_DialogueCantDo(Item.agent);
+		}
+		public void OnRecharging(AbilityRechargingArgs e)
+		{
+			e.UpdateDelay = 1f;
+
+			if (tbNetCharge == 0 && Item.invItemCount < Shared.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
+			{
+				Item.invItemCount = Math.Min(Shared.CalcMaxMana(Item.agent), Item.invItemCount + MSA_TB_RollRechargeRate(Item.agent));
+
+				if (Item.invItemCount == Shared.CalcMaxMana(Item.agent))
+					MSA_TB_StartRecharge(Item.agent, true);
+			}
+		}
+		public void OnReleased(AbilityReleasedArgs e)
+		{
+			if (tbNetCharge > 0 && !MSA_TB_IsReturning(Item.agent) && !MSA_TB_TryMiscast(Item.agent, tbNetCharge))
+			{
+				MSA_TB_StartCast(Item.agent, Math.Max(100, tbNetCharge));
+				MSA_TB_StartReturn(Item.agent, MSA_TB_RollReturnDuration(Item.agent));
+				tbHeldCounter = 0;
+				tbNetCharge = 0;
+			}
+
+			tbFullChargeIndicated = false;
+		}
+		public override void SetupDetails()
+		{
+			base.SetupDetails();
+			Item.cantDrop = true;
+			Item.dontAutomaticallySelect = true;
+			Item.dontSelectNPC = true;
+			Item.isWeapon = false;
+			Item.initCount = 100;
+			Item.rechargeAmountInverse = 100;
+			Item.maxAmmo = 100;
+			Item.stackable = true;
+			Item.thiefCantSteal = true;
+		}
+		#endregion
+		#region Bits
 		public static bool MSA_TB_IsReturning(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsReturning: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
-
 		public static bool MSA_TB_IsMiscast(Agent agent)
 		{
 			//BunnyHeader.Log("TelemancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
-
 		public static void MSA_TB_LogBits(Agent agent)
 		{
-			BMLog("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
-			BMLog("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
+			Logger.LogDebug("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
+			Logger.LogDebug("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
 		}
-
 		public static void MSA_TB_SetReturning(Agent agent, bool value)
 		{
-			BMLog("TelemancySetReturning: " + value);
+			Logger.LogDebug("TelemancySetReturning: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
-
 		public static void MSA_TB_SetMiscast(Agent agent, bool value)
 		{
-			BMLog("TelemancySetMiscast: " + value);
+			Logger.LogDebug("TelemancySetMiscast: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
-
 		#endregion
-
-		#region Telemantic Blink - Dialogue
-
+		#region Dialogue
 		public static void MSA_TB_DialogueCantDo(Agent agent)
 		{
-			GC.audioHandler.Play(agent, "CantDo");
+			gc.audioHandler.Play(agent, "CantDo");
 
-			if (GC.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			List<string> dialogue = new List<string>()
@@ -71,13 +169,12 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-
 		public static void MSA_TB_DialogueCast(Agent agent)
 		{
 			agent.SpawnParticleEffect("Spawn", agent.curPosition);
 			GameController.gameController.audioHandler.Play(agent, "Spawn");
 
-			if (GC.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			List<string> dialogue = new List<string>()
@@ -90,18 +187,16 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-
 		public static void MSA_TB_DialogueFullyCharged(Agent agent) // TODO
 		{
 			agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-			GC.audioHandler.Play(agent, "Hypnotize");
+			gc.audioHandler.Play(agent, "Hypnotize");
 		}
-
 		public static void MSA_TB_DialogueMiscast(Agent agent)
 		{
-			GC.audioHandler.Play(agent, "ZombieSpitFire");
+			gc.audioHandler.Play(agent, "ZombieSpitFire");
 
-			if (GC.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			List<string> dialogue = new List<string>()
@@ -114,13 +209,12 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-
 		public static void MSA_TB_DialogueRecharge(Agent agent)
 		{
 			agent.statusEffects.CreateBuffText("Recharged", agent.objectNetID);
-			GC.audioHandler.Play(agent, "Recharge");
+			gc.audioHandler.Play(agent, "Recharge");
 
-			if (GC.percentChance(75))
+			if (gc.percentChance(75))
 				return;
 
 			List<string> dialogue = new List<string>()
@@ -133,106 +227,8 @@ namespace BunnyMod.Content
 
 			BMHeaderTools.SayDialogue(agent, BMHeaderTools.RandomFromList(dialogue), vNameType.Dialogue);
 		}
-
 		#endregion
-
-		public static void MSA_TB_Initialize()
-		{
-			Sprite spriteTelemanticBlink = RogueUtilities.ConvertToSprite(Properties.Resources.TelemanticBlink);
-
-			CustomAbility telemanticBlink = RogueLibs.CreateCustomAbility(cSpecialAbility.TelemanticBlink, spriteTelemanticBlink, true,
-				new CustomNameInfo("Telemantic Blink", "", "", "", "", "Телепортация", "", ""),
-				new CustomNameInfo(
-					"Cast: Hold to charge, point cursor at destination. Charge increases accuracy but also miscast chance.\nMiscast: Have a small stroke.", "",
-					"", "", "",
-					"Заклинание: Удерживайте кнопку Супер-способности, наведите курсор на место в которое хотите переместится. Удерживание кнопки Супер-способности повышает точность, но и шанс на неудачный каст.\nНеудача: Небольшой удар.",
-					"", ""),
-				delegate(InvItem item)
-				{
-					item.cantDrop = true;
-					item.Categories.Add("NPCsCantPickup");
-					item.dontAutomaticallySelect = true;
-					item.dontSelectNPC = true;
-					item.isWeapon = false;
-					item.initCount = 100;
-					item.rechargeAmountInverse = 100;
-					item.maxAmmo = 100;
-					item.stackable = true;
-					item.thiefCantSteal = true;
-				});
-
-			telemanticBlink.Conflicting.AddRange(new string[] { "CantTeleport" });
-
-			telemanticBlink.Available = true;
-			telemanticBlink.AvailableInCharacterCreation = true;
-			telemanticBlink.CostInCharacterCreation = 8;
-
-			int tbHeldCounter = 0; // Seconds ability held to charge
-			int tbNetCharge = 0; // Net total of post-ability charge level
-			bool tbFullChargeIndicated = false; // Whether particle effect showing full charge is active.
-
-			telemanticBlink.OnPressed = delegate(InvItem item, Agent agent)
-			{
-				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0)
-					agent.SpawnParticleEffect("ExplosionMindControl", agent.curPosition);
-				else
-					MSA_TB_DialogueCantDo(agent);
-			};
-
-			telemanticBlink.OnHeld = delegate(InvItem item, Agent agent, ref float timeHeld)
-			{
-				if (!MSA_TB_IsMiscast(agent) && !MSA_TB_IsReturning(agent) && item.invItemCount > 0 && tbNetCharge < 100)
-				{
-					if (timeHeld * MSA_TB_RollChargeRate(agent) >= tbHeldCounter)
-					{
-						tbHeldCounter++;
-
-						BMLog("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + timeHeld);
-
-						int manaCost = Mathf.Min(MSA_TB_RollManaCost(agent), 100 - tbNetCharge);
-
-						item.invItemCount -= manaCost;
-						tbNetCharge += manaCost;
-
-						if (tbNetCharge == 100)
-							MSA_TB_DialogueFullyCharged(agent);
-					}
-				}
-				else if (tbNetCharge == 100 & !tbFullChargeIndicated)
-				{
-					agent.SpawnParticleEffect("ExplosionEMP", agent.curPosition);
-					tbFullChargeIndicated = true;
-				}
-			};
-
-			telemanticBlink.OnReleased = delegate(InvItem item, Agent agent)
-			{
-				if (tbNetCharge > 0 && !MSA_TB_IsReturning(agent) && !MSA_TB_TryMiscast(agent, tbNetCharge))
-				{
-					MSA_TB_StartCast(agent, Math.Max(100, tbNetCharge));
-					MSA_TB_StartReturn(agent, MSA_TB_RollReturnDuration(agent));
-					tbHeldCounter = 0;
-					tbNetCharge = 0;
-				}
-
-				tbFullChargeIndicated = false;
-			};
-
-			telemanticBlink.Recharge = (item, agent) =>
-			{
-				if (tbNetCharge == 0 && item.invItemCount < CalcMaxMana(agent) && agent.statusEffects.CanRecharge())
-				{
-					item.invItemCount = Math.Min(CalcMaxMana(agent), item.invItemCount + MSA_TB_RollRechargeRate(agent));
-
-					if (item.invItemCount == CalcMaxMana(agent))
-						MSA_TB_StartRecharge(agent, true);
-				}
-			};
-
-			telemanticBlink.RechargeInterval = (item, myAgent) =>
-				item.invItemCount > 0 ? new WaitForSeconds(1f) : null;
-		}
-
+		#region Mechanics
 		public static int MSA_TB_RollChargeRate(Agent agent)
 		{
 			float rate = 1.000f;
@@ -253,20 +249,19 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				rate *= 3.000f;
 
-			return (int) rate;
+			return (int)rate;
 		}
-
 		public static Vector2 MSA_TB_RollDestination(Agent agent, float minError, float maxError)
 		{
-			TileInfo tileInfo = GC.tileInfo;
+			TileInfo tileInfo = gc.tileInfo;
 			Vector2 currentPosition = agent.curPosition;
 			Vector2 targetPosition;
 
 			for (int i = 0; i < 50; i++)
 			{
-				float distance = UnityEngine.Random.Range(minError, maxError);
+				float distance = Random.Range(minError, maxError);
 
-				targetPosition = MouseIngamePosition() + (distance * UnityEngine.Random.insideUnitCircle.normalized);
+				targetPosition = Shared.MouseIngamePosition() + (distance * Random.insideUnitCircle.normalized);
 
 				TileData tileData = tileInfo.GetTileData(targetPosition);
 
@@ -279,10 +274,9 @@ namespace BunnyMod.Content
 			}
 			return currentPosition;
 		}
-
 		public static int MSA_TB_RollManaCost(Agent agent)
 		{
-			BMLog("TelemancyRollManaCost");
+			Logger.LogDebug("TelemancyRollManaCost");
 
 			float min = 25.000f;
 			float max = 33.000f;
@@ -321,9 +315,8 @@ namespace BunnyMod.Content
 				max *= 1.500f;
 			}
 
-			return (int) UnityEngine.Random.Range(min, max);
+			return (int)UnityEngine.Random.Range(min, max);
 		}
-
 		public static int MSA_TB_RollRechargeRate(Agent agent)
 		{
 			float min = 5.00f;
@@ -363,9 +356,8 @@ namespace BunnyMod.Content
 				max *= 4.000f;
 			}
 
-			return (int) UnityEngine.Random.Range(min, max);
+			return (int)UnityEngine.Random.Range(min, max);
 		}
-
 		public static int MSA_TB_RollReturnDuration(Agent agent)
 		{
 			float duration = 4000f;
@@ -386,9 +378,8 @@ namespace BunnyMod.Content
 			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				duration *= 0.000f;
 
-			return (int) duration;
+			return (int)duration;
 		}
-
 		public static void MSA_TB_StartCast(Agent agent, float charge)
 		{
 			float maxError = 200.000f;
@@ -409,15 +400,13 @@ namespace BunnyMod.Content
 
 			MSA_TB_DialogueCast(agent);
 		}
-
 		public static void MSA_TB_StartRecharge(Agent agent, bool routine)
 		{
-			if (true) // Not checking for routine/nonroutine yet.
+			if (routine) // TODO: Currently always true. Should be false sometimes to reduce constant dialogue.
 				MSA_TB_DialogueRecharge(agent);
 
 			agent.inventory.buffDisplay.specialAbilitySlot.MakeUsable();
 		}
-
 		public static async void MSA_TB_StartReturn(Agent agent, int mSecs)
 		{
 			MSA_TB_SetReturning(agent, true);
@@ -426,7 +415,6 @@ namespace BunnyMod.Content
 
 			MSA_TB_SetReturning(agent, false);
 		}
-
 		public static bool MSA_TB_TryMiscast(Agent agent, float netCharge)
 		{
 			if (agent.statusEffects.hasTrait(cTrait.Archmage))
@@ -448,7 +436,7 @@ namespace BunnyMod.Content
 			netCharge -= UnityEngine.Random.Range(0f, 100f);
 			netCharge /= 25;
 
-			int severity = (int) Mathf.Clamp(netCharge, 0, 4);
+			int severity = (int)Mathf.Clamp(netCharge, 0, 4);
 
 			if (severity == 0)
 				return false;
@@ -483,13 +471,13 @@ namespace BunnyMod.Content
 				randomTeleport = true;
 			}
 
-			BMLog("TelemancyTryMiscast: stroke");
+			Logger.LogDebug("TelemancyTryMiscast: stroke");
 			agent.statusEffects.ChangeHealth(-severity * 5);
 			MSA_TB_DialogueMiscast(agent);
 
 			if (randomTeleport)
 			{
-				BMLog("TelemancyTryMiscast: randomTeleport");
+				Logger.LogDebug("TelemancyTryMiscast: randomTeleport");
 
 				agent.statusEffects.UseQuickEscapeTeleporter(false);
 				failTeleport = true;
@@ -497,9 +485,9 @@ namespace BunnyMod.Content
 
 			if (lightAndSound)
 			{
-				BMLog("TelemancyTryMiscast: lightAndSound");
+				Logger.LogDebug("TelemancyTryMiscast: lightAndSound");
 
-				GC.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
+				gc.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
 				agent.SpawnParticleEffect("ExplosionEMP", agent.tr.position);
 			}
 
@@ -511,7 +499,7 @@ namespace BunnyMod.Content
 
 			if (loseItem)
 			{
-				BMLog("TelemancyTryMiscast: LoseItem");
+				Logger.LogDebug("TelemancyTryMiscast: LoseItem");
 
 				// To pick random item: compare from NPC Thief stealing? That would exclude quest items and your money supply, at least.
 
@@ -526,8 +514,6 @@ namespace BunnyMod.Content
 
 			return true;
 		}
-
 		#endregion
-
 	}
 }

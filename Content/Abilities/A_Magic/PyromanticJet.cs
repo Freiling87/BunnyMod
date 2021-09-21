@@ -6,10 +6,11 @@ using BepInEx.Logging;
 using System.Reflection;
 using BunnyMod.Content.Abilities.A_Magic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BunnyMod.Content.Abilities.A_Magic
 {
-	class PyromanticJet : CustomAbility, IAbilityRechargeable
+	public class PyromanticJet : CustomAbility, IAbilityRechargeable
 	{
 		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
@@ -22,13 +23,13 @@ namespace BunnyMod.Content.Abilities.A_Magic
 			RogueLibs.CreateCustomAbility<PyromanticJet>()
 				.WithDescription(new CustomNameInfo
 				{
-					[LanguageCode.English] = "Pyromantic Jet",
-					[LanguageCode.Russian] = "Огненная струя",
+					[LanguageCode.English] = "Cast: Hold to shoot flames.\n\nMiscast: Excrete Napalm from all your pores. What did you eat??",
+					[LanguageCode.Russian] = "Заклинание: Удерживайте кнопку Супер-способности, чтобы выстрелить пламенем.\n\nНеудача: Из вас течёт Напалм.. что вы ели??",
 				})
 				.WithName(new CustomNameInfo
 				{
-					[LanguageCode.English] = "Cast: Hold to shoot flames.\n\nMiscast: Excrete Napalm from all your pores. What did you eat??",
-					[LanguageCode.Russian] = "Заклинание: Удерживайте кнопку Супер-способности, чтобы выстрелить пламенем.\n\nНеудача: Из вас течёт Напалм.. что вы ели??",
+					[LanguageCode.English] = "Pyromantic Jet",
+					[LanguageCode.Russian] = "Огненная струя",
 				})
 				.WithSprite(Properties.Resources.PyromanticJet)
 				.WithUnlock(new AbilityUnlock
@@ -41,7 +42,6 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public override void OnAdded()
 		{
-			throw new NotImplementedException();
 		}
 		public void OnHeld(AbilityHeldArgs e)
 		{
@@ -66,7 +66,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public override void OnPressed()
 		{
-			throw new NotImplementedException();
+			// TODO: Initial "Flame woof" sound effect
 		}
 		public void OnRecharging(AbilityRechargingArgs e)
 		{
@@ -277,7 +277,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 				max -= 0.500f;
 			}
 
-			return (int)UnityEngine.Random.Range(min, max);
+			return (int)Random.Range(min, max);
 		}
 		public static bool MSA_PJ_RollMiscast(Agent agent, float modifier)
 		{
@@ -299,7 +299,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				risk *= 0.50f;
 
-			return risk >= UnityEngine.Random.Range(0f, 100f);
+			return risk >= Random.Range(0f, 100f);
 		}
 		public static void MSA_PJ_StartBurnout(Agent agent)
 		{

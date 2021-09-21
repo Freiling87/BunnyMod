@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BepInEx.Logging;
 using System.Reflection;
-using BunnyMod.Content.Abilities.A_Magic;
 
-namespace BunnyMod.Content.Abilities
+namespace BunnyMod.Content.Abilities.A_Magic
 {
-	class ChronomanticDilation : CustomAbility, IAbilityRechargeable
+	public class ChronomanticDilation : CustomAbility, IAbilityRechargeable
 	{
 		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
@@ -21,13 +20,13 @@ namespace BunnyMod.Content.Abilities
 			RogueLibs.CreateCustomAbility<ChronomanticDilation>()
 				.WithDescription(new CustomNameInfo
 				{
-					[LanguageCode.English] = "Chronomantic Dilation",
-					[LanguageCode.Russian] = "Хрономантический сдвиг",
+					[LanguageCode.English] = "Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\n\nMiscast: Speed up everything but yourself.",
+					[LanguageCode.Russian] = "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\n\nНеудача: Ускоряет всё кроме вас.",
 				})
 				.WithName(new CustomNameInfo
 				{
-					[LanguageCode.English] = "Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\n\nMiscast: Speed up everything but yourself.",
-					[LanguageCode.Russian] = "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\n\nНеудача: Ускоряет всё кроме вас.",
+					[LanguageCode.English] = "Chronomantic Dilation",
+					[LanguageCode.Russian] = "Хрономантический сдвиг",
 				})
 				.WithSprite(Properties.Resources.ChronomanticDilation)
 				.WithUnlock(new AbilityUnlock
@@ -40,7 +39,6 @@ namespace BunnyMod.Content.Abilities
 		}
 		public override void OnAdded()
 		{
-			throw new NotImplementedException();
 		}
 		public override void OnPressed()
 		{
@@ -302,10 +300,9 @@ namespace BunnyMod.Content.Abilities
 			(agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		public static void MSA_CD_LogVariables(Agent agent)
 		{
-			// TODO: Restore logging if needed
-			//Logger.LogDebug("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
-			//Logger.LogDebug("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
-			//Logger.LogDebug("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
+			Logger.LogDebug("ChronomancyIsCast: " + MSA_CD_IsCast(agent));
+			Logger.LogDebug("ChronomancyIsMiscast: " + MSA_CD_IsMiscast(agent));
+			Logger.LogDebug("ChronomancyIsWindindUp: " + MSA_CD_IsWindingUp(agent));
 		}
 		public static void MSA_CD_SetCast(Agent agent, bool value)
 		{

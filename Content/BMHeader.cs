@@ -29,7 +29,6 @@ namespace BunnyMod.Content
 
 			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
-			new BMAbilities().Awake();
 			new BMBehaviors().Awake();
 			new BMCombat().Awake();
 			new BMInterface().Awake();

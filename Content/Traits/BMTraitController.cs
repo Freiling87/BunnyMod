@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
 using BunnyMod.Content.Extensions;
+using BunnyMod.Content.Logging;
 using Google2u;
 using RogueLibsCore;
 using UnityEngine;
@@ -14,13 +15,11 @@ namespace BunnyMod.Content.Traits
 	/// </summary>
 	public static class BMTraitController
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(BMTraitController)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		public static int ApplyToolCostModifiers(Agent agent, int baseCost)
 		{
-			Logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseCost = '{baseCost}'");
+			logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseCost = '{baseCost}'");
 			float costFactor = TamperTantrum.GetToolCostFactor(agent)
 					* TamperTantrum2.GetToolCostFactor(agent);
 			return Mathf.FloorToInt(baseCost * costFactor);
@@ -47,7 +46,7 @@ namespace BunnyMod.Content.Traits
 
 		public static string HealthCost(Agent agent, int baseDamage, DamageType type)
 		{
-			Logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseDamage = '{baseDamage}', damageType = '{type}'");
+			logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseDamage = '{baseDamage}', damageType = '{type}'");
 			float healthCostFactor = GetHealthCostFactor(agent, type);
 			return Mathf.FloorToInt(baseDamage * healthCostFactor).ToString();
 		}
@@ -65,7 +64,7 @@ namespace BunnyMod.Content.Traits
 		// TODO to be removed soon (tm)
 		public static bool DoesPlayerHaveTraitFromList(Agent agent, List<string> traits)
 		{
-			Logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', traits = '{string.Join(", ", traits)}'");
+			logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', traits = '{string.Join(", ", traits)}'");
 			return traits.Any(agent.HasTrait);
 		}
 	}

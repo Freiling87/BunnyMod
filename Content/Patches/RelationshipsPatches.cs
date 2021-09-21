@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using BunnyMod.Content.Extensions;
+using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
 using Google2u;
 using HarmonyLib;
@@ -10,9 +11,7 @@ namespace BunnyMod.Content.Patches
 	[HarmonyPatch(declaringType: typeof(Relationships))]
 	public static class RelationshipsPatches
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(RelationshipsPatches)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		[HarmonyPostfix,
 		 HarmonyPatch(methodName: nameof(Relationships.EnforcerAlert),
@@ -45,7 +44,7 @@ namespace BunnyMod.Content.Patches
 			string currentRelationship = __instance.GetRel(otherAgent);
 			if (currentRelationship == null)
 			{
-				Logger.LogWarning("SetupRelationshipOriginal - currentRelationship was null!");
+				logger.LogWarning("SetupRelationshipOriginal - currentRelationship was null!");
 				return;
 			}
 

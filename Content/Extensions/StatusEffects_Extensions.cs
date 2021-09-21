@@ -13,5 +13,10 @@ namespace BunnyMod.Content.Extensions
 		{
 			statusEffects.AddStatusEffect(statusEffect.GetName(), showText, dontPrevent);
 		}
+
+		public static bool HasStatusEffect(this StatusEffects statusEffects, StatusEffectNameDB.rowIds statusEffect)
+		{
+			return statusEffects.hasStatusEffect(statusEffect.GetName());
+		}
 	}
 }

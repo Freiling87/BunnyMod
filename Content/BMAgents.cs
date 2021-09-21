@@ -1,6 +1,7 @@
 ﻿using RogueLibsCore;
 using System.Collections.Generic;
 using BepInEx.Logging;
+using BunnyMod.Content.Logging;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using BunnyMod.Content.Traits;
@@ -9,10 +10,8 @@ namespace BunnyMod.Content
 {
 	public static class BMAgents
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(BMAgents)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
-		
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+
 		private static GameController GC => GameController.gameController;
 
 		// TODO I'd like to move this entire region somewhere else, but haven't made my mind up yet where it should go
@@ -95,7 +94,7 @@ namespace BunnyMod.Content
 
 		public static void SpawnEmployees(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship) // Non-Patch
 		{
-			Logger.LogDebug("SpawnEmployees");
+			logger.LogDebug("SpawnEmployees");
 
 			for (int i = 0; i < numberToSpawn; i++)
 				GC.spawnerMain.SpawnAgent(GC.tileInfo.FindLocationNearLocation(playerAgent.tr.position, playerAgent, 0.32f, 0.96f, true, false), playerAgent,
@@ -105,7 +104,7 @@ namespace BunnyMod.Content
 		public static void SpawnRoamerSquad(Agent playerAgent, int numberToSpawn, string agentType, LoadLevel __instance, string relationship,
 				int splitIntoGroupSize) // Non-Patch
 		{
-			Logger.LogDebug("LoadLevel_SpawnRoamerSquad");
+			logger.LogDebug("LoadLevel_SpawnRoamerSquad");
 
 			List<Agent> spawnedAgentList = new List<Agent>();
 			//playerAgent.gangStalking = Agent.gangCount;

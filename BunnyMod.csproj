@@ -98,7 +98,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\BMAbilities.cs" />
+    <Compile Include="Content\Abilities\A_Magic\PyromanticJet.cs" />
+    <Compile Include="Content\Abilities\A_Magic\TelemanticBlink.cs" />
+    <Compile Include="Content\Abilities\Shared.cs" />
+    <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMCombat.cs" />
@@ -111,12 +114,14 @@
     <Compile Include="Content\BMQuests.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
+    <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
     <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
     <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
     <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
+    <Compile Include="Content\Localization\AbilityLocalization.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
     <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />

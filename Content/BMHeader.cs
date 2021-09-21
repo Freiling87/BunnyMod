@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using RogueLibsCore;
@@ -29,7 +29,6 @@ namespace BunnyMod.Content
 
 			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
-			new BMAbilities().Awake();
 			new BMBehaviors().Awake();
 			new BMCombat().Awake();
 			new BMInterface().Awake();
@@ -213,17 +212,21 @@ namespace BunnyMod.Content
 				Buildings_Show = "Buildings_Show",
 				CityOfSteel = "CityOfSteel",
 				GreenLiving = "GreenLiving",
+				HordeAlmighty = "HordeAlmighty",
 				Panoptikopolis = "Panoptikopolis",
 				ShantyTown = "ShantyTown",
 				SpelunkyDory = "SpelunkyDory",
+			
 				Exteriors_Hide = "FloorExteriors_Hide",
 				Exteriors_Show = "FloorExteriors_Show",
 				ArcologyEcology = "ArcologyEcology",
+				
 				Fire_Hide = "Fire_Hide",
 				Fire_Show = "Fire_Show",
 				GasolineHumidity = "FastFires",
 				Mildfire = "WeakFires",
 				NapalmSprings = "StubbornFires",
+				
 				Features_Hide = "Features_Hide",
 				Features_Show = "Features_Show",
 				BadNeighborhoods = "BadNeighborhoods",
@@ -236,45 +239,54 @@ namespace BunnyMod.Content
 				SkywayDistrict = "SkywayDistrict",
 				SurveillanceSociety = "SurveillanceSociety",
 				ThePollutionSolution = "ThePollutionSolution",
+				
 				Gameplay_Hide = "Gameplay_Hide",
 				Gameplay_Show = "Gameplay_Show",
 				ScaryGuns = "ScaryGuns",
+				
 				Knockback_Hide = "Knockback_Hide",
 				Knockback_Show = "Knockback_Show",
 				BoringPhysics = "BoringPhysics",
 				SaveTheWalls = "SaveTheWalls",
 				WallWallopWorld = "WallWallopWorld",
+				
 				MapSize_Hide = "MapSize_Hide",
 				MapSize_Show = "MapSize_Show",
 				ACityForAnts = "ACityForAnts",
 				Claustropolis = "Claustropolis",
 				Megalopolis = "Megalopolis",
 				Ultrapolis = "Ultrapolis",
+				
 				Overhauls_Hide = "Overhauls_Hide",
 				Overhauls_Show = "Overhauls_Show",
 				AnCapistan = "AnCapistan",
 				DiscoCityDanceoff = "DiscoCityDanceoff",
 				MACITS = "MACITS",
 				PoliceState = "PoliceState",
+				
 				Population_Hide = "Population_Hide",
 				Population_Show = "Population_Show",
 				GhostTown = "GhostTown",
 				LetMeSeeThatThrong = "LetMeSeeThatThrong",
 				SwarmWelcome = "SwarmWelcome",
+				
 				QuestCount_Hide = "QuestCount_Hide",
 				QuestCount_Show = "QuestCount_Show",
 				SingleMinded = "SingleMinded",
 				RushinRevolution = "RushinRevolution",
 				Workhorse = "Workhorse",
+				
 				QuestRewards_Hide = "QuestRewards_Hide",
 				QuestRewards_Show = "QuestRewards_Show",
 				DoublePlyRewards = "DoublePlyRewards",
 				UnpaidInternship = "UnpaidInternship",
+				
 				Roamers_Hide = "Roamers_Hide",
 				Roamers_Show = "Roamers_Show",
 				HoodlumsWonderland = "HoodlumsWonderland",
 				MobTown = "MobTown",
 				YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood",
+				
 				Tethers_Hide = "Tethers_Hide",
 				Tethers_Show = "Tethers_Show",
 				HomesickAndTired = "HomesickandTired",

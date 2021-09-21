@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
@@ -8,14 +9,12 @@ namespace BunnyMod.Content.Patches
 	[HarmonyPatch(declaringType: typeof(Agent))]
 	public static class AgentPatches
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(AgentPatches)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Agent.CanShakeDown))]
 		private static bool CanShakeDown_Prefix(ref bool __result, Agent __instance)
 		{
-			Logger.LogDebug($"called {nameof(CanShakeDown_Prefix)}");
+			logger.LogDebug($"called {nameof(CanShakeDown_Prefix)}");
 			return Warlord.Agent_CanShakeDown_Prefix(ref __result, __instance);
 		}
 

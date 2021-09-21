@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
+using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
 using Google2u;
 using HarmonyLib;
@@ -16,9 +17,7 @@ namespace BunnyMod.Content.Patches
 	[HarmonyPatch(declaringType: typeof(StatusEffects))]
 	public static class StatusEffectsPatches
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(StatusEffectsPatches)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.AgentIsRival), argumentTypes: new[] { typeof(Agent) })]
 		private static void AgentIsRival_Postfix(Agent myAgent, StatusEffects __instance, ref bool __result)
@@ -147,7 +146,7 @@ namespace BunnyMod.Content.Patches
 							new CodeInstruction(OpCodes.Callvirt, audioHandler_Play) // this.gc.audioHandler.Play(this.agent, "Hide")
 					}
 			);
-			agentPositionPatch.ApplySafe(instructions, Logger);
+			agentPositionPatch.ApplySafe(instructions, logger);
 
 			return instructions;
 		}

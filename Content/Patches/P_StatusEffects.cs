@@ -16,7 +16,7 @@ using UnityEngine.Networking;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(StatusEffects))]
-	public static class StatusEffectsPatches
+	public static class P_StatusEffects
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
@@ -115,7 +115,7 @@ namespace BunnyMod.Content.Patches
 			MethodInfo audioHandler_Play =
 					AccessTools.Method(typeof(AudioHandler), nameof(AudioHandler.Play), new[] { typeof(PlayfieldObject), typeof(string) });
 			MethodInfo patches_GetClipName =
-					AccessTools.Method(typeof(StatusEffectsPatches), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
+					AccessTools.Method(typeof(P_StatusEffects), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
 
 			/*
 			 * Replace:

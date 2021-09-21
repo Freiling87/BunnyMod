@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BunnyMod.Content.Abilities.A_Magic
+namespace BunnyMod.Content.Abilities
 {
+	/// <summary>
+	/// Provides methods for interfacing with BM Custom Abilities
+	/// </summary>
 	public class Shared
 	{
 		public static int CalcMaxMana(Agent agent)

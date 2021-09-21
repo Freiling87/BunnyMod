@@ -9,7 +9,7 @@ using HarmonyLib;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(AgentInteractions))]
-	public static class AgentInteractionsPatches
+	public static class P_AgentInteractions
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

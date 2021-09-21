@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(Quests))]
-	public static class QuestsPatches
+	public static class P_Quests
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Quests.GetLevelExitChallengeItem))]
 		private static bool GetLevelExitChallengeItem_Prefix(Quests __instance, ref InvItem __result)

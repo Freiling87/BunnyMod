@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(CharacterCreation))]
-	public static class CharacterCreationPatches
+	public static class P_CharacterCreation
 	{
 		/*[HarmonyPostfix, HarmonyPatch(methodName: "Awake")]
 		private static void Awake_Postfix(CharacterCreation __instance)

@@ -6,7 +6,7 @@ using UnityEngine;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(PlayfieldObject))]
-	public static class PlayfieldObjectPatches
+	public static class P_PlayfieldObject
 	{
 		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));

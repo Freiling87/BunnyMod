@@ -7,7 +7,7 @@ using RogueLibsCore;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(LoadLevel))]
-	public static class LoadLevelPatches
+	public static class P_LoadLevel
 	{
 		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));

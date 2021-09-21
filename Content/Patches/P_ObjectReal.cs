@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using BepInEx.Logging;
 using BunnyMod.Content.Extensions;
 using BunnyMod.Content.ObjectBehaviour;
@@ -7,9 +7,9 @@ using HarmonyLib;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(ObjectReal))]
-	public static class ObjectRealPatches
+	public static class P_ObjectReal
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(ObjectRealPatches)}";
+		private static readonly string loggerName = $"BunnyMod_{nameof(P_ObjectReal)}";
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
 		private static ManualLogSource _logger;
 

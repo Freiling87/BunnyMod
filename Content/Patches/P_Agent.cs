@@ -8,7 +8,7 @@ using RogueLibsCore;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(Agent))]
-	public static class AgentPatches
+	public static class P_Agent
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

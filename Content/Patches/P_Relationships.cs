@@ -1,4 +1,4 @@
-﻿using BepInEx.Logging;
+using BepInEx.Logging;
 using BunnyMod.Content.Extensions;
 using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
@@ -9,7 +9,7 @@ using UnityEngine;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(Relationships))]
-	public static class RelationshipsPatches
+	public static class P_Relationships
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

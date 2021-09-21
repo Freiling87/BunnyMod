@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -10,7 +10,7 @@ using HarmonyLib;
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(ScrollingMenu))]
-	public static class ScrollingMenuPatches
+	public static class P_ScrollingMenu
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

@@ -3,7 +3,7 @@
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(ExitPoint))]
-	public static class ExitPointPatches
+	public static class P_ExitPoint
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(ExitPoint.DetermineIfCanExit))]
 		private static bool DetermineIfCanExit_Prefix(ref bool __result)

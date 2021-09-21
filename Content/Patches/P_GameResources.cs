@@ -1,9 +1,9 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 
 namespace BunnyMod.Content.Patches
 {
 	[HarmonyPatch(declaringType: typeof(GameResources))]
-	public static class GameResourcesPatches
+	public static class P_GameResources
 	{
 		/*[HarmonyPostfix, HarmonyPatch(methodName: nameof(GameResources.SetupDics))]
 		private static void SetupDics_Postfix(GameResources __instance)

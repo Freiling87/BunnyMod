@@ -13,6 +13,8 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
 		private static ManualLogSource _logger;
 
+		private static GameController GC => GameController.gameController;
+
 		#region Main
 		[RLSetup]
 		public static void Setup()

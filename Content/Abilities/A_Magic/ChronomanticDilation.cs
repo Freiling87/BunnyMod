@@ -48,7 +48,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 				MSA_CD_DialogueCantDo(Item.agent);
 			else if (MSA_CD_IsCast(Item.agent))
 				MSA_CD_StartDecast(Item.agent);
-			else if (MSA_CD_RollMiscast(Item.agent, (float)((Shared.CalcMaxMana(Item.agent) - Item.invItemCount) / 100f)))
+			else if (MSA_CD_RollMiscast(Item.agent, (float)((BMAbilityController.CalcMaxMana(Item.agent) - Item.invItemCount) / 100f)))
 				MSA_CD_StartMiscast(Item.agent, MSA_CD_RollTimescale(Item.agent, true));
 			else
 				MSA_CD_StartCast(Item.agent, MSA_CD_RollTimescale(Item.agent, false));
@@ -79,11 +79,11 @@ namespace BunnyMod.Content.Abilities.A_Magic
 				if (Item.invItemCount < 0)
 					MSA_CD_StartMiscast(Item.agent, MSA_CD_RollTimescale(Item.agent, true));
 			}
-			else if (Item.invItemCount < Shared.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
+			else if (Item.invItemCount < BMAbilityController.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
 			{
-				Item.invItemCount += Math.Min(Shared.CalcMaxMana(Item.agent) - Item.invItemCount, 5);
+				Item.invItemCount += Math.Min(BMAbilityController.CalcMaxMana(Item.agent) - Item.invItemCount, 5);
 
-				if (Item.invItemCount == Shared.CalcMaxMana(Item.agent) && !MSA_CD_IsMiscast(Item.agent))
+				if (Item.invItemCount == BMAbilityController.CalcMaxMana(Item.agent) && !MSA_CD_IsMiscast(Item.agent))
 					MSA_CD_StartRecharge(Item.agent, true);
 			}
 		}

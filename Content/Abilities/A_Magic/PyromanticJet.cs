@@ -72,11 +72,11 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		{
 			e.UpdateDelay = 0.1f;
 
-			if (Item.invItemCount < Shared.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
+			if (Item.invItemCount < BMAbilityController.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
 			{
 				Item.invItemCount++;
 
-				if (Item.invItemCount == Shared.CalcMaxMana(Item.agent))
+				if (Item.invItemCount == BMAbilityController.CalcMaxMana(Item.agent))
 					MSA_PJ_CompleteRecharge(Item.agent, true);
 			}
 		}

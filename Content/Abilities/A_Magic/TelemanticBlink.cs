@@ -84,11 +84,11 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		{
 			e.UpdateDelay = 1f;
 
-			if (tbNetCharge == 0 && Item.invItemCount < Shared.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
+			if (tbNetCharge == 0 && Item.invItemCount < BMAbilityController.CalcMaxMana(Item.agent) && Item.agent.statusEffects.CanRecharge())
 			{
-				Item.invItemCount = Math.Min(Shared.CalcMaxMana(Item.agent), Item.invItemCount + MSA_TB_RollRechargeRate(Item.agent));
+				Item.invItemCount = Math.Min(BMAbilityController.CalcMaxMana(Item.agent), Item.invItemCount + MSA_TB_RollRechargeRate(Item.agent));
 
-				if (Item.invItemCount == Shared.CalcMaxMana(Item.agent))
+				if (Item.invItemCount == BMAbilityController.CalcMaxMana(Item.agent))
 					MSA_TB_StartRecharge(Item.agent, true);
 			}
 		}
@@ -261,7 +261,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 			{
 				float distance = Random.Range(minError, maxError);
 
-				targetPosition = Shared.MouseIngamePosition() + (distance * Random.insideUnitCircle.normalized);
+				targetPosition = BMAbilityController.MouseIngamePosition() + (distance * Random.insideUnitCircle.normalized);
 
 				TileData tileData = tileInfo.GetTileData(targetPosition);
 

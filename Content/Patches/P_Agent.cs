@@ -14,6 +14,110 @@ namespace BunnyMod.Content.Patches
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		public static GameController GC => GameController.gameController;
 
+		[HarmonyPrefix, HarmonyPatch(methodName:nameof(Agent.AgentOnCamera))]
+		public static bool AgentOnCamera_Prefix(Agent __instance, ref bool __result) 
+		{
+			if (__instance.isPlayer != 0)
+			{
+				__instance.onCamera = true;
+
+				__result = true;
+				return false;
+			}
+
+			if (GC.serverPlayer)
+			{
+				if ((!__instance.brain.active && !__instance.oma._dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer &&
+					GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel && !__instance.oma.mindControlled) || __instance.objectAgent)
+				{
+					__instance.onCamera = false;
+
+					__result = false;
+					return false;
+				}
+			}
+			else if ((!__instance.brain.active && !__instance.dead && !__instance.frozen && !__instance.wasPossessed2 && GC.serverPlayer &&
+				GC.loadCompleteReally && !GC.loadLevel.recentlyStartedLevel) || __instance.objectAgent)
+			{
+				__instance.onCamera = false;
+
+				__result = false;
+				return false;
+			}
+
+			Vector2 v = __instance.tr.position;
+			Vector2 vector = GC.playerAgent.agentCamera.originalCamera.WorldToViewportPoint(v);
+			float x = vector.x / BMInterface.GetZoomLevel();
+			float y = vector.y / BMInterface.GetZoomLevel();
+
+			if (x > -0.1f && x < 1.1f &&
+				y > -0.1f && y < 1.1f)
+			{
+				__instance.onCamera = true;
+
+				__result = true;
+				return false;
+			}
+
+			if (GC.coopMode || GC.fourPlayerMode)
+			{
+				vector = GC.playerAgent2.agentCamera.originalCamera.WorldToViewportPoint(v);
+				x = vector.x / BMInterface.GetZoomLevel();
+				y = vector.y / BMInterface.GetZoomLevel();
+
+				if (x > -0.1f && x < 1.1f &&
+					y > -0.1f && y < 1.1f)
+				{
+					__instance.onCamera = true;
+
+					__result = true;
+					return false;
+				}
+
+				if (GC.fourPlayerMode)
+				{
+					vector = GC.playerAgent3.agentCamera.originalCamera.WorldToViewportPoint(v);
+					x = vector.x / BMInterface.GetZoomLevel();
+					y = vector.y / BMInterface.GetZoomLevel();
+
+					if (x > -0.1f && x < 1.1f &&
+						y > -0.1f && y < 1.1f)
+					{
+						__instance.onCamera = true;
+
+						__result = true;
+						return false;
+					}
+					if (!GC.sessionDataBig.threePlayer)
+					{
+						vector = GC.playerAgent4.agentCamera.originalCamera.WorldToViewportPoint(v);
+						x = vector.x / BMInterface.GetZoomLevel();
+						y = vector.y / BMInterface.GetZoomLevel();
+
+						if (x > -0.1f && x < 1.1f &&
+							y > -0.1f && y < 1.1f)
+						{
+							__instance.onCamera = true;
+
+							__result = true;
+							return false;
+						}
+					}
+				}
+			}
+
+			__instance.onCamera = false;
+
+			__result = false;
+			return false;
+		}
+
+		[HarmonyPostfix, HarmonyPatch(methodName: "Awake")]
+		public static void Awake_Postfix(Agent __instance) 
+		{
+			__instance.wasOnCamera = false;
+		}
+
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Agent.CanShakeDown))]
 		private static bool CanShakeDown_Prefix(ref bool __result, Agent __instance)
 		{

@@ -11,7 +11,7 @@ namespace BunnyMod.Content.Abilities
 	/// <summary>
 	/// Provides methods for interfacing with BM Custom Abilities
 	/// </summary>
-	public class Shared
+	public class BMAbilityController
 	{
 		public static int CalcMaxMana(Agent agent)
 		{

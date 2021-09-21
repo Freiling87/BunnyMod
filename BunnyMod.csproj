@@ -98,6 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\Abilities\A_Magic\PyromanticJet.cs" />
     <Compile Include="Content\Abilities\Shared.cs" />
     <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
     <Compile Include="Content\BMAbilities.cs" />

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
+using BunnyMod.Content.Abilities.A_Magic;
 using BunnyMod.Content.Traits;
 using Google2u;
 using HarmonyLib;
@@ -33,6 +34,7 @@ namespace BunnyMod.Content.Patches
 			}
 		}
 
+		#region BecomeHidden, BecomeNotHidden
 		private static float BecomeHidden_GetPositionOffset(PlayfieldObject hiddenInObject)
 		{
 			switch (hiddenInObject.objectName)
@@ -164,12 +166,37 @@ namespace BunnyMod.Content.Patches
 			__instance.agent.agentCollider.enabled = true;
 			__instance.agent.EnableHitboxes(true);
 		}
+		#endregion
+
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.GiveSpecialAbility), argumentTypes: new[] { typeof(string) })]
+		private static void GiveSpecialAbility_Postfix(string abilityName, StatusEffects __instance)
+		{
+			if (__instance.agent.inventory.equippedSpecialAbility != null)
+			{
+				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;
+				Agent agent = __instance.agent;
+
+				string[] magicAbilities =
+				{
+					cSpecialAbility.ChronomanticDilation,
+					cSpecialAbility.PyromanticJet,
+					cSpecialAbility.TelemanticBlink
+				};
+
+				if (magicAbilities.Contains(abilityName))
+				{
+					ability.otherDamage = 0; // Bitwise variables
+
+					ability.initCount = Shared.CalcMaxMana(agent);
+					ability.maxAmmo = Shared.CalcMaxMana(agent);
+					ability.rechargeAmountInverse = Shared.CalcMaxMana(agent);
+				}
+			}
+		}
 
 		[HarmonyPostfix,
-		 HarmonyPatch(methodName: nameof(StatusEffects.ChangeHealth),
-				 argumentTypes: new[] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) })]
-		private static void ChangeHealth_Postfix(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient,
-				float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance)
+		 HarmonyPatch(methodName: nameof(StatusEffects.ChangeHealth), argumentTypes: new[] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) })]
+		private static void ChangeHealth_Postfix(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient, float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance)
 		{
 			// TODO change to transpiler (see todo in Warlord)
 			Agent hurtAgent = __instance.agent;

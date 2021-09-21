@@ -1,8 +1,6 @@
 using RogueLibsCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using BepInEx.Logging;
 using System.Reflection;
@@ -28,8 +26,8 @@ namespace BunnyMod.Content.Abilities
 				})
 				.WithName(new CustomNameInfo
 				{
-					[LanguageCode.English] = "Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\nMiscast: Speed up everything but yourself.",
-					[LanguageCode.Russian] = "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\nНеудача: Ускоряет всё кроме вас.",
+					[LanguageCode.English] = "Cast: Toggle to slow down everything but yourself. Toggle to deactivate.\n\nMiscast: Speed up everything but yourself.",
+					[LanguageCode.Russian] = "Заклинание: Нажмите кнопку Супер-способности, чтобы замедлить всё, кроме себя. Нажмите повторно, чтобы выключить замедление.\n\nНеудача: Ускоряет всё кроме вас.",
 				})
 				.WithSprite(Properties.Resources.ChronomanticDilation)
 				.WithUnlock(new AbilityUnlock

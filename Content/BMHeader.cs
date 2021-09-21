@@ -29,10 +29,6 @@ namespace BunnyMod.Content
 
 			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
-			new BMBehaviors().Awake();
-			new BMCombat().Awake();
-			new BMInterface().Awake();
-			new BMItems().Awake();
 			new BMLevelFeelings().Awake();
 			new BMLevelGen().Awake();
 			new BMMiscellaneous().Awake();
@@ -463,6 +459,33 @@ namespace BunnyMod.Content
 				SlotMachineJackpot_5 = "SlotMachineJackpot_5",
 				VeiledThreatsAnnoyed = "ThreatenAnnoyed",
 				WarlordSubmission = "WarlordSubmission";
+	}
+
+	public static class cItem // Custom Items
+	{
+		public const string
+			BearTrapProcessor = "Bear Trap Processor",
+			BeerCan = "Beer Can",
+			Brick = "Brick",
+			BrokenBottle = "Broken Bottle",
+			EnergyDrink = "Energy Drink",
+			FancyHat = "Fancy Hat",
+			FireMine = "Fire Mine",
+			HolySymbol = "Holy Symbol",
+			HolyWaterFlask = "Holy Water Flask",
+			KillArmortizer = "Kill Armortizer",
+			Lunchbox = "Lunchbox",
+			ManholeCover = "Manhole Cover",
+			MultiTool = "Multi-Tool",
+			Repairerator = "Repairerator",
+			RiotHelmet = "Riot Helmet",
+			Sawblade = "Sawblade",
+			Spear = "Spear",
+			StunGun = "Stun-Gun",
+			SugarProcessor = "Sugar Processor",
+			ThrowingKnife = "ThrowingKnives",
+			WhiskeyBottle = "Whiskey Bottle",
+			WireCutters = "Wire Cutters";
 	}
 
 	public static class cLevelFeature // Custom Level Features

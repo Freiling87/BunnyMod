@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
+using BunnyMod.Content.Logging;
 using HarmonyLib;
 
 namespace BunnyMod.Content.Patches
@@ -11,9 +12,7 @@ namespace BunnyMod.Content.Patches
 	[HarmonyPatch(declaringType: typeof(ScrollingMenu))]
 	public static class ScrollingMenuPatches
 	{
-		private static readonly string loggerName = $"BunnyMod_{nameof(ScrollingMenuPatches)}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(ScrollingMenu.GetTraitsRemoveTrait))]
 		private static IEnumerable<CodeInstruction> GetTraitsRemoveTrait_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable)
@@ -43,7 +42,7 @@ namespace BunnyMod.Content.Patches
 					});
 
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			patch.ApplySafe(instructions, Logger);
+			patch.ApplySafe(instructions, logger);
 			return instructions;
 		}
 	}

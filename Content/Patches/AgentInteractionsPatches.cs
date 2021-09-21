@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
+using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
 using HarmonyLib;
 
@@ -11,9 +11,7 @@ namespace BunnyMod.Content.Patches
 	[HarmonyPatch(declaringType: typeof(AgentInteractions))]
 	public static class AgentInteractionsPatches
 	{
-		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
 		/*[HarmonyPrefix,
 		 HarmonyPatch(methodName: nameof(AgentInteractions.DetermineButtons),
@@ -22,7 +20,7 @@ namespace BunnyMod.Content.Patches
 				List<string> buttons1, List<string> buttonsExtra1, List<int> buttonPrices1,
 				AgentInteractions __instance)
 		{
-			Logger.LogDebug(
+			logger.LogDebug(
 					$"DetermineButtons(agent = {agent.agentName}{agent.agentID}, agent.gang = {agent.gang}, interactingAgent.gangMugging = {interactingAgent.gangMugging})");
 
 			bool isHobo = agent.agentName == nameof(AgentNameDB.rowIds.Hobo);
@@ -34,7 +32,7 @@ namespace BunnyMod.Content.Patches
 				GameController.gameController.audioHandler.Play(agent, "AgentTalk");
 				if (agent.gang == interactingAgent.gangMugging && agent.gang != 0)
 				{
-					Logger.LogDebug($"DetermineButtons: Adding Buttons");
+					logger.LogDebug($"DetermineButtons: Adding Buttons");
 
 					if (isHobo)
 					{
@@ -63,7 +61,7 @@ namespace BunnyMod.Content.Patches
 		 HarmonyPatch(methodName: nameof(AgentInteractions.PressedButton), argumentTypes: new[] { typeof(Agent), typeof(Agent), typeof(string), typeof(int) })]
 		private static bool PressedButton_Prefix(Agent agent, Agent interactingAgent, string buttonText, int buttonPrice, AgentInteractions __instance)
 		{
-			Logger.LogDebug($"PressedButton(agent = {agent.agentName}, buttonText = {buttonText})");
+			logger.LogDebug($"PressedButton(agent = {agent.agentName}, buttonText = {buttonText})");
 
 			switch (agent.agentName)
 			{
@@ -118,7 +116,7 @@ namespace BunnyMod.Content.Patches
 		private static void UseItemOnObject_Postfix(Agent agent, Agent interactingAgent, InvItem item, int slotNum, string combineType, string useOnType,
 				ref bool __result)
 		{
-			Logger.LogDebug($"UseItemOnObject(item = {item.invItemName})");
+			logger.LogDebug($"UseItemOnObject(item = {item.invItemName})");
 
 			if (useOnType == "Hobo_Donate")
 			{
@@ -151,7 +149,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> Shakedown_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -159,7 +157,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> Threaten_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenAskFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenAskFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -167,7 +165,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> ThreatenKey_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -177,7 +175,7 @@ namespace BunnyMod.Content.Patches
 				ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -185,7 +183,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> ThreatenLeaveTown_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenAskFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenAskFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -193,7 +191,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> ThreatenMayor_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -201,7 +199,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> ThreatenMayorBadge_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -209,7 +207,7 @@ namespace BunnyMod.Content.Patches
 		private static IEnumerable<CodeInstruction> ThreatenMoney_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable, ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 
@@ -218,7 +216,7 @@ namespace BunnyMod.Content.Patches
 				ILGenerator generator)
 		{
 			List<CodeInstruction> instructions = instructionsEnumerable.ToList();
-			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, Logger);
+			VeiledThreats.ThreatenFailureHook(generator).ApplySafe(instructions, logger);
 			return instructions;
 		}
 	}

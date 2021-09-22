@@ -1,4 +1,4 @@
-﻿using RogueLibsCore;
+using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,21 +10,6 @@ namespace BunnyMod.Content
 {
 	public class BMChallenges
 	{
-		public static GameController GC => GameController.gameController;
-
-		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-			BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
-
-		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
-
-		public void Awake()
-		{
-			InitializeChallenges();
-		}
-
 		public static void InitializeChallenges()
 		{
 			#region Buildings

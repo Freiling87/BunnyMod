@@ -105,13 +105,13 @@
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMCombat.cs" />
-    <Compile Include="Content\BMEffects.cs" />
     <Compile Include="Content\BMInterface.cs" />
     <Compile Include="Content\BMLevelFeelings.cs" />
     <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMChallenges.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
+    <Compile Include="Content\CustomListDump.cs" />
     <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
@@ -133,6 +133,7 @@
     <Compile Include="Content\Items\I_Weapons_Thrown\WhiskeyBottle.cs" />
     <Compile Include="Content\Localization\AbilityLocalization.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
+    <Compile Include="Content\CustomNameDump.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
     <Compile Include="Content\Logging\BMLogger.cs" />
     <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
@@ -141,6 +142,8 @@
     <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
     <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
     <Compile Include="Content\Patches\P_Agents\P_Agent.cs" />
+    <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
+    <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_BasicFloor.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
     <Compile Include="Content\Patches\P_Combat\P_Bullet.cs" />
@@ -172,6 +175,8 @@
     <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />
     <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
     <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
+    <Compile Include="Content\StatusEffects\S_ChronomanticDilation.cs" />
+    <Compile Include="Content\StatusEffects\S_MuscleSpasms.cs" />
     <Compile Include="Content\Traits\BMTraitController.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
@@ -240,7 +245,6 @@
     <Compile Include="Content\Traits\T_Tampering\TamperTantrum.cs" />
     <Compile Include="Content\Traits\T_Tampering\TamperTantrum2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Content\BMItems.cs" />
     <Compile Include="Properties\ModInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -310,7 +314,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Hosted\UnityEngine.Networking.dll" />
-    <Content Include="Localizations\TraitsLocalization.yaml" />
+    <Content Include="Localizations\L_Traits.yaml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Items\I_Tool\" />
@@ -318,7 +322,6 @@
     <Folder Include="Content\Items\I_Wearable_Body\" />
     <Folder Include="Content\Items\I_Wearable_Head\" />
     <Folder Include="Content\Items\I_Wearable_Other\" />
-    <Folder Include="Content\StatusEffects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

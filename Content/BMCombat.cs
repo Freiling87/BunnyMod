@@ -11,12 +11,6 @@ namespace BunnyMod.Content
 {
 	public class BMCombat
 	{
-		[RLSetup]
-		public void Initialize_Names()
-		{
-			string t = vNameType.StatusEffect;
-			_ = RogueLibs.CreateCustomName("Headshot", t, new CustomNameInfo("Headshot"));
-		}
 
 		public static bool CanAgentMeleeHitGhost(Agent agent)
 		{

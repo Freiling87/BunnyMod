@@ -23,6 +23,19 @@ namespace BunnyMod.Content.Patches
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		public static GameController GC => GameController.gameController;
 
+		// TODO Fatass doesn't exist anymore (for now ?), move to CustomTrait::OnAdded
+		[HarmonyPostfix,HarmonyPatch(methodName:nameof(StatusEffects.AddTrait), argumentTypes: new[] { typeof(string), typeof(bool), typeof(bool) })]
+		public static void AddTrait_Postfix(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
+		{
+			Agent agent = __instance.agent;
+
+			if (traitName == cTrait.Fatass)
+			{
+				agent.SetEndurance(agent.enduranceStatMod + 1);
+				agent.SetSpeed(agent.speedStatMod - 1);
+			}
+		}
+
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.AgentIsRival), argumentTypes: new[] { typeof(Agent) })]
 		private static void AgentIsRival_Postfix(Agent myAgent, StatusEffects __instance, ref bool __result)
 		{
@@ -54,7 +67,6 @@ namespace BunnyMod.Content.Patches
 					return 0.24f;
 			}
 		}
-
 		private static bool BecomeHidden_ShouldDisableHitbox(PlayfieldObject hiddenInObject)
 		{
 			switch (hiddenInObject.objectName)
@@ -69,7 +81,6 @@ namespace BunnyMod.Content.Patches
 					return false;
 			}
 		}
-
 		private static string BecomeHidden_GetClipName(PlayfieldObject hiddenInObject)
 		{
 			switch (hiddenInObject.objectName)
@@ -156,6 +167,7 @@ namespace BunnyMod.Content.Patches
 			return instructions;
 		}
 
+		// Non-Patch
 		private static void BecomeHidden_Transpiler_Marker(StatusEffects _this, ObjectReal hiddenInObject)
 		{
 			TranspilerMarkers.TargetSequenceStart();
@@ -214,15 +226,22 @@ namespace BunnyMod.Content.Patches
 			}
 		}
 
-		#region SpecialAbilityInterfaceCheck2
-		[HarmonyPrefix, HarmonyPatch(methodName: nameof(StatusEffects.SpecialAbilityInterfaceCheck))]
-		public static bool SpecialAbilityInterfaceCheck2_Prefix(StatusEffects __instance, ref IEnumerator __result) 
+		// TODO Fatass doesn't exist anymore (for now ?), move to CustomTrait::OnRemoved
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.RemoveTrait), argumentTypes: new[] { typeof(string), typeof(bool) })]
+		public static void RemoveTrait_Postfix(string traitName, bool onlyLocal, StatusEffects __instance) 
 		{
-			__result = SpecialAbilityInterfaceCheck2_Enumerator(__instance);
+			Agent agent = __instance.agent;
 
-			return false;
+			if (traitName == cTrait.Fatass)
+			{
+				//TODO: CharacterCreation.CreatePointTallyText() for stat mods
+				agent.SetEndurance(agent.enduranceStatMod - 1);
+				agent.SetSpeed(agent.speedStatMod + 1);
+			}
 		}
 
+		#region SpecialAbilityInterfaceCheck2
+		// Non-Patch
 		public static IEnumerator SpecialAbilityInterfaceCheck2_Enumerator(StatusEffects __instance)
 		{
 			// Sniper Headshot indicators
@@ -476,6 +495,14 @@ namespace BunnyMod.Content.Patches
 			}
 
 			yield break;
+		}
+
+		[HarmonyPrefix, HarmonyPatch(methodName: nameof(StatusEffects.SpecialAbilityInterfaceCheck))]
+		public static bool SpecialAbilityInterfaceCheck2_Prefix(StatusEffects __instance, ref IEnumerator __result) 
+		{
+			__result = SpecialAbilityInterfaceCheck2_Enumerator(__instance);
+
+			return false;
 		}
 		#endregion
 	}

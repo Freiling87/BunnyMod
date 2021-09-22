@@ -1,4 +1,4 @@
-﻿using RogueLibsCore;
+using RogueLibsCore;
 using System.Collections.Generic;
 using BepInEx.Logging;
 using BunnyMod.Content.Logging;
@@ -15,8 +15,6 @@ namespace BunnyMod.Content
 		private static GameController GC => GameController.gameController;
 
 		// TODO I'd like to move this entire region somewhere else, but haven't made my mind up yet where it should go
-		#region Custom
-
 		// TODO unused.
 		public static void AnnoyWitnesses(Agent perp, Agent victim)
 		{
@@ -189,33 +187,6 @@ namespace BunnyMod.Content
 
 					agent.SetDefaultGoal(vAgentGoal.WanderLevel);
 				}
-			}
-		}
-
-		#endregion
-
-		// TODO Fatass doesn't exist anymore (for now ?), move to CustomTrait::OnAdded
-		public static void StatusEffects_AddTrait(string traitName, bool isStarting, bool justRefresh, StatusEffects __instance) // Postfix
-		{
-			Agent agent = __instance.agent;
-
-			if (traitName == BMTraits_Old.Fatass)
-			{
-				agent.SetEndurance(agent.enduranceStatMod + 1);
-				agent.SetSpeed(agent.speedStatMod - 1);
-			}
-		}
-
-		// TODO Fatass doesn't exist anymore (for now ?), move to CustomTrait::OnRemoved
-		public static void StatusEffects_RemoveTrait(string traitName, bool onlyLocal, StatusEffects __instance) // Postfix
-		{
-			Agent agent = __instance.agent;
-
-			if (traitName == BMTraits_Old.Fatass)
-			{
-				//TODO: CharacterCreation.CreatePointTallyText() for stat mods
-				agent.SetEndurance(agent.enduranceStatMod - 1);
-				agent.SetSpeed(agent.speedStatMod + 1);
 			}
 		}
 	}

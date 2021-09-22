@@ -111,7 +111,6 @@
     <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMMiscellaneous.cs" />
     <Compile Include="Content\BMChallenges.cs" />
-    <Compile Include="Content\BMQuests.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
     <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
@@ -162,6 +161,8 @@
     <Compile Include="Content\Patches\P_Quests.cs" />
     <Compile Include="Content\Patches\P_Relationships.cs" />
     <Compile Include="Content\Patches\P_ScrollingMenu.cs" />
+    <Compile Include="Content\Patches\P_SkillPoints.cs" />
+    <Compile Include="Content\Patches\P_StatsScreen.cs" />
     <Compile Include="Content\Patches\P_StatusEffects.cs" />
     <Compile Include="Content\Traits\BMTraitController.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />

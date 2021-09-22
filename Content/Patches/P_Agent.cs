@@ -5,6 +5,9 @@ using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
 using Random = UnityEngine.Random;
+using System.Collections;
+using System.Reflection;
+using System;
 
 namespace BunnyMod.Content.Patches
 {

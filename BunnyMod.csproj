@@ -102,13 +102,13 @@
     <Compile Include="Content\Abilities\A_Magic\TelemanticBlink.cs" />
     <Compile Include="Content\Abilities\BMAbilityController.cs" />
     <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
-    <Compile Include="Content\BMCombat.cs" />
     <Compile Include="Content\BMInterface.cs" />
     <Compile Include="Content\BMLevelGen.cs" />
     <Compile Include="Content\BMChallenges.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
     <Compile Include="Content\CustomListDump.cs" />
+    <Compile Include="Content\Custom\C_Combat.cs" />
     <Compile Include="Content\Custom\C_Interactions.cs" />
     <Compile Include="Content\Custom\C_Relationships.cs" />
     <Compile Include="Content\Custom\C_Spawns.cs" />

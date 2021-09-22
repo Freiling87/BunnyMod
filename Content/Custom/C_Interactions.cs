@@ -1,34 +1,33 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using BepInEx;
-using HarmonyLib;
-using UnityEngine;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using RogueLibsCore;
-using Random = UnityEngine.Random;
+using System.Collections.Generic;
 using BepInEx.Logging;
+using BunnyMod.Content.Logging;
+using UnityEngine;
+using Random = UnityEngine.Random;
+using BunnyMod.Content.Traits;
 
-namespace BunnyMod.Content
+namespace BunnyMod.Content.Custom
 {
-	public class BMBehaviors
+	public static class C_Interactions
 	{
-		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
-
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		private static GameController GC => GameController.gameController;
 
 		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, int moneyValue)
 		{
-			Logger.LogDebug("Hobo_AcceptDonation: " + hobo.agentID + " receiving $" + moneyValue);
+			logger.LogDebug("Hobo_AcceptDonation: " + hobo.agentID + " receiving $" + moneyValue);
 
 			// TODO: Write Hobo_AcceptDonation(Money)
 		}
 
 		public static void Hobo_AcceptDonation(Agent hobo, Agent interactingAgent, InvItem invItem)
 		{
-			Logger.LogDebug("Hobo_AcceptDonation: " + hobo.agentID + " receiving " + invItem.invItemName);
+			logger.LogDebug("Hobo_AcceptDonation: " + hobo.agentID + " receiving " + invItem.invItemName);
 
 			int moneyValue;
 			string item = invItem.invItemName;
@@ -47,20 +46,20 @@ namespace BunnyMod.Content
 				moneyValue = 50;
 			else
 			{
-				Logger.LogDebug("Unacceptable item donated to " + hobo.agentName + hobo.agentID);
+				logger.LogDebug("Unacceptable item donated to " + hobo.agentName + hobo.agentID);
 				moneyValue = invItem.itemValue;
 			}
 
 			string newRelationship = Hobo_relStatusAfterDonation(hobo, interactingAgent, moneyValue).ToString("f");
 
-			Logger.LogDebug("Hobo_AcceptDonation: item = " + item + ";  moneyValue = " + moneyValue + "; newRelationship = " + newRelationship);
+			logger.LogDebug("Hobo_AcceptDonation: item = " + item + ";  moneyValue = " + moneyValue + "; newRelationship = " + newRelationship);
 
 			Hobo_MugItem(hobo, interactingAgent, item, newRelationship);
 		}
 
 		public static void Hobo_MugItem(Agent agent, Agent interactingAgent, string itemName, string relStatus)
 		{
-			Logger.LogDebug("Hobo_MugItem");
+			logger.LogDebug("Hobo_MugItem");
 
 			if (GC.serverPlayer)
 			{
@@ -84,7 +83,7 @@ namespace BunnyMod.Content
 
 		public static void Hobo_MugMoney(Agent agent, Agent interactingAgent, int moneyValue, string relStatus, string transactionType)
 		{
-			Logger.LogDebug("Hobo_MugMoney");
+			logger.LogDebug("Hobo_MugMoney");
 
 			if (GC.serverPlayer)
 			{
@@ -113,7 +112,7 @@ namespace BunnyMod.Content
 
 		public static relStatus Hobo_relStatusAfterDonation(Agent hobo, Agent interactingAgent, int moneyValue)
 		{
-			Logger.LogDebug("Hobo_relStatusAfterDonation: moneyValue = " + moneyValue);
+			logger.LogDebug("Hobo_relStatusAfterDonation: moneyValue = " + moneyValue);
 
 			int[] reactionPercentages = new int[6] { 0, 0, 0, 0, 0, 0 };
 			List<relStatus> reactionOutcomes = new List<relStatus>

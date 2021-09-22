@@ -13,7 +13,7 @@ using BunnyMod.Content.Traits;
 
 namespace BunnyMod.Content.Custom
 {
-	class C_Relationships
+	public static class C_Relationships
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		private static GameController GC => GameController.gameController;

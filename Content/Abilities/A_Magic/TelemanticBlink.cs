@@ -6,14 +6,14 @@ using BepInEx.Logging;
 using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using BunnyMod.Content.Logging;
 
 namespace BunnyMod.Content.Abilities.A_Magic
 {
 	public class TelemanticBlink : CustomAbility, IAbilityRechargeable, IAbilityChargeable
 	{
-		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+		public static GameController GC => GameController.gameController;
 
 		private int tbHeldCounter = 0; // Seconds ability held to charge
 		private int tbNetCharge = 0; // Net total of post-ability charge level
@@ -56,7 +56,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 				{
 					tbHeldCounter++;
 
-					Logger.LogDebug("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + e.HeldTime);
+					logger.LogDebug("Telemancy OnHeld: HeldCounter = " + tbHeldCounter + "; timeHeld = " + e.HeldTime);
 
 					int manaCost = Mathf.Min(MSA_TB_RollManaCost(Item.agent), 100 - tbNetCharge);
 
@@ -133,19 +133,19 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static void MSA_TB_LogBits(Agent agent)
 		{
-			Logger.LogDebug("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
-			Logger.LogDebug("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
+			logger.LogDebug("TelemancyIsMiscast: " + MSA_TB_IsMiscast(agent));
+			logger.LogDebug("TelemancyIsReturning: " + MSA_TB_IsReturning(agent));
 		}
 		public static void MSA_TB_SetReturning(Agent agent, bool value)
 		{
-			Logger.LogDebug("TelemancySetReturning: " + value);
+			logger.LogDebug("TelemancySetReturning: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
 		public static void MSA_TB_SetMiscast(Agent agent, bool value)
 		{
-			Logger.LogDebug("TelemancySetMiscast: " + value);
+			logger.LogDebug("TelemancySetMiscast: " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
@@ -276,7 +276,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static int MSA_TB_RollManaCost(Agent agent)
 		{
-			Logger.LogDebug("TelemancyRollManaCost");
+			logger.LogDebug("TelemancyRollManaCost");
 
 			float min = 25.000f;
 			float max = 33.000f;
@@ -471,13 +471,13 @@ namespace BunnyMod.Content.Abilities.A_Magic
 				randomTeleport = true;
 			}
 
-			Logger.LogDebug("TelemancyTryMiscast: stroke");
+			logger.LogDebug("TelemancyTryMiscast: stroke");
 			agent.statusEffects.ChangeHealth(-severity * 5);
 			MSA_TB_DialogueMiscast(agent);
 
 			if (randomTeleport)
 			{
-				Logger.LogDebug("TelemancyTryMiscast: randomTeleport");
+				logger.LogDebug("TelemancyTryMiscast: randomTeleport");
 
 				agent.statusEffects.UseQuickEscapeTeleporter(false);
 				failTeleport = true;
@@ -485,7 +485,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 
 			if (lightAndSound)
 			{
-				Logger.LogDebug("TelemancyTryMiscast: lightAndSound");
+				logger.LogDebug("TelemancyTryMiscast: lightAndSound");
 
 				gc.spawnerMain.SpawnNoise(agent.curPosition, 1f, null, null, agent);
 				agent.SpawnParticleEffect("ExplosionEMP", agent.tr.position);
@@ -499,7 +499,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 
 			if (loseItem)
 			{
-				Logger.LogDebug("TelemancyTryMiscast: LoseItem");
+				logger.LogDebug("TelemancyTryMiscast: LoseItem");
 
 				// To pick random item: compare from NPC Thief stealing? That would exclude quest items and your money supply, at least.
 

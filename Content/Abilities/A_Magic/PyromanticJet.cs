@@ -7,14 +7,14 @@ using System.Reflection;
 using BunnyMod.Content.Abilities.A_Magic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using BunnyMod.Content.Logging;
 
 namespace BunnyMod.Content.Abilities.A_Magic
 {
 	public class PyromanticJet : CustomAbility, IAbilityRechargeable
 	{
-		private static readonly string loggerName = $"BunnyMod_{MethodBase.GetCurrentMethod().DeclaringType?.Name}";
-		private static ManualLogSource Logger => _logger ?? (_logger = BepInEx.Logging.Logger.CreateLogSource(loggerName));
-		private static ManualLogSource _logger;
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+		public static GameController GC => GameController.gameController;
 
 		#region Main
 		[RLSetup]
@@ -107,45 +107,45 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		#region Bits
 		public static bool MSA_PJ_IsBurnedOut(Agent agent)
 		{
-			Logger.LogDebug("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
+			logger.LogDebug("PyromancyIsBurnedOut: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0001) != 0;
 		}
 		public static bool MSA_PJ_IsCoolingDown(Agent agent)
 		{
-			Logger.LogDebug("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
+			logger.LogDebug("PyromancyIsCoolingDown: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0010) != 0;
 		}
 		public static bool MSA_PJ_IsMiscast(Agent agent)
 		{
-			Logger.LogDebug("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
+			logger.LogDebug("PyromancyIsMiscast: " + ((agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0));
 
 			return (agent.inventory.equippedSpecialAbility.otherDamage & 0b_0100) != 0;
 		}
 		public static void MSA_PJ_LogBooleans(Agent agent)
 		{
-			Logger.LogDebug("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
-			Logger.LogDebug("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
-			Logger.LogDebug("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
+			logger.LogDebug("PyromancyIsBurnedOut: " + MSA_PJ_IsBurnedOut(agent));
+			logger.LogDebug("PyromancyIsCoolingDown: " + MSA_PJ_IsCoolingDown(agent));
+			logger.LogDebug("PyromancyIsMiscast: " + MSA_PJ_IsMiscast(agent));
 		}
 		public static void MSA_PJ_SetBurnedOut(Agent agent, bool value)
 		{
-			Logger.LogDebug("PyromancySetBurnedOut " + value);
+			logger.LogDebug("PyromancySetBurnedOut " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0001;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0001;
 		}
 		public static void MSA_PJ_SetCoolingDown(Agent agent, bool value)
 		{
-			Logger.LogDebug("PyromancySetCoolingDown " + value);
+			logger.LogDebug("PyromancySetCoolingDown " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0010;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0010;
 		}
 		public static void MSA_PJ_SetMiscast(Agent agent, bool value)
 		{
-			Logger.LogDebug("PyromancySetMiscast " + value);
+			logger.LogDebug("PyromancySetMiscast " + value);
 
 			if (value) agent.inventory.equippedSpecialAbility.otherDamage |= 0b_0100;
 			else agent.inventory.equippedSpecialAbility.otherDamage &= ~0b_0100;
@@ -225,20 +225,18 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		{
 			float divisor = 5.000f;
 
-			StatusEffects se = agent.statusEffects;
-
-			if (se.hasTrait(cTrait.FocusedCasting))
+			if (agent.statusEffects.hasTrait(cTrait.FocusedCasting))
 				divisor -= 0.250f;
-			else if (se.hasTrait(cTrait.FocusedCasting_2))
+			else if (agent.statusEffects.hasTrait(cTrait.FocusedCasting_2))
 				divisor -= 0.500f;
-			else if (se.hasTrait(cTrait.WildCasting))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting))
 				divisor -= 0.750f;
-			else if (se.hasTrait(cTrait.WildCasting_2))
+			else if (agent.statusEffects.hasTrait(cTrait.WildCasting_2))
 				divisor -= 1.500f;
 
-			if (se.hasTrait(cTrait.MagicTraining))
+			if (agent.statusEffects.hasTrait(cTrait.MagicTraining))
 				divisor -= 0.250f;
-			else if (se.hasTrait(cTrait.MagicTraining_2))
+			else if (agent.statusEffects.hasTrait(cTrait.MagicTraining_2))
 				divisor -= 0.500f;
 
 			return divisor;
@@ -315,7 +313,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static void MSA_PJ_StartCast(Agent agent)
 		{
-			Logger.LogDebug("PyromancyStartCast");
+			logger.LogDebug("PyromancyStartCast");
 
 			Bullet bullet = gc.spawnerMain.SpawnBullet(agent.gun.tr.position, bulletStatus.Fire, agent);
 
@@ -349,7 +347,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static async Task MSA_PJ_StartCoolingDown(Agent agent)
 		{
-			Logger.LogDebug("PyromancyStartCoolingDown");
+			logger.LogDebug("PyromancyStartCoolingDown");
 
 			if (MSA_PJ_IsCoolingDown(agent) == false)
 			{
@@ -379,7 +377,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static void MSA_PJ_StartMiscast(Agent agent, int degree)
 		{
-			Logger.LogDebug("PyromancyStartMiscast");
+			logger.LogDebug("PyromancyStartMiscast");
 
 			MSA_PJ_DialogueMiscast(agent);
 
@@ -389,7 +387,7 @@ namespace BunnyMod.Content.Abilities.A_Magic
 		}
 		public static void MSA_PJ_CompleteRecharge(Agent agent, bool routine)
 		{
-			Logger.LogDebug("PyromancyStartRecharge");
+			logger.LogDebug("PyromancyStartRecharge");
 
 			if (!routine)
 				MSA_PJ_DialogueRecharge(agent);

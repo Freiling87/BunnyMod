@@ -1,11 +1,18 @@
-using BunnyMod.Content.Traits;
 using RogueLibsCore;
-using System;
+using System.Collections.Generic;
+using BepInEx.Logging;
+using BunnyMod.Content.Logging;
+using UnityEngine;
+using Random = UnityEngine.Random;
+using BunnyMod.Content.Traits;
 
-namespace BunnyMod.Content
+namespace BunnyMod.Content.Custom
 {
-	public class BMInterface
+	public static class C_Interface
 	{
+		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+		private static GameController GC => GameController.gameController;
+
 		// TODO unused
 		public static float GetZoomLevel(Agent playerAgent)
 		{

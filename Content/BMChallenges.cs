@@ -92,7 +92,7 @@ namespace BunnyMod.Content
 
 			#endregion
 
-			#region Exteriors & Features
+			#region Overhauls
 
 			CustomMutator ArcologyEcology = RogueLibs.CreateCustomMutator(cChallenge.ArcologyEcology, true,
 				new CustomNameInfo("Exteriors: Arcology Ecology"),
@@ -795,27 +795,5 @@ namespace BunnyMod.Content
 
 			#endregion
 		}
-
-		#region Custom
-
-		public static string GetActiveChallengeFromList(List<string> challengeList)
-		{
-			foreach (string mutator in challengeList)
-				if (GC.challenges.Contains(mutator))
-					return mutator;
-
-			return null;
-		}
-
-		public static bool IsChallengeFromListActive(List<string> challengeList)
-		{
-			foreach (string mutator in challengeList)
-				if (GC.challenges.Contains(mutator))
-					return true;
-
-			return false;
-		}
-
-		#endregion
 	}
 }

@@ -106,6 +106,7 @@
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
     <Compile Include="Content\CustomListDump.cs" />
+    <Compile Include="Content\Custom\C_Challenges.cs" />
     <Compile Include="Content\Custom\C_Combat.cs" />
     <Compile Include="Content\Custom\C_Interactions.cs" />
     <Compile Include="Content\Custom\C_Interface.cs" />
@@ -317,6 +318,16 @@
     <Content Include="Localizations\L_Traits.yaml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Challenges\C_Bldg_Interiors\" />
+    <Folder Include="Content\Challenges\C_Features\" />
+    <Folder Include="Content\Challenges\C_Fire\" />
+    <Folder Include="Content\Challenges\C_Knockback\" />
+    <Folder Include="Content\Challenges\C_MapSize\" />
+    <Folder Include="Content\Challenges\C_Overhauls\" />
+    <Folder Include="Content\Challenges\C_Quest_Count\" />
+    <Folder Include="Content\Challenges\C_Quest_Rewards\" />
+    <Folder Include="Content\Challenges\C_Roamer_Population\" />
+    <Folder Include="Content\Challenges\C_Roamer_Types\" />
     <Folder Include="Content\Items\I_Tool\" />
     <Folder Include="Content\Items\I_Weapons_Ranged\" />
     <Folder Include="Content\Items\I_Wearable_Body\" />

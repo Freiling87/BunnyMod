@@ -19,7 +19,7 @@ namespace BunnyMod.Content.Patches
 		{
 			string itemName = __instance.invItem.invItemName;
 
-			if (BMItems.customThrowables.Contains(itemName) && damagerObject.CompareTag("Agent"))
+			if (CustomListDump.customThrowables.Contains(itemName) && damagerObject.CompareTag("Agent"))
 			{
 				Agent agent = (Agent)damagerObject;
 

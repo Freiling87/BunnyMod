@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Light2D;
 using RogueLibsCore;
 using System;
@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using BunnyMod.Content.Traits;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using BunnyMod.Content.Custom;
+using BunnyMod.Content.Abilities.A_Magic;
 
 namespace BunnyMod.Content
 {
@@ -574,7 +576,7 @@ namespace BunnyMod.Content
 					luckMultiplier += 2;
 
 				if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
-					if (BMAbilities.MSA_CD_IsCast(agent))
+					if (ChronomanticDilation.MSA_CD_IsCast(agent))
 						luckMultiplier *= 2;
 			}
 
@@ -2044,7 +2046,7 @@ namespace BunnyMod.Content
 					GC.audioHandler.Play(__instance, vAudioClip.Operating);
 					GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
 					GC.OwnCheck(agent, __instance.go, "Normal", 2);
-					BMAgents.AnnoyWitnessesVictimless(agent);
+					C_Relationships.AnnoyWitnessesVictimless(agent);
 				}
 				else
 					GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);

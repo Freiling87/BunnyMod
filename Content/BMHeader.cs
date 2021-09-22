@@ -29,13 +29,6 @@ namespace BunnyMod.Content
 
 			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
-			new BMLevelFeelings().Awake();
-			new BMLevelGen().Awake();
-			new BMMiscellaneous().Awake();
-			new BMChallenges().Awake();
-			new BMObjects().Awake();
-			//new BMQuests().Awake();
-
 			RogueLibs.LoadFromAssembly();
 			BMTraitsManager.FinalizeTraits();
 		}

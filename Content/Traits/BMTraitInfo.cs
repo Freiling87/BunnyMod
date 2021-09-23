@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using RogueLibsCore;
 
@@ -14,16 +14,16 @@ namespace BunnyMod.Content.Traits
 
 		private bool finalized;
 
-		public BMTraitInfo(string name, TraitBuilder builder)
-		{
-			Name = name;
-			TraitBuilder = builder;
-		}
-
 		private void AssertNotFinalized()
 		{
 			if (finalized)
 				throw new NotSupportedException("cannot modify finalized BMTraitInfo!");
+		}
+
+		public BMTraitInfo(string name, TraitBuilder builder)
+		{
+			Name = name;
+			TraitBuilder = builder;
 		}
 
 		public BMTraitInfo WithUpgrade(Type upgradeTrait)

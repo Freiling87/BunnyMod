@@ -105,6 +105,11 @@
     <Compile Include="Content\BMChallenges.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
+    <Compile Include="Content\Challenges\BMChallengeController.cs" />
+    <Compile Include="Content\Challenges\BMChallengeInfo.cs" />
+    <Compile Include="Content\Challenges\BMChallengesManager.cs" />
+    <Compile Include="Content\Challenges\C_Buildings\CityOfSteel.cs" />
+    <Compile Include="Content\Challenges\EChallengeConflictGroup.cs" />
     <Compile Include="Content\CustomListDump.cs" />
     <Compile Include="Content\Custom\C_Challenges.cs" />
     <Compile Include="Content\Custom\C_Combat.cs" />
@@ -318,7 +323,6 @@
     <Content Include="Localizations\L_Traits.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Challenges\C_Bldg_Interiors\" />
     <Folder Include="Content\Challenges\C_Features\" />
     <Folder Include="Content\Challenges\C_Fire\" />
     <Folder Include="Content\Challenges\C_Knockback\" />

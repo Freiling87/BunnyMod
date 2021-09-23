@@ -8,7 +8,7 @@ using Object = UnityEngine.Object;
 
 namespace BunnyMod.Content.Challenges.C_Bldg_Interiors
 {
-	public static class CityOfSteel
+	public class CityOfSteel
 	{
 		[RLSetup]
 		static void Start()

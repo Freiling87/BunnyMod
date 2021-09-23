@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.StatusEffects
+namespace BunnyMod.Content.Status_Effects
 {
 	[EffectParameters(EffectLimitations.RemoveOnDeath | EffectLimitations.RemoveOnKnockOut | EffectLimitations.RemoveOnNextLevel)]
 	public class MuscleSpasms : CustomEffect

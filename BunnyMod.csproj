@@ -181,8 +181,8 @@
     <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />
     <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
     <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
-    <Compile Include="Content\StatusEffects\S_ChronomanticDilation.cs" />
-    <Compile Include="Content\StatusEffects\S_MuscleSpasms.cs" />
+    <Compile Include="Content\Status_Effects\S_ChronomanticDilation.cs" />
+    <Compile Include="Content\Status_Effects\S_MuscleSpasms.cs" />
     <Compile Include="Content\Traits\BMTraitController.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />

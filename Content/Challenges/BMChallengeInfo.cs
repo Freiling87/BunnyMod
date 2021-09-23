@@ -12,16 +12,16 @@ namespace BunnyMod.Content.Challenges
 
 		private bool finalized;
 
-		private void AssertNotFinalized()
-		{
-			if (finalized)
-				throw new NotSupportedException("cannot modify finalized BMChallengeInfo!");
-		}
-
 		public BMChallengeInfo(string name, UnlockBuilder builder)
 		{
 			Name = name;
 			UnlockBuilder = builder;
+		}
+
+		private void AssertNotFinalized()
+		{
+			if (finalized)
+				throw new NotSupportedException("cannot modify finalized BMChallengeInfo!");
 		}
 
 		public BMChallengeInfo WithConflictGroup(params EChallengeConflictGroup[] conflictGroup)

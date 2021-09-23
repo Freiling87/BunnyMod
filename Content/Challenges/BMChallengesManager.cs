@@ -62,17 +62,17 @@ namespace BunnyMod.Content.Challenges
 		/// <summary>
 		/// Sets the cancellations for the given Challenge.
 		/// </summary>
-		private static void RegisterCancellations(Type ChallengeType, BMChallengeInfo ChallengeInfo)
+		private static void RegisterCancellations(Type challengeType, BMChallengeInfo challengeInfo)
 		{
-			MutatorUnlock unlock = ChallengeInfo.UnlockBuilder.Unlock;
+			UnlockWrapper unlock = challengeInfo.UnlockBuilder.Unlock;
 			HashSet<string> cancellations = new HashSet<string>();
 
 			// cancel all Challenges in this conflictGroup 
-			if (ChallengeInfo.ConflictGroups.Count > 0)
+			if (challengeInfo.ConflictGroups.Count > 0)
 			{
-				foreach (string cancelChallenge in ChallengeInfo.ConflictGroups
+				foreach (string cancelChallenge in challengeInfo.ConflictGroups
 						.SelectMany(group => conflictGroupDict[group])
-						.Where(type => type != ChallengeType) // prevent Challenge from cancelling itself
+						.Where(type => type != challengeType) // prevent Challenge from cancelling itself
 						.Select(GetChallengeInfo)
 						.Where(info => info != null)
 						.Select(info => info.Name))

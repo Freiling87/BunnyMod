@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
+using BTHarmonyUtils;
 using BTHarmonyUtils.TranspilerUtils;
 using BunnyMod.Content.Logging;
 using HarmonyLib;

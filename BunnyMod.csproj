@@ -108,6 +108,11 @@
     <Compile Include="Content\Challenges\BMChallengeController.cs" />
     <Compile Include="Content\Challenges\BMChallengeInfo.cs" />
     <Compile Include="Content\Challenges\BMChallengesManager.cs" />
+    <Compile Include="Content\Challenges\ChallengeMenuGroups.cs" />
+    <Compile Include="Content\Challenges\C_Buildings\GreenLiving.cs" />
+    <Compile Include="Content\Challenges\C_Buildings\Panoptikopolis.cs" />
+    <Compile Include="Content\Challenges\C_Buildings\ShantyTown.cs" />
+    <Compile Include="Content\Challenges\C_Overhauls\SpelunkyDory.cs" />
     <Compile Include="Content\Challenges\C_Buildings\CityOfSteel.cs" />
     <Compile Include="Content\Challenges\EChallengeConflictGroup.cs" />
     <Compile Include="Content\CustomListDump.cs" />
@@ -327,7 +332,6 @@
     <Folder Include="Content\Challenges\C_Fire\" />
     <Folder Include="Content\Challenges\C_Knockback\" />
     <Folder Include="Content\Challenges\C_MapSize\" />
-    <Folder Include="Content\Challenges\C_Overhauls\" />
     <Folder Include="Content\Challenges\C_Quest_Count\" />
     <Folder Include="Content\Challenges\C_Quest_Rewards\" />
     <Folder Include="Content\Challenges\C_Roamer_Population\" />

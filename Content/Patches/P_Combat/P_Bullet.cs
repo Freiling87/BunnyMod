@@ -1,4 +1,5 @@
 using BepInEx.Logging;
+using BunnyMod.Content.Custom;
 using BunnyMod.Content.Logging;
 using HarmonyLib;
 using System;
@@ -54,7 +55,7 @@ namespace BunnyMod.Content.Patches
 					__instance.bulletType != bulletStatus.LeafBlower &&
 					__instance.bulletType != bulletStatus.ResearchGun &&
 					__instance.bulletType != bulletStatus.FireExtinguisher)
-					maxBulletDistance = BMCombat.GetBulletRange(__instance.agent);
+					maxBulletDistance = C_Combat.GetBulletRange(__instance.agent);
 				else
 					maxBulletDistance = 13f;
 

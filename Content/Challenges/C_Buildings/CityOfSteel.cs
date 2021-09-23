@@ -6,7 +6,7 @@ using BunnyMod;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 
-namespace BunnyMod.Content.Challenges.C_Bldg_Interiors
+namespace BunnyMod.Content.Challenges.C_Buildings
 {
 	public class CityOfSteel
 	{

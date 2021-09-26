@@ -73,9 +73,39 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] BearTrapProcessor {
+            get {
+                object obj = ResourceManager.GetObject("BearTrapProcessor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] BeerCan {
             get {
                 object obj = ResourceManager.GetObject("BeerCan", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Brick {
+            get {
+                object obj = ResourceManager.GetObject("Brick", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] BrokenBottle {
+            get {
+                object obj = ResourceManager.GetObject("BrokenBottle", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -133,6 +163,46 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] EnergyDrink {
+            get {
+                object obj = ResourceManager.GetObject("EnergyDrink", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] HolySymbol {
+            get {
+                object obj = ResourceManager.GetObject("HolySymbol", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] HolyWaterFlask {
+            get {
+                object obj = ResourceManager.GetObject("HolyWaterFlask", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] ManholeCover {
+            get {
+                object obj = ResourceManager.GetObject("ManholeCover", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] MorphomanticGlamor {
             get {
                 object obj = ResourceManager.GetObject("MorphomanticGlamor", resourceCulture);
@@ -163,9 +233,49 @@ namespace BunnyMod.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] Sawblade {
+            get {
+                object obj = ResourceManager.GetObject("Sawblade", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Spear {
+            get {
+                object obj = ResourceManager.GetObject("Spear", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] SugarProcessor {
+            get {
+                object obj = ResourceManager.GetObject("SugarProcessor", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] TelemanticBlink {
             get {
                 object obj = ResourceManager.GetObject("TelemanticBlink", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] WhiskeyBottle {
+            get {
+                object obj = ResourceManager.GetObject("WhiskeyBottle", resourceCulture);
                 return ((byte[])(obj));
             }
         }

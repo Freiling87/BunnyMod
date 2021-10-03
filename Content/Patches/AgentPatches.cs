@@ -1,8 +1,9 @@
-﻿using BepInEx.Logging;
+using BepInEx.Logging;
 using BunnyMod.Content.Logging;
 using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
+using RogueLibsCore;
 
 namespace BunnyMod.Content.Patches
 {
@@ -16,6 +17,12 @@ namespace BunnyMod.Content.Patches
 		{
 			logger.LogDebug($"called {nameof(CanShakeDown_Prefix)}");
 			return Warlord.Agent_CanShakeDown_Prefix(ref __result, __instance);
+		}
+
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Agent.FindOperatingTime), argumentTypes: new[] { typeof(PlayfieldObject), typeof(float) })]
+		private static void FindOperatingTime_Postfix(PlayfieldObject operatingOnObject, float timeToUnlock, Agent __instance, ref float __result)
+		{
+			__result *= __instance.gc.selectedTimeScale;
 		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Agent.SetupAgentStats), argumentTypes: new[] { typeof(string) })]

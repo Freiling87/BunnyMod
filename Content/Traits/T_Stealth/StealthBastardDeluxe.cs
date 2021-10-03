@@ -32,6 +32,11 @@ namespace BunnyMod.Content.Traits
 			return agent.HasTrait<StealthBastardDeluxe>() ? 0f : 1f;
 		}
 
+		public static bool CanHideInObject(ObjectReal objectInstance)
+		{
+			return objectInstance is Bathtub || objectInstance is Plant || objectInstance is PoolTable || objectInstance is TableBig;
+		}
+
 		public override void OnAdded() { }
 
 		public override void OnRemoved() { }

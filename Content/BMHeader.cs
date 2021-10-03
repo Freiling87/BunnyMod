@@ -5,10 +5,8 @@ using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
 using BunnyMod.Content.Traits;
 using BunnyMod.Properties;
-using UnityEngine;
 
 namespace BunnyMod.Content
 {
@@ -24,6 +22,8 @@ namespace BunnyMod.Content
 
 		public void Awake()
 		{
+			string configPath = Paths.ConfigPath;
+
 			MainInstance = this;
 			ConsoleMessage = Logger;
 
@@ -54,52 +54,11 @@ namespace BunnyMod.Content
 		private static GameController GC => GameController.gameController;
 		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
-		public static void AddDictionary(Dictionary<PlayfieldObject, bool> dict, PlayfieldObject objectReal, bool defaultValue)
-		{
-			BMLog("AddDictionaryBool");
-
-			// May need to force types here
-
-			if (!dict.ContainsKey(objectReal))
-				dict.Add(objectReal, defaultValue);
-			else
-				dict[objectReal] = defaultValue;
-		}
-
-		public static void AddDictionary(Dictionary<PlayfieldObject, string> dict, PlayfieldObject objectReal, string defaultValue)
-		{
-			BMLog("AddDictionary");
-
-			// May need to force types here
-
-			if (!dict.ContainsKey(objectReal))
-				dict.Add(objectReal, defaultValue);
-			else
-				dict[objectReal] = defaultValue;
-		}
-
 		public static T GetMethodWithoutOverrides<T>(this MethodInfo method, object callFrom)
 				where T : Delegate
 		{
 			IntPtr ptr = method.MethodHandle.GetFunctionPointer();
 			return (T) Activator.CreateInstance(typeof(T), callFrom, ptr);
-		}
-
-		public static void InvokeRepeating(object instance, string method, float delay, float interval)
-		{
-			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
-			_ = InvokeRepeatingAsync(instance, methodAccessed, (int) Mathf.Floor(delay * 1000), (int) Mathf.Floor(interval * 1000));
-		}
-
-		private static async Task InvokeRepeatingAsync(object instance, MethodInfo method, int delay, int interval)
-		{
-			await Task.Delay(delay);
-
-			while (true)
-			{
-				method.Invoke(instance, new object[0]);
-				await Task.Delay(interval);
-			}
 		}
 
 		public static T RandomFromList<T>(List<T> list)
@@ -190,13 +149,8 @@ namespace BunnyMod.Content
 		public const string
 				CamerasCaptureWanted = "CamerasCaptureWanted",
 				CamerasCaptureGuilty = "CamerasCaptureGuilty",
-				DispenseIce = "DispenseIce",
+				DispenseIce = "DispenseIce", // TODO unused
 				FountainSteal = "FountainSteal",
-				FountainWishFabulousWealth = "FountainWishFabulousWealth",
-				FountainWishFameAndGlory = "FountainWishFameAndGlory",
-				FountainWishGoodHealth = "FountainWishGoodHealth",
-				FountainWishTrueFriendship = "FountainWishTrueFriendship",
-				FountainWishWorldPeace = "FountainWishWorldPeace",
 				GrillFudPaid = "GrillFudPaid",
 				HideInContainer = "HideInContainer",
 				OpenContainer = "OpenContainer",

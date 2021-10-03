@@ -56,9 +56,8 @@
     <Reference Include="netstandard">
       <HintPath>Libraries\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="RogueLibsCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\RogueLibsCore.dll</HintPath>
+    <Reference Include="RogueLibsCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>Libraries\RogueLibsCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -114,23 +113,59 @@
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
     <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
+    <Compile Include="Content\Extensions\InvItem_Extensions.cs" />
     <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
+    <Compile Include="Content\Extensions\StatusEffects_Extensions.cs" />
     <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
-    <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
-    <Compile Include="Content\ObjectBehaviour\ManholeController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
+    <Compile Include="Content\Logging\BMLogger.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\AlarmButtonController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ATMMachineController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\DoorController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ElevatorController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FireHydrantController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FlamingBarrelController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FountainController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\HoleController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\LampController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ManholeController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\SecurityCamController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\StoveController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\StoveData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\TrashCanController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\VendorCartController.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectControllerAccessor.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectControllerManager.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectUtils.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectControllerInterface.cs" />
     <Compile Include="Content\Patches\AgentInteractionsPatches.cs" />
     <Compile Include="Content\Patches\AgentPatches.cs" />
     <Compile Include="Content\Patches\CharacterCreationPatches.cs" />
     <Compile Include="Content\Patches\CharacterSelectPatches.cs" />
-    <Compile Include="Content\Patches\ExitPointPatches.cs" />
     <Compile Include="Content\Patches\GameResourcesPatches.cs" />
+    <Compile Include="Content\Patches\LevelTransition_Patches.cs" />
     <Compile Include="Content\Patches\ObjectMultPatches.cs" />
-    <Compile Include="Content\Patches\ObjectRealPatches.cs" />
+    <Compile Include="Content\Patches\Objects\AlarmButton_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\ATMMachine_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Bathtub_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Door_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Elevator_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\ExitPointPatches.cs" />
+    <Compile Include="Content\Patches\Objects\FireHydrant_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\FlamingBarrel_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Fountain_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Hole_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Lamp_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Manhole_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\ObjectReal_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Plant_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\PlayfieldObject_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\PoolTable_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\SecurityCam_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Stove_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\TableBig_Patches.cs" />
     <Compile Include="Content\Patches\QuestsPatches.cs" />
     <Compile Include="Content\Patches\RelationshipsPatches.cs" />
     <Compile Include="Content\Patches\ScrollingMenuPatches.cs" />

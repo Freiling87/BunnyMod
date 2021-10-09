@@ -12,10 +12,9 @@ namespace BunnyMod.Content.Patches
 	public static class P_Relationships
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+		public static GameController GC => GameController.gameController;
 
-		[HarmonyPostfix,
-		 HarmonyPatch(methodName: nameof(Relationships.EnforcerAlert),
-				 argumentTypes: new[] { typeof(Agent), typeof(float), typeof(Vector2), typeof(int), typeof(Agent) })]
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Relationships.EnforcerAlert), argumentTypes: new[] { typeof(Agent), typeof(float), typeof(Vector2), typeof(int), typeof(Agent) })]
 		private static void EnforcerAlert_Postfix(Agent criminal, float noiseDist, Vector2 noisePos, int numStrikes, Agent victim, Relationships __instance)
 		{
 			// TODO move logic to PoliceState challenge
@@ -38,34 +37,36 @@ namespace BunnyMod.Content.Patches
 			{
 				__instance.SetRelInitial(otherAgent, nameof(relStatus.Aligned));
 				otherAgent.relationships.SetRelInitial(___agent, nameof(relStatus.Aligned));
+
 				return;
 			}
 
 			string currentRelationship = __instance.GetRel(otherAgent);
+
 			if (currentRelationship == null)
 			{
 				logger.LogWarning("SetupRelationshipOriginal - currentRelationship was null!");
+
 				return;
 			}
 
 			relStatus? newRelationship;
+
 			if (___agent.IsAgent(AgentNameDB.rowIds.ResistanceLeader) && otherAgent.isPlayer > 0)
-			{
 				newRelationship = relStatus.Aligned;
-			}
 			else
 			{
 				// Order matters here, the first non-Null relStatus will be used.
 				newRelationship =
-						MobDebt.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? Domineering.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? Domineering2.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? Polarizing.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? Polarizing2.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? BootLicker.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? Priors.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? GenerallyUnpleasant.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
-						?? ObjectivelyUnpleasant.SetupInitialRelationship(___agent, otherAgent, currentRelationship);
+					MobDebt.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? Domineering.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? Domineering2.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? Polarizing.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? Polarizing2.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? BootLicker.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? Priors.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? GenerallyUnpleasant.SetupInitialRelationship(___agent, otherAgent, currentRelationship)
+					?? ObjectivelyUnpleasant.SetupInitialRelationship(___agent, otherAgent, currentRelationship);
 			}
 
 			if (newRelationship != null)
@@ -73,6 +74,7 @@ namespace BunnyMod.Content.Patches
 				string relationshipString = newRelationship.Value.ToString();
 				__instance.SetRelInitial(otherAgent, relationshipString);
 				otherAgent.relationships.SetRelInitial(___agent, relationshipString);
+
 				if (newRelationship.Value == relStatus.Annoyed)
 				{
 					otherAgent.relationships.SetStrikes(___agent, 2);

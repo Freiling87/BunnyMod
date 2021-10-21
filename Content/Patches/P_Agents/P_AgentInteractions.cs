@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using BepInEx.Logging;
@@ -169,8 +169,7 @@ namespace BunnyMod.Content.Patches
 			return instructions;
 		}
 
-		[HarmonyTranspiler,
-		 HarmonyPatch(methodName: nameof(AgentInteractions.ThreatenKeyAndSafeCombination), argumentTypes: new[] { typeof(Agent), typeof(Agent) })]
+		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(AgentInteractions.ThreatenKeyAndSafeCombination), argumentTypes: new[] { typeof(Agent), typeof(Agent) })]
 		private static IEnumerable<CodeInstruction> ThreatenKeyAndSafeCombination_Transpiler(IEnumerable<CodeInstruction> instructionsEnumerable,
 				ILGenerator generator)
 		{

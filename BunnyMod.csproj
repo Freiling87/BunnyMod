@@ -282,6 +282,7 @@
     <None Include="MD\2.6. Traits.md" />
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
+    <None Include="MD\9.4. Breakup.md" />
     <None Include="Properties\Resources\BathtubClosed.bin" />
     <None Include="Properties\Resources\BearTrapProcessor.bin" />
     <None Include="Properties\Resources\Brick.bin" />

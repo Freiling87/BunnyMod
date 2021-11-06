@@ -1,4 +1,4 @@
-﻿# BunnyMod
+# BunnyMod
 
 ![635810511556717422-house-edit](https://user-images.githubusercontent.com/29388895/95779680-0db93e80-0c90-11eb-977c-22f21eb5d771.jpg)
 
@@ -40,17 +40,21 @@ If you have suggestions or requests, get in contact with me. Most of the content
 
 I make broken things, and nice people patiently correct me. I want to thank those people.
 
-**Abbysssal#2020** - Endless help with RogueLibs, BepInEx, and coding in general 🌀
+**Abbysssal#2020** - Answered endless questions with RogueLibs, BepInEx, and coding in general 🌀
 
-**BlazingTwist#4559** - RogueLibs v3 & v95 updating, bugfixes 🍻
+**BlazingTwist#4559** - RogueLibs v3 & SOR v95 updating, bugfixes, major refactoring & answering a ton of questions 🍻
 
 **DapperGentleman#5990** - Balancing, Sprites, Bugtesting & sanity checks 🎩
 
 **Cherry🐍🐇#0643** - Release 1.4 Promo video 🎥
 
+**GenEric#1897** - TONS of gameplay feature ideas & balance suggestions 🦍
+
 **The Streets of Rogue Discord Community** - Fun, positive, supportive, and creative people! 🐱‍👤
 
 **You, the Very Special Player** - I'm supposed to say cheesy shit like this, right? 👼
+
+**Your Mom** - Just tell her thanks for me. She'll know. 🥛
 
 **Me** - Look, it's my mod and I'm gonna thank myself if I want 🐰
 

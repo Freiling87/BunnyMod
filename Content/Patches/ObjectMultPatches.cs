@@ -1,7 +1,7 @@
-﻿using BunnyMod.Content.Traits;
+﻿using BunnyMod.Traits.T_Social;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(ObjectMult))]
 	public static class ObjectMultPatches

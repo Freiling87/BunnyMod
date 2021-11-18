@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BunnyMod.Content.Localization;
+using BunnyMod.Localization;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class TraitBuilderExtensions
 	{

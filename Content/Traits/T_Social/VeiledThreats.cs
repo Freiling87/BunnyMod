@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using HarmonyLib;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Social
 {
 	public class VeiledThreats : CustomTrait
 	{

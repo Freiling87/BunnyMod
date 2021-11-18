@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(PoolTable))]
 	public static class PoolTable_Patches

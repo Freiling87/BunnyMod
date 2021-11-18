@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class EnumExtensions
 	{

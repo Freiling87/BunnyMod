@@ -1,6 +1,6 @@
 ﻿using Google2u;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	public static class FireHydrantController
 	{

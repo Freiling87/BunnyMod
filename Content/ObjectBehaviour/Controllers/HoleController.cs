@@ -1,10 +1,10 @@
-﻿using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Traits;
+﻿using BunnyMod.Extensions;
+using BunnyMod.Traits.T_Stealth;
 using Google2u;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	public static class HoleController
 	{

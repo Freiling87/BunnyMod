@@ -1,9 +1,9 @@
-﻿using BunnyMod.Content.Extensions;
+﻿using BunnyMod.Extensions;
 using Google2u;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour
 {
 	public static class ObjectUtils
 	{

@@ -1,8 +1,8 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Magic_Chronomantic_Dilation
 {
 	public class RATS2 : CustomTrait
 	{

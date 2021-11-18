@@ -1,12 +1,13 @@
 ﻿using BepInEx.Logging;
-using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Traits;
+using BunnyMod.Extensions;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Social;
+using BunnyMod.Traits.T_Spawns;
 using Google2u;
 using HarmonyLib;
 using UnityEngine;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(Relationships))]
 	public static class RelationshipsPatches

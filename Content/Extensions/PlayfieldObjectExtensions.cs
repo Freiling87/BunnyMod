@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class PlayfieldObjectExtensions
 	{

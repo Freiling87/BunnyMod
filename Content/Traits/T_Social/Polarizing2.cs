@@ -1,9 +1,9 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Social
 {
 	public class Polarizing2 : CustomTrait
 	{

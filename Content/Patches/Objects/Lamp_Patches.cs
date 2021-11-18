@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.ObjectBehaviour;
+using BunnyMod.Logging;
+using BunnyMod.ObjectBehaviour.Controllers;
 using HarmonyLib;
 using UnityEngine;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Lamp))]
 	public static class Lamp_Patches

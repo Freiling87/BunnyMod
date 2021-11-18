@@ -1,8 +1,8 @@
 ﻿using System;
-using BunnyMod.Content.ObjectBehaviour;
+using BunnyMod.ObjectBehaviour;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(LevelTransition))]
 	public static class LevelTransition_Patches
@@ -10,7 +10,7 @@ namespace BunnyMod.Content.Patches
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(LevelTransition.ChangeLevel), argumentTypes: new Type[] { })]
 		private static void ChangeLevel_Prefix()
 		{
-			ObjectControllerManager.TriggerChangeLevelEvent();
+			ObjectControllerManager.OnLevelChange();
 		}
 	}
 }

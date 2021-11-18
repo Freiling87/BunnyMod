@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(ExitPoint))]
 	public static class ExitPointPatches

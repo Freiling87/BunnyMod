@@ -1,9 +1,9 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Tampering
 {
 	public class TamperTantrum2 : CustomTrait
 	{

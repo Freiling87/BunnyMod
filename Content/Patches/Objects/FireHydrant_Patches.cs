@@ -1,8 +1,8 @@
 ﻿using System;
-using BunnyMod.Content.ObjectBehaviour;
+using BunnyMod.ObjectBehaviour.Controllers;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(FireHydrant))]
 	public static class FireHydrant_Patches

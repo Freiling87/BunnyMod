@@ -1,8 +1,8 @@
-﻿using BunnyMod.Content.ObjectBehaviour;
+﻿using BunnyMod.ObjectBehaviour.Controllers;
 using HarmonyLib;
 using UnityEngine;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Hole))]
 	public static class Hole_Patches

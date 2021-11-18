@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	public static class LampController
 	{

@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Traits;
+using BunnyMod.Extensions;
+using BunnyMod.Traits;
+using BunnyMod.Traits.T_Stealth;
 using Google2u;
+using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class ManholeController : ObjectControllerInterface<Manhole>
+	public class ManholeController : IObjectController<Manhole>
 	{
 		private const string FlushYourself_ButtonText = "FlushYourself";
 
@@ -16,16 +18,24 @@ namespace BunnyMod.Content.ObjectBehaviour
 		private const string UseCrowbar_BarType = nameof(InterfaceNameDB.rowIds.Unlocking);
 		private const int UseCrowbar_ToolCost = 15;
 
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
+		{
+			ManholeController controller = new ManholeController();
+			ObjectControllerManager.RegisterObjectController(controller);
+		}
+		
 		public static void SetVars(Manhole manhole)
 		{
 			manhole.interactable = true;
 		}
 
+		[UsedImplicitly]
 		public static bool ShouldSpawnManhole()
 		{
 			return BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>();
 		}
-		
+
 		public static void HandleFlushYourself(ObjectReal manhole, Agent agent)
 		{
 			GameController gc = GameController.gameController;
@@ -100,6 +110,8 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 		}
 
+		public void HandleRevertAllVars(Manhole objectInstance) { }
+
 		public void HandleObjectUpdate(Manhole objectInstance) { }
 		public void HandlePlayerHasUsableItem(Manhole objectInstance, InvItem itemToTest, ref bool result) { }
 
@@ -157,7 +169,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			objectInstance.ShowObjectButtons();
 		}
 
-		public void HandleObjectAction(Manhole objectInstance, string action, ref bool noMoreObjectActions)
+		public void HandleObjectAction(Manhole objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject)
 		{
 			if (action == FlushYourself_ButtonText)
 			{

@@ -1,28 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
+using BunnyMod.ObjectBehaviour.Controllers.Data;
 using Google2u;
+using JetBrains.Annotations;
+using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class VendorCartController : ObjectControllerInterface<VendorCart>
+	public class VendorCartController : IObjectController<VendorCart>
 	{
 		private const string VendorCartSteal_ButtonText = "StealItem";
 		private const string VendorCartSteal_BarType = nameof(InterfaceNameDB.rowIds.Tampering);
 
-		private static readonly HashSet<VendorCart> vendorCartsStolenFrom = new HashSet<VendorCart>();
+		private static readonly ObjectDataAccessor<VendorCartData> dataAccessor = new ObjectDataAccessor<VendorCartData>();
 
-		static VendorCartController()
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
 		{
-			ObjectControllerManager.ChangeLevelEvent += OnChangeLevel;
+			VendorCartController controller = new VendorCartController();
+			ObjectControllerManager.RegisterObjectController(controller);
+			ObjectControllerManager.RegisterDataController<VendorCart>(dataAccessor);
 		}
 
-		private static void OnChangeLevel()
-		{
-			vendorCartsStolenFrom.Clear();
-		}
-
-		private static void HandleVendorCartSteal(VendorCart vendorCart)
+		private static void HandleVendorCartSteal(PlayfieldObject vendorCart)
 		{
 			Agent agent = vendorCart.interactingAgent;
 			InvDatabase agentInventory = agent.inventory;
@@ -36,11 +37,12 @@ namespace BunnyMod.Content.ObjectBehaviour
 				agentInventory.AddItem(invItem);
 			}
 
-			vendorCartsStolenFrom.Add(vendorCart);
+			dataAccessor.GetObjectData(vendorCart).wasStolenFrom = true;
 			vendorCart.interactable = false;
 			vendorCart.objectInvDatabase.DestroyAllItems();
 		}
 
+		public void HandleRevertAllVars(VendorCart objectInstance) { }
 		public void HandleObjectUpdate(VendorCart objectInstance) { }
 		public void HandlePlayerHasUsableItem(VendorCart objectInstance, InvItem itemToTest, ref bool result) { }
 
@@ -65,7 +67,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleDetermineButtons(VendorCart objectInstance)
 		{
-			if (!vendorCartsStolenFrom.Contains(objectInstance))
+			if (!dataAccessor.GetObjectData(objectInstance).wasStolenFrom)
 			{
 				objectInstance.AddButton(text: VendorCartSteal_ButtonText);
 			}
@@ -82,7 +84,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleInteract(VendorCart objectInstance, Agent agent)
 		{
-			if (vendorCartsStolenFrom.Contains(objectInstance))
+			if (dataAccessor.GetObjectData(objectInstance).wasStolenFrom)
 			{
 				objectInstance.StopInteraction();
 				return;
@@ -91,7 +93,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			objectInstance.ShowObjectButtons();
 		}
 
-		public void HandleObjectAction(VendorCart objectInstance, string action, ref bool noMoreObjectActions) { }
+		public void HandleObjectAction(VendorCart objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject) { }
 		public void HandleDamagedObject(VendorCart objectInstance, PlayfieldObject damagerObject, float damageAmount) { }
 		public void HandleMakeNonFunctional(VendorCart objectInstance, PlayfieldObject damagerObject) { }
 		public void HandleDestroyMe(VendorCart objectInstance, PlayfieldObject damagerObject) { }

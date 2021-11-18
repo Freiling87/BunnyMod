@@ -1,13 +1,21 @@
-﻿using BunnyMod.Content.Extensions;
+﻿using BunnyMod.Extensions;
 using JetBrains.Annotations;
+using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class AlarmButtonController : ObjectControllerInterface<AlarmButton>
+	public class AlarmButtonController : IObjectController<AlarmButton>
 	{
 		private const string AlarmButtonAncapistan_ButtonText = "AlarmButtonAncapistan";
 		private const int AlarmButtonAncapistan_CashCost = 25;
 
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
+		{
+			AlarmButtonController controller = new AlarmButtonController();
+			ObjectControllerManager.RegisterObjectController(controller);
+		}
+		
 		[UsedImplicitly]
 		public static bool DoShowObjectButtons(AlarmButton alarmButton)
 		{
@@ -18,7 +26,8 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 			return false;
 		}
-		
+
+		public void HandleRevertAllVars(AlarmButton objectInstance) { }
 		public void HandleObjectUpdate(AlarmButton objectInstance) { }
 		public void HandlePlayerHasUsableItem(AlarmButton objectInstance, InvItem itemToTest, ref bool result) { }
 
@@ -55,7 +64,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleFinishedOperating(AlarmButton objectInstance) { }
 		public void HandleInteract(AlarmButton objectInstance, Agent agent) { }
-		public void HandleObjectAction(AlarmButton objectInstance, string action, ref bool noMoreObjectActions) { }
+		public void HandleObjectAction(AlarmButton objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject) { }
 		public void HandleDamagedObject(AlarmButton objectInstance, PlayfieldObject damagerObject, float damageAmount) { }
 		public void HandleMakeNonFunctional(AlarmButton objectInstance, PlayfieldObject damagerObject) { }
 		public void HandleDestroyMe(AlarmButton objectInstance, PlayfieldObject damagerObject) { }

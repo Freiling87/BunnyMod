@@ -1,44 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour
 {
 	public static class ObjectControllerManager
 	{
-		public delegate void OnChangeLevel();
-		public static event OnChangeLevel ChangeLevelEvent;
+		private static readonly Dictionary<Type, IObjectController<PlayfieldObject>> objectControllers = new Dictionary<Type, IObjectController<PlayfieldObject>>();
+		private static readonly Dictionary<Type, IObjectDataController> dataControllers = new Dictionary<Type, IObjectDataController>();
 
-		public static void TriggerChangeLevelEvent()
+		public static void RegisterObjectController<T>(IObjectController<T> controller) where T : PlayfieldObject
 		{
-			ChangeLevelEvent?.Invoke();
-		}
-		
-		private static readonly Dictionary<Type, ObjectControllerInterface<PlayfieldObject>> controllers =
-				new Dictionary<Type, ObjectControllerInterface<PlayfieldObject>>();
-
-		[RLSetup, UsedImplicitly]
-		private static void Setup_Controllers()
-		{
-			RegisterController(new AlarmButtonController());
-			RegisterController(new ElevatorController());
-			RegisterController(new FlamingBarrelController());
-			RegisterController(new FountainController());
-			RegisterController(new ManholeController());
-			RegisterController(new SecurityCamController());
-			RegisterController(new StoveController());
-			RegisterController(new TrashCanController());
-			RegisterController(new VendorCartController());
+			objectControllers[typeof(T)] = new ObjectControllerAccessor<T>(controller);
 		}
 
-		private static void RegisterController<T>(ObjectControllerInterface<T> controller) where T : PlayfieldObject
+		/// <summary>
+		/// Register a DataController to be automatically managed
+		/// </summary>
+		/// <param name="dataController">dataController to register</param>
+		/// <typeparam name="TargetType">Type of the object to store data for</typeparam>
+		public static void RegisterDataController<TargetType>(IObjectDataController dataController)
+				where TargetType : PlayfieldObject
 		{
-			controllers[typeof(T)] = new ObjectControllerAccessor<T>(controller);
+			dataControllers[typeof(TargetType)] = dataController;
 		}
 
 		[CanBeNull]
-		public static ObjectControllerInterface<PlayfieldObject> GetController(PlayfieldObject objectInstance)
+		public static IObjectController<PlayfieldObject> GetObjectController(PlayfieldObject objectInstance)
 		{
 			if (objectInstance is null)
 			{
@@ -46,9 +34,33 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 
 			Type objectType = objectInstance.GetType();
-			return !controllers.ContainsKey(objectType)
-					? null
-					: controllers[objectType];
+			return objectControllers.ContainsKey(objectType) ? objectControllers[objectType] : null;
+		}
+
+		[CanBeNull]
+		private static IObjectDataController GetDataController(PlayfieldObject objectInstance)
+		{
+			if (objectInstance is null)
+			{
+				return null;
+			}
+
+			Type objectType = objectInstance.GetType();
+			return dataControllers.ContainsKey(objectType) ? dataControllers[objectType] : null;
+		}
+
+		public static void RevertAllVars<T>(T objectInstance) where T : PlayfieldObject
+		{
+			GetDataController(objectInstance)?.RevertAllVars(objectInstance);
+			GetObjectController(objectInstance)?.HandleRevertAllVars(objectInstance);
+		}
+
+		public static void OnLevelChange()
+		{
+			foreach (IObjectDataController dataController in dataControllers.Values)
+			{
+				dataController.ClearData();
+			}
 		}
 	}
 }

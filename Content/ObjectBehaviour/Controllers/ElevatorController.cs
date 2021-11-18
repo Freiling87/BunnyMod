@@ -1,24 +1,24 @@
-﻿using System.Collections.Generic;
-using BunnyMod.Content.Extensions;
+﻿using BunnyMod.Extensions;
+using BunnyMod.ObjectBehaviour.Controllers.Data;
 using Google2u;
+using JetBrains.Annotations;
+using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class ElevatorController : ObjectControllerInterface<Elevator>
+	public class ElevatorController : IObjectController<Elevator>
 	{
 		private const string ElevatorPurchaseTicket_ButtonText = "ElevatorPurchaseTicket";
 		private const int ElevatorPurchaseTicket_ButtonPrice = 50;
+		
+		private static readonly ObjectDataAccessor<ElevatorData> dataAccessor = new ObjectDataAccessor<ElevatorData>();
 
-		private static readonly HashSet<Elevator> elevatorTicketsPurchased = new HashSet<Elevator>();
-
-		static ElevatorController()
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
 		{
-			ObjectControllerManager.ChangeLevelEvent += OnChangeLevel;
-		}
-
-		private static void OnChangeLevel()
-		{
-			elevatorTicketsPurchased.Clear();
+			ElevatorController controller = new ElevatorController();
+			ObjectControllerManager.RegisterObjectController(controller);
+			ObjectControllerManager.RegisterDataController<Elevator>(dataAccessor);
 		}
 
 		private static void HandlePurchaseTicket(Elevator elevator, int price)
@@ -27,7 +27,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			Agent agent = elevator.interactingAgent;
 			if (elevator.moneySuccess(price))
 			{
-				elevatorTicketsPurchased.Add(elevator);
+				dataAccessor.GetObjectData(elevator).isTicketPurchased = true;
 				gc.audioHandler.Play(agent, vAudioClip.ATMDeposit);
 				BMHeaderTools.SayDialogue(elevator, cDialogue.PurchaseElevator, vNameType.Dialogue);
 			}
@@ -44,7 +44,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			GameController gc = GameController.gameController;
 			if (gc.challenges.Contains(cChallenge.AnCapistan))
 			{
-				if (!elevatorTicketsPurchased.Contains(elevator))
+				if (!dataAccessor.GetObjectData(elevator).isTicketPurchased)
 				{
 					// One simply does not use the elevator before paying the fee
 					elevator.RemoveButton(nameof(InterfaceNameDB.rowIds.ElevatorGoUp));
@@ -52,6 +52,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 		}
 
+		public void HandleRevertAllVars(Elevator objectInstance) { }
 		public void HandleObjectUpdate(Elevator objectInstance) { }
 		public void HandlePlayerHasUsableItem(Elevator objectInstance, InvItem itemToTest, ref bool result) { }
 
@@ -68,7 +69,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			GameController gc = GameController.gameController;
 			if (gc.challenges.Contains(cChallenge.AnCapistan))
 			{
-				if (!elevatorTicketsPurchased.Contains(objectInstance))
+				if (!dataAccessor.GetObjectData(objectInstance).isTicketPurchased)
 				{
 					objectInstance.AddButton(
 							text: ElevatorPurchaseTicket_ButtonText,
@@ -80,7 +81,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleFinishedOperating(Elevator objectInstance) { }
 		public void HandleInteract(Elevator objectInstance, Agent agent) { }
-		public void HandleObjectAction(Elevator objectInstance, string action, ref bool noMoreObjectActions) { }
+		public void HandleObjectAction(Elevator objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject) { }
 		public void HandleDamagedObject(Elevator objectInstance, PlayfieldObject damagerObject, float damageAmount) { }
 		public void HandleMakeNonFunctional(Elevator objectInstance, PlayfieldObject damagerObject) { }
 		public void HandleDestroyMe(Elevator objectInstance, PlayfieldObject damagerObject) { }

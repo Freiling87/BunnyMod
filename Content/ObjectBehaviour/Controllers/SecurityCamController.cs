@@ -1,18 +1,35 @@
-﻿using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Traits;
+﻿using BunnyMod.Extensions;
+using BunnyMod.Traits.T_Social;
 using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class SecurityCamController : ObjectControllerInterface<SecurityCam>
+	public class SecurityCamController : IObjectController<SecurityCam>
 	{
 		private const string CamerasCaptureWanted_ButtonText = "CamerasCaptureWanted";
 		private const string CamerasCaptureWanted_TargetType = "Wanted";
 
 		private const string CamerasCaptureGuilty_ButtonText = "CamerasCaptureGuilty";
 		private const string CamerasCaptureGuilty_TargetType = "Guilty";
+
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
+		{
+			SecurityCamController controller = new SecurityCamController();
+			ObjectControllerManager.RegisterObjectController(controller);
+		}
+		
+		public static void StartLate(SecurityCam camera)
+		{
+			if (camera.owner == 85) // TODO magic id
+			{
+				camera.targets = GameController.gameController.challenges.Contains(cChallenge.PoliceState)
+						? CamerasCaptureGuilty_TargetType
+						: CamerasCaptureWanted_TargetType;
+			}
+		}
 
 		/// <summary>
 		/// Expands the camera detection system.
@@ -42,19 +59,53 @@ namespace BunnyMod.Content.ObjectBehaviour
 			return false;
 		}
 
+		/// <summary>
+		/// This method is called when a button is pressed.
+		/// Any button logic handled here does not close the interaction menu (unless you call StopInteraction)
+		/// </summary>
+		/// <param name="camera">Camera that is being interacted with</param>
+		/// <param name="buttonText">text of the pressed button</param>
+		/// <returns>true if the button press was handled by this method, otherwise false</returns>
+		public static bool HandlePressedButton_KeepMenu(SecurityCam camera, string buttonText)
+		{
+			if (buttonText == CamerasCaptureWanted_ButtonText)
+			{
+				HandlePressedButton(camera, CamerasCaptureWanted_ButtonText, CamerasCaptureWanted_TargetType);
+				return true;
+			}
+			if (buttonText == CamerasCaptureGuilty_ButtonText)
+			{
+				HandlePressedButton(camera, CamerasCaptureGuilty_ButtonText, CamerasCaptureGuilty_TargetType);
+				return true;
+			}
+			return false;
+		}
+
+		// this is here to deduplicate button handling
+		private static void HandlePressedButton(SecurityCam camera, string buttonText, string targetType)
+		{
+			camera.targets = targetType;
+			if (!camera.gc.serverPlayer)
+			{
+				camera.interactingAgent.objectMult.ObjectAction(camera.objectNetID, buttonText);
+			}
+			camera.RefreshButtons();
+		}
+
 		public static void HandleSuccessfulManualShutdown(SecurityCam securityCam)
 		{
 			securityCam.interactingAgent.skillPoints.AddPoints(nameof(InterfaceNameDB.rowIds.TamperPoliceBoxPoints));
 		}
 
+		public void HandleRevertAllVars(SecurityCam objectInstance) { }
+
 		public void HandleObjectUpdate(SecurityCam objectInstance) { }
 
 		public void HandlePlayerHasUsableItem(SecurityCam objectInstance, InvItem itemToTest, ref bool result) { }
 
-		public void HandlePressedButton(SecurityCam objectInstance, string buttonText, int buttonPrice)
-		{
-			throw new System.NotImplementedException();
-		}
+		// beware: SecurityCam buttons should not close the interaction menu, but `StopInteraction` is hard-coded into the PressedButton method (which is ridiculous)
+		//  because of this, you should use 
+		public void HandlePressedButton(SecurityCam objectInstance, string buttonText, int buttonPrice) { }
 
 		public void HandleDetermineButtons(SecurityCam objectInstance)
 		{
@@ -77,9 +128,16 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleInteract(SecurityCam objectInstance, Agent agent) { }
 
-		public void HandleObjectAction(SecurityCam objectInstance, string action, ref bool noMoreObjectActions)
+		public void HandleObjectAction(SecurityCam objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject)
 		{
-			throw new System.NotImplementedException();
+			if (action == CamerasCaptureGuilty_ButtonText)
+			{
+				objectInstance.targets = CamerasCaptureGuilty_TargetType;
+			}
+			else if (action == CamerasCaptureWanted_ButtonText)
+			{
+				objectInstance.targets = CamerasCaptureWanted_TargetType;
+			}
 		}
 
 		public void HandleDamagedObject(SecurityCam objectInstance, PlayfieldObject damagerObject, float damageAmount) { }

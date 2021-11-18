@@ -1,17 +1,25 @@
-﻿using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Traits;
+﻿using BunnyMod.Extensions;
+using BunnyMod.Traits;
 using Google2u;
+using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class FlamingBarrelController : ObjectControllerInterface<FlamingBarrel>
+	public class FlamingBarrelController : IObjectController<FlamingBarrel>
 	{
 		private const string GrillFud_ButtonText = "GrillFud";
 		private const string GrillFud_BarType = nameof(InterfaceNameDB.rowIds.Grilling);
 		private const int GrillFud_HealthCost = 10;
 
 		private const string LightBarbecue_ButtonText = "LightBarbecue";
+		
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
+		{
+			FlamingBarrelController controller = new FlamingBarrelController();
+			ObjectControllerManager.RegisterObjectController(controller);
+		}
 
 		public static void SetVars(FlamingBarrel flamingBarrel)
 		{
@@ -61,6 +69,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 		}
 
+		public void HandleRevertAllVars(FlamingBarrel objectInstance) { }
 		public void HandleObjectUpdate(FlamingBarrel objectInstance) { }
 		public void HandlePlayerHasUsableItem(FlamingBarrel objectInstance, InvItem itemToTest, ref bool result) { }
 
@@ -124,7 +133,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			objectInstance.ShowObjectButtons();
 		}
 
-		public void HandleObjectAction(FlamingBarrel objectInstance, string action, ref bool noMoreObjectActions) { }
+		public void HandleObjectAction(FlamingBarrel objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject) { }
 		public void HandleDamagedObject(FlamingBarrel objectInstance, PlayfieldObject damagerObject, float damageAmount) { }
 		public void HandleMakeNonFunctional(FlamingBarrel objectInstance, PlayfieldObject damagerObject) { }
 		public void HandleDestroyMe(FlamingBarrel objectInstance, PlayfieldObject damagerObject) { }

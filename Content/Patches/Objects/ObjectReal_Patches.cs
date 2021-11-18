@@ -5,23 +5,29 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.ObjectBehaviour;
-using BunnyMod.Content.Traits;
+using BunnyMod.Logging;
+using BunnyMod.ObjectBehaviour;
+using BunnyMod.Traits.T_Stealth;
 using HarmonyLib;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(ObjectReal))]
 	public static class ObjectReal_Patches
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.RevertAllVars), argumentTypes: new Type[] { })]
+		private static void RevertAllVars_Postfix(ObjectReal __instance)
+		{
+			ObjectControllerManager.RevertAllVars(__instance);
+		}
+		
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.ObjectUpdate), argumentTypes: new Type[] { })]
 		private static void ObjectUpdate_Postfix(ObjectReal __instance)
 		{
-			ObjectControllerManager.GetController(__instance)?.HandleObjectUpdate(__instance);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleObjectUpdate(__instance);
 		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.PressedButton), argumentTypes: new[] { typeof(string), typeof(int) })]
@@ -36,13 +42,13 @@ namespace BunnyMod.Content.Patches
 				//   ObjectUtils.SpawnSuspiciousNoise(0, 1f, agent, __instance);
 			}
 
-			ObjectControllerManager.GetController(__instance)?.HandlePressedButton(__instance, buttonText, buttonPrice);
+			ObjectControllerManager.GetObjectController(__instance)?.HandlePressedButton(__instance, buttonText, buttonPrice);
 		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.DetermineButtons), argumentTypes: new Type[] { })]
 		private static void DetermineButtons_Postfix(ObjectReal __instance)
 		{
-			ObjectControllerManager.GetController(__instance)?.HandleDetermineButtons(__instance);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleDetermineButtons(__instance);
 		}
 
 		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(ObjectReal.FinishedOperating), argumentTypes: new Type[] { })]
@@ -86,7 +92,7 @@ namespace BunnyMod.Content.Patches
 				return;
 			}
 
-			ObjectControllerManager.GetController(__instance)?.HandleInteract(__instance, agent);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleInteract(__instance, agent);
 		}
 
 		[HarmonyPostfix,
@@ -97,34 +103,34 @@ namespace BunnyMod.Content.Patches
 				ref bool ___noMoreObjectActions)
 		{
 			logger.LogDebug($"ObjectAction on object: '{__instance.name}', action: '{myAction}'");
-			ObjectControllerManager.GetController(__instance)?.HandleObjectAction(__instance, myAction, ref ___noMoreObjectActions);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleObjectAction(__instance, myAction, ref ___noMoreObjectActions, extraString, extraFloat, causerAgent, extraObject);
 		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.DamagedObject), argumentTypes: new[] { typeof(PlayfieldObject), typeof(float) })]
 		private static void DamagedObject_Postfix(ObjectReal __instance, PlayfieldObject damagerObject, float damageAmount)
 		{
 			logger.LogDebug($"Damaging object: '{__instance.name}'");
-			ObjectControllerManager.GetController(__instance)?.HandleDamagedObject(__instance, damagerObject, damageAmount);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleDamagedObject(__instance, damagerObject, damageAmount);
 		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(ObjectReal.MakeNonFunctional), argumentTypes: new[] { typeof(PlayfieldObject) })]
 		private static void MakeNonFunctional_Postfix(ObjectReal __instance, PlayfieldObject damagerObject)
 		{
 			logger.LogDebug($"Making object nonFunctional. object: '{__instance.name}'");
-			ObjectControllerManager.GetController(__instance)?.HandleMakeNonFunctional(__instance, damagerObject);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleMakeNonFunctional(__instance, damagerObject);
 		}
 
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(ObjectReal.DestroyMe), argumentTypes: new[] { typeof(PlayfieldObject) })]
 		private static void DestroyMe_Prefix(PlayfieldObject damagerObject, ObjectReal __instance)
 		{
 			logger.LogDebug($"Destroying object: '{__instance.name}'");
-			ObjectControllerManager.GetController(__instance)?.HandleDestroyMe(__instance, damagerObject);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleDestroyMe(__instance, damagerObject);
 		}
 
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(ObjectReal.DestroyMe3), argumentTypes: new Type[] { })]
 		private static void DestroyMe3_Prefix(ObjectReal __instance)
 		{
-			ObjectControllerManager.GetController(__instance)?.HandleDestroyMe3(__instance);
+			ObjectControllerManager.GetObjectController(__instance)?.HandleDestroyMe3(__instance);
 		}
 	}
 }

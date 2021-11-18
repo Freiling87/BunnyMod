@@ -1,17 +1,19 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using BepInEx.Logging;
-using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Traits;
+using BunnyMod.Extensions;
+using BunnyMod.Logging;
+using BunnyMod.ObjectBehaviour.Controllers.Data;
+using BunnyMod.Traits;
 using Google2u;
+using JetBrains.Annotations;
+using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	// TODO think about creating an animation-sequence for WrenchDetonate.
 
-	public class StoveController : ObjectControllerInterface<Stove>
+	public class StoveController : IObjectController<Stove>
 	{
 		private const string WrenchDetonate_ButtonText = "UseWrenchToDetonate";
 		private const string WrenchDetonate_BarType = nameof(InterfaceNameDB.rowIds.Tampering);
@@ -22,16 +24,14 @@ namespace BunnyMod.Content.ObjectBehaviour
 		private const int GrillFud_CashCost = 5;
 
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
-		private static readonly Dictionary<Stove, StoveData> stoveDataDictionary = new Dictionary<Stove, StoveData>();
+		private static readonly ObjectDataAccessor<StoveData> dataAccessor = new ObjectDataAccessor<StoveData>();
 
-		static StoveController()
+		[RLSetup, UsedImplicitly]
+		private static void Initialize()
 		{
-			ObjectControllerManager.ChangeLevelEvent += OnChangeLevel;
-		}
-
-		private static void OnChangeLevel()
-		{
-			stoveDataDictionary.Clear();
+			StoveController controller = new StoveController();
+			ObjectControllerManager.RegisterObjectController(controller);
+			ObjectControllerManager.RegisterDataController<Stove>(dataAccessor);
 		}
 
 		public static void SetVars(Stove stove)
@@ -42,36 +42,18 @@ namespace BunnyMod.Content.ObjectBehaviour
 			stove.interactable = true;
 		}
 
-		public static void RevertAllVars(Stove stove)
+		private static void RegisterDamagedBy(PlayfieldObject stove, PlayfieldObject damagerObject)
 		{
-			GetStoveData(stove).RevertAllVars();
-			Transform realSpriteTransform = stove.objectSprite.transform.Find("RealSprite");
-			realSpriteTransform.localPosition = Vector3.zero;
-			realSpriteTransform.localScale = Vector3.one;
+			dataAccessor.GetObjectData(stove).savedDamagerObject = damagerObject;
 		}
 
-		private static StoveData GetStoveData(Stove stove)
-		{
-			if (!stoveDataDictionary.ContainsKey(stove))
-			{
-				logger.LogError($"stoveDataDictionary is missing stove #{stove.objectRealID}");
-				return stoveDataDictionary[stove] = new StoveData();
-			}
-			return stoveDataDictionary[stove];
-		}
-
-		private static void RegisterDamagedBy(Stove stove, PlayfieldObject damagerObject)
-		{
-			GetStoveData(stove).savedDamagerObject = damagerObject;
-		}
-
-		private static void TriggerExplosion(Stove stove)
+		private static void TriggerExplosion(ObjectReal stove)
 		{
 			GameController gc = GameController.gameController;
 			if (gc.serverPlayer && !stove.spawnedExplosion)
 			{
 				stove.spawnedExplosion = true;
-				StoveData stoveData = GetStoveData(stove);
+				StoveData stoveData = dataAccessor.GetObjectData(stove);
 				PlayfieldObject damagerObject = stoveData.savedDamagerObject;
 				Explosion explosion = gc.spawnerMain.SpawnExplosion(damagerObject, stove.tr.position, "FireBomb", false, -1, false,
 						stove.FindMustSpawnExplosionOnClients(damagerObject));
@@ -179,6 +161,13 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 		}
 
+		public void HandleRevertAllVars(Stove objectInstance)
+		{
+			Transform realSpriteTransform = objectInstance.objectSprite.transform.Find("RealSprite");
+			realSpriteTransform.localPosition = Vector3.zero;
+			realSpriteTransform.localScale = Vector3.one;
+		}
+
 		public void HandleObjectUpdate(Stove objectInstance)
 		{
 			if (objectInstance.timer > 0f)
@@ -186,7 +175,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 				objectInstance.timer -= Time.deltaTime;
 				if (objectInstance.timer <= 0f)
 				{
-					StoveData stoveData = GetStoveData(objectInstance);
+					StoveData stoveData = dataAccessor.GetObjectData(objectInstance);
 					if (objectInstance.startedFlashing)
 					{
 						objectInstance.DestroyMe(stoveData.savedDamagerObject);
@@ -282,7 +271,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			objectInstance.ShowObjectButtons();
 		}
 
-		public void HandleObjectAction(Stove objectInstance, string action, ref bool noMoreObjectActions)
+		public void HandleObjectAction(Stove objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject)
 		{
 			if (!noMoreObjectActions && action == WrenchDetonate_ButtonText)
 			{
@@ -314,7 +303,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			objectInstance.timer = 5f;
 			objectInstance.timeCountdownClock = (int) objectInstance.timer;
 			objectInstance.interactable = false;
-			StoveData stoveData = GetStoveData(objectInstance);
+			StoveData stoveData = dataAccessor.GetObjectData(objectInstance);
 			stoveData.savedDamagerObject = damagerObject;
 			stoveData.countdownCauser = damagerObject;
 			objectInstance.StartCoroutine(CountdownCoroutine(objectInstance));

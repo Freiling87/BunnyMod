@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using BunnyMod.Content.Extensions;
+﻿using BunnyMod.Extensions;
+using BunnyMod.ObjectBehaviour.Controllers.Data;
 using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
-	public class FountainController : ObjectControllerInterface<Fountain>
+	public class FountainController : IObjectController<Fountain>
 	{
 		private const string FountainSteal_ButtonText = "FountainSteal";
 		private const string FountainSteal_BarType = nameof(InterfaceNameDB.rowIds.Tampering);
@@ -26,24 +26,18 @@ namespace BunnyMod.Content.ObjectBehaviour
 		 * RogueLibs.CreateCustomName(cButtonText.FountainWishTrueFriendship, t, new CustomNameInfo("Wish for true friendship"));
 		 * RogueLibs.CreateCustomName(cButtonText.FountainWishWorldPeace, t, new CustomNameInfo("Wish for world peace"));
 		 */
-
-		private static readonly HashSet<Fountain> FountainsStolenFrom = new HashSet<Fountain>();
+		
+		private static readonly ObjectDataAccessor<FountainData> dataAccessor = new ObjectDataAccessor<FountainData>();
 
 		[RLSetup, UsedImplicitly]
-		public static void Setup()
+		private static void Initialize()
 		{
+			FountainController controller = new FountainController();
+			ObjectControllerManager.RegisterObjectController(controller);
+			ObjectControllerManager.RegisterDataController<Fountain>(dataAccessor);
+			
 			// TODO create proper localization system for these buttons
 			RogueLibs.CreateCustomName(FountainSteal_ButtonText, vNameType.Interface, new CustomNameInfo("Steal money"));
-		}
-		
-		static FountainController()
-		{
-			ObjectControllerManager.ChangeLevelEvent += OnChangeLevel;
-		}
-
-		private static void OnChangeLevel()
-		{
-			FountainsStolenFrom.Clear();
 		}
 
 		public static void SetVars(Fountain fountain)
@@ -51,7 +45,6 @@ namespace BunnyMod.Content.ObjectBehaviour
 			fountain.damageThreshold = 50;
 			fountain.damageAccumulates = false;
 			fountain.cantMakeFollowersAttack = true;
-			FountainsStolenFrom.Remove(fountain);
 		}
 
 		private static void HandleFountainSteal(Fountain fountain)
@@ -70,7 +63,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 			agentInventory.AddItem(fountainMoneyItem);
 			fountain.objectInvDatabase.DestroyAllItems();
 			fountain.interactable = false;
-			FountainsStolenFrom.Add(fountain);
+			dataAccessor.GetObjectData(fountain).wasStolenFrom = true;
 
 			agent.statusEffects.AddStatusEffect(StatusEffectNameDB.rowIds.FeelingUnlucky, true, true);
 			if (agent.HasTrait(StatusEffectNameDB.rowIds.OperateSecretly))
@@ -83,10 +76,9 @@ namespace BunnyMod.Content.ObjectBehaviour
 			}
 		}
 
+		public void HandleRevertAllVars(Fountain objectInstance) { }
 		public void HandleObjectUpdate(Fountain objectInstance) { }
-		public void HandlePlayerHasUsableItem(Fountain objectInstance, InvItem itemToTest, ref bool result)
-		{
-		}
+		public void HandlePlayerHasUsableItem(Fountain objectInstance, InvItem itemToTest, ref bool result) { }
 
 		public void HandlePressedButton(Fountain objectInstance, string buttonText, int buttonPrice)
 		{
@@ -112,7 +104,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 
 		public void HandleDetermineButtons(Fountain objectInstance)
 		{
-			if (!FountainsStolenFrom.Contains(objectInstance))
+			if (!dataAccessor.GetObjectData(objectInstance).wasStolenFrom)
 			{
 				objectInstance.AddButton(FountainSteal_ButtonText);
 			}
@@ -128,7 +120,7 @@ namespace BunnyMod.Content.ObjectBehaviour
 		}
 
 		public void HandleInteract(Fountain objectInstance, Agent agent) { }
-		public void HandleObjectAction(Fountain objectInstance, string action, ref bool noMoreObjectActions) { }
+		public void HandleObjectAction(Fountain objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject) { }
 		public void HandleDamagedObject(Fountain objectInstance, PlayfieldObject damagerObject, float damageAmount) { }
 		public void HandleMakeNonFunctional(Fountain objectInstance, PlayfieldObject damagerObject) { }
 		public void HandleDestroyMe(Fountain objectInstance, PlayfieldObject damagerObject) { }

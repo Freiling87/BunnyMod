@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using BepInEx.Logging;
 
-namespace BunnyMod.Content.Logging
+namespace BunnyMod.Logging
 {
 	public static class BMLogger
 	{

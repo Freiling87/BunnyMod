@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BunnyMod.Content.Traits;
+using BunnyMod.Traits.T_Experience_Gain_Rate;
+using BunnyMod.Traits.T_Stealth;
 using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	public static class DoorController
 	{

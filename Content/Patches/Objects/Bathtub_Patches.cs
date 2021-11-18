@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Bathtub))]
 	public static class Bathtub_Patches

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using BepInEx;
-using HarmonyLib;
-using UnityEngine;
 using RogueLibsCore;
-using Random = UnityEngine.Random;
+using UnityEngine;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMBehaviors
 	{

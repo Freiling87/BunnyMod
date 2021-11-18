@@ -1,12 +1,12 @@
-﻿using RogueLibsCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BepInEx.Logging;
-using BunnyMod.Content.Logging;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Spawns;
+using RogueLibsCore;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using BunnyMod.Content.Traits;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public static class BMAgents
 	{

@@ -1,13 +1,13 @@
-﻿using HarmonyLib;
-using RogueLibsCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using BunnyMod.Content.Traits;
+using BunnyMod.Traits;
+using HarmonyLib;
+using RogueLibsCore;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMCombat
 	{

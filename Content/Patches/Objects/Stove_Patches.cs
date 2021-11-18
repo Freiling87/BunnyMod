@@ -1,8 +1,8 @@
 ﻿using System;
-using BunnyMod.Content.ObjectBehaviour;
+using BunnyMod.ObjectBehaviour.Controllers;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Stove))]
 	public static class Stove_Patches
@@ -11,12 +11,6 @@ namespace BunnyMod.Content.Patches
 		private static void SetVars_Postfix(Stove __instance)
 		{
 			StoveController.SetVars(__instance);
-		}
-
-		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Stove.RevertAllVars), argumentTypes: new Type[] { })]
-		private static void RevertAllVars_Postfix(Stove __instance)
-		{
-			StoveController.RevertAllVars(__instance);
 		}
 	}
 }

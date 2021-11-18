@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RogueLibsCore;
-using UnityEngine;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	[EffectParameters(EffectLimitations.RemoveOnDeath | EffectLimitations.RemoveOnKnockOut | EffectLimitations.RemoveOnNextLevel)]
 	public class ChronomanticDilation : CustomEffect

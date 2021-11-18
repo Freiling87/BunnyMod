@@ -1,9 +1,6 @@
-﻿namespace BunnyMod.Content.ObjectBehaviour
+﻿namespace BunnyMod.ObjectBehaviour.Controllers.Data
 {
-	/// <summary>
-	/// Stores extra data on stoves
-	/// </summary>
-	public class StoveData
+	public class StoveData : IObjectData
 	{
 		public PlayfieldObject countdownCauser;
 		public bool noOwnCheckCountdown;

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using BepInEx;
-using BunnyMod.Content.Traits;
-using HarmonyLib;
-using UnityEngine;
+using BunnyMod.Traits;
 using RogueLibsCore;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMItems
 	{

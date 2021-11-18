@@ -1,6 +1,6 @@
 using YamlDotNet.Serialization;
 
-namespace BunnyMod.Content.Localization
+namespace BunnyMod.Localization
 {
 	public class BMLocalizationManager
 	{

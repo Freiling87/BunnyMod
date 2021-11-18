@@ -1,12 +1,12 @@
-﻿using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections;
 using System.Reflection;
-using BunnyMod.Content.Traits;
+using BunnyMod.Traits.T_Experience_Gain_Rate;
+using HarmonyLib;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMQuests
 	{

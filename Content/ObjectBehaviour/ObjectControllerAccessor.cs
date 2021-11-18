@@ -1,21 +1,21 @@
 ﻿using Debug = System.Diagnostics.Debug;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour
 {
 	/// <summary>
 	/// This class acts as an abstraction layer for ObjectControllers
 	/// 
-	/// The goal is to allow grouping ObjectControllers as ObjectControllerInterface&lt;ObjectReal&gt;
+	/// The goal is to allow grouping ObjectControllers as IObjectController&lt;ObjectReal&gt;
 	/// while still providing the derived Type to the underlying Controller.
 	/// </summary>
 	/// <typeparam name="TargetType">ObjectType of the underlying controller</typeparam>
 	public class ObjectControllerAccessor<TargetType>
-			: ObjectControllerInterface<PlayfieldObject>
+			: IObjectController<PlayfieldObject>
 			where TargetType : PlayfieldObject
 	{
-		private readonly ObjectControllerInterface<TargetType> controllerImplementation;
+		private readonly IObjectController<TargetType> controllerImplementation;
 
-		public ObjectControllerAccessor(ObjectControllerInterface<TargetType> controllerImplementation)
+		public ObjectControllerAccessor(IObjectController<TargetType> controllerImplementation)
 		{
 			this.controllerImplementation = controllerImplementation;
 		}
@@ -25,6 +25,12 @@ namespace BunnyMod.Content.ObjectBehaviour
 			TargetType objectInstance = playfieldObject as TargetType;
 			Debug.Assert(objectInstance != null, $"{GetType().Name} called with ObjectReal that wasn't of Type {typeof(TargetType).Name}!");
 			return objectInstance;
+		}
+
+		public void HandleRevertAllVars(PlayfieldObject objectInstance)
+		{
+			
+			controllerImplementation.HandleRevertAllVars(GetAsObjectType(objectInstance));
 		}
 
 		public void HandleObjectUpdate(PlayfieldObject objectInstance)
@@ -57,9 +63,9 @@ namespace BunnyMod.Content.ObjectBehaviour
 			controllerImplementation.HandleInteract(GetAsObjectType(objectInstance), agent);
 		}
 
-		public void HandleObjectAction(PlayfieldObject objectInstance, string action, ref bool noMoreObjectActions)
+		public void HandleObjectAction(PlayfieldObject objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject)
 		{
-			controllerImplementation.HandleObjectAction(GetAsObjectType(objectInstance), action, ref noMoreObjectActions);
+			controllerImplementation.HandleObjectAction(GetAsObjectType(objectInstance), action, ref noMoreObjectActions, extraString, extraFloat, causerAgent, extraObject);
 		}
 
 		public void HandleDamagedObject(PlayfieldObject objectInstance, PlayfieldObject damagerObject, float damageAmount)

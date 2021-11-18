@@ -1,9 +1,9 @@
-﻿using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Traits;
+﻿using BunnyMod.Extensions;
+using BunnyMod.Traits.T_Social;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.ObjectBehaviour
+namespace BunnyMod.ObjectBehaviour.Controllers
 {
 	public static class ATMMachineController
 	{

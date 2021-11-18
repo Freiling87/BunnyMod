@@ -2,13 +2,15 @@
 using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
-using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Logging;
+using BunnyMod.Extensions;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Stealth;
+using BunnyMod.Traits.T_Tampering;
 using Google2u;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits
 {
 	/// <summary>
 	/// Provides methods for interfacing with BM Custom Traits

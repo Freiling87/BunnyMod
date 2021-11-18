@@ -5,18 +5,25 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils;
+using BTHarmonyUtils.MidFixPatch;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.ObjectBehaviour;
+using BunnyMod.Logging;
+using BunnyMod.ObjectBehaviour.Controllers;
 using HarmonyLib;
 using JetBrains.Annotations;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(SecurityCam))]
 	public static class SecurityCam_Patches
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
+
+		[HarmonyPrefix, HarmonyPatch(methodName: "StartLate", argumentTypes: new Type[] { })]
+		private static void StartLate_Prefix(SecurityCam __instance)
+		{
+			SecurityCamController.StartLate(__instance);
+		}
 
 		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(SecurityCam.FinishedOperating), argumentTypes: new Type[] { })]
 		private static IEnumerable<CodeInstruction> FinishedOperating_Transpiler(IEnumerable<CodeInstruction> codeInstructions)
@@ -39,6 +46,26 @@ namespace BunnyMod.Content.Patches
 			);
 			patch.ApplySafe(instructions, logger);
 			return instructions;
+		}
+
+		private static MidFixInstructionMatcher PressedButton_InstructionMatcher()
+		{
+			// Apply MidFix after base method was called.
+			return new MidFixInstructionMatcher(
+					expectedMatches: 1,
+					prefixInstructionSequence: new[]
+					{
+							new CodeInstruction(OpCodes.Ldarg_0),
+							new CodeInstruction(OpCodes.Ldarg_1),
+							new CodeInstruction(OpCodes.Ldarg_2),
+							new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ObjectReal), nameof(ObjectReal.PressedButton), new[] { typeof(string), typeof(int) }))
+					});
+		}
+
+		[BTHarmonyMidFix(nameof(PressedButton_InstructionMatcher)), HarmonyPatch(methodName: nameof(SecurityCam.PressedButton), argumentTypes: new[] { typeof(string), typeof(int) })]
+		private static bool PressedButton_MidFix(SecurityCam __instance, string buttonText, int buttonPrice)
+		{
+			return !SecurityCamController.HandlePressedButton_KeepMenu(__instance, buttonText); // skip rest of method if button press was handled
 		}
 
 		// this particular piece of petrifying posture is unfortunately required for target methods calculated at runtime

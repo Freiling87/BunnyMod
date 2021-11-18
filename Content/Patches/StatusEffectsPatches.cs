@@ -4,16 +4,18 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Abilities.A_Magic;
-using BunnyMod.Content.Traits;
+using BunnyMod.Abilities;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Social;
+using BunnyMod.Traits.T_Spawns;
+using BunnyMod.Traits.T_Stealth;
 using Google2u;
 using HarmonyLib;
 using RogueLibsCore;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(StatusEffects))]
 	public static class StatusEffectsPatches

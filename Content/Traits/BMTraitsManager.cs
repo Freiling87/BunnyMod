@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits
 {
 	public static class BMTraitsManager
 	{

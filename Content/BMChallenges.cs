@@ -1,12 +1,8 @@
-﻿using RogueLibsCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using BunnyMod;
-using Random = UnityEngine.Random;
-using Object = UnityEngine.Object;
+using RogueLibsCore;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMChallenges
 	{

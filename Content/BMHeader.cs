@@ -1,14 +1,14 @@
-using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
-using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using BunnyMod.Content.Traits;
+using BepInEx;
+using BepInEx.Logging;
 using BunnyMod.Properties;
+using BunnyMod.Traits;
+using HarmonyLib;
+using RogueLibsCore;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	[BepInPlugin(ModInfo.BepInExPluginId, ModInfo.Title, ModInfo.Version)]
 	[BepInProcess("StreetsOfRogue.exe")]

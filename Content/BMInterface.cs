@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
-using BunnyMod.Content.Traits;
+using BunnyMod.Traits;
+using BunnyMod.Traits.T_Combat_Ranged;
+using BunnyMod.Traits.T_Experience_Gain_Rate;
+using BunnyMod.Traits.T_Miscellaneous;
 using RogueLibsCore;
+using UnityEngine;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMInterface
 	{

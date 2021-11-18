@@ -1,11 +1,11 @@
-using RogueLibsCore;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using BepInEx.Logging;
-using System.Reflection;
+using RogueLibsCore;
 
-namespace BunnyMod.Content.Abilities.A_Magic
+namespace BunnyMod.Abilities.A_Magic
 {
 	public class ChronomanticDilation : CustomAbility, IAbilityRechargeable
 	{

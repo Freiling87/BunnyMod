@@ -1,6 +1,6 @@
 ﻿using Google2u;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class StatusEffects_Extensions
 	{

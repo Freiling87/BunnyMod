@@ -1,7 +1,9 @@
-﻿namespace BunnyMod.Content.ObjectBehaviour
+﻿namespace BunnyMod.ObjectBehaviour
 {
-	public interface ObjectControllerInterface<in TargetType> where TargetType : PlayfieldObject
+	public interface IObjectController<in TargetType> where TargetType : PlayfieldObject
 	{
+		void HandleRevertAllVars(TargetType objectInstance);
+		
 		void HandleObjectUpdate(TargetType objectInstance);
 
 		void HandlePlayerHasUsableItem(TargetType objectInstance, InvItem itemToTest, ref bool result);
@@ -14,7 +16,7 @@
 		
 		void HandleInteract(TargetType objectInstance, Agent agent);
 		
-		void HandleObjectAction(TargetType objectInstance, string action, ref bool noMoreObjectActions);
+		void HandleObjectAction(TargetType objectInstance, string action, ref bool noMoreObjectActions, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject);
 
 		void HandleDamagedObject(TargetType objectInstance, PlayfieldObject damagerObject, float damageAmount);
 		

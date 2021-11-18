@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using BunnyMod.Traits;
+using BunnyMod.Traits.T_Followers;
+using BunnyMod.Traits.T_Spawns;
+using BunnyMod.Traits.T_Stealth;
+using HarmonyLib;
+using Light2D;
 using RogueLibsCore;
 using UnityEngine;
-using System.Collections;
-using HarmonyLib;
-using System.Reflection;
-using BunnyMod.Content.Traits;
 using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
-using Light2D;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	public class BMLevelGen
 	{

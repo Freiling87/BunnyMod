@@ -17,19 +17,18 @@ namespace BunnyMod.Content.Patches
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		public static GameController GC => GameController.gameController;
 
-		[HarmonyPrefix,HarmonyPatch(methodName:nameof(BasicWall.Spawn), argumentTypes: new[] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) })]
-		public static void Spawn_Prefix(SpawnerBasic spawner, ref string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) 
-		{
-			if (BMLevelGen.IsWallModActive())
-				wallName = BMLevelGen.GetWallTypeFromMutator();
-		}
-
+		/// <summary>
+		/// FloralerFlora Hedge Wall leaves spawn
+		/// </summary>
+		/// <param name="spawner"></param>
+		/// <param name="wallName"></param>
+		/// <param name="myPos"></param>
+		/// <param name="myScale"></param>
+		/// <param name="startingChunkReal"></param>
 		[HarmonyPostfix,HarmonyPatch(methodName:nameof(BasicWall.Spawn), argumentTypes: new[] { typeof(SpawnerBasic), typeof(string), typeof(Vector2), typeof(Vector2), typeof(Chunk) })]
 		public static void Spawn_Postfix(SpawnerBasic spawner, string wallName, Vector2 myPos, Vector2 myScale, Chunk startingChunkReal) 
 		{
-			// FloralerFlora Hedge Wall leaves spawn
-
-			if (wallName == vWall.Hedge && (GC.challenges.Contains(cChallenge.FloralerFlora)))
+			if (wallName == "Hedge" && (GC.challenges.Contains(cChallenge.FloralerFlora)))
 			{
 				int chance = 100;
 

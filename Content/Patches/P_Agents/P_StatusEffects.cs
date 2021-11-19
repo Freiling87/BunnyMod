@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
-using BTHarmonyUtils;
 using BTHarmonyUtils.TranspilerUtils;
 using BunnyMod.Content.Logging;
 using BunnyMod.Content.Abilities.A_Magic;
@@ -127,10 +126,8 @@ namespace BunnyMod.Content.Patches
 			FieldInfo statusEffetcs_gc = AccessTools.Field(typeof(StatusEffects), "gc");
 			FieldInfo gameController_audiHandler = AccessTools.Field(typeof(GameController), nameof(GameController.audioHandler));
 			FieldInfo statusEffects_agent = AccessTools.Field(typeof(StatusEffects), nameof(StatusEffects.agent));
-			MethodInfo audioHandler_Play =
-					AccessTools.Method(typeof(AudioHandler), nameof(AudioHandler.Play), new[] { typeof(PlayfieldObject), typeof(string) });
-			MethodInfo patches_GetClipName =
-					AccessTools.Method(typeof(P_StatusEffects), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
+			MethodInfo audioHandler_Play = AccessTools.Method(typeof(AudioHandler), nameof(AudioHandler.Play), new[] { typeof(PlayfieldObject), typeof(string) });
+			MethodInfo patches_GetClipName = AccessTools.Method(typeof(P_StatusEffects), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
 
 			/*
 			 * Replace:
@@ -139,29 +136,29 @@ namespace BunnyMod.Content.Patches
 			 *  this.gc.audioHandler.Play(this.agent, StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject))
 			 */
 			CodeReplacementPatch agentPositionPatch = new CodeReplacementPatch(
-					expectedMatches: 1,
-					prefixInstructionSequence: new List<CodeInstruction>
-					{
-							new CodeInstruction(OpCodes.Ldarg_0),
-							new CodeInstruction(OpCodes.Ldfld, statusEffetcs_gc),
-							new CodeInstruction(OpCodes.Ldfld, gameController_audiHandler), // this.gc.audioHandler
+				expectedMatches: 1,
+				prefixInstructionSequence: new List<CodeInstruction>
+				{
+						new CodeInstruction(OpCodes.Ldarg_0),
+						new CodeInstruction(OpCodes.Ldfld, statusEffetcs_gc),
+						new CodeInstruction(OpCodes.Ldfld, gameController_audiHandler), // this.gc.audioHandler
 
-							new CodeInstruction(OpCodes.Ldarg_0),
-							new CodeInstruction(OpCodes.Ldfld, statusEffects_agent) // this.agent
-					},
-					targetInstructionSequence: new List<CodeInstruction>
-					{
-							new CodeInstruction(OpCodes.Ldstr, "Hide") // string: "Hide"
-					},
-					insertInstructionSequence: new List<CodeInstruction>
-					{
-							new CodeInstruction(OpCodes.Ldarg_1),
-							new CodeInstruction(OpCodes.Call, patches_GetClipName) // StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject)
-					},
-					postfixInstructionSequence: new List<CodeInstruction>
-					{
-							new CodeInstruction(OpCodes.Callvirt, audioHandler_Play) // this.gc.audioHandler.Play(this.agent, "Hide")
-					}
+						new CodeInstruction(OpCodes.Ldarg_0),
+						new CodeInstruction(OpCodes.Ldfld, statusEffects_agent) // this.agent
+				},
+				targetInstructionSequence: new List<CodeInstruction>
+				{
+						new CodeInstruction(OpCodes.Ldstr, "Hide") // string: "Hide"
+				},
+				insertInstructionSequence: new List<CodeInstruction>
+				{
+						new CodeInstruction(OpCodes.Ldarg_1),
+						new CodeInstruction(OpCodes.Call, patches_GetClipName) // StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject)
+				},
+				postfixInstructionSequence: new List<CodeInstruction>
+				{
+						new CodeInstruction(OpCodes.Callvirt, audioHandler_Play) // this.gc.audioHandler.Play(this.agent, "Hide")
+				}
 			);
 			agentPositionPatch.ApplySafe(instructions, logger);
 

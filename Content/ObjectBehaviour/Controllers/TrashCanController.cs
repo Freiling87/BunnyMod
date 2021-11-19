@@ -1,4 +1,6 @@
 ﻿using BunnyMod.Extensions;
+using BunnyMod.Traits.T_Stealth;
+using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
@@ -8,14 +10,26 @@ namespace BunnyMod.ObjectBehaviour.Controllers
 	{
 		private const string HideInContainer_ButtonText = "HideInContainer";
 		private const string OpenContainer_ButtonText = "OpenContainer";
-		
+
 		[RLSetup, UsedImplicitly]
 		private static void Initialize()
 		{
 			TrashCanController controller = new TrashCanController();
 			ObjectControllerManager.RegisterObjectController(controller);
 		}
-		
+
+		public static void HandleInteract(Agent agent, TrashCan trashCan)
+		{
+			if (agent.HasTrait<StealthBastardDeluxe>() && agent.HasTrait(StatusEffectNameDB.rowIds.Diminutive))
+			{
+				trashCan.ShowObjectButtons();
+			}
+			else
+			{
+				trashCan.ShowChest();
+			}
+		}
+
 		public void HandleRevertAllVars(TrashCan objectInstance) { }
 		public void HandleObjectUpdate(TrashCan objectInstance) { }
 		public void HandlePlayerHasUsableItem(TrashCan objectInstance, InvItem itemToTest, ref bool result) { }

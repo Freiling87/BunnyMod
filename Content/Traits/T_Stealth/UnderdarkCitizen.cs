@@ -42,5 +42,15 @@ namespace BunnyMod.Traits.T_Stealth
 				}
 			}
 		}
+
+		public static bool CanFlushToObject(Toilet fromObject, ObjectReal toObject, bool allowSameChunk)
+		{
+			return toObject != fromObject && !toObject.destroyed
+					&& (allowSameChunk || toObject.startingChunk != fromObject.startingChunk)
+					&& (
+							toObject is Manhole manhole && manhole.opened
+							|| toObject is Toilet
+					);
+		}
 	}
 }

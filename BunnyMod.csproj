@@ -153,8 +153,6 @@
     <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_SpawnerFloor.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_SpawnerObject.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
     <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
     <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />
@@ -170,7 +168,6 @@
     <Compile Include="Content\Patches\P_Objects\P_PlayfieldObject.cs" />
     <Compile Include="Content\Patches\P_Quests\P_Quests.cs" />
     <Compile Include="Content\Patches\P_Random\P_RandomSelection.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_RandomWalls.cs" />
     <Compile Include="Content\Patches\P_Agents\P_Relationships.cs" />
     <Compile Include="Content\Patches\P_Interface\P_ScrollingMenu.cs" />
     <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />

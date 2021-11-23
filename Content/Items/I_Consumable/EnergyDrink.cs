@@ -7,6 +7,7 @@ using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
 using RogueLibsCore;
+using BunnyMod.Content.Status_Effects;
 
 namespace BunnyMod.Content.Items.I_Consumable
 {

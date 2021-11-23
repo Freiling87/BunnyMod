@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using Light2D;
 using System.Linq;
 using Object = UnityEngine.Object;
-using BunnyMod.Content.Abilities.A_Magic;
 using BunnyMod.Content.Custom;
 
 namespace BunnyMod.Content.Patches
@@ -118,18 +117,6 @@ namespace BunnyMod.Content.Patches
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Chronomantic Dilation Timescale reset
-		/// </summary>
-		/// <param name="__instance"></param>
-		[HarmonyPostfix, HarmonyPatch(methodName:"SetupMore5_2")]
-		public static void SetupMore5_2_Postfix(LoadLevel __instance) 
-		{
-			logger.LogDebug("LoadLevel_SetupMore5_2");
-
-			ChronomanticDilation.baseTimeScale = GameController.gameController.selectedTimeScale;
 		}
 	}
 }

@@ -5,7 +5,6 @@ using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
 using BunnyMod.Content.Logging;
-using BunnyMod.Content.Abilities.A_Magic;
 using BunnyMod.Content.Traits;
 using Google2u;
 using HarmonyLib;
@@ -13,7 +12,6 @@ using RogueLibsCore;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-using BunnyMod.Content.Abilities;
 
 namespace BunnyMod.Content.Patches
 {
@@ -180,31 +178,6 @@ namespace BunnyMod.Content.Patches
 		}
 		#endregion
 
-		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.GiveSpecialAbility), argumentTypes: new[] { typeof(string) })]
-		private static void GiveSpecialAbility_Postfix(string abilityName, StatusEffects __instance)
-		{
-			if (__instance.agent.inventory.equippedSpecialAbility != null)
-			{
-				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;
-				Agent agent = __instance.agent;
-
-				string[] magicAbilities =
-				{
-					cSpecialAbility.ChronomanticDilation,
-					cSpecialAbility.PyromanticJet,
-					cSpecialAbility.TelemanticBlink
-				};
-
-				if (magicAbilities.Contains(abilityName))
-				{
-					ability.otherDamage = 0; // Bitwise variables
-
-					ability.initCount = BMAbilityController.CalcMaxMana(agent);
-					ability.maxAmmo = BMAbilityController.CalcMaxMana(agent);
-					ability.rechargeAmountInverse = BMAbilityController.CalcMaxMana(agent);
-				}
-			}
-		}
 
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.ChangeHealth), argumentTypes: new[] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) })]
 		private static void ChangeHealth_Postfix(float healthNum, PlayfieldObject damagerObject, NetworkInstanceId cameFromClient, float clientFinalHealthNum, string damagerObjectName, byte extraVar, StatusEffects __instance)

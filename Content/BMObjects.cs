@@ -11,7 +11,6 @@ using BunnyMod.Content.Traits;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using BunnyMod.Content.Custom;
-using BunnyMod.Content.Abilities.A_Magic;
 
 namespace BunnyMod.Content
 {
@@ -505,6 +504,15 @@ namespace BunnyMod.Content
 			Prefix(typeof(PlayfieldObject), "playerHasUsableItem", GetType(), "PlayfieldObject_PlayerHasUsableItem", new Type[1] { typeof(InvItem) });
 		}
 
+		/// <summary>
+		/// Removed RATS bonuses out of this patch into a transpiler
+		/// Verify that both postfixes play nicely together.
+		/// </summary>
+		/// <param name="originalLuck"></param>
+		/// <param name="luckType"></param>
+		/// <param name="cancelStatusEffects"></param>
+		/// <param name="__instance"></param>
+		/// <param name="__result"></param>
 		public static void PlayfieldObject_DetermineLuck(int originalLuck, string luckType, bool cancelStatusEffects, PlayfieldObject __instance,
 				ref int __result) // Postfix
 		{
@@ -568,17 +576,7 @@ namespace BunnyMod.Content
 				RATStargetable = true;
 			}
 
-			if (RATStargetable)
-			{
-				if (agent.HasTrait<RATS>())
-					luckMultiplier += 1;
-				if (agent.HasTrait<RATS2>())
-					luckMultiplier += 2;
-
-				if (agent.isPlayer != 0 && agent.specialAbility == cSpecialAbility.ChronomanticDilation)
-					if (ChronomanticDilation.MSA_CD_IsCast(agent))
-						luckMultiplier *= 2;
-			}
+			// RATS was removed from here, to Roguewarts mod.
 
 			if (agent.HasTrait<Charmed>())
 				luckMultiplier += 1;

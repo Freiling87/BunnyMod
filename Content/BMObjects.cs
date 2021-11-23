@@ -575,7 +575,7 @@ namespace BunnyMod.Content
 				if (agent.HasTrait<RATS2>())
 					luckMultiplier += 2;
 
-				if (agent.isPlayer != 0 && agent.specialAbility == "ChronomanticDilation")
+				if (agent.isPlayer != 0 && agent.specialAbility == cSpecialAbility.ChronomanticDilation)
 					if (ChronomanticDilation.MSA_CD_IsCast(agent))
 						luckMultiplier *= 2;
 			}

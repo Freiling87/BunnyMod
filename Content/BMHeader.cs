@@ -34,7 +34,7 @@ namespace BunnyMod.Content
 		}
 
 		public static void Log(string logMessage) =>
-				ConsoleMessage.LogMessage(logMessage);
+			ConsoleMessage.LogMessage(logMessage);
 	}
 
 	public static class BMHeaderTools
@@ -581,20 +581,6 @@ namespace BunnyMod.Content
 				EagleEyes_2,
 				Myopic,
 				Myopic2,
-		};
-	}
-	public static class cSpecialAbility // Custom Abilities
-	{
-		public const string
-				ChronomanticDilation = "ChronomanticDilation",
-				PyromanticJet = "PyromanticJet",
-				TelemanticBlink = "TelemanticBlink";
-
-		public static List<string> Magic = new List<string>()
-		{
-				ChronomanticDilation,
-				PyromanticJet,
-				TelemanticBlink,
 		};
 	}
 	public static class cStatuseffect // Custom Status Effects

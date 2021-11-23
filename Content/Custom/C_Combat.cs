@@ -23,34 +23,20 @@ namespace BunnyMod.Content.Custom
 			return false;
 		}
 
-		public static float GetBulletRange(Agent agent)
-		{
-			float maxBulletRange = 13.44f;
+		// TODO: Set this somewhere so it doesn't waste processor
+		public static float BulletRange(Agent agent) =>
+			agent.statusEffects.hasTrait(cTrait.Ballistician_2) ? 100f :
+			agent.statusEffects.hasTrait(cTrait.Ballistician) || 
+			agent.statusEffects.hasTrait(cTrait.Sniper_2) ? 50f :
+			agent.statusEffects.hasTrait(cTrait.Sniper) ? 25f :
+			13.44f;
 
-			if (agent.statusEffects.hasTrait(cTrait.Ballistician))
-				maxBulletRange = 50f;
-			else if (agent.statusEffects.hasTrait(cTrait.Ballistician_2))
-				maxBulletRange = 100f;
-			else if (agent.statusEffects.hasTrait(cTrait.Sniper))
-				maxBulletRange = 25f;
-
-			return maxBulletRange;
-		}
-
-		public static float GetGlobalKnockBackMultiplier()
-		{
-			float baseAmt = 1f;
-
-			if (GC.challenges.Contains(vChallenge.BigKnockback))
-				baseAmt = 1.50f;
-			else if (GC.challenges.Contains(cChallenge.SaveTheWalls))
-				baseAmt = 0.50f;
-			else if (GC.challenges.Contains(cChallenge.BoringPhysics))
-				baseAmt = 0.10f;
-			else if (GC.challenges.Contains(cChallenge.WallWallopWorld))
-				baseAmt = 5.00f;
-
-			return baseAmt;
-		}
+		// TODO: Set this somewhere so it doesn't waste processor
+		public static float GlobalKnockbackFactor() =>
+			GC.challenges.Contains(cChallenge.BoringPhysics) ? 0.10f :
+			GC.challenges.Contains(cChallenge.SaveTheWalls) ? 0.50f :
+			GC.challenges.Contains(vChallenge.BigKnockback) ? 1.50f :
+			GC.challenges.Contains(cChallenge.WallWallopWorld) ? 5.00f :
+			1.00f;
 	}
 }

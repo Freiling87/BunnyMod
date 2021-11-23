@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -133,20 +133,11 @@
   <data name="BrokenBottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\BrokenBottle.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ChronomanticDilation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ChronomanticDilation.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="CryomanticBolt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CryomanticBolt.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Donut" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Donut.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DoorLocker" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DoorLocker.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ElectromanticDischarge" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ElectromanticDischarge.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="EnergyDrink" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\EnergyDrink.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -160,15 +151,6 @@
   <data name="ManholeCover" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ManholeCover.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="MorphomanticGlamor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\MorphomanticGlamor.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="MorphomanticGlamorActive" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\MorphomanticGlamorActive.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="PyromanticJet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\PyromanticJet.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Sawblade" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Sawblade.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -177,9 +159,6 @@
   </data>
   <data name="SugarProcessor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SugarProcessor.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="TelemanticBlink" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\TelemanticBlink.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="WhiskeyBottle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\WhiskeyBottle.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

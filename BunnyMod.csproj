@@ -98,10 +98,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\Abilities\A_Magic\PyromanticJet.cs" />
-    <Compile Include="Content\Abilities\A_Magic\TelemanticBlink.cs" />
-    <Compile Include="Content\Abilities\BMAbilityController.cs" />
-    <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
     <Compile Include="Content\BMChallenges.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
@@ -120,7 +116,9 @@
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
     <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
+    <Compile Include="Content\Extensions\InvItem_Extensions.cs" />
     <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
+    <Compile Include="Content\Extensions\StatusEffects_Extensions.cs" />
     <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
     <Compile Include="Content\Items\I_Combineable\BearTrapProcessor.cs" />
@@ -208,17 +206,6 @@
     <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
-    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS.cs" />
-    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS2.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\Archmage.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting2.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\MagicTraining.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\MagicTraining2.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\ManaBattery.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\ManaBattery2.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\WildCasting.cs" />
-    <Compile Include="Content\Traits\T_Magic_General\WildCasting2.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes2.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\Myopic.cs" />

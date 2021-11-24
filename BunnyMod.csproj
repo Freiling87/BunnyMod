@@ -248,10 +248,6 @@
   <ItemGroup>
     <None Include="MD\1.0. Installation.md" />
     <None Include="MD\2.0. Magic.md" />
-    <None Include="MD\2.1. Abilities.md" />
-    <None Include="MD\2.2. Behaviors.md" />
-    <None Include="MD\2.3. Items.md" />
-    <None Include="MD\2.4. Mutators.md" />
     <None Include="MD\2.5. Objects.md" />
     <None Include="MD\2.6. Traits.md" />
     <None Include="MD\9.2. Scratchpad.md" />

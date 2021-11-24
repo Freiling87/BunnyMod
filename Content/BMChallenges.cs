@@ -145,41 +145,6 @@ namespace BunnyMod.Content
 			//};
 
 			//#endregion
-			//#region Population
-
-			//CustomMutator GhostTown = RogueLibs.CreateCustomMutator(cChallenge.GhostTown, true,
-			//	new CustomNameInfo("Population: Ghost Town"),
-			//	new CustomNameInfo(
-			//		"No one walks the streets in this city. Don't act all innocent, I know what you do to people in this game!\n\n- Wandering population set to 0%"));
-			//GhostTown.Available = false;
-			//GhostTown.Conflicting.AddRange(cChallenge.Population);
-			//GhostTown.IsActive = false;
-
-			//CustomMutator HordeAlmighty = RogueLibs.CreateCustomMutator(cChallenge.HordeAlmighty, true,
-			//	new CustomNameInfo("Population: Horde Almighty"),
-			//	new CustomNameInfo(
-			//		"The City administration is trying out a contraception ban to combat the high death rate. Hope it works, because they didn't think of a \"Plan B!\" Get it? I'm here all week, folks.\n\n- Wandering population set to 200%\n- You might get pregnant"));
-			//HordeAlmighty.Available = false;
-			//HordeAlmighty.Conflicting.AddRange(cChallenge.Population);
-			//HordeAlmighty.IsActive = false;
-
-			//CustomMutator LetMeSeeThatThrong = RogueLibs.CreateCustomMutator(cChallenge.LetMeSeeThatThrong, true,
-			//	new CustomNameInfo("Population: Let Me See That Throng"),
-			//	new CustomNameInfo(
-			//		"The City's HR department is still working out an effective Eugenics program. For now, people are breeding out of control.\n\n- Wandering population set to 400%"));
-			//LetMeSeeThatThrong.Available = false;
-			//LetMeSeeThatThrong.Conflicting.AddRange(cChallenge.Population);
-			//LetMeSeeThatThrong.IsActive = false;
-
-			//CustomMutator SwarmWelcome = RogueLibs.CreateCustomMutator(cChallenge.SwarmWelcome, true,
-			//	new CustomNameInfo("Population: Swarm Welcome"),
-			//	new CustomNameInfo(
-			//		"This whole city feels like a crowded subway. Pickpocketing is bad enough, but the frottage is out of control!\n\n- Wandering population set to 800%"));
-			//SwarmWelcome.Available = false;
-			//SwarmWelcome.Conflicting.AddRange(cChallenge.Population);
-			//SwarmWelcome.IsActive = false;
-
-			//#endregion
 			//#region Quest Count
 
 			//CustomMutator RushinRevolution = RogueLibs.CreateCustomMutator(cChallenge.RushinRevolution, true,
@@ -225,32 +190,6 @@ namespace BunnyMod.Content
 			//UnpaidInternship.Conflicting.Add(vChallenge.MoneyRewards);
 			//UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });
 			//UnpaidInternship.IsActive = false;
-
-			//#endregion
-			//#region Roamers
-
-			//CustomMutator HoodlumsWonderland = RogueLibs.CreateCustomMutator(cChallenge.HoodlumsWonderland, true,
-			//	new CustomNameInfo("Roamers: Hoodlum's Wonderland"),
-			//	new CustomNameInfo(
-			//		"The annual charity drive for the Blahds and Crepes happened to overlap this year. They're in tough competition to sell the most cookies! Roaming gang spawns are increased. By a lot."));
-			//HoodlumsWonderland.Available = false;
-			//HoodlumsWonderland.Conflicting.AddRange(new string[] { });
-			//HoodlumsWonderland.IsActive = false;
-
-			//CustomMutator MobTown = RogueLibs.CreateCustomMutator(cChallenge.MobTown, true,
-			//	new CustomNameInfo("Roamers: Mob Town"),
-			//	new CustomNameInfo("Turns out the Union Membership is high here for all the wrong reasons. The Mob is in every district."));
-			//MobTown.Available = false;
-			//MobTown.Conflicting.AddRange(new string[] { });
-			//MobTown.IsActive = false;
-
-			//CustomMutator YoungMenIntheNeighborhood = RogueLibs.CreateCustomMutator(cChallenge.YoungMenInTheNeighborhood, true,
-			//	new CustomNameInfo("Roamers: Young Men in the Neighborhood"),
-			//	new CustomNameInfo(
-			//		"Beause the young gentlemen in the hood are always polite; If you start acting rude, we'll set you right!\nYour friendly local Gangbangers now roam every district."));
-			//YoungMenIntheNeighborhood.Available = false;
-			//YoungMenIntheNeighborhood.Conflicting.AddRange(new string[] { });
-			//YoungMenIntheNeighborhood.IsActive = false;
 
 			//#endregion
 		}

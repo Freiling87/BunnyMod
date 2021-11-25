@@ -47,8 +47,8 @@
     <Reference Include="BepInEx">
       <HintPath>Libraries\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="BTHarmonyUtils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\BTHarmonyUtils.dll</HintPath>
+    <Reference Include="BTHarmonyUtils, Version=0.0.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\BTHarmonyUtils\BTHarmonyUtils\bin\Debug\BTHarmonyUtils.dll</HintPath>
     </Reference>
     <Reference Include="com.unity.multiplayer-hlapi.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>Libraries\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
@@ -147,7 +147,9 @@
     <Compile Include="Content\ObjectBehaviour\Controllers\StoveController.cs" />
     <Compile Include="Content\ObjectBehaviour\Controllers\ToiletController.cs" />
     <Compile Include="Content\ObjectBehaviour\Controllers\TrashCanController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\TurretController.cs" />
     <Compile Include="Content\ObjectBehaviour\Controllers\VendorCartController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\WindowController.cs" />
     <Compile Include="Content\ObjectBehaviour\IObjectDataController.cs" />
     <Compile Include="Content\ObjectBehaviour\ObjectControllerAccessor.cs" />
     <Compile Include="Content\ObjectBehaviour\ObjectControllerManager.cs" />
@@ -182,6 +184,10 @@
     <Compile Include="Content\Patches\Objects\Stove_Patches.cs" />
     <Compile Include="Content\Patches\Objects\TableBig_Patches.cs" />
     <Compile Include="Content\Patches\Objects\Toilet_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\TrashCan_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Turret_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\VendorCart_Patches.cs" />
+    <Compile Include="Content\Patches\Objects\Window_Patches.cs" />
     <Compile Include="Content\Patches\QuestsPatches.cs" />
     <Compile Include="Content\Patches\RelationshipsPatches.cs" />
     <Compile Include="Content\Patches\ScrollingMenuPatches.cs" />

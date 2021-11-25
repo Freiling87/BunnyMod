@@ -1,5 +1,6 @@
 ﻿using System;
 using BunnyMod.ObjectBehaviour;
+using BunnyMod.Traits;
 using HarmonyLib;
 
 namespace BunnyMod.Patches.Objects
@@ -18,6 +19,12 @@ namespace BunnyMod.Patches.Objects
 		private static void FinishedOperating_Postfix(PlayfieldObject __instance)
 		{
 			ObjectControllerManager.GetObjectController(__instance)?.HandleFinishedOperating(__instance);
+		}
+
+		[HarmonyPrefix, HarmonyPatch(methodName: nameof(PlayfieldObject.ShowObjectButtons), argumentTypes: new Type[] { })]
+		private static void ShowObjectButtons_Prefix(PlayfieldObject __instance)
+		{
+			BMTraitController.CorrectButtonCosts(__instance);
 		}
 	}
 }

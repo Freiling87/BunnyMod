@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
+using BTHarmonyUtils.MidFixPatch;
 using BTHarmonyUtils.TranspilerUtils;
 using BunnyMod.Logging;
 using BunnyMod.ObjectBehaviour.Controllers;
@@ -15,6 +17,12 @@ namespace BunnyMod.Patches.Objects
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
+		[HarmonyPostfix, HarmonyPatch(methodName: "Start", argumentTypes: new Type[] { })]
+		private static void Start_Postfix(Turret __instance)
+		{
+			TurretController.Start_Postfix(__instance);
+		}
+		
 		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(Turret.isOpponent), argumentTypes: new[] { typeof(Agent), typeof(bool) })]
 		private static IEnumerable<CodeInstruction> IsOpponent_Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
 		{
@@ -48,6 +56,26 @@ namespace BunnyMod.Patches.Objects
 			);
 			customTargetingPatch.ApplySafe(instructions, logger);
 			return instructions;
+		}
+
+		private static MidFixInstructionMatcher PressedButton_InstructionMatcher()
+		{
+			// Apply MidFix after base method was called.
+			return new MidFixInstructionMatcher(
+					expectedMatches: 1,
+					prefixInstructionSequence: new[]
+					{
+							new CodeInstruction(OpCodes.Ldarg_0),
+							new CodeInstruction(OpCodes.Ldarg_1),
+							new CodeInstruction(OpCodes.Ldarg_2),
+							new CodeInstruction(OpCodes.Call, AccessTools.DeclaredMethod(typeof(ObjectReal), nameof(ObjectReal.PressedButton), new[] { typeof(string), typeof(int) }))
+					});
+		}
+
+		[BTHarmonyMidFix(nameof(PressedButton_InstructionMatcher)), HarmonyPatch(methodName: nameof(Turret.PressedButton), argumentTypes: new[] { typeof(string), typeof(int) })]
+		private static bool PressedButton_MidFix(Turret __instance, string buttonText, int buttonPrice)
+		{
+			return !TurretController.HandlePressedButton_KeepMenu(__instance, buttonText); // skip rest of method if button press was handled
 		}
 	}
 }

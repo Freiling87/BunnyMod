@@ -1,5 +1,4 @@
 ﻿using BunnyMod.Extensions;
-using BunnyMod.Traits.T_Social;
 using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
@@ -54,7 +53,7 @@ namespace BunnyMod.ObjectBehaviour.Controllers
 				case CamerasCaptureWanted_TargetType:
 					return agent.HasTrait(StatusEffectNameDB.rowIds.Wanted);
 				case CamerasCaptureGuilty_TargetType:
-					return agent.objectMultAgent.mustBeGuilty || agent.HasTrait(StatusEffectNameDB.rowIds.Wanted) || agent.HasTrait<Priors>();
+					return agent.IsGuilty();
 			}
 			return false;
 		}

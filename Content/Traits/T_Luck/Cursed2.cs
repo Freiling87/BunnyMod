@@ -31,5 +31,10 @@ namespace BunnyMod.Traits.T_Luck
 		public override void OnAdded() { }
 
 		public override void OnRemoved() { }
+		
+		public static int GetLuckMultiplier(Agent agent)
+		{
+			return agent.HasTrait<Cursed2>() ? -2 : 0;
+		}
 	}
 }

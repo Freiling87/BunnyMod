@@ -1,4 +1,5 @@
 using BunnyMod.Extensions;
+using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
@@ -35,5 +36,21 @@ namespace BunnyMod.Traits.T_Magic_Chronomantic_Dilation
 		public override void OnAdded() { }
 
 		public override void OnRemoved() { }
+
+		public static int GetLuckMultiplier(string luckType, Agent agent)
+		{
+			if (luckType == "CritChance"
+					|| luckType == nameof(StatusEffectNameDB.rowIds.ChanceToSlowEnemies)
+					|| luckType == nameof(StatusEffectNameDB.rowIds.ChanceAttacksDoZeroDamage)
+					|| luckType == nameof(StatusEffectNameDB.rowIds.ChanceToKnockWeapons)
+					|| luckType == "GunAim")
+			{
+				if (agent.HasTrait<RATS>())
+				{
+					return 1;
+				}
+			}
+			return 0;
+		}
 	}
 }

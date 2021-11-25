@@ -32,5 +32,10 @@ namespace BunnyMod.Traits.T_Luck
 		public override void OnAdded() { }
 
 		public override void OnRemoved() { }
+
+		public static int GetLuckMultiplier(Agent agent)
+		{
+			return agent.HasTrait<Charmed>() ? 1 : 0;
+		}
 	}
 }

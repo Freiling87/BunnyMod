@@ -42,6 +42,12 @@ namespace BunnyMod.ObjectBehaviour.Controllers
 			vendorCart.objectInvDatabase.DestroyAllItems();
 		}
 
+		public static void HandleSetVars(VendorCart vendorCart)
+		{
+			vendorCart.interactable = true;
+			dataAccessor.RevertAllVars(vendorCart);
+		}
+
 		public void HandleRevertAllVars(VendorCart objectInstance) { }
 		public void HandleObjectUpdate(VendorCart objectInstance) { }
 		public void HandlePlayerHasUsableItem(VendorCart objectInstance, InvItem itemToTest, ref bool result) { }

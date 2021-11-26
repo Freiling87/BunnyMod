@@ -1,4 +1,4 @@
-using Google2u;
+﻿using Google2u;
 
 namespace BunnyMod.Extensions
 {
@@ -14,7 +14,6 @@ namespace BunnyMod.Extensions
 			statusEffects.AddStatusEffect(statusEffect.GetName(), showText, dontPrevent);
 		}
 
-		public static bool HasStatusEffect(this StatusEffects statusEffects, StatusEffectNameDB.rowIds statusEffect) =>
-			statusEffects.hasStatusEffect(statusEffect.GetName());
+		public static bool HasStatusEffect(this StatusEffects statusEffects, StatusEffectNameDB.rowIds statusEffect) => statusEffects.hasStatusEffect(statusEffect.GetName());
 	}
 }

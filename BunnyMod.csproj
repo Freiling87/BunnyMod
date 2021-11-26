@@ -97,10 +97,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\Abilities\A_Magic\PyromanticJet.cs" />
-    <Compile Include="Content\Abilities\A_Magic\TelemanticBlink.cs" />
-    <Compile Include="Content\Abilities\Shared.cs" />
-    <Compile Include="Content\Abilities\A_Magic\ChronomanticDilation.cs" />
     <Compile Include="Content\BMAgents.cs" />
     <Compile Include="Content\BMBehaviors.cs" />
     <Compile Include="Content\BMCombat.cs" />
@@ -225,8 +221,6 @@
     <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
-    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS.cs" />
-    <Compile Include="Content\Traits\T_Magic_Chronomantic_Dilation\RATS2.cs" />
     <Compile Include="Content\Traits\T_Magic_General\Archmage.cs" />
     <Compile Include="Content\Traits\T_Magic_General\FocusedCasting.cs" />
     <Compile Include="Content\Traits\T_Magic_General\FocusedCasting2.cs" />

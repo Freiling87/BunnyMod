@@ -6,7 +6,6 @@ using BepInEx.Logging;
 using BunnyMod.Extensions;
 using BunnyMod.Logging;
 using BunnyMod.Traits.T_Luck;
-using BunnyMod.Traits.T_Magic_Chronomantic_Dilation;
 using BunnyMod.Traits.T_Stealth;
 using BunnyMod.Traits.T_Tampering;
 using Google2u;
@@ -120,8 +119,7 @@ namespace BunnyMod.Traits
 		{
 			Agent agent = playfieldObject.playfieldObjectAgent;
 			int luckMultiplier =
-					(RATS.GetLuckMultiplier(luckType, agent) + RATS2.GetLuckMultiplier(luckType, agent)) * Abilities.A_Magic.ChronomanticDilation.GetLuckMultiplier(agent)
-					+ Charmed.GetLuckMultiplier(agent)
+					Charmed.GetLuckMultiplier(agent)
 					+ Charmed2.GetLuckMultiplier(agent)
 					+ Cursed.GetLuckMultiplier(agent)
 					+ Cursed2.GetLuckMultiplier(agent);

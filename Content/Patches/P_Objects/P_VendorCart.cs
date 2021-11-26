@@ -5,7 +5,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(VendorCart))]
-	public static class VendorCart_Patches
+	public static class P_VendorCart
 	{
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(VendorCart.SetVars), argumentTypes: new Type[] { })]
 		private static void SetVars_Postfix(VendorCart __instance)

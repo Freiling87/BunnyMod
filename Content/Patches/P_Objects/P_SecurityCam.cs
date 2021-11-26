@@ -15,7 +15,7 @@ using JetBrains.Annotations;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(SecurityCam))]
-	public static class SecurityCam_Patches
+	public static class P_SecurityCam
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

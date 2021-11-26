@@ -4,7 +4,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(SlotMachine))]
-	public static class SlotMachine_Patches
+	public static class P_SlotMachine
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(SlotMachine.Interact), argumentTypes: new[] { typeof(Agent) })]
 		private static bool Interact_Prefix(SlotMachine __instance, Agent agent)

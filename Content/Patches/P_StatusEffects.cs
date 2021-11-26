@@ -17,7 +17,7 @@ using UnityEngine.Networking;
 namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(StatusEffects))]
-	public static class StatusEffectsPatches
+	public static class P_StatusEffects
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 
@@ -116,13 +116,13 @@ namespace BunnyMod.Patches
 			MethodInfo audioHandler_Play =
 					AccessTools.Method(typeof(AudioHandler), nameof(AudioHandler.Play), new[] { typeof(PlayfieldObject), typeof(string) });
 			MethodInfo patches_GetClipName =
-					AccessTools.Method(typeof(StatusEffectsPatches), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
+					AccessTools.Method(typeof(P_StatusEffects), nameof(BecomeHidden_GetClipName), new[] { typeof(PlayfieldObject) });
 
 			/*
 			 * Replace:
 			 *  this.gc.audioHandler.Play(this.agent, "Hide");
 			 * With:
-			 *  this.gc.audioHandler.Play(this.agent, StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject))
+			 *  this.gc.audioHandler.Play(this.agent, P_StatusEffects.BecomeHidden_GetClipName(hiddenInObject))
 			 */
 			CodeReplacementPatch agentPositionPatch = new CodeReplacementPatch(
 					expectedMatches: 1,
@@ -142,7 +142,7 @@ namespace BunnyMod.Patches
 					insertInstructionSequence: new List<CodeInstruction>
 					{
 							new CodeInstruction(OpCodes.Ldarg_1),
-							new CodeInstruction(OpCodes.Call, patches_GetClipName) // StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject)
+							new CodeInstruction(OpCodes.Call, patches_GetClipName) // P_StatusEffects.BecomeHidden_GetClipName(hiddenInObject)
 					},
 					postfixInstructionSequence: new List<CodeInstruction>
 					{

@@ -13,7 +13,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Turret))]
-	public static class Turret_Patches
+	public static class P_Turret
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

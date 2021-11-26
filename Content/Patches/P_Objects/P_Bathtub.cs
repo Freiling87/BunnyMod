@@ -4,7 +4,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Bathtub))]
-	public static class Bathtub_Patches
+	public static class P_Bathtub
 	{
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Bathtub.SetVars), argumentTypes: new Type[] { })]
 		private static void SetVars_Postfix(Bathtub __instance)

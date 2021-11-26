@@ -12,7 +12,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Manhole))]
-	public static class Manhole_Patches
+	public static class P_Manhole
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		

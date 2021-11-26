@@ -13,7 +13,7 @@ using UnityEngine;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Lamp))]
-	public static class Lamp_Patches
+	public static class P_Lamp
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		

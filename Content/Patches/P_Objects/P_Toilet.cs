@@ -5,7 +5,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Toilet))]
-	public static class Toilet_Patches
+	public static class P_Toilet
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Toilet.FlushYourself), argumentTypes: new Type[] { })]
 		private static bool FlushYourself_Prefix(Toilet __instance)

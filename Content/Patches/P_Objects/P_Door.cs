@@ -13,7 +13,7 @@ using UnityEngine;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Door))]
-	public static class Door_Patches
+	public static class P_Door
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 

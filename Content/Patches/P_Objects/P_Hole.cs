@@ -5,7 +5,7 @@ using UnityEngine;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(Hole))]
-	public static class Hole_Patches
+	public static class P_Hole
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(Hole.EnterRange), argumentTypes: new[] { typeof(GameObject) })]
 		private static bool EnterRange_Prefix(Hole __instance, GameObject myObject)

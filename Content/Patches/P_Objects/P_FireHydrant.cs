@@ -5,7 +5,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(FireHydrant))]
-	public static class FireHydrant_Patches
+	public static class P_FireHydrant
 	{
 		[HarmonyPrefix, HarmonyPatch(methodName: nameof(FireHydrant.PressedButton), argumentTypes: new[] { typeof(string), typeof(int) })]
 		private static bool PressedButton_Prefix(FireHydrant __instance, string buttonText, int buttonPrice)

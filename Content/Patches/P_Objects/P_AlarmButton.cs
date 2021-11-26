@@ -11,7 +11,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(AlarmButton))]
-	public static class AlarmButton_Patches
+	public static class P_AlarmButton
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		

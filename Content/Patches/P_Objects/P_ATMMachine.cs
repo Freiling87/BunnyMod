@@ -12,7 +12,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(ATMMachine))]
-	public static class ATMMachine_Patches
+	public static class P_ATMMachine
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		

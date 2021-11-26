@@ -12,7 +12,7 @@ using HarmonyLib;
 namespace BunnyMod.Patches.Objects
 {
 	[HarmonyPatch(declaringType: typeof(TrashCan))]
-	public static class TrashCan_Patches
+	public static class P_TrashCan
 	{
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		

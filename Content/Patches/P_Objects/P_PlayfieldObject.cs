@@ -1,11 +1,16 @@
+using System;
 using BepInEx.Logging;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Traits;
 using HarmonyLib;
 using UnityEngine;
-using RogueLibsCore;
 using Random = UnityEngine.Random;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using BTHarmonyUtils.TranspilerUtils;
+using BunnyMod.Logging;
+using BunnyMod.ObjectBehaviour;
+using BunnyMod.Traits;
 
 namespace BunnyMod.Content.Patches
 {
@@ -15,9 +20,65 @@ namespace BunnyMod.Content.Patches
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		private static GameController GC => GameController.gameController;
 
+		[HarmonyPrefix, HarmonyPatch(methodName: nameof(PlayfieldObject.playerHasUsableItem), argumentTypes: new[] { typeof(InvItem) })]
+		private static bool PlayerHasUsableItem_Prefix(PlayfieldObject __instance, InvItem myItem, ref bool __result)
+		{
+			ObjectControllerManager.GetObjectController(__instance)?.HandlePlayerHasUsableItem(__instance, myItem, ref __result);
+			return !__result; // stop further execution if the controller determined that the item is usable
+		}
+
+		[HarmonyPostfix, HarmonyPatch(methodName: nameof(PlayfieldObject.FinishedOperating), argumentTypes: new Type[] { })]
+		private static void FinishedOperating_Postfix(PlayfieldObject __instance)
+		{
+			ObjectControllerManager.GetObjectController(__instance)?.HandleFinishedOperating(__instance);
+		}
+
+		[HarmonyPrefix, HarmonyPatch(methodName: nameof(PlayfieldObject.ShowObjectButtons), argumentTypes: new Type[] { })]
+		private static void ShowObjectButtons_Prefix(PlayfieldObject __instance)
+		{
+			BMTraitController.CorrectButtonCosts(__instance);
+		}
+
+		[HarmonyTranspiler, HarmonyPatch(methodName: nameof(PlayfieldObject.DetermineLuck), argumentTypes: new[] { typeof(int), typeof(string), typeof(bool) })]
+		private static IEnumerable<CodeInstruction> DetermineLuck_Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+		{
+			List<CodeInstruction> instructions = codeInstructions.ToList();
+
+			MethodInfo method_controller_GetLuckBonus = SymbolExtensions.GetMethodInfo(() => BMTraitController.GetLuckBonus(0, null, null));
+
+			CodeReplacementPatch luckBonusPatch = new CodeReplacementPatch(
+					expectedMatches: 19,
+					prefixInstructionSequence: new List<CodeInstruction>
+					{
+							new CodeInstruction(OpCodes.Ldc_R4),
+							new CodeInstruction(OpCodes.Stloc_S, 1),
+							new CodeInstruction(OpCodes.Ldc_R4),
+							new CodeInstruction(OpCodes.Stloc_S, 2),
+							new CodeInstruction(OpCodes.Ldc_R4),
+							new CodeInstruction(OpCodes.Stloc_S, 3),
+							new CodeInstruction(OpCodes.Ldc_R4),
+							new CodeInstruction(OpCodes.Stloc_S, 4),
+							new CodeInstruction(OpCodes.Ldc_R4),
+							new CodeInstruction(OpCodes.Stloc_S, 5),
+					},
+					insertInstructionSequence: new List<CodeInstruction>
+					{
+							new CodeInstruction(OpCodes.Ldloc_S, 5), // num6
+							new CodeInstruction(OpCodes.Ldarg_2), // num6, luckType
+							new CodeInstruction(OpCodes.Ldarg_0), // num6, luckType, playFieldObject
+							new CodeInstruction(OpCodes.Call, method_controller_GetLuckBonus), // luckBonus
+							new CodeInstruction(OpCodes.Ldloc_0), // luckBonus, num
+							new CodeInstruction(OpCodes.Add), // summed
+							new CodeInstruction(OpCodes.Stloc_0)
+					}
+			);
+			luckBonusPatch.ApplySafe(instructions, logger);
+			return instructions;
+		}
+
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(PlayfieldObject.determineMoneyCost), argumentTypes: new[] { typeof(int), typeof(string) })]
 		private static void determineMoneyCost_Postfix(int moneyAmt, string transactionType, PlayfieldObject __instance, ref int __result)
-		{                // ↑ [sic]
+		{ // ↑ [sic]
 			logger.LogDebug("PlayfieldObject_determineMoneyCost: transactionType = " + transactionType + "; PFO = " + __instance.name);
 
 			Agent agent = (Agent)__instance;
@@ -43,7 +104,7 @@ namespace BunnyMod.Content.Patches
 			logger.LogDebug("PlayfieldObject_determineMoneyCost: result = " + __result);
 		}
 
-		[HarmonyPrefix, HarmonyPatch(methodName:nameof(PlayfieldObject.FindDamage), argumentTypes:new[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) })]
+		[HarmonyPrefix, HarmonyPatch(methodName: nameof(PlayfieldObject.FindDamage), argumentTypes: new[] { typeof(PlayfieldObject), typeof(bool), typeof(bool), typeof(bool) })]
 		public static bool PlayfieldObject_FindDamage(PlayfieldObject damagerObject, bool generic, bool testOnly, bool fromClient, PlayfieldObject __instance, ref int __result)
 		{
 			// Not sure what Generic is, but it does not ever seem to be anything but false.
@@ -170,7 +231,7 @@ namespace BunnyMod.Content.Patches
 					flag2 = true;
 
 					if (instanceIsAgent && component.agent.objectAgent && component.bulletType == bulletStatus.Fire && damagedAgent.knockedByObject != null &&
-						damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
+							damagedAgent.bouncy && damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
 						damagerAgent = damagedAgent.lastHitByAgent;
 				}
 
@@ -181,7 +242,7 @@ namespace BunnyMod.Content.Patches
 					type = "Fire";
 
 				if (component.bulletType == bulletStatus.Shotgun &&
-					(__instance.tickEndObject == null || __instance.tickEndObject.bulletType == bulletStatus.Shotgun))
+						(__instance.tickEndObject == null || __instance.tickEndObject.bulletType == bulletStatus.Shotgun))
 					isShotgunDamage = true;
 
 				if (component.bulletType == bulletStatus.GhostBlaster)
@@ -286,14 +347,14 @@ namespace BunnyMod.Content.Patches
 					if (instanceIsAgent)
 					{
 						if (explosion.realSource != null && explosion.realSource.isItem && (!damagedAgent.movement.HasLOSAgent360(explosion.agent) ||
-							Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
-							explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+								Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
+								explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 
 						if (explosion.sourceObject != null && explosion.sourceObject.isBullet &&
-							explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" &&
-							(!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
-								explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+								explosion.sourceObject.playfieldObjectBullet.cameFromWeapon == "Fireworks" &&
+								(!damagedAgent.movement.HasLOSAgent360(explosion.agent) || Vector2.Distance(damagedAgent.curPosition, explosion.agent.curPosition) >
+										explosion.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 				}
@@ -329,7 +390,7 @@ namespace BunnyMod.Content.Patches
 					flag2 = true;
 
 					if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(fire.agent) ||
-						Vector2.Distance(damagedAgent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
+							Vector2.Distance(damagedAgent.curPosition, fire.agent.curPosition) > fire.agent.LOSRange / damagedAgent.hardToSeeFromDistance))
 						flag4 = false;
 				}
 
@@ -362,7 +423,7 @@ namespace BunnyMod.Content.Patches
 				type = "Hazard";
 
 				if (instanceIsAgent && damagedAgent.knockedByObject != null && damagedAgent.bouncy &&
-					damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
+						damagedAgent.knockedByObject.playfieldObjectType == "Agent" && damagedAgent.lastHitByAgent != null)
 				{
 					damagerAgent = damagedAgent.lastHitByAgent;
 					flag2 = true;
@@ -410,7 +471,7 @@ namespace BunnyMod.Content.Patches
 						flag2 = true;
 
 						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) ||
-							Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
+								Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 
@@ -429,7 +490,7 @@ namespace BunnyMod.Content.Patches
 						flag2 = true;
 
 						if (instanceIsAgent && (!damagedAgent.movement.HasLOSAgent360(item.owner) ||
-							Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
+								Vector2.Distance(damagedAgent.curPosition, item.owner.curPosition) > item.owner.LOSRange / damagedAgent.hardToSeeFromDistance))
 							flag4 = false;
 					}
 
@@ -452,7 +513,7 @@ namespace BunnyMod.Content.Patches
 					dmg = (float)item.invItem.throwDamage;
 
 					if (flag2 && item.invItem.invItemName == "TossItem" &&
-						(damagerAgent.oma.superSpecialAbility || damagerAgent.statusEffects.hasTrait("GoodThrower")))
+							(damagerAgent.oma.superSpecialAbility || damagerAgent.statusEffects.hasTrait("GoodThrower")))
 						dmg *= 2f;
 
 					type = "Throw";
@@ -570,13 +631,13 @@ namespace BunnyMod.Content.Patches
 				if (!playerDamagedByNpc && flag6)
 				{
 					if (damagerAgent.inventory.equippedArmor != null && !testOnly &&
-						(damagerAgent.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
-						!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+							(damagerAgent.inventory.equippedArmor.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
+							!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
 						damagerAgent.inventory.DepleteArmor("Normal", Mathf.Clamp((int)(dmg / 2f), 0, 12));
 
 					if (damagerAgent.inventory.equippedArmorHead != null && !testOnly &&
-						(damagerAgent.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
-						!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
+							(damagerAgent.inventory.equippedArmorHead.armorDepletionType == "MeleeAttack" && instanceIsAgent) && !damagedAgent.dead &&
+							!damagedAgent.mechEmpty && !damagedAgent.butlerBot)
 						damagerAgent.inventory.DepleteArmor("Head", Mathf.Clamp((int)(dmg / 2f), 0, 12));
 				}
 
@@ -597,8 +658,8 @@ namespace BunnyMod.Content.Patches
 							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
 					}
 					else if ((damagerAgent.melee.mustDoBackstab && dmg != 200f && !damagedAgent.dead) || (damagerAgent.statusEffects.hasTrait("Backstabber") &&
-						((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) &&
-						!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.sleeping && dmg != 200f && !damagedAgent.dead))
+							((damagedAgent.mostRecentGoalCode != goalType.Battle && damagedAgent.mostRecentGoalCode != goalType.Flee) || damagedAgent.frozen) &&
+							!damagedAgent.movement.HasLOSObjectBehind(damagerAgent) && !damagedAgent.sleeping && dmg != 200f && !damagedAgent.dead))
 					{
 						damagedAgent.agentHelperTr.localPosition = new Vector3(-0.64f, 0f, 0f);
 
@@ -608,7 +669,7 @@ namespace BunnyMod.Content.Patches
 							damagedAgent.statusEffects.CreateBuffText("Backstab", damagedAgent.objectNetID);
 
 							if (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") || (damagerAgent.statusEffects.hasStatusEffect("Invisible") &&
-								damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
+									damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")))
 							{
 								dmg *= 10f;
 								damagerAgent.melee.successfullyBackstabbed = true;
@@ -626,7 +687,7 @@ namespace BunnyMod.Content.Patches
 							flag11 = true;
 
 						if (!playerDamagedByNpc && !flag11 && !damagerAgent.oma.superSpecialAbility &&
-							!damagerAgent.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
+								!damagerAgent.statusEffects.hasTrait("FailedAttacksDontEndCamouflage"))
 							damagerAgent.statusEffects.RemoveInvisibleLimited();
 					}
 				}
@@ -660,8 +721,8 @@ namespace BunnyMod.Content.Patches
 						bool sniped = false;
 						bool hidden = (!(damagerAgent.hiddenInBush is null) || !(damagerAgent.hiddenInObject is null));
 						bool invisible = (damagerAgent.statusEffects.hasStatusEffect("InvisibleLimited") ||
-							(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
-							hidden);
+								(damagerAgent.statusEffects.hasStatusEffect("Invisible") && damagerAgent.statusEffects.hasSpecialAbility("InvisibleLimitedItem")) ||
+								hidden);
 						bool hasLOSBehind = damagedAgent.movement.HasLOSObjectBehind(damagerAgent);
 						bool hasLOSAgent = damagedAgent.movement.HasLOSAgent(damagerAgent);
 						float distance = Vector2.Distance(damagerAgent.tr.position, damagedAgent.tr.position);
@@ -678,16 +739,16 @@ namespace BunnyMod.Content.Patches
 						logger.LogDebug("\twepName: " + bullet.cameFromWeapon);
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.DoubleTapper) &&
-							((!hasLOSBehind && !hasLOSAgent) || hidden || invisible || damagedAgent.sleeping) &&
-							distance <= 0.96f)
+								((!hasLOSBehind && !hasLOSAgent) || hidden || invisible || damagedAgent.sleeping) &&
+								distance <= 0.96f)
 						{
 							headShot = true;
 							doubleTap = true;
 						}
 
 						if (damagerAgent.statusEffects.hasTrait(cTrait.Sniper) && bullet.cameFromWeapon == vItem.Revolver &&
-							(((!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && distance >= 4.00f) ||
-								distance >= 8.00f))
+								(((!hasLOSAgent || hidden || invisible || damagedAgent.sleeping) && distance >= 4.00f) ||
+										distance >= 8.00f))
 						{
 							headShot = true;
 							sniped = true;
@@ -751,7 +812,7 @@ namespace BunnyMod.Content.Patches
 						dmg /= 1.5f;
 
 					if ((damagedAgent.oma.superSpecialAbility && damagedAgent.agentName == "Firefighter") ||
-						damagedAgent.statusEffects.hasTrait("FireproofSkin2"))
+							damagedAgent.statusEffects.hasTrait("FireproofSkin2"))
 					{
 						dmg = 0f;
 						flag8 = true;
@@ -851,12 +912,12 @@ namespace BunnyMod.Content.Patches
 					dmg /= 8f;
 
 				if (damagedAgent.hasEmployer && damagedAgent.employer.statusEffects.hasSpecialAbility("ProtectiveShell") &&
-					damagedAgent.employer.objectMult.chargingSpecialLunge)
+						damagedAgent.employer.objectMult.chargingSpecialLunge)
 					dmg /= 8f;
 
 				if (damagedAgent.oma.mindControlled && damagedAgent.mindControlAgent != null &&
-					(damagedAgent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") ||
-						(damagedAgent.mindControlAgent.oma.superSpecialAbility && damagedAgent.mindControlAgent.agentName == "Alien")))
+						(damagedAgent.mindControlAgent.statusEffects.hasTrait("MindControlledResistDamage") ||
+								(damagedAgent.mindControlAgent.oma.superSpecialAbility && damagedAgent.mindControlAgent.agentName == "Alien")))
 					dmg /= 1.5f;
 
 				if (flag2 && flag6 && !damagerAgent.dead)
@@ -912,7 +973,7 @@ namespace BunnyMod.Content.Patches
 					}
 
 					if (damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage") ||
-						damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
+							damagerAgent.statusEffects.hasTrait("MoreFollowersCauseMoreDamage2"))
 					{
 						float num9 = 1.2f;
 
@@ -927,7 +988,7 @@ namespace BunnyMod.Content.Patches
 							Agent agent4 = GC.agentList[j];
 
 							if (agent4.hasEmployer && agent4.employer == damagerAgent &&
-								Vector2.Distance(agent4.tr.position, damagedAgent.tr.position) < 10.24f)
+									Vector2.Distance(agent4.tr.position, damagedAgent.tr.position) < 10.24f)
 							{
 								dmg += num10 * num9 - num10;
 								num11++;
@@ -939,8 +1000,8 @@ namespace BunnyMod.Content.Patches
 					}
 
 					if (damagerAgent.oma.mindControlled && damagerAgent.mindControlAgent != null &&
-						(damagerAgent.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") ||
-							(damagerAgent.mindControlAgent.oma.superSpecialAbility && damagerAgent.mindControlAgent.agentName == "Alien")))
+							(damagerAgent.mindControlAgent.statusEffects.hasTrait("MindControlledDamageMore") ||
+									(damagerAgent.mindControlAgent.oma.superSpecialAbility && damagerAgent.mindControlAgent.agentName == "Alien")))
 						dmg *= 1.5f;
 				}
 
@@ -1003,7 +1064,7 @@ namespace BunnyMod.Content.Patches
 				}
 
 				if (damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer") ||
-					damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
+						damagedAgent.statusEffects.hasTrait("MoreFollowersLessDamageToPlayer2"))
 				{
 					int num13 = 0;
 					float num14 = 1.2f;
@@ -1065,8 +1126,8 @@ namespace BunnyMod.Content.Patches
 					if ((!damagerAgent.invisible || flag12) && flag4)
 					{
 						if ((damagerAgent.isPlayer <= 0 || damagerAgent.localPlayer || damagerObject.isItem || damagerObject.isExplosion ||
-								damagerAgent.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) &&
-							!damagedAgent.mechEmpty)
+										damagerAgent.statusEffects.hasTrait("CantAttack")) && (!damagerObject.isExplosion || !damagerObject.noAngerOnHit) &&
+								!damagedAgent.mechEmpty)
 						{
 							damagedAgent.justHitByAgent3 = true;
 							damagedAgent.relationships.AddRelHate(damagerAgent, Mathf.Clamp(num15, 5, 200));

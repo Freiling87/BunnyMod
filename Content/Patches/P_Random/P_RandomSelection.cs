@@ -1,13 +1,6 @@
 using BepInEx.Logging;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Traits;
+using BunnyMod.Logging;
 using HarmonyLib;
-using UnityEngine;
-using RogueLibsCore;
-using Random = UnityEngine.Random;
-using System.Collections;
-using System.Reflection;
-using System;
 
 namespace BunnyMod.Content.Patches
 {

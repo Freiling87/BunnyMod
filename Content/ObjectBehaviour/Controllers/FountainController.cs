@@ -1,4 +1,5 @@
-﻿using BunnyMod.Extensions;
+﻿using BunnyMod.Content.Custom;
+using BunnyMod.Extensions;
 using BunnyMod.ObjectBehaviour.Controllers.Data;
 using Google2u;
 using JetBrains.Annotations;
@@ -95,7 +96,7 @@ namespace BunnyMod.ObjectBehaviour.Controllers
 					gc.audioHandler.Play(objectInstance, vAudioClip.Operating);
 					gc.spawnerMain.SpawnStateIndicator(objectInstance, "HighVolume");
 					gc.OwnCheck(agent, objectInstance.go, "Normal", 2);
-					BMAgents.AnnoyWitnessesVictimless(agent);
+					C_Relationships.AnnoyWitnessesVictimless(agent);
 				}
 
 				objectInstance.StopInteraction();

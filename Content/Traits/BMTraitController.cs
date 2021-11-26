@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -42,8 +42,7 @@ namespace BunnyMod.Traits
 					}
 					return 1f;
 				case DamageType.brokenWindow:
-					return StealthBastardDeluxe.GetBrokenWindowHealthCostFactor(agent)
-							* (agent.HasTrait(StatusEffectNameDB.rowIds.Diminutive) ? 0.5f : 1f);
+					return StealthBastardDeluxe.GetBrokenWindowHealthCostFactor(agent) * (agent.HasTrait(StatusEffectNameDB.rowIds.Diminutive) ? 0.5f : 1f);
 				default:
 					return 1f;
 			}

@@ -22,30 +22,16 @@ namespace BunnyMod
 
 		public void Awake()
 		{
-			string configPath = Paths.ConfigPath;
-
 			MainInstance = this;
 			ConsoleMessage = Logger;
 
 			new Harmony(ModInfo.BepInExPluginId).PatchAll(GetType().Assembly);
 
-			new BMBehaviors().Awake();
-			new BMCombat().Awake();
-			new BMInterface().Awake();
-			new BMItems().Awake();
-			new BMLevelFeelings().Awake();
-			new BMLevelGen().Awake();
-			new BMMiscellaneous().Awake();
-			new BMChallenges().Awake();
-			BMObjects.Awake();
-			//new BMQuests().Awake();
-
 			RogueLibs.LoadFromAssembly();
 			BMTraitsManager.FinalizeTraits();
 		}
 
-		public static void Log(string logMessage) =>
-				ConsoleMessage.LogMessage(logMessage);
+		public static void Log(string logMessage) => ConsoleMessage.LogMessage(logMessage);
 	}
 
 	public static class BMHeaderTools
@@ -162,37 +148,15 @@ namespace BunnyMod
 	public static class cChallenge // Custom Mutators
 	{
 		public const string
-				Buildings_Hide = "Buildings_Hide",
-				Buildings_Show = "Buildings_Show",
-				CityOfSteel = "CityOfSteel",
-				GreenLiving = "GreenLiving",
-				HordeAlmighty = "HordeAlmighty",
-				Panoptikopolis = "Panoptikopolis",
-				ShantyTown = "ShantyTown",
-				SpelunkyDory = "SpelunkyDory",
-			
-				Exteriors_Hide = "FloorExteriors_Hide",
-				Exteriors_Show = "FloorExteriors_Show",
-				ArcologyEcology = "ArcologyEcology",
-				
 				Fire_Hide = "Fire_Hide",
 				Fire_Show = "Fire_Show",
 				GasolineHumidity = "FastFires",
 				Mildfire = "WeakFires",
 				NapalmSprings = "StubbornFires",
 				
-				Features_Hide = "Features_Hide",
-				Features_Show = "Features_Show",
-				BadNeighborhoods = "BadNeighborhoods",
-				BroughtBackFountain = "BroughtBackFountain",
-				CartOfTheDeal = "CartOfTheDeal",
 				FloralerFlora = "FloralerFlora",
-				LakeItOrLeaveIt = "LakeItOrLeaveIt",
 				LitterallyTheWorst = "LitterallyTheWorst",
-				PowerWhelming = "PowerWhelming",
-				SkywayDistrict = "SkywayDistrict",
-				SurveillanceSociety = "SurveillanceSociety",
-				ThePollutionSolution = "ThePollutionSolution",
+			// Rest of these are in notes in CCU
 				
 				Gameplay_Hide = "Gameplay_Hide",
 				Gameplay_Show = "Gameplay_Show",
@@ -204,26 +168,10 @@ namespace BunnyMod
 				SaveTheWalls = "SaveTheWalls",
 				WallWallopWorld = "WallWallopWorld",
 				
-				MapSize_Hide = "MapSize_Hide",
-				MapSize_Show = "MapSize_Show",
-				ACityForAnts = "ACityForAnts",
-				Claustropolis = "Claustropolis",
-				Megalopolis = "Megalopolis",
-				Ultrapolis = "Ultrapolis",
-				
-				Overhauls_Hide = "Overhauls_Hide",
-				Overhauls_Show = "Overhauls_Show",
 				AnCapistan = "AnCapistan",
 				DiscoCityDanceoff = "DiscoCityDanceoff",
-				MACITS = "MACITS",
 				PoliceState = "PoliceState",
-				
-				Population_Hide = "Population_Hide",
-				Population_Show = "Population_Show",
-				GhostTown = "GhostTown",
-				LetMeSeeThatThrong = "LetMeSeeThatThrong",
-				SwarmWelcome = "SwarmWelcome",
-				
+
 				QuestCount_Hide = "QuestCount_Hide",
 				QuestCount_Show = "QuestCount_Show",
 				SingleMinded = "SingleMinded",
@@ -235,84 +183,32 @@ namespace BunnyMod
 				DoublePlyRewards = "DoublePlyRewards",
 				UnpaidInternship = "UnpaidInternship",
 				
-				Roamers_Hide = "Roamers_Hide",
-				Roamers_Show = "Roamers_Show",
-				HoodlumsWonderland = "HoodlumsWonderland",
-				MobTown = "MobTown",
-				YoungMenInTheNeighborhood = "YoungMenInTheNeighborhood",
-				
 				Tethers_Hide = "Tethers_Hide",
 				Tethers_Show = "Tethers_Show",
 				HomesickAndTired = "HomesickandTired",
 				RoaminOrgy = "RoaminOrgy";
 
-		public static List<string> AddCriminals = new List<string>()
-		{
-				HoodlumsWonderland,
-				MobTown,
-				YoungMenInTheNeighborhood,
-		};
-
 		public static List<string> AffectsBullets = new List<string>()
 		{
 				ScaryGuns,
 		};
-
 		public static List<string> AffectsFires = new List<string>()
 		{
 				GasolineHumidity,
 				NapalmSprings,
 				Mildfire,
 		};
-
-		public static List<string> AffectsFloors = new List<string>()
-		{
-				ArcologyEcology,
-				DiscoCityDanceoff,
-		};
-
-		public static List<string> AffectsLights = new List<string>()
-		{
-				DiscoCityDanceoff,
-				GreenLiving,
-				Panoptikopolis,
-		};
-
 		public static List<string> Knockback = new List<string>()
 		{
 				BoringPhysics,
 				SaveTheWalls,
 				WallWallopWorld
 		};
-
 		public static List<string> Leashes = new List<string>()
 		{
 				RoaminOrgy,
 				HomesickAndTired
 		};
-
-		public static List<string> MapSize = new List<string>()
-		{
-				ACityForAnts,
-				Claustropolis,
-				Megalopolis,
-				Ultrapolis
-		};
-
-		public static List<string> Overhauls = new List<string>()
-		{
-				AnCapistan,
-				MACITS,
-				PoliceState
-		};
-
-		public static List<string> Population = new List<string>()
-		{
-				GhostTown,
-				LetMeSeeThatThrong,
-				SwarmWelcome,
-		};
-
 		public static List<string> QuestCount = new List<string>()
 		{
 				RushinRevolution,
@@ -320,22 +216,7 @@ namespace BunnyMod
 				Workhorse
 		};
 
-		public static List<string> Walls = new List<string>()
-		{
-				CityOfSteel,
-				GreenLiving,
-				Panoptikopolis,
-				ShantyTown,
-				SpelunkyDory
-		};
-
-		public static List<string> WallsFlammable = new List<string>()
-		{
-				GreenLiving,
-				ShantyTown
-		};
 	}
-
 	public static class cDialogue // Custom Dialogue
 	{
 		public const string
@@ -418,19 +299,32 @@ namespace BunnyMod
 				VeiledThreatsAnnoyed = "ThreatenAnnoyed",
 				WarlordSubmission = "WarlordSubmission";
 	}
-
-	public static class cLevelFeature // Custom Level Features
+	public static class cItem // Custom Items
 	{
 		public const string
-				Benches = "Benches",
-				BrokenWindows = "BrokenWindows",
-				Cornstalks = "Cornstalks",
-				Fountains = "Fountains",
-				Litter = "Litter",
-				PublicSecurityCams = "PublicSecurityCams",
-				Statues = "Statues";
+			BearTrapProcessor = "Bear Trap Processor",
+			BeerCan = "Beer Can",
+			Brick = "Brick",
+			BrokenBottle = "Broken Bottle",
+			EnergyDrink = "Energy Drink",
+			FancyHat = "Fancy Hat",
+			FireMine = "Fire Mine",
+			HolySymbol = "Holy Symbol",
+			HolyWaterFlask = "Holy Water Flask",
+			KillArmortizer = "Kill Armortizer",
+			Lunchbox = "Lunchbox",
+			ManholeCover = "Manhole Cover",
+			MultiTool = "Multi-Tool",
+			Repairerator = "Repairerator",
+			RiotHelmet = "Riot Helmet",
+			Sawblade = "Sawblade",
+			Spear = "Spear",
+			StunGun = "Stun-Gun",
+			SugarProcessor = "Sugar Processor",
+			ThrowingKnife = "ThrowingKnives",
+			WhiskeyBottle = "Whiskey Bottle",
+			WireCutters = "Wire Cutters";
 	}
-
 	public static class cObject
 	{
 		public static List<string> HideableSBD = new List<string>()
@@ -457,7 +351,6 @@ namespace BunnyMod
 				vObject.TableBig,
 		};
 	}
-
 	public static class cSkillPoints // Custom Skill Points
 	{
 		public const string
@@ -474,7 +367,6 @@ namespace BunnyMod
 				StoleNone = "StoleNone", // TODO does nothing
 				TookLotsOfDamage = "TookLotsOfDamage";
 	}
-
 	public static class cTrait // Custom Traits
 	{
 		public const string
@@ -645,22 +537,6 @@ namespace BunnyMod
 				Myopic2,
 		};
 	}
-
-	public static class cSpecialAbility // Custom Abilities
-	{
-		public const string
-				ChronomanticDilation = "ChronomanticDilation",
-				PyromanticJet = "PyromanticJet",
-				TelemanticBlink = "TelemanticBlink";
-
-		public static List<string> Magic = new List<string>()
-		{
-				ChronomanticDilation,
-				PyromanticJet,
-				TelemanticBlink,
-		};
-	}
-
 	public static class cStatuseffect // Custom Status Effects
 	{
 		public const string
@@ -2069,147 +1945,6 @@ namespace BunnyMod
 				Mustache = "Mustache",
 				Null = "None";
 	}
-
-	public static class vFloor // Vanilla Floor Tiles
-	{
-		public const string
-				ArenaFloor = "ArenaFloor",
-				ArmoryFloor = "ArmoryFloor",
-				BankFloor = "BankFloor",
-				Bathhouse = "Bathhouse",
-				BathroomTile = "BathroomTile",
-				BrickIndoor = "BrickIndoor",
-				Bridge_Unused = "Bridge",
-				Canal = "Canal",
-				CasinoFloor = "CasinoFloor",
-				CaveFloor = "CaveFloor",
-				Checkerboard = "Checkerboard",
-				Checkerboard2 = "Checkerboard2",
-				CleanTiles = "CleanTiles",
-				CleanTilesRaised = "CleanTilesRaised",
-				ClearFloor = "ClearFloor",
-				ClearFloor2 = "ClearFloor2",
-				ConveyorBelt = "ConveyorBelt",
-				DanceFloor = "DanceFloor",
-				DanceFloorRaised = "DanceFloorRaised",
-				DirtFloor = "DirtFloor",
-				DirtyTiles = "DirtyTiles",
-				DrugDenFloor = "DrugDenFloor",
-				ElectronicPlates = "ElectronicPlates",
-				Facility = "Facility",
-				FactoryFloor = "FactoryFloor",
-				FlamePit = "FlamePit",
-				Grass = "CityParkFloor",
-				GreyTile_Unused = "GreyTile",
-				Gym = "Gym",
-				HideoutFloor = "HideoutFloor",
-				Hole = "Hole",
-				HospitalFloor = "HospitalFloor",
-				Ice = "Ice",
-				IceRink = "IceRink",
-				Mall = "Mall",
-				MetalFloor = "MetalFloor",
-				MetalPlates = "MetalPlates",
-				Muted = "Muted",
-				Normal = "Normal",
-				OfficeFloor = "OfficeFloor",
-				PoliceStationFloor = "PoliceStationFloor",
-				Pool = "Pool",
-				Posh = "Posh",
-				PrisonFloor = "PrisonFloor",
-				RugBlue = "BlueRug",
-				RugDarkBlue = "DarkBlueRug",
-				RugGreen = "GreenRug",
-				RugPurple = "PurpleRug",
-				RugRed = "RedRug",
-				SmallTiles = "SmallTiles",
-				SolidPlates = "SolidPlates",
-				Water = "Water",
-				WoodClean = "WoodClean",
-				WoodSlats = "WoodSlats";
-
-		public static List<string> Constructed = new List<string>()
-		{
-				ArenaFloor,
-				ArmoryFloor,
-				BankFloor,
-				Bathhouse,
-				BathroomTile,
-				BrickIndoor,
-				Bridge_Unused,
-				CasinoFloor,
-				Checkerboard,
-				Checkerboard2,
-				CleanTiles,
-				DanceFloor,
-				DirtyTiles,
-				DrugDenFloor,
-				ElectronicPlates,
-				Facility,
-				FactoryFloor,
-				GreyTile_Unused,
-				Gym,
-				HideoutFloor,
-				HospitalFloor,
-				Mall,
-				MetalFloor,
-				MetalPlates,
-				Muted,
-				Normal,
-				OfficeFloor,
-				PoliceStationFloor,
-				PrisonFloor,
-				SmallTiles,
-				SolidPlates,
-				WoodClean,
-				WoodSlats,
-		};
-
-		public static List<string> Natural = new List<string>()
-		{
-				CaveFloor,
-				DirtFloor,
-				Grass,
-		};
-
-		public static List<string> Raised = new List<string>()
-		{
-				ArenaFloor,
-				CleanTilesRaised,
-				DanceFloorRaised
-		};
-
-		public static List<string> Rugs = new List<string>()
-		{
-				CasinoFloor,
-				Posh,
-				RugBlue,
-				RugDarkBlue,
-				RugGreen,
-				RugPurple,
-				RugRed,
-		};
-	}
-
-	public static class vFloorTileGroup // Vanilla Floor Tile Groups
-	{
-		public const string
-				Building = "FloorTilesBuilding",
-				Disposal = "Disposal",
-				Downtown = "FloorTilesDowntown",
-				UnknownPossiblyGeneric = "FloorTiles",
-				HoleTiles = "HoleTiles",
-				Ice = "IceTiles",
-				Industrial = "FloorTilesIndustrial",
-				MayorVillage = "FloorTilesMayor",
-				Park = "FloorTilesOutdoor",
-				Rug = "Rug",
-				Slums = "FloorTilesMain",
-				Uptown = "FloorTilesWealthy",
-				Wall = "WallTiles",
-				Water = "WaterTiles";
-	}
-
 	public static class vHairType // Vanilla Hair
 	{
 		public const string
@@ -2550,51 +2285,6 @@ namespace BunnyMod
 				Wrench,
 		};
 	}
-
-	public static class vLevelFeature // Vanilla Features
-	{
-		public const string
-				AlarmButton = "AlarmButton",
-				Barbecue = "Barbecue",
-				BearTrap = "BearTrap",
-				Boulder = "Boulder",
-				Bush = "Bush",
-				Cop = "Cop",
-				CopBot = "CopBot",
-				ExplodingSlimeBarrel = "ExplodingSlimeBarrel",
-				FireHydrant = "FireHydrant",
-				FlameGrate = "FlameGrate",
-				FlamingBarrel = "FlamingBarrel",
-				Gangbanger = "Gangbanger",
-				Hobo = "Hobo",
-				Lake = "Lake",
-				Lamp = "Lamp",
-				LockdownWall = "LockdownWall",
-				Mafia = "Mafia",
-				Manhole = "Manhole",
-				Mayor = "Mayor",
-				Mine = "Mine",
-				Musician = "Musician",
-				OilSpill = "OilSpill",
-				PoliceBox = "PoliceBox",
-				PowerBox = "PowerBox",
-				SlimeBarrel = "SlimeBarrel",
-				Tracks = "Tracks",
-				Tracks1 = "Tracks1",
-				Tracks2 = "Tracks2",
-				Tracks3 = "Tracks3",
-				Tracks4 = "Tracks4",
-				Tracks5 = "Tracks5",
-				Tracks6 = "Tracks6",
-				Tracks7 = "Tracks7",
-				Tracks8 = "Tracks8",
-				Tracks9 = "Tracks9",
-				TrashCan = "TrashCan",
-				Tree = "Tree",
-				VendingMachine = "VendingMachine",
-				VendorCart = "VendorCart";
-	}
-
 	public static class vLevelFeeling // Vanilla Disasters
 	{
 		public const string
@@ -2791,28 +2481,27 @@ namespace BunnyMod
 				Bite = "Bite",
 				Camouflage = "Camouflage",
 				Cannibalize = "Cannibalize",
-				Chaaarge = "Chaaarge!",
-				ChloroformHankie = "Chloroform Hankie",
-				CryProfusely = "Cry Profusely",
+				Chaaarge = "Charge",
+				ChloroformHankie = "ChloroformHankie",
+				CryProfusely = "TutorialAbility",
 				Enslave = "Enslave",
 				Handcuffs = "Handcuffs",
 				Joke = "Joke",
 				Laptop = "Laptop",
-				LaserGun = "Laser Gun",
-				MechTransformation = "Mech Transformation",
-				MindControl = "Mind Control",
+				LaserGun = "LaserGun",
+				MechTransformation = "MechTransform",
+				MindControl = "MindControl",
 				Possess = "Possess",
-				PowerSap = "Power Sap",
-				PrimalLunge = "Primal Lunge",
-				SharpLunge = "Sharp Lunge",
-				StickyGlove = "Sticky Glove",
+				PowerSap = "PowerSap",
+				PrimalLunge = "Lunge",
+				SharpLunge = "WerewolfLunge",
+				StickyGlove = "StealingGlove",
 				Stomp = "Stomp",
 				Toss = "Toss",
-				WaterCannon = "Water Cannon",
-				WerewolfTransformation = "Werewolf Transformation",
-				ZombieSpit = "Zombie Spit";
+				WaterCannon = "WaterCannon",
+				WerewolfTransformation = "WerewolfTransform",
+				ZombieSpit = "ZombieSpit";
 	}
-
 	public static class vStatusEffect // Vanilla Status Effects
 	{
 		public const string
@@ -3170,29 +2859,5 @@ namespace BunnyMod
 				Specist,
 				TheLaw,
 		};
-	}
-
-	public static class vWall // Vanilla Walls
-	{
-		public const string
-				BarbedWire = "BarbedWire",
-				Bars = "Bars",
-				Border = "Border",
-				Brick = "Normal",
-				Cave = "Cave",
-				Glass = "Glass",
-				Hedge = "Hedge",
-				Null = "",
-				Steel = "Steel",
-				Wood = "Wood";
-	}
-
-	public static class vWallGroup // Vanilla Wall Groups
-	{
-		public const string
-				Hideout = "WallsHideout",
-				Normal = "WallsNormal",
-				Strong = "WallsStrong",
-				Weak = "WallsWeak";
 	}
 }

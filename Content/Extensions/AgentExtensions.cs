@@ -1,4 +1,4 @@
-﻿using BunnyMod.Traits.T_Social;
+using BunnyMod.Traits.T_Social;
 using Google2u;
 using RogueLibsCore;
 

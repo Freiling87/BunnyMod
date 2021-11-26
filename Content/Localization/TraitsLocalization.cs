@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.Localization
+namespace BunnyMod.Localization
 {
 	public class TraitsLocalization
 	{

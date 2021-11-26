@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using BepInEx.Logging;
-using BunnyMod.Content.Logging;
-using BunnyMod.Content.Traits;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Social;
+using BunnyMod.Traits.T_Tampering;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(AgentInteractions))]
 	public static class P_AgentInteractions

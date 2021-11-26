@@ -1,8 +1,8 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Luck
 {
 	public class Charmed2 : CustomTrait
 	{
@@ -31,5 +31,10 @@ namespace BunnyMod.Content.Traits
 		public override void OnAdded() { }
 
 		public override void OnRemoved() { }
+		
+		public static int GetLuckMultiplier(Agent agent)
+		{
+			return agent.HasTrait<Charmed2>() ? 2 : 0;
+		}
 	}
 }

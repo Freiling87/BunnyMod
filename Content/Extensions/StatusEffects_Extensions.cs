@@ -1,6 +1,6 @@
-using Google2u;
+﻿using Google2u;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class StatusEffects_Extensions
 	{
@@ -14,7 +14,6 @@ namespace BunnyMod.Content.Extensions
 			statusEffects.AddStatusEffect(statusEffect.GetName(), showText, dontPrevent);
 		}
 
-		public static bool HasStatusEffect(this StatusEffects statusEffects, StatusEffectNameDB.rowIds statusEffect) =>
-			statusEffects.hasStatusEffect(statusEffect.GetName());
+		public static bool HasStatusEffect(this StatusEffects statusEffects, StatusEffectNameDB.rowIds statusEffect) => statusEffects.hasStatusEffect(statusEffect.GetName());
 	}
 }

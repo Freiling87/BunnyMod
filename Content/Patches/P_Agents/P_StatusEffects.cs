@@ -131,7 +131,7 @@ namespace BunnyMod.Content.Patches
 			 * Replace:
 			 *  this.gc.audioHandler.Play(this.agent, "Hide");
 			 * With:
-			 *  this.gc.audioHandler.Play(this.agent, StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject))
+			 *  this.gc.audioHandler.Play(this.agent, P_StatusEffects.BecomeHidden_GetClipName(hiddenInObject))
 			 */
 			CodeReplacementPatch agentPositionPatch = new CodeReplacementPatch(
 				expectedMatches: 1,
@@ -151,7 +151,7 @@ namespace BunnyMod.Content.Patches
 				insertInstructionSequence: new List<CodeInstruction>
 				{
 						new CodeInstruction(OpCodes.Ldarg_1),
-						new CodeInstruction(OpCodes.Call, patches_GetClipName) // StatusEffectsPatches.BecomeHidden_GetClipName(hiddenInObject)
+						new CodeInstruction(OpCodes.Call, patches_GetClipName) // P_StatusEffects.BecomeHidden_GetClipName(hiddenInObject)
 				},
 				postfixInstructionSequence: new List<CodeInstruction>
 				{

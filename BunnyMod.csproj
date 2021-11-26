@@ -47,18 +47,14 @@
     <Reference Include="BepInEx">
       <HintPath>Libraries\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="BTHarmonyUtils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\BTHarmonyUtils.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
+    <Reference Include="BTHarmonyUtils, Version=0.0.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\BTHarmonyUtils\BTHarmonyUtils\bin\Debug\BTHarmonyUtils.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>Libraries\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="RogueLibsCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\RogueLibsCore.dll</HintPath>
+    <Reference Include="RogueLibsCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>Libraries\RogueLibsCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -106,13 +102,13 @@
     <Compile Include="Content\Challenges\BMChallengesManager.cs" />
     <Compile Include="Content\Challenges\EChallengeConflictGroup.cs" />
     <Compile Include="Content\CustomListDump.cs" />
+    <Compile Include="Content\CustomNameDump.cs" />
     <Compile Include="Content\Custom\C_Combat.cs" />
     <Compile Include="Content\Custom\C_Interactions.cs" />
     <Compile Include="Content\Custom\C_Interface.cs" />
     <Compile Include="Content\Custom\C_LevelGen.cs" />
     <Compile Include="Content\Custom\C_Relationships.cs" />
     <Compile Include="Content\Custom\C_Spawns.cs" />
-    <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
     <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
@@ -133,47 +129,102 @@
     <Compile Include="Content\Items\I_Weapons_Thrown\ManholeCover.cs" />
     <Compile Include="Content\Items\I_Weapons_Thrown\Sawblade.cs" />
     <Compile Include="Content\Items\I_Weapons_Thrown\WhiskeyBottle.cs" />
-    <Compile Include="Content\Localization\AbilityLocalization.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
-    <Compile Include="Content\CustomNameDump.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
     <Compile Include="Content\Logging\BMLogger.cs" />
-    <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
-    <Compile Include="Content\ObjectBehaviour\ManholeController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\AlarmButtonController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ATMMachineController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\ElevatorData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\FountainData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\IObjectData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\SlotMachineData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\StoveData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\Data\VendorCartData.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\DoorController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ElevatorController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FireHydrantController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FlamingBarrelController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\FountainController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\HoleController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\LampController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ManholeController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\SecurityCamController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\SlotMachineController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\StoveController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\ToiletController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\TrashCanController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\TurretController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\VendorCartController.cs" />
+    <Compile Include="Content\ObjectBehaviour\Controllers\WindowController.cs" />
+    <Compile Include="Content\ObjectBehaviour\IObjectController.cs" />
+    <Compile Include="Content\ObjectBehaviour\IObjectDataController.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectControllerAccessor.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectControllerManager.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectDataAccessor.cs" />
+    <Compile Include="Content\ObjectBehaviour\ObjectUtils.cs" />
+    <Compile Include="Content\Patches\P_LevelTransition.cs" />
     <Compile Include="Content\Patches\P_Agents\P_Agent.cs" />
-    <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
-    <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
+    <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
+    <Compile Include="Content\Patches\P_Agents\P_Relationships.cs" />
+    <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />
+    <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
     <Compile Include="Content\Patches\P_Combat\P_Bullet.cs" />
     <Compile Include="Content\Patches\P_Combat\P_BulletHitbox.cs" />
+    <Compile Include="Content\Patches\P_Combat\P_MeleeHitbox.cs" />
+    <Compile Include="Content\Patches\P_Controls\P_PlayerControl.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
-    <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />
+    <Compile Include="Content\Patches\P_Interface\P_ScrollingMenu.cs" />
+    <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
     <Compile Include="Content\Patches\P_Inventory\P_InvDatabase.cs" />
     <Compile Include="Content\Patches\P_Inventory\P_InvInterface.cs" />
+    <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
     <Compile Include="Content\Patches\P_Items\P_Item.cs" />
+    <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
+    <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_LoadLevel.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_MeleeHitbox.cs" />
     <Compile Include="Content\Patches\P_Movement\P_Movement.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_AlarmButton.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_ATMMachine.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Bathtub.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Door.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Elevator.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_FireHydrant.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_FlamingBarrel.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Fountain.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Hole.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Lamp.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Manhole.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Plant.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_PoolTable.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectMult.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectReal.cs" />
-    <Compile Include="Content\Patches\P_Controls\P_PlayerControl.cs" />
     <Compile Include="Content\Patches\P_Objects\P_PlayfieldObject.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_SecurityCam.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_SlotMachine.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Stove.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_TableBig.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Toilet.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_TrashCan.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Turret.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_VendorCart.cs" />
+    <Compile Include="Content\Patches\P_Objects\P_Window.cs" />
     <Compile Include="Content\Patches\P_Quests\P_Quests.cs" />
     <Compile Include="Content\Patches\P_Random\P_RandomSelection.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_Relationships.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_ScrollingMenu.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
+    <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />
+    <Compile Include="Content\Patches\P_StatusEffects.cs" />
     <Compile Include="Content\Status_Effects\S_ChronomanticDilation.cs" />
     <Compile Include="Content\Status_Effects\S_MuscleSpasms.cs" />
     <Compile Include="Content\Traits\BMTraitController.cs" />
+    <Compile Include="Content\Traits\BMTraitInfo.cs" />
+    <Compile Include="Content\Traits\BMTraitsManager.cs" />
+    <Compile Include="Content\Traits\ETraitConflictGroup.cs" />
+    <Compile Include="Content\Traits\TDebug.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes2.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes.cs" />
+    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes2.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\DoubleTapper.cs" />
@@ -182,19 +233,11 @@
     <Compile Include="Content\Traits\T_Drug_Limitations\DareDevil.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\FriendOfBill.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\TeeTotaller.cs" />
-    <Compile Include="Content\Traits\ETraitConflictGroup.cs" />
-    <Compile Include="Content\Traits\BMTraitInfo.cs" />
-    <Compile Include="Content\Traits\BMTraitsManager.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes2.cs" />
-    <Compile Include="Content\Traits\TDebug.cs" />
     <Compile Include="Content\Traits\T_Equipment_Limitations\AfraidOfLoudNoises.cs" />
     <Compile Include="Content\Traits\T_Equipment_Limitations\DrawNoBlood.cs" />
     <Compile Include="Content\Traits\T_Equipment_Limitations\FatHead.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\DimBulb.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\Brainiac.cs" />
+    <Compile Include="Content\Traits\T_Experience_Gain_Rate\DimBulb.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\MoronTheMerrier.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\SmoothBrained.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\VeryHardOnYourself.cs" />
@@ -206,6 +249,15 @@
     <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\Archmage.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\FocusedCasting2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\MagicTraining.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\MagicTraining2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\ManaBattery.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\ManaBattery2.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\WildCasting.cs" />
+    <Compile Include="Content\Traits\T_Magic_General\WildCasting2.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes2.cs" />
     <Compile Include="Content\Traits\T_Miscellaneous\Myopic.cs" />
@@ -252,7 +304,6 @@
     <None Include="MD\2.6. Traits.md" />
     <None Include="MD\9.2. Scratchpad.md" />
     <None Include="MD\9.0. Ideas.md" />
-    <None Include="MD\9.4. Breakup.md" />
     <None Include="Properties\Resources\BathtubClosed.bin" />
     <None Include="Properties\Resources\BearTrapProcessor.bin" />
     <None Include="Properties\Resources\Brick.bin" />
@@ -297,21 +348,6 @@
   <ItemGroup>
     <Content Include="Hosted\UnityEngine.Networking.dll" />
     <Content Include="Localizations\L_Traits.yaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Challenges\C_Features\" />
-    <Folder Include="Content\Challenges\C_Fire\" />
-    <Folder Include="Content\Challenges\C_Knockback\" />
-    <Folder Include="Content\Challenges\C_Overhauls\" />
-    <Folder Include="Content\Challenges\C_Quest_Count\" />
-    <Folder Include="Content\Challenges\C_Quest_Rewards\" />
-    <Folder Include="Content\Challenges\C_Roamer_Population\" />
-    <Folder Include="Content\Challenges\C_Roamer_Types\" />
-    <Folder Include="Content\Items\I_Tool\" />
-    <Folder Include="Content\Items\I_Weapons_Ranged\" />
-    <Folder Include="Content\Items\I_Wearable_Body\" />
-    <Folder Include="Content\Items\I_Wearable_Head\" />
-    <Folder Include="Content\Items\I_Wearable_Other\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

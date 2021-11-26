@@ -1,8 +1,8 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Stealth
 {
 	public class StealthBastardDeluxe : CustomTrait
 	{
@@ -30,6 +30,11 @@ namespace BunnyMod.Content.Traits
 		public static float GetBrokenWindowHealthCostFactor(Agent agent)
 		{
 			return agent.HasTrait<StealthBastardDeluxe>() ? 0f : 1f;
+		}
+
+		public static bool CanHideInObject(ObjectReal objectInstance)
+		{
+			return objectInstance is Bathtub || objectInstance is Plant || objectInstance is PoolTable || objectInstance is TableBig;
 		}
 
 		public override void OnAdded() { }

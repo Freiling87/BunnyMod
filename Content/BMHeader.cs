@@ -1,16 +1,14 @@
-using BepInEx;
-using BepInEx.Logging;
-using HarmonyLib;
-using RogueLibsCore;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
-using BunnyMod.Content.Traits;
+using BepInEx;
+using BepInEx.Logging;
 using BunnyMod.Properties;
-using UnityEngine;
+using BunnyMod.Traits;
+using HarmonyLib;
+using RogueLibsCore;
 
-namespace BunnyMod.Content
+namespace BunnyMod
 {
 	[BepInPlugin(ModInfo.BepInExPluginId, ModInfo.Title, ModInfo.Version)]
 	[BepInProcess("StreetsOfRogue.exe")]
@@ -33,8 +31,7 @@ namespace BunnyMod.Content
 			BMTraitsManager.FinalizeTraits();
 		}
 
-		public static void Log(string logMessage) =>
-			ConsoleMessage.LogMessage(logMessage);
+		public static void Log(string logMessage) => ConsoleMessage.LogMessage(logMessage);
 	}
 
 	public static class BMHeaderTools
@@ -42,52 +39,11 @@ namespace BunnyMod.Content
 		private static GameController GC => GameController.gameController;
 		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
-		public static void AddDictionary(Dictionary<PlayfieldObject, bool> dict, PlayfieldObject objectReal, bool defaultValue)
-		{
-			BMLog("AddDictionaryBool");
-
-			// May need to force types here
-
-			if (!dict.ContainsKey(objectReal))
-				dict.Add(objectReal, defaultValue);
-			else
-				dict[objectReal] = defaultValue;
-		}
-
-		public static void AddDictionary(Dictionary<PlayfieldObject, string> dict, PlayfieldObject objectReal, string defaultValue)
-		{
-			BMLog("AddDictionary");
-
-			// May need to force types here
-
-			if (!dict.ContainsKey(objectReal))
-				dict.Add(objectReal, defaultValue);
-			else
-				dict[objectReal] = defaultValue;
-		}
-
 		public static T GetMethodWithoutOverrides<T>(this MethodInfo method, object callFrom)
 				where T : Delegate
 		{
 			IntPtr ptr = method.MethodHandle.GetFunctionPointer();
 			return (T) Activator.CreateInstance(typeof(T), callFrom, ptr);
-		}
-
-		public static void InvokeRepeating(object instance, string method, float delay, float interval)
-		{
-			MethodInfo methodAccessed = AccessTools.Method(instance.GetType(), method);
-			_ = InvokeRepeatingAsync(instance, methodAccessed, (int) Mathf.Floor(delay * 1000), (int) Mathf.Floor(interval * 1000));
-		}
-
-		private static async Task InvokeRepeatingAsync(object instance, MethodInfo method, int delay, int interval)
-		{
-			await Task.Delay(delay);
-
-			while (true)
-			{
-				method.Invoke(instance, new object[0]);
-				await Task.Delay(interval);
-			}
 		}
 
 		public static T RandomFromList<T>(List<T> list)
@@ -166,23 +122,20 @@ namespace BunnyMod.Content
 				UndercoverCop = "UndercoverCop",
 				Wildfolk = "Wildfolk";
 	}
+
 	public static class cBuffText
 	{
 		public const string
 				Headshot = "Headshot";
 	}
+
 	public static class cButtonText
 	{
 		public const string
 				CamerasCaptureWanted = "CamerasCaptureWanted",
 				CamerasCaptureGuilty = "CamerasCaptureGuilty",
-				DispenseIce = "DispenseIce",
+				DispenseIce = "DispenseIce", // TODO unused
 				FountainSteal = "FountainSteal",
-				FountainWishFabulousWealth = "FountainWishFabulousWealth",
-				FountainWishFameAndGlory = "FountainWishFameAndGlory",
-				FountainWishGoodHealth = "FountainWishGoodHealth",
-				FountainWishTrueFriendship = "FountainWishTrueFriendship",
-				FountainWishWorldPeace = "FountainWishWorldPeace",
 				GrillFudPaid = "GrillFudPaid",
 				HideInContainer = "HideInContainer",
 				OpenContainer = "OpenContainer",
@@ -191,9 +144,10 @@ namespace BunnyMod.Content
 				SlotMachinePlay100 = "Play100",
 				StealItem = "StealItem";
 	}
+
 	public static class cChallenge // Custom Mutators
 	{
-		public const string				
+		public const string
 				Fire_Hide = "Fire_Hide",
 				Fire_Show = "Fire_Show",
 				GasolineHumidity = "FastFires",
@@ -588,6 +542,7 @@ namespace BunnyMod.Content
 		public const string
 				ElevatorAccess = "ElevatorAccess";
 	}
+
 	public static class vAgent // Vanilla Agent Classes
 	{
 		public const string
@@ -690,6 +645,7 @@ namespace BunnyMod.Content
 				Zombie
 		};
 	}
+
 	public static class vAgentGoal // Vanilla Agent Goals
 	{
 		public const string
@@ -709,6 +665,7 @@ namespace BunnyMod.Content
 				WanderLevel = "WanderFar",
 				WanderOwned = "WanderInOwnedProperty";
 	}
+
 	public static class vAgentGroup // Vanilla Agent Groups
 	{
 		public const string
@@ -736,6 +693,7 @@ namespace BunnyMod.Content
 				UptownHome = "UptownHome",
 				WhiteCollars = "WhiteCollars";
 	}
+
 	public static class vAmbience // Vanilla Ambient Audio Loops
 	{
 		public const string
@@ -753,11 +711,13 @@ namespace BunnyMod.Content
 				Park = "ParkAmbience",
 				Television = "TVAmbience";
 	}
+
 	public static class vAnimation // Vanilla Object Animations
 	{
 		public const string
 				MachineOperate = "MachineOperate";
 	}
+
 	public static class vArmor // Vanilla Armor
 	{
 		public const string
@@ -769,6 +729,7 @@ namespace BunnyMod.Content
 				MoodRing = "MoodRing",
 				Null = "";
 	}
+
 	public static class vArmorHead // Vanilla Headgear
 	{
 		public const string
@@ -790,6 +751,7 @@ namespace BunnyMod.Content
 				SuperCopHat = "Cop2Hat",
 				ThiefHat = "ThiefHat";
 	}
+
 	public static class vAudioClip // Vanilla Audio Clips
 	{
 		public const string
@@ -1214,6 +1176,7 @@ namespace BunnyMod.Content
 				ZombieSpitCharge = "ZombieSpitCharge",
 				ZombieSpitFire = "ZombieSpitFire";
 	}
+
 	public static class vChallenge // Vanilla Mutators
 	{
 		public const string
@@ -1273,6 +1236,7 @@ namespace BunnyMod.Content
 				ZombiesWelcome,
 		};
 	}
+
 	public static class vChunkType // Vanilla Chunks
 	{
 		#region All Chunk Types
@@ -1820,6 +1784,7 @@ namespace BunnyMod.Content
 
 		#endregion
 	}
+
 	public static class vColor // Vanilla Colors
 	{
 		public const string
@@ -1857,6 +1822,7 @@ namespace BunnyMod.Content
 				ZombieSkin3 = "ZombieSkin3",
 				ZombieSkin4 = "ZombieSkin4";
 	}
+
 	public static class vDirection // Vanilla Directions
 	{
 		public const string
@@ -1870,6 +1836,7 @@ namespace BunnyMod.Content
 				SouthWest = "SW",
 				West = "W";
 	}
+
 	public static class vExperience // Vanilla Experience Types
 	{
 		public const string
@@ -1936,6 +1903,7 @@ namespace BunnyMod.Content
 				UnlockSafe_20 = "UnlockSafePoints",
 				WonElection_100 = "WonElectionPoints";
 	}
+
 	public static class vExplosion // Vanilla Explosion Types
 	{
 		public const string
@@ -1955,6 +1923,7 @@ namespace BunnyMod.Content
 				Warp = "Warp",
 				Water = "Water";
 	}
+
 	public static class vEyesType // Vanilla Eye Types
 	{
 		public const string
@@ -1966,6 +1935,7 @@ namespace BunnyMod.Content
 				Wide = "EyesWide",
 				Zombie = "EyesZombie";
 	}
+
 	public static class vFacialHairType // Vanilla Facial Hair
 	{
 		public const string
@@ -2016,6 +1986,7 @@ namespace BunnyMod.Content
 				Wave = "Wave",
 				WerewolfHead = "WerewolfHead";
 	}
+
 	public static class vItem // Vanilla Items
 	{
 		public const string
@@ -2329,6 +2300,7 @@ namespace BunnyMod.Content
 				WarZone = "WarZone",
 				Zombies = "Zombies";
 	}
+
 	public static class vLevelTheme // Vanilla Floor Names
 	{
 		public const string
@@ -2349,6 +2321,7 @@ namespace BunnyMod.Content
 			MayorVillage = 5
 		}
 	}
+
 	public static class vLevelType // Vanilla Level Types
 	{
 		public const string
@@ -2358,6 +2331,7 @@ namespace BunnyMod.Content
 				Null = "",
 				Tutorial = "Tutorial";
 	}
+
 	public static class vNameType // Vanilla Name Types
 	{
 		public const string
@@ -2370,6 +2344,7 @@ namespace BunnyMod.Content
 				StatusEffect = "StatusEffect",
 				Unlock = "Unlock";
 	}
+
 	public static class vObject // Vanilla Objects
 	{
 		public const string
@@ -2450,6 +2425,7 @@ namespace BunnyMod.Content
 				Well = "Well",
 				Window = "Window";
 	}
+
 	public static class vOwnerId // Vanilla Magic Number Owner IDs
 	{
 		public const int
@@ -2458,6 +2434,7 @@ namespace BunnyMod.Content
 				Unknown_2 = 255,
 				AngersCops = 888;
 	};
+
 	public static class vQuest // Vanilla Quests
 	{
 		public const string
@@ -2475,6 +2452,7 @@ namespace BunnyMod.Content
 				Retrieve = "Retrieve",
 				UseAll = "UseAll";
 	}
+
 	public static class vQuestStatus // Vanilla Quest Statuses
 	{
 		public const string
@@ -2485,6 +2463,7 @@ namespace BunnyMod.Content
 				NotAccepted = "NotAccepted",
 				Null = "";
 	}
+
 	public static class vSecurityType // Vanilla Security Types
 	{
 		public const string
@@ -2495,6 +2474,7 @@ namespace BunnyMod.Content
 				Null = "",
 				Weapons = "Weapons";
 	}
+
 	public static class vSpecialAbility // Vanilla Special Abilities
 	{
 		public const string
@@ -2595,6 +2575,7 @@ namespace BunnyMod.Content
 				Werewolf = "WerewolfEffect",
 				Withdrawal = "Withdrawal";
 	}
+
 	public static class vSyringeEffect // Vanilla Syringe Effects
 	{
 		public const string
@@ -2609,6 +2590,7 @@ namespace BunnyMod.Content
 				SulfuricAcid = "Acid",
 				Weak = "Weak";
 	}
+
 	public static class vTrait // Vanilla Traits
 	{
 		public const string

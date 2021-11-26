@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits
 {
 	public class BMTraitInfo
 	{

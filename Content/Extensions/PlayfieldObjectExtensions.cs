@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class PlayfieldObjectExtensions
 	{
@@ -51,7 +51,7 @@ namespace BunnyMod.Content.Extensions
 		/// </summary>
 		/// <param name="playfieldObject">instance of the playfieldObject to remove buttons from</param>
 		/// <param name="text">base text of the buttons to remove</param>
-		/// <returns>amount of</returns>
+		/// <returns>amount of removed buttons</returns>
 		public static int RemoveButton(this PlayfieldObject playfieldObject, string text)
 		{
 			NormalizeButtons(playfieldObject);

@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Content.Logging;
+using BunnyMod.Logging;
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(ScrollingMenu))]
 	public static class P_ScrollingMenu

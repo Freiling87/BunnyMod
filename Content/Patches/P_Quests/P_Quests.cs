@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(Quests))]
 	public static class P_Quests

@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace BunnyMod.Content.Patches
+namespace BunnyMod.Patches
 {
 	[HarmonyPatch(declaringType: typeof(CharacterSelect))]
 	public static class P_CharacterSelect

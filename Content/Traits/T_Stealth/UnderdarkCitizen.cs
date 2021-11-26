@@ -1,9 +1,9 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using Google2u;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Stealth
 {
 	public class UnderdarkCitizen : CustomTrait
 	{
@@ -41,6 +41,16 @@ namespace BunnyMod.Content.Traits
 					instance.BecomeNotHidden();
 				}
 			}
+		}
+
+		public static bool CanFlushToObject(Toilet fromObject, ObjectReal toObject, bool allowSameChunk)
+		{
+			return toObject != fromObject && !toObject.destroyed
+					&& (allowSameChunk || toObject.startingChunk != fromObject.startingChunk)
+					&& (
+							toObject is Manhole manhole && manhole.opened
+							|| toObject is Toilet
+					);
 		}
 	}
 }

@@ -1,8 +1,8 @@
-using BunnyMod.Content.Extensions;
+using BunnyMod.Extensions;
 using JetBrains.Annotations;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits.T_Combat_Ranged
 {
 	public class DoubleTapper : CustomTrait
 	{

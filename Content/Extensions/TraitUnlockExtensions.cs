@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using RogueLibsCore;
 
-namespace BunnyMod.Content.Extensions
+namespace BunnyMod.Extensions
 {
 	public static class TraitUnlockExtensions
 	{

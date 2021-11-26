@@ -1,14 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using BepInEx.Logging;
-using BunnyMod.Content.Extensions;
-using BunnyMod.Content.Logging;
+using BunnyMod.Extensions;
+using BunnyMod.Logging;
+using BunnyMod.Traits.T_Luck;
+using BunnyMod.Traits.T_Stealth;
+using BunnyMod.Traits.T_Tampering;
 using Google2u;
+using JetBrains.Annotations;
 using RogueLibsCore;
 using UnityEngine;
 
-namespace BunnyMod.Content.Traits
+namespace BunnyMod.Traits
 {
 	/// <summary>
 	/// Provides methods for interfacing with BM Custom Traits
@@ -22,7 +27,7 @@ namespace BunnyMod.Content.Traits
 			logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseCost = '{baseCost}'");
 			float costFactor = TamperTantrum.GetToolCostFactor(agent)
 					* TamperTantrum2.GetToolCostFactor(agent);
-			return Mathf.FloorToInt(baseCost * costFactor);
+			return Mathf.RoundToInt(baseCost * costFactor);
 		}
 
 		private static float GetHealthCostFactor(Agent agent, DamageType type)
@@ -43,11 +48,81 @@ namespace BunnyMod.Content.Traits
 			}
 		}
 
-		public static string HealthCost(Agent agent, int baseDamage, DamageType type)
+		public static int HealthCost(Agent agent, int baseDamage, DamageType type)
 		{
 			logger.LogDebug($"{MethodBase.GetCurrentMethod().Name} ( agent = '{agent.agentName}', baseDamage = '{baseDamage}', damageType = '{type}'");
 			float healthCostFactor = GetHealthCostFactor(agent, type);
-			return Mathf.FloorToInt(baseDamage * healthCostFactor).ToString();
+			return Mathf.RoundToInt(baseDamage * healthCostFactor);
+		}
+
+		private static DamageType? GetDamageTypeForButtonText(string buttonText)
+		{
+			switch (buttonText)
+			{
+				case nameof(InterfaceNameDB.rowIds.SlipThroughWindow):
+					return DamageType.brokenWindow;
+			}
+			return null;
+		}
+
+		public static void CorrectButtonCosts(PlayfieldObject playfieldObject)
+		{
+			playfieldObject.NormalizeButtons();
+			int buttonsCount = playfieldObject.buttons.Count;
+			for (int i = 0; i < buttonsCount; i++)
+			{
+				string buttonText = playfieldObject.buttons[i];
+				switch (buttonText)
+				{
+					// Actions affected by tool-cost modifiers
+					case nameof(InterfaceNameDB.rowIds.UseCrowbar):
+					case nameof(InterfaceNameDB.rowIds.UseWrenchToDetonate):
+					case nameof(InterfaceNameDB.rowIds.UseWrenchToDeactivate):
+					case nameof(InterfaceNameDB.rowIds.UseWrenchToAdjustSatellite):
+					{
+						Match match = Regex.Match(playfieldObject.buttonsExtra[i], "^(.*)(-?[0-9]+)$");
+						if (match.Success && match.Groups.Count > 2)
+						{
+							int toolCost = int.Parse(match.Groups[2].Value);
+							toolCost = ApplyToolCostModifiers(playfieldObject.interactingAgent, toolCost);
+							playfieldObject.buttonsExtra[i] = match.Groups[1].Value + toolCost;
+						}
+						break;
+					}
+
+					// Actions affected by health-cost modifiers
+					case nameof(InterfaceNameDB.rowIds.SlipThroughWindow):
+					{
+						DamageType? damageType = GetDamageTypeForButtonText(buttonText);
+						if (damageType == null)
+						{
+							logger.LogError($"CorrectButtonCosts health-cost modifiers triggered for buttonText: '{buttonText}' but no damageType was found");
+							break;
+						}
+
+						Match match = Regex.Match(playfieldObject.buttonsExtra[i], "^(.*)([0-9]+)HP$");
+						if (match.Success && match.Groups.Count > 2)
+						{
+							int healthCost = int.Parse(match.Groups[2].Value);
+							healthCost = HealthCost(playfieldObject.interactingAgent, healthCost, damageType.Value);
+							playfieldObject.buttonsExtra[i] = match.Groups[1].Value + healthCost + "HP";
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		[UsedImplicitly]
+		public static int GetLuckBonus(int baseBonus, string luckType, PlayfieldObject playfieldObject)
+		{
+			Agent agent = playfieldObject.playfieldObjectAgent;
+			int luckMultiplier =
+					Charmed.GetLuckMultiplier(agent)
+					+ Charmed2.GetLuckMultiplier(agent)
+					+ Cursed.GetLuckMultiplier(agent)
+					+ Cursed2.GetLuckMultiplier(agent);
+			return baseBonus * luckMultiplier;
 		}
 
 		public static bool IsPlayerTraitActive<TraitType>()
@@ -59,7 +134,7 @@ namespace BunnyMod.Content.Traits
 		{
 			return GameController.gameController.agentList.Any(agent => agent.isPlayer != 0 && agent.HasTrait(trait));
 		}
-		
+
 		// TODO to be removed soon (tm)
 		public static bool DoesPlayerHaveTraitFromList(Agent agent, List<string> traits)
 		{

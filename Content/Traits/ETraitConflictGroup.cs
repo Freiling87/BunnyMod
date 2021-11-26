@@ -1,4 +1,4 @@
-﻿namespace BunnyMod.Content.Traits
+﻿namespace BunnyMod.Traits
 {
 	public enum ETraitConflictGroup
 	{

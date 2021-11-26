@@ -109,7 +109,6 @@
     <Compile Include="Content\BMQuests.cs" />
     <Compile Include="Content\BMHeader.cs" />
     <Compile Include="Content\BMObjects.cs" />
-    <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\AgentExtensions.cs" />
     <Compile Include="Content\Extensions\EnumExtensions.cs" />
     <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
@@ -118,7 +117,6 @@
     <Compile Include="Content\Extensions\StatusEffects_Extensions.cs" />
     <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
     <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
-    <Compile Include="Content\Localization\AbilityLocalization.cs" />
     <Compile Include="Content\Localization\BMLocalizationManager.cs" />
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
     <Compile Include="Content\Logging\BMLogger.cs" />

@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using BepInEx.Logging;
 using BTHarmonyUtils.TranspilerUtils;
-using BunnyMod.Abilities;
 using BunnyMod.Logging;
 using BunnyMod.Traits.T_Social;
 using BunnyMod.Traits.T_Spawns;
@@ -168,32 +167,6 @@ namespace BunnyMod.Patches
 			__instance.agent.EnableHitboxes(true);
 		}
 		#endregion
-
-		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.GiveSpecialAbility), argumentTypes: new[] { typeof(string) })]
-		private static void GiveSpecialAbility_Postfix(string abilityName, StatusEffects __instance)
-		{
-			if (__instance.agent.inventory.equippedSpecialAbility != null)
-			{
-				InvItem ability = __instance.agent.inventory.equippedSpecialAbility;
-				Agent agent = __instance.agent;
-
-				string[] magicAbilities =
-				{
-					cSpecialAbility.ChronomanticDilation,
-					cSpecialAbility.PyromanticJet,
-					cSpecialAbility.TelemanticBlink
-				};
-
-				if (magicAbilities.Contains(abilityName))
-				{
-					ability.otherDamage = 0; // Bitwise variables
-
-					ability.initCount = Shared.CalcMaxMana(agent);
-					ability.maxAmmo = Shared.CalcMaxMana(agent);
-					ability.rechargeAmountInverse = Shared.CalcMaxMana(agent);
-				}
-			}
-		}
 
 		[HarmonyPostfix,
 		 HarmonyPatch(methodName: nameof(StatusEffects.ChangeHealth), argumentTypes: new[] { typeof(float), typeof(PlayfieldObject), typeof(NetworkInstanceId), typeof(float), typeof(string), typeof(byte) })]

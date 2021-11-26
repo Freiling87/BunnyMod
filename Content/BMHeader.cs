@@ -37,7 +37,7 @@ namespace BunnyMod
 			new BMLevelGen().Awake();
 			new BMMiscellaneous().Awake();
 			new BMChallenges().Awake();
-			new BMObjects().Awake();
+			BMObjects.Awake();
 			//new BMQuests().Awake();
 
 			RogueLibs.LoadFromAssembly();

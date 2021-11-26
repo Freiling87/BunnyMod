@@ -8,27 +8,21 @@ namespace BunnyMod
 {
 	public class BMObjects
 	{
-		public static GameController GC => GameController.gameController;
-
-		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
-				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
-
-		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
+		private static GameController GC => GameController.gameController;
+		private static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
 		#region Main
 
-		public void Awake()
+		public static void Awake()
 		{
 			Initialize_Names();
 
 			SpawnerMain_00();
 		}
 
-		public static void Initialize_Names()
+		private static void Initialize_Names()
 		{
-			string t;
-
-			t = vNameType.Dialogue;
+			string t = vNameType.Dialogue;
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordAlarmButton, t, new CustomNameInfo("I can't afford this. I should have worked harder!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordElevator, t,
 					new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
@@ -66,11 +60,12 @@ namespace BunnyMod
 
 		#region SpawnerMain
 
-		public void SpawnerMain_00()
+		private static void SpawnerMain_00()
 		{
 			Type t = typeof(SpawnerMain);
-			Type g = GetType();
+			Type g = typeof(BMObjects);
 
+			
 			Postfix(t, nameof(SpawnerMain.spawnObjectReal), g, nameof(SpawnerMain_spawnObjectReal),
 					new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
 		}

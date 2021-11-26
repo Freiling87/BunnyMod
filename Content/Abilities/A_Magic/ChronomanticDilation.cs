@@ -93,7 +93,9 @@ namespace BunnyMod.Abilities.A_Magic
 
 		public static int GetLuckMultiplier(Agent agent)
 		{
-			return MSA_CD_IsCast(agent) ? 2 : 1;
+			return agent.specialAbility == cSpecialAbility.ChronomanticDilation && MSA_CD_IsCast(agent)
+					? 2
+					: 1;
 		}
 		public static int MSA_CD_RollManaCost(Agent agent)
 		{

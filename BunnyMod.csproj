@@ -1,325 +1,101 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{34D6E484-3165-4EC8-B738-501367B84F69}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BunnyMod</RootNamespace>
+
+    <!-- Project Properties -->
+
+    <!-- Header -->
     <AssemblyName>BunnyMod</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-    <LangVersion>7.3</LangVersion>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Version>1.4.0</Version>
+    <Authors>Freiling87</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright></Copyright>
+
+    <!-- Title, Description, Tags -->
+    <Title>$(AssemblyName)</Title>
+    <Description>
+
+    </Description>
+    <PackageTags></PackageTags>
+
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="&quot;$(SolutionDir)\..\.events\PluginBuildEvents.exe&quot; &quot;$(TargetPath)&quot; &quot;Streets of Rogue&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="11.2.1" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>Libraries\0Harmony.dll</HintPath>
+      <HintPath>..\.ref\static\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Libraries\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\.ref\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="AstarPathfindingProject">
-      <HintPath>Libraries\AstarPathfindingProject.dll</HintPath>
+      <HintPath>..\.ref\static\AstarPathfindingProject.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>Libraries\BepInEx.dll</HintPath>
+      <HintPath>..\.ref\static\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="BTHarmonyUtils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\BTHarmonyUtils.dll</HintPath>
+    <Reference Include="BTHarmonyUtils">
+      <HintPath>..\.ref\BTHarmonyUtils.dll</HintPath>
     </Reference>
-    <Reference Include="com.unity.multiplayer-hlapi.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
+    <Reference Include="com.unity.multiplayer-hlapi.Runtime">
+      <HintPath>..\.ref\static\com.unity.multiplayer-hlapi.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
-      <HintPath>Libraries\netstandard.dll</HintPath>
+      <HintPath>..\.ref\static\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="RogueLibsCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\RogueLibsCore.dll</HintPath>
+    <Reference Include="RogueLibsCore">
+      <HintPath>..\.ref\RogueLibsCore.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="UnityEngine">
-      <HintPath>Libraries\UnityEngine.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>Libraries\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Libraries\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>Libraries\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Libraries\UnityEngine.Networking.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>Libraries\UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>Libraries\UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>Libraries\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>Libraries\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\.ref\static\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>Libraries\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e">
-      <HintPath>packages\YamlDotNet.11.2.1\lib\net45\YamlDotNet.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\.ref\static\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Content\BMChallenges.cs" />
-    <Compile Include="Content\BMHeader.cs" />
-    <Compile Include="Content\BMObjects.cs" />
-    <Compile Include="Content\Challenges\BMChallengeController.cs" />
-    <Compile Include="Content\Challenges\BMChallengeInfo.cs" />
-    <Compile Include="Content\Challenges\BMChallengesManager.cs" />
-    <Compile Include="Content\Challenges\EChallengeConflictGroup.cs" />
-    <Compile Include="Content\CustomListDump.cs" />
-    <Compile Include="Content\Custom\C_Combat.cs" />
-    <Compile Include="Content\Custom\C_Interactions.cs" />
-    <Compile Include="Content\Custom\C_Interface.cs" />
-    <Compile Include="Content\Custom\C_LevelGen.cs" />
-    <Compile Include="Content\Custom\C_Relationships.cs" />
-    <Compile Include="Content\Custom\C_Spawns.cs" />
-    <Compile Include="Content\Extensions\AbilityBuilderExtensions.cs" />
-    <Compile Include="Content\Extensions\AgentExtensions.cs" />
-    <Compile Include="Content\Extensions\EnumExtensions.cs" />
-    <Compile Include="Content\Extensions\InvDatabaseExtensions.cs" />
-    <Compile Include="Content\Extensions\InvItem_Extensions.cs" />
-    <Compile Include="Content\Extensions\PlayfieldObjectExtensions.cs" />
-    <Compile Include="Content\Extensions\StatusEffects_Extensions.cs" />
-    <Compile Include="Content\Extensions\TraitBuilderExtensions.cs" />
-    <Compile Include="Content\Extensions\TraitUnlockExtensions.cs" />
-    <Compile Include="Content\Items\I_Combineable\BearTrapProcessor.cs" />
-    <Compile Include="Content\Items\I_Combineable\SugarProcessor.cs" />
-    <Compile Include="Content\Items\I_Consumable\EnergyDrink.cs" />
-    <Compile Include="Content\Items\I_Passive\HolySymbol.cs" />
-    <Compile Include="Content\Items\I_Weapons_Melee\BrokenBottle.cs" />
-    <Compile Include="Content\Items\I_Weapons_Melee\Spear.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\BeerCan.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\Brick.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\HolyWaterFlask.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\ManholeCover.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\Sawblade.cs" />
-    <Compile Include="Content\Items\I_Weapons_Thrown\WhiskeyBottle.cs" />
-    <Compile Include="Content\Localization\AbilityLocalization.cs" />
-    <Compile Include="Content\Localization\BMLocalizationManager.cs" />
-    <Compile Include="Content\CustomNameDump.cs" />
-    <Compile Include="Content\Localization\TraitsLocalization.cs" />
-    <Compile Include="Content\Logging\BMLogger.cs" />
-    <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
-    <Compile Include="Content\ObjectBehaviour\ManholeController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveController.cs" />
-    <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_Agent.cs" />
-    <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
-    <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_Bullet.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_BulletHitbox.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
-    <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />
-    <Compile Include="Content\Patches\P_Inventory\P_InvDatabase.cs" />
-    <Compile Include="Content\Patches\P_Inventory\P_InvInterface.cs" />
-    <Compile Include="Content\Patches\P_Items\P_Item.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_LoadLevel.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_MeleeHitbox.cs" />
-    <Compile Include="Content\Patches\P_Movement\P_Movement.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_ObjectMult.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_ObjectReal.cs" />
-    <Compile Include="Content\Patches\P_Controls\P_PlayerControl.cs" />
-    <Compile Include="Content\Patches\P_Objects\P_PlayfieldObject.cs" />
-    <Compile Include="Content\Patches\P_Quests\P_Quests.cs" />
-    <Compile Include="Content\Patches\P_Random\P_RandomSelection.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_Relationships.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_ScrollingMenu.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_SkillPoints.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
-    <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
-    <Compile Include="Content\Status_Effects\S_ChronomanticDilation.cs" />
-    <Compile Include="Content\Status_Effects\S_MuscleSpasms.cs" />
-    <Compile Include="Content\Traits\BMTraitController.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\DoubleTapper.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper2.cs" />
-    <Compile Include="Content\Traits\T_Drug_Limitations\DareDevil.cs" />
-    <Compile Include="Content\Traits\T_Drug_Limitations\FriendOfBill.cs" />
-    <Compile Include="Content\Traits\T_Drug_Limitations\TeeTotaller.cs" />
-    <Compile Include="Content\Traits\ETraitConflictGroup.cs" />
-    <Compile Include="Content\Traits\BMTraitInfo.cs" />
-    <Compile Include="Content\Traits\BMTraitsManager.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes2.cs" />
-    <Compile Include="Content\Traits\TDebug.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\AfraidOfLoudNoises.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\DrawNoBlood.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\FatHead.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\DimBulb.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\Brainiac.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\MoronTheMerrier.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\SmoothBrained.cs" />
-    <Compile Include="Content\Traits\T_Experience_Gain_Rate\VeryHardOnYourself.cs" />
-    <Compile Include="Content\Traits\T_Followers\BodyGuarded.cs" />
-    <Compile Include="Content\Traits\T_Followers\BodyGuarded2.cs" />
-    <Compile Include="Content\Traits\T_Food_Limitations\Carnivore.cs" />
-    <Compile Include="Content\Traits\T_Food_Limitations\Vegetarian.cs" />
-    <Compile Include="Content\Traits\T_Luck\Charmed.cs" />
-    <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
-    <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
-    <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes2.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\Myopic.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\Myopic2.cs" />
-    <Compile Include="Content\Traits\T_Social\BootLicker.cs" />
-    <Compile Include="Content\Traits\T_Social\Domineering.cs" />
-    <Compile Include="Content\Traits\T_Social\Domineering2.cs" />
-    <Compile Include="Content\Traits\T_Social\GenerallyUnpleasant.cs" />
-    <Compile Include="Content\Traits\T_Social\ObjectivelyUnpleasant.cs" />
-    <Compile Include="Content\Traits\T_Social\Polarizing.cs" />
-    <Compile Include="Content\Traits\T_Social\Polarizing2.cs" />
-    <Compile Include="Content\Traits\T_Social\Priors.cs" />
-    <Compile Include="Content\Traits\T_Social\VeiledThreats.cs" />
-    <Compile Include="Content\Traits\T_Social\Warlord.cs" />
-    <Compile Include="Content\Traits\T_Spawns\Haunted.cs" />
-    <Compile Include="Content\Traits\T_Spawns\MobDebt.cs" />
-    <Compile Include="Content\Traits\T_Spawns\MookMasher.cs" />
-    <Compile Include="Content\Traits\T_Spawns\Reinforcements.cs" />
-    <Compile Include="Content\Traits\T_Spawns\Reinforcements2.cs" />
-    <Compile Include="Content\Traits\T_Stealth\StealthBastardDeluxe.cs" />
-    <Compile Include="Content\Traits\T_Stealth\UnderdarkCitizen.cs" />
-    <Compile Include="Content\Traits\T_Tampering\TamperTantrum.cs" />
-    <Compile Include="Content\Traits\T_Tampering\TamperTantrum2.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\ModInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
+    <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MD\1.0. Installation.md" />
-    <None Include="MD\2.0. Magic.md" />
-    <None Include="MD\2.5. Objects.md" />
-    <None Include="MD\2.6. Traits.md" />
-    <None Include="MD\9.2. Scratchpad.md" />
-    <None Include="MD\9.0. Ideas.md" />
-    <None Include="MD\9.4. Breakup.md" />
-    <None Include="Properties\Resources\BathtubClosed.bin" />
-    <None Include="Properties\Resources\BearTrapProcessor.bin" />
-    <None Include="Properties\Resources\Brick.bin" />
-    <None Include="Properties\Resources\BrokenBottle.bin" />
-    <None Include="Properties\Resources\Donut.bin" />
-    <None Include="Properties\Resources\DoorLocker.bin" />
-    <None Include="Properties\Resources\EnergyDrink.bin" />
-    <None Include="Properties\Resources\HolySymbol.bin" />
-    <None Include="Properties\Resources\HolyWaterFlask.bin" />
-    <None Include="Properties\Resources\ManholeCover.bin" />
-    <None Include="Properties\Resources\MorphomanticGlamorActive.bin" />
-    <None Include="Properties\Resources\Sawblade.bin" />
-    <None Include="Properties\Resources\Spear.bin" />
-    <None Include="Properties\Resources\SugarProcessor.bin" />
-    <None Include="Properties\Resources\WhiskeyBottle.bin" />
-    <None Include="ReadMe.md" />
-    <None Include="Properties\Resources\ChronomanticDilation.bin" />
-    <None Include="Properties\Resources\CryomanticBolt.bin" />
-    <None Include="Properties\Resources\ElectromanticDischarge.bin" />
-    <None Include="Properties\Resources\MorphomanticGlamor.bin" />
-    <None Include="MD\9.3. Upcoming Features.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="MD\9.1. GameLogs.md" />
-    <None Include="packages.config" />
-    <None Include="Properties\Resources\BeerCan.bin" />
-    <None Include="Properties\Resources\PyromanticJet.bin" />
-    <None Include="Properties\Resources\TelemanticBlink.bin" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Hosted\UnityEngine.Networking.dll" />
-    <Content Include="Localizations\L_Traits.yaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\Challenges\C_Features\" />
-    <Folder Include="Content\Challenges\C_Fire\" />
-    <Folder Include="Content\Challenges\C_Knockback\" />
-    <Folder Include="Content\Challenges\C_Overhauls\" />
-    <Folder Include="Content\Challenges\C_Quest_Count\" />
-    <Folder Include="Content\Challenges\C_Quest_Rewards\" />
-    <Folder Include="Content\Challenges\C_Roamer_Population\" />
-    <Folder Include="Content\Challenges\C_Roamer_Types\" />
-    <Folder Include="Content\Items\I_Tool\" />
-    <Folder Include="Content\Items\I_Weapons_Ranged\" />
-    <Folder Include="Content\Items\I_Wearable_Body\" />
-    <Folder Include="Content\Items\I_Wearable_Head\" />
-    <Folder Include="Content\Items\I_Wearable_Other\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>set gameDirectory="C:\Program Files (x86)\Steam\steamapps\common\Streets of Rogue\BepInEx\plugins"
-set dll="BunnyMod.dll"
-if exist %25gameDirectory%25 (ECHO "Destination directory found") ELSE (ECHO "Destination directory not found")
-if exist %25dll%25 (ECHO "Mod DLL found") ELSE (ECHO "Mod DLL not found")
-if exist %25gameDirectory%25 copy /y %25dll%25 %25gameDirectory%25
-if exist %25gameDirectory%25 Start "" "C:\Program Files (x86)\Steam\steamapps\common\Streets of Rogue\StreetsOfRogue.exe"</PostBuildEvent>
-  </PropertyGroup>
+
 </Project>

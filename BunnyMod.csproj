@@ -176,7 +176,7 @@
     <Compile Include="Content\Traits\BMTraitController.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\DoubleTapper.cs" />
+    <Compile Include="Content\Traits\T_Combat_Ranged\Wetworker.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Sniper.cs" />
     <Compile Include="Content\Traits\T_Combat_Ranged\Sniper2.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\DareDevil.cs" />

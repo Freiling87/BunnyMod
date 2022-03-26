@@ -12,30 +12,7 @@ namespace BunnyMod.Content
 	{
 		public static void InitializeChallenges()
 		{
-			//#region Fire
-			//CustomMutator GasolineHumidity = RogueLibs.CreateCustomMutator(cChallenge.GasolineHumidity, true,
-			//	new CustomNameInfo("Fire: Gasoline Humidity"),
-			//	new CustomNameInfo("The weather for today is... all fucked up.\n\nFires spread faster."));
-			//GasolineHumidity.Available = false;
-			//GasolineHumidity.Conflicting.AddRange(new string[] { cChallenge.Mildfire });
-			//GasolineHumidity.IsActive = false;
-
-			//CustomMutator Mildfire = RogueLibs.CreateCustomMutator(cChallenge.Mildfire, true,
-			//	new CustomNameInfo("Fire: Mildfire"),
-			//	new CustomNameInfo("Fire spreads slower and doesn't last as long."));
-			//Mildfire.Available = false;
-			//Mildfire.Conflicting.AddRange(new string[] { cChallenge.GasolineHumidity, cChallenge.NapalmSprings });
-			//Mildfire.IsActive = false;
-
-			//CustomMutator NapalmSprings = RogueLibs.CreateCustomMutator(cChallenge.NapalmSprings, true,
-			//	new CustomNameInfo("Fire: Napalm Springs"),
-			//	new CustomNameInfo("Fire lasts longer and spreads further."));
-			//NapalmSprings.Available = false;
-			//NapalmSprings.Conflicting.AddRange(new string[] { cChallenge.Mildfire });
-			//NapalmSprings.IsActive = false;
-			//#endregion
-			//#region Features
-
+			#region SORCE
 			//CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
 			//	new CustomNameInfo("Features: Floral-er Flora"),
 			//	new CustomNameInfo(
@@ -52,34 +29,8 @@ namespace BunnyMod.Content
 			//LitterallyTheWorst.Available = false;
 			//LitterallyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
 			//LitterallyTheWorst.IsActive = false;
-			//#endregion
-			//#region Knockback
 
-			//CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
-			//	new CustomNameInfo("Knockback: Boring Physics"),
-			//	new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback set to 10%"));
-			//BoringPhysics.Available = false;
-			//BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
-			//BoringPhysics.IsActive = false;
 
-			//CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
-			//	new CustomNameInfo("Knockback: Save The Walls"),
-			//	new CustomNameInfo(
-			//		"There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n- Knockback set to 50%."));
-			//SaveTheWalls.Available = false;
-			//SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
-			//SaveTheWalls.IsActive = false;
-
-			//CustomMutator WallWallopWorld = RogueLibs.CreateCustomMutator(cChallenge.WallWallopWorld, true,
-			//	new CustomNameInfo("Knockback: Wall Wallop World"),
-			//	new CustomNameInfo(
-			//		"Someone - not naming names here, but you know who you are - put a bunch of Muscly Pills onto the Fud Factory conveyor belt. And now we all have to suffer for it. Thanks a lot.\n\n- Knockback set to 500%"));
-			//WallWallopWorld.Available = false;
-			//WallWallopWorld.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, cChallenge.SaveTheWalls, vChallenge.BigKnockback });
-			//WallWallopWorld.IsActive = false;
-
-			//#endregion
-			//#region Overhauls
 
 			//CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 			//	new CustomNameInfo("Overhaul: AnCapistan"),
@@ -144,9 +95,60 @@ namespace BunnyMod.Content
 			//	SurveillanceSociety.IsActive = true;
 			//};
 
-			//#endregion
-			//#region Quest Count
+			#endregion
+			#region Physics/Gameplay
+			//CustomMutator GasolineHumidity = RogueLibs.CreateCustomMutator(cChallenge.GasolineHumidity, true,
+			//	new CustomNameInfo("Fire: Gasoline Humidity"),
+			//	new CustomNameInfo("The weather for today is... all fucked up.\n\nFires spread faster."));
+			//GasolineHumidity.Available = false;
+			//GasolineHumidity.Conflicting.AddRange(new string[] { cChallenge.Mildfire });
+			//GasolineHumidity.IsActive = false;
 
+			//CustomMutator Mildfire = RogueLibs.CreateCustomMutator(cChallenge.Mildfire, true,
+			//	new CustomNameInfo("Fire: Mildfire"),
+			//	new CustomNameInfo("Fire spreads slower and doesn't last as long."));
+			//Mildfire.Available = false;
+			//Mildfire.Conflicting.AddRange(new string[] { cChallenge.GasolineHumidity, cChallenge.NapalmSprings });
+			//Mildfire.IsActive = false;
+
+			//CustomMutator NapalmSprings = RogueLibs.CreateCustomMutator(cChallenge.NapalmSprings, true,
+			//	new CustomNameInfo("Fire: Napalm Springs"),
+			//	new CustomNameInfo("Fire lasts longer and spreads further."));
+			//NapalmSprings.Available = false;
+			//NapalmSprings.Conflicting.AddRange(new string[] { cChallenge.Mildfire });
+			//NapalmSprings.IsActive = false;
+
+
+
+
+			//CustomMutator BoringPhysics = RogueLibs.CreateCustomMutator(cChallenge.BoringPhysics, true,
+			//	new CustomNameInfo("Knockback: Boring Physics"),
+			//	new CustomNameInfo("Knockback is reduced almost to zero. Nothing is gonna make this game realistic, ya know.\n\n- Knockback set to 10%"));
+			//BoringPhysics.Available = false;
+			//BoringPhysics.Conflicting.AddRange(new string[] { cChallenge.SaveTheWalls, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
+			//BoringPhysics.IsActive = false;
+
+			//CustomMutator SaveTheWalls = RogueLibs.CreateCustomMutator(cChallenge.SaveTheWalls, true,
+			//	new CustomNameInfo("Knockback: Save The Walls"),
+			//	new CustomNameInfo(
+			//		"There isn't much nature to protect in the City, so the Green party is a little confused. But due to the lobbying, there's now a city ordinance against punching people through walls, which is probably a good thing.\n\n- Knockback set to 50%."));
+			//SaveTheWalls.Available = false;
+			//SaveTheWalls.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, vChallenge.BigKnockback, cChallenge.WallWallopWorld });
+			//SaveTheWalls.IsActive = false;
+
+			//CustomMutator WallWallopWorld = RogueLibs.CreateCustomMutator(cChallenge.WallWallopWorld, true,
+			//	new CustomNameInfo("Knockback: Wall Wallop World"),
+			//	new CustomNameInfo(
+			//		"Someone - not naming names here, but you know who you are - put a bunch of Muscly Pills onto the Fud Factory conveyor belt. And now we all have to suffer for it. Thanks a lot.\n\n- Knockback set to 500%"));
+			//WallWallopWorld.Available = false;
+			//WallWallopWorld.Conflicting.AddRange(new string[] { cChallenge.BoringPhysics, cChallenge.SaveTheWalls, vChallenge.BigKnockback });
+			//WallWallopWorld.IsActive = false;
+
+
+
+
+			#endregion
+			#region Resistance Quartermaster
 			//CustomMutator RushinRevolution = RogueLibs.CreateCustomMutator(cChallenge.RushinRevolution, true,
 			//	new CustomNameInfo("QuestCount: Rushin' Revolution"),
 			//	new CustomNameInfo(
@@ -170,8 +172,7 @@ namespace BunnyMod.Content
 			//Workhorse.Conflicting.AddRange(cChallenge.QuestCount);
 			//Workhorse.IsActive = false;
 
-			//#endregion
-			//#region Quest Rewards
+
 
 			//CustomMutator DoublePlyRewards = RogueLibs.CreateCustomMutator(cChallenge.DoublePlyRewards, true,
 			//	new CustomNameInfo("Rewards: Double-Ply Rewards"),
@@ -190,8 +191,7 @@ namespace BunnyMod.Content
 			//UnpaidInternship.Conflicting.Add(vChallenge.MoneyRewards);
 			//UnpaidInternship.Conflicting.AddRange(new string[] { cChallenge.DoublePlyRewards });
 			//UnpaidInternship.IsActive = false;
-
-			//#endregion
+			#endregion
 		}
 	}
 }

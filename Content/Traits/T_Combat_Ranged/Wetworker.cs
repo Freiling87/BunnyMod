@@ -4,16 +4,16 @@ using RogueLibsCore;
 
 namespace BunnyMod.Content.Traits
 {
-	public class DoubleTapper : CustomTrait
+	public class Wetworker : CustomTrait
 	{
-		private const string name = nameof(DoubleTapper);
+		private const string name = nameof(Wetworker);
 
 		[RLSetup]
 		[UsedImplicitly]
 		private static void Setup()
 		{
-			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<DoubleTapper>()
-					.Localize<DoubleTapper>()
+			TraitBuilder traitBuilder = RogueLibs.CreateCustomTrait<Wetworker>()
+					.Localize<Wetworker>()
 					.WithUnlock(new TraitUnlock(name, true)
 							.SetAvailable(true)
 							.SetAvailableInCharacterCreation(true)
@@ -25,7 +25,7 @@ namespace BunnyMod.Content.Traits
 
 			// TODO conflict with vTrait.Loud
 			// TODO recommend vSpecialAbility.Camouflage
-			BMTraitsManager.RegisterTrait<DoubleTapper>(new BMTraitInfo(name, traitBuilder));
+			BMTraitsManager.RegisterTrait<Wetworker>(new BMTraitInfo(name, traitBuilder));
 		}
 
 		public override void OnAdded() { }

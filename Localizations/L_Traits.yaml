@@ -597,16 +597,6 @@ traits:
                 
                 Вы можете прятатся в ванных, в растениях, за бильярдными столами и большими столами.
 
-    UnderdarkCitizen:
-        English:
-            Name: Underdark Citizen
-            Desc: |-
-                You can navigate the city's sewers with ease. Their denizens no longer consider you an easy mark.
-        Russian:
-            Name: Подземный житель
-            Desc: |-
-                Вы с лёгкостью оринтируетесь в канализации. Жители этих мест не считают вас лёгкой целью.
-
     TamperTantrum:
         English:
             Name: Tamper Tantrum

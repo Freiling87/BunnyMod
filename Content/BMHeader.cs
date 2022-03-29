@@ -475,7 +475,6 @@ namespace BunnyMod.Content
 				TamperTantrum = "TamperTantrum",
 				TamperTantrum_2 = "TamperTantrum2",
 				Teetotaller = "Teetotaller",
-				UnderdarkCitizen = "UnderdarkCitizen",
 				Vegetarian = "Vegetarian",
 				VeiledThreats = "VeiledThreats",
 				VeryHardOnYourself = "VeryHardOnYourself",

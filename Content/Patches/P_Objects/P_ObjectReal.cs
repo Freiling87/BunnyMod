@@ -43,9 +43,6 @@ namespace BunnyMod.Content.Patches
 				case FlamingBarrel barrel:
 					FlamingBarrelController.AddButtons(barrel);
 					break;
-				case Manhole manhole:
-					ManholeController.AddButtons(manhole);
-					break;
 				case Stove stove:
 					StoveController.AddButtons(stove);
 					break;

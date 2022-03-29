@@ -20,36 +20,20 @@ namespace BunnyMod.Content
 
 		public static bool Prefix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
 				BMHeader.MainInstance.PatchPrefix(type, methodName, patchType, patchMethodName, types);
-
 		public static bool Postfix(Type type, string methodName, Type patchType, string patchMethodName, Type[] types) =>
 				BMHeader.MainInstance.PatchPostfix(type, methodName, patchType, patchMethodName, types);
-
 		public static void BMLog(string logMessage) => BMHeader.Log(logMessage);
 
-		public static MethodInfo ObjectReal_DamagedObject_base =
-				AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
-
+		public static MethodInfo ObjectReal_DamagedObject_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DamagedObject", new Type[2] { typeof(PlayfieldObject), typeof(float) });
 		public static MethodInfo ObjectReal_DetermineButtons_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "DetermineButtons", new Type[0] { });
 		public static MethodInfo ObjectReal_Interact_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Interact", new Type[1] { typeof(Agent) });
-
-		public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction",
-				new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
-
-		public static MethodInfo ObjectReal_PressedButton_base =
-				AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
-
+		public static MethodInfo ObjectReal_ObjectAction_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "ObjectAction", new Type[5] { typeof(string), typeof(string), typeof(float), typeof(Agent), typeof(PlayfieldObject) });
+		public static MethodInfo ObjectReal_PressedButton_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "PressedButton", new Type[2] { typeof(string), typeof(int) });
 		public static MethodInfo ObjectReal_Start_base = AccessTools.DeclaredMethod(typeof(ObjectReal), "Start", new Type[0] { });
-
-		public static MethodInfo PlayfieldObject_StopInteraction_base =
-				AccessTools.DeclaredMethod(typeof(PlayfieldObject), nameof(PlayfieldObject.StopInteraction), new Type[0] { });
-
-		public static MethodInfo PlayfieldObject_FinishedOperating_base =
-				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
-
+		public static MethodInfo PlayfieldObject_StopInteraction_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), nameof(PlayfieldObject.StopInteraction), new Type[0] { });
+		public static MethodInfo PlayfieldObject_FinishedOperating_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "FinishedOperating", new Type[0] { });
 		public static MethodInfo PlayfieldObject_Interact_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "Interact", new Type[1] { typeof(Agent) });
-
-		public static MethodInfo PlayfieldObject_PressedButton_base =
-				AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
+		public static MethodInfo PlayfieldObject_PressedButton_base = AccessTools.DeclaredMethod(typeof(PlayfieldObject), "PressedButton", new Type[2] { typeof(string), typeof(int) });
 
 		#region Main
 
@@ -59,7 +43,6 @@ namespace BunnyMod.Content
 
 			ObjectReal_00();
 			PlayfieldObject_00();
-			SpawnerMain_00();
 
 			AlarmButton_00();
 			ATMMachine_00();
@@ -72,10 +55,8 @@ namespace BunnyMod.Content
 			Fountain_00();
 			Generator_00();
 			Generator2_00();
-			Hole_00();
 			Lamp_00();
 			LaserEmitter_00();
-			Manhole_00();
 			Plant_00();
 			PoliceBox_00();
 			PoolTable_00();
@@ -85,7 +66,6 @@ namespace BunnyMod.Content
 			Stove_00();
 			TableBig_00();
 			Television_00();
-			Toilet_00();
 			TrashCan_00();
 			Turret_00();
 			VendorCart_00();
@@ -127,20 +107,15 @@ namespace BunnyMod.Content
 
 			t = vNameType.Dialogue;
 			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordAlarmButton, t, new CustomNameInfo("I can't afford this. I should have worked harder!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordElevator, t,
-					new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
-			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordToilet, t,
-					new CustomNameInfo("I'm too poor (and therefore too lazy and unworthy) for this privilege!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookDamage, t,
-					new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookNoDamage, t,
-					new CustomNameInfo("Mmmm, toasty. Just like the burning flesh on my fingers!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordElevator, t, new CustomNameInfo("PAYMENT DECLINED - Have a [ERR: Salutation not found (\"RejectPoorSwine\")] Day."));
+			_ = RogueLibs.CreateCustomName(cDialogue.CantAffordToilet, t, new CustomNameInfo("I'm too poor (and therefore too lazy and unworthy) for this privilege!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookDamage, t, new CustomNameInfo("God fucking damn it, I always fucking burn my fucking hands!"));
+			_ = RogueLibs.CreateCustomName(cDialogue.FlamingBarrelCookNoDamage, t, new CustomNameInfo("Mmmm, toasty. Just like the burning flesh on my fingers!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.MachineBusy, t, new CustomNameInfo("It's busy doing... machine things."));
 			_ = RogueLibs.CreateCustomName(cDialogue.PurchaseElevator, t, new CustomNameInfo("PAYMENT ACCEPTED - Thank you for using Evilator Co.!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_1, t, new CustomNameInfo("Chauvelin Automated Vice, Inc. presents: Jackpot!"));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_2, t, new CustomNameInfo("Winner Winner, Chicken Dinner!"));
-			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t,
-					new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
+			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_3, t, new CustomNameInfo("NOTE: You are not actually winning a Chicken Dinner, it's an expression."));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_4, t, new CustomNameInfo("Yep... still going."));
 			_ = RogueLibs.CreateCustomName(cDialogue.SlotMachineJackpot_5, t, new CustomNameInfo("Jackpot. Happy for ya."));
 
@@ -237,8 +212,6 @@ namespace BunnyMod.Content
 
 		public static bool ObjectReal_FinishedOperating(ObjectReal __instance) // Replacement
 		{
-			BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-
 			PlayfieldObject_FinishedOperating_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
 
 			string opItem = "";
@@ -250,8 +223,6 @@ namespace BunnyMod.Content
 				FlamingBarrel_GrilledFud((FlamingBarrel) __instance);
 			else if (__instance is Fountain)
 				Fountain_Steal((Fountain) __instance);
-			else if (__instance is Manhole && opItem == vItem.Crowbar)
-				Manhole_UseCrowbar((Manhole) __instance);
 			else if (__instance is Stove)
 			{
 				if (opItem == vItem.Wrench)
@@ -288,8 +259,6 @@ namespace BunnyMod.Content
 				__instance.StopInteraction();
 			}
 			else if (__instance is FlamingBarrel)
-				__instance.ShowObjectButtons();
-			else if (__instance is Manhole)
 				__instance.ShowObjectButtons();
 			else if (__instance is Stove)
 			{
@@ -335,16 +304,7 @@ namespace BunnyMod.Content
 		public static void ObjectReal_ObjectAction(string myAction, string extraString, float extraFloat, Agent causerAgent, PlayfieldObject extraObject,
 				ObjectReal __instance, ref bool ___noMoreObjectActions) // Postfix
 		{
-			BMHeader.ConsoleMessage.LogMessage(__instance.name + ": " + MethodBase.GetCurrentMethod().Name);
-
-			if (__instance is Manhole)
-			{
-				if (myAction == "FlushYourself")
-					Manhole_FlushYourself((Manhole) __instance);
-				else if (myAction == "UseCrowbar")
-					Manhole_UseCrowbar((Manhole) __instance);
-			}
-			else if (__instance is Stove)
+			if (__instance is Stove)
 			{
 				if (!___noMoreObjectActions && myAction == "UseWrenchToDetonate")
 					Stove_UseWrenchToDetonate((Stove) __instance);
@@ -408,8 +368,7 @@ namespace BunnyMod.Content
 				dodgyStrikes = 0;
 				dodgyVolume = 1f;
 			}
-			else if (buttonText == "FlushYourself" && __instance is Manhole)
-				Manhole_FlushYourself((Manhole) __instance);
+
 			else if (buttonText == "GrillFud")
 				__instance.StartCoroutine(__instance.Operating(agent, agent.inventory.FindItem(vItem.Fud), 2f, true, "Grilling"));
 			else if (buttonText == cButtonText.GrillFudPaid && __instance.moneySuccess(5))
@@ -622,165 +581,6 @@ namespace BunnyMod.Content
 			else
 				return false;
 		}
-
-		#endregion
-
-		#region SpawnerMain
-
-		public void SpawnerMain_00()
-		{
-			Type t = typeof(SpawnerMain);
-			Type g = GetType();
-
-			Postfix(t, "spawnObjectReal", g, "SpawnerMain_spawnObjectReal",
-					new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
-		}
-
-		public static void SpawnerMain_spawnObjectReal(Vector3 objectPos, PlayfieldObject objectSource, string objectType, string myDir,
-				WorldDataObject worldDataObjects, int worldDataElementPosition, SpawnerMain __instance) // Postfix
-		{
-			// LitterallyTheWorst
-			// FloralerFlora
-
-			BMLog("SpawnerMain_spawnObjectReal");
-			BMLog("\tobjectType: " + objectType);
-
-			float offsetSize = 9999f;
-			string particleType = null;
-			int iteratorChance = 0;
-			int a = GC.levelTheme; // 0 = Home Base, 5 = Mayor Village
-			Vector2 loc = objectPos;
-			int chance = 100;
-
-			if (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode)
-				switch (objectType)
-				{
-					case vObject.Bush:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 20;
-						}
-
-						break;
-
-					case vObject.KillerPlant:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 20;
-						}
-
-						break;
-
-					case vObject.Plant:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)),
-									vObject.Bush, false);
-							chance -= 66;
-						}
-
-						break;
-
-					case vObject.Tree:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 10;
-						}
-
-						break;
-				}
-
-			if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || BMHeader.debugMode)
-				switch (objectType)
-				{
-					case vObject.ATMMachine:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
-							chance -= 10;
-						}
-
-						break;
-
-					case vObject.Barbecue:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.24f, 0.24f), loc.y + Random.Range(-0.12f, 0.12f)),
-									vObject.Bush, true);
-							chance -= 25;
-						}
-
-						break;
-
-					case vObject.Boulder:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									vObject.FlamingBarrel, false);
-							chance -= 15;
-						}
-
-						break;
-
-					case vObject.BoulderSmall:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vItem.Rock);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)),
-									vObject.FlamingBarrel, false);
-							chance -= 10;
-						}
-
-						break;
-
-					case vObject.FlamingBarrel:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.08f, 0.08f), loc.y + Random.Range(-0.08f, 0.08f)),
-									vObject.Bush, true);
-							chance -= 50;
-						}
-
-						break;
-
-					case vObject.Toilet:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)),
-									vObject.FlamingBarrel, false);
-							chance -= 100;
-						}
-
-						break;
-
-					case vObject.TrashCan:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
-							chance -= 15;
-						}
-
-						break;
-				}
-		}
-
-		#endregion
 
 		#endregion
 
@@ -2118,39 +1918,6 @@ namespace BunnyMod.Content
 
 		#endregion
 
-		#region Hole
-
-		public void Hole_00()
-		{
-			Prefix(typeof(Hole), "EnterRange", GetType(), "Hole_EnterRange", new Type[1] { typeof(GameObject) });
-		}
-
-		public static bool Hole_EnterRange(GameObject myObject, Hole __instance) // Prefix
-		{
-			if (GC.loadComplete)
-				if (myObject.CompareTag("Agent"))
-				{
-					Agent agent = myObject.GetComponent<Agent>();
-
-					if (__instance.GetComponent<ObjectMultHole>().objectHoleType == "Manhole" && agent.HasTrait<UnderdarkCitizen>() &&
-							!agent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
-					{
-						Manhole_FlushYourself(agent, (Manhole) __instance.GetComponent<ObjectReal>());
-
-						if (GC.challenges.Contains(vChallenge.LowHealth))
-							agent.statusEffects.ChangeHealth(-7f);
-						else
-							agent.statusEffects.ChangeHealth(-15f);
-
-						return false;
-					}
-				}
-
-			return true;
-		}
-
-		#endregion
-
 		#region Lamp
 
 		public void Lamp_00()
@@ -2202,255 +1969,6 @@ namespace BunnyMod.Content
 		{
 			if (__instance.buttons.Any())
 				CorrectButtonCosts(__instance);
-		}
-
-		#endregion
-
-		#region Manhole
-
-		public void Manhole_00()
-		{
-			Postfix(typeof(Manhole), "SetVars", GetType(), "Manhole_SetVars", new Type[0] { });
-			Prefix(typeof(Manhole), "Start", GetType(), "Manhole_Start", new Type[0] { });
-		}
-
-		public static void Manhole_FlushYourself(Agent agent, ObjectReal __instance) // Non-Patch
-		{
-			List<ObjectReal> exits = new List<ObjectReal>();
-
-			for (int i = 0; i < GC.objectRealList.Count; i++)
-			{
-				ObjectReal objectReal = GC.objectRealList[i];
-
-				if (objectReal == __instance)
-					continue;
-				else if (objectReal is Manhole)
-				{
-					Manhole manhole = (Manhole) objectReal;
-
-					if (manhole.opened)
-						exits.Add(objectReal);
-				}
-				else if (objectReal is Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
-					if (!objectReal.destroyed)
-						exits.Add(objectReal);
-			}
-
-			ObjectReal exit = __instance;
-
-			if (exits.Count > 0)
-				exit = exits[Random.Range(0, exits.Count - 1)];
-
-			Vector3 exitSpot = Vector3.zero;
-
-			if (exit is Manhole)
-			{
-				exitSpot = exit.curPosition;
-				agent.Teleport((Vector2) exitSpot + Random.insideUnitCircle.normalized, true, true);
-				GC.spawnerMain.SpawnExplosion((PlayfieldObject) exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
-			}
-			else if (exit is Toilet)
-			{
-				string direction = exit.direction;
-
-				switch (direction)
-				{
-					case "E":
-						exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-						break;
-
-					case "N":
-						exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
-
-						break;
-
-					case "S":
-						exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
-
-						break;
-
-					case "W":
-						exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-						break;
-				}
-
-				__instance.interactingAgent.Teleport(exitSpot, false, true);
-				GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-						__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
-			}
-		}
-
-		public static void Manhole_FlushYourself(Manhole __instance) // Non-Patch
-		{
-			Agent agent = __instance.interactingAgent;
-
-			List<ObjectReal> exits = new List<ObjectReal>();
-
-			for (int i = 0; i < GC.objectRealList.Count; i++)
-			{
-				ObjectReal objectReal = GC.objectRealList[i];
-
-				if (objectReal == __instance)
-					continue;
-				else if (objectReal is Manhole)
-				{
-					Manhole manhole = (Manhole) objectReal;
-
-					if (manhole.opened)
-						exits.Add(objectReal);
-				}
-				else if (objectReal is Toilet && (agent.statusEffects.hasTrait(vTrait.Diminutive) || agent.shrunk))
-					if (!objectReal.destroyed)
-						exits.Add(objectReal);
-			}
-
-			ObjectReal exit = __instance;
-
-			if (exits.Count > 0)
-				exit = exits[Random.Range(0, exits.Count - 1)];
-
-			GC.audioHandler.Play(agent, "ToiletTeleportIn");
-			agent.toiletTeleporting = true;
-
-			Vector3 exitSpot = Vector3.zero;
-
-			if (exit is Manhole)
-			{
-				exitSpot = exit.curPosition;
-				agent.Teleport((Vector2) exitSpot + Random.insideUnitCircle.normalized, true, false);
-				GC.spawnerMain.SpawnExplosion((PlayfieldObject) exit, exitSpot, "Water", false, -1, false, exit.FindMustSpawnExplosionOnClients(agent));
-			}
-			else if (exit is Toilet)
-			{
-				string direction = exit.direction;
-
-				switch (direction)
-				{
-					case "E":
-						exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-						break;
-
-					case "N":
-						exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
-
-						break;
-
-					case "S":
-						exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
-
-						break;
-
-					case "W":
-						exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-						break;
-				}
-
-				__instance.interactingAgent.Teleport(exitSpot, false, true);
-				GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-						__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
-			}
-		}
-
-		public static IEnumerator Manhole_HoleAppearAfterLoad(Manhole __instance) // Non-Patch
-		{
-			if (GC.streamingWorld)
-				while (!GC.streamingWorldController.StreamingLoaded(__instance.startingChunk, __instance.startingChunkReal))
-					yield return null;
-			else
-				while (!GC.loadCompleteEarly)
-					yield return null;
-
-			__instance.HoleAppear();
-			yield break;
-		}
-
-		public static void Manhole_SetVars(Manhole __instance) // Postfix
-		{
-			__instance.interactable = true;
-		}
-
-		public static IEnumerator Manhole_SetLightingLater(Manhole __instance) // Non-Patch
-		{
-			yield return null;
-			yield return null;
-
-			if (!__instance.gc.serverPlayer)
-			{
-				while (__instance.tr.Find("LightReal(Clone)") == null)
-					yield return null;
-
-				__instance.lightReal = __instance.tr.Find("LightReal(Clone)").GetComponent<LightReal>();
-			}
-
-			__instance.lightReal.tr.localPosition = new Vector3(0f, -0.12f);
-
-			yield break;
-		}
-
-		public static bool Manhole_Start(Manhole __instance) // Replacement
-		{
-			ObjectReal_Start_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-			if (GC.levelTheme != 3 && !GC.challenges.Contains(vChallenge.MixedUpLevels) && GC.levelFeeling != vLevelFeeling.WarZone &&
-					!BMTraitController.IsPlayerTraitActive<UnderdarkCitizen>() && GC.serverPlayer)
-			{
-				__instance.objectName = "Manhole";
-				__instance.RemoveMe();
-
-				return false;
-			}
-
-			if (__instance.opened)
-				__instance.objectSprite.meshRenderer.enabled = false;
-
-			if (GC.lightingType != "None")
-				__instance.StartCoroutine(Manhole_SetLightingLater(__instance));
-
-			GC.tileInfo.GetTileData(__instance.tr.position).futureHole = true;
-
-			if (GC.serverPlayer && GC.levelFeeling == "WarZone")
-			{
-				__instance.StartCoroutine(Manhole_HoleAppearAfterLoad(__instance));
-
-				return false;
-			}
-
-			if (!GC.serverPlayer && __instance.normalHole)
-				__instance.objectRealRealName = GC.nameDB.GetName("Hole", "Object");
-
-			return false;
-		}
-
-		public static void Manhole_UseCrowbar(Manhole __instance) // Non-Patch
-		{
-			BMLog("Manhole_UseCrowbar");
-
-			if (GC.serverPlayer)
-			{
-				Vector3 position = __instance.tr.position;
-				position = new Vector3(__instance.tr.position.x, __instance.tr.position.y - 0.24f, __instance.tr.position.z);
-
-				__instance.hole = GC.spawnerMain.SpawnHole(__instance, position, new Vector3(1.5f, 1.5f, 1f), Quaternion.identity, false, true);
-				__instance.hole.ObjectHoleAppear("Manhole");
-				GC.playerAgent.objectMult.ObjectAction(__instance.objectNetID, "HoleAppear");
-				__instance.operatingAgent.inventory.SubtractFromItemCount(__instance.operatingItem,
-						15); // SubtractFromItemCount is Postfixed! ToolCost is already in there.
-			}
-
-			__instance.objectSprite.meshRenderer.enabled = false;
-			__instance.opened = true;
-			__instance.SetSDangerousToWalk(true);
-			GC.audioHandler.Play(__instance, "ManholeOpen");
-
-			if (GC.levelFeeling == "WarZone")
-			{
-				__instance.objectRealRealName = GC.nameDB.GetName("Hole", "Object");
-				__instance.normalHole = true;
-			}
 		}
 
 		#endregion
@@ -3533,168 +3051,6 @@ namespace BunnyMod.Content
 
 		#endregion
 
-		#region Toilet
-
-		public void Toilet_00()
-		{
-			Prefix(typeof(Toilet), "DetermineButtons", GetType(), "Toilet_DetermineButtons", new Type[0] { });
-			Prefix(typeof(Toilet), "FlushYourself", GetType(), "Toilet_FlushYourself", new Type[0] { });
-			Prefix(typeof(Toilet), "PressedButton", GetType(), "Toilet_PressedButton", new Type[2] { typeof(string), typeof(int) });
-		}
-
-		public static bool Toilet_DetermineButtons(Toilet __instance) // Prefix
-		{
-			if (GC.challenges.Contains(cChallenge.AnCapistan))
-			{
-				ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-				bool toiletWorking = false;
-
-				if (GC.levelType != "HomeBase")
-				{
-					if ((__instance.interactingAgent.statusEffects.hasTrait("Diminutive") ||
-									__instance.interactingAgent.statusEffects.hasStatusEffect("Shrunk")) &&
-							!__instance.interactingAgent.statusEffects.hasStatusEffect("Giant"))
-					{
-						__instance.buttons.Add("FlushYourself");
-						__instance.buttonPrices.Add(10);
-
-						toiletWorking = true;
-					}
-
-					if (__instance.hasPurgeStatusEffects())
-					{
-						__instance.buttons.Add("PurgeStatusEffects");
-						__instance.buttonPrices.Add(10);
-
-						toiletWorking = true;
-					}
-				}
-
-				if (!toiletWorking)
-					BMHeaderTools.SayDialogue(__instance.interactingAgent, "ToiletWontGo", vNameType.Dialogue);
-
-				return false;
-			}
-
-			return true;
-		}
-
-		public static bool Toilet_FlushYourself(Toilet __instance) // Replacement
-		{
-			if (__instance.interactingAgent.HasTrait<UnderdarkCitizen>())
-			{
-				if ((__instance.interactingAgent.statusEffects.hasTrait(vTrait.Diminutive) ||
-								__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Shrunk)) &&
-						!__instance.interactingAgent.statusEffects.hasStatusEffect(vStatusEffect.Giant))
-				{
-					List<ObjectReal> exits = new List<ObjectReal>();
-
-					for (int i = 0; i < GC.objectRealList.Count; i++)
-					{
-						ObjectReal exitCandidate = GC.objectRealList[i];
-
-						if (exitCandidate != __instance && !exitCandidate.destroyed && exitCandidate.startingChunk != __instance.startingChunk)
-						{
-							if (exitCandidate is Manhole)
-							{
-								Manhole manhole = (Manhole) exitCandidate;
-
-								if (manhole.opened)
-									exits.Add(exitCandidate);
-							}
-							else if (exitCandidate is Toilet)
-								exits.Add(exitCandidate);
-						}
-					}
-
-					if (exits.Count == 0)
-						for (int j = 0; j < GC.objectRealList.Count; j++)
-						{
-							ObjectReal exitCandidate = GC.objectRealList[j];
-
-							if (exitCandidate != __instance && !exitCandidate.destroyed)
-							{
-								if (exitCandidate is Manhole)
-								{
-									Manhole manhole = (Manhole) exitCandidate;
-
-									if (manhole.opened)
-										exits.Add(exitCandidate);
-								}
-								else if (exitCandidate is Toilet)
-									exits.Add(exitCandidate);
-							}
-						}
-
-					ObjectReal exit = __instance;
-
-					if (exits.Count > 0)
-						exit = exits[Random.Range(0, exits.Count - 1)];
-
-					Vector3 exitSpot = Vector3.zero;
-					string direction = exit.direction;
-
-					switch (direction)
-					{
-						case "E":
-							exitSpot = new Vector3(exit.tr.position.x + 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-							break;
-
-						case "N":
-							exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y + 0.32f, exit.tr.position.z);
-
-							break;
-
-						case "S":
-							exitSpot = new Vector3(exit.tr.position.x, exit.tr.position.y - 0.32f, exit.tr.position.z);
-
-							break;
-
-						case "W":
-							exitSpot = new Vector3(exit.tr.position.x - 0.32f, exit.tr.position.y, exit.tr.position.z);
-
-							break;
-					}
-
-					GC.audioHandler.Play(__instance, "ToiletTeleportIn");
-					__instance.interactingAgent.toiletTeleporting = true;
-					__instance.interactingAgent.Teleport(exitSpot, false, true);
-					GC.spawnerMain.SpawnExplosion(__instance.interactingAgent, exit.tr.position, "Water", false, -1, false,
-							__instance.FindMustSpawnExplosionOnClients(__instance.interactingAgent));
-				}
-
-				return false;
-			}
-
-			return true;
-		}
-
-		public static bool Toilet_PressedButton(string buttonText, int buttonPrice, Toilet __instance) // Prefix
-		{
-			if (GC.challenges.Contains(cChallenge.AnCapistan))
-			{
-				ObjectReal_PressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
-
-				if (buttonText == "FlushYourself" && __instance.moneySuccess(buttonPrice))
-					__instance.FlushYourself();
-				else if (buttonText == "PurgeStatusEffects" && __instance.moneySuccess(buttonPrice))
-					__instance.PurgeStatusEffects();
-				else
-				{
-					BMHeaderTools.SayDialogue(__instance.interactingAgent, cDialogue.CantAffordToilet, vNameType.Dialogue);
-					__instance.StopInteraction();
-				}
-
-				return false;
-			}
-
-			return true;
-		}
-
-		#endregion
-
 		#region Trash Can
 
 		public void TrashCan_00()
@@ -3881,15 +3237,6 @@ namespace BunnyMod.Content
 		public bool ticketPurchased = false;
 	}
 
-	public class Manhole_Remora
-	{
-		public static GameController GC => GameController.gameController;
-
-		public Manhole manholeHost;
-
-		public bool splashed = false;
-	}
-
 	public class Stove_Remora
 	{
 		public static GameController GC => GameController.gameController;
@@ -3921,14 +3268,6 @@ namespace BunnyMod.Content
 		}
 	}
 
-	public class Toilet_Remora
-	{
-		public static GameController GC => GameController.gameController;
-
-		public Toilet toiletHost;
-
-		public bool splashed = false;
-	}
 	//   public class Refrigerator_Remora
 	//{
 	//       public Refrigerator refrigeratorHost;

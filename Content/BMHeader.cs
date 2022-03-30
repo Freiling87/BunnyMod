@@ -200,10 +200,6 @@ namespace BunnyMod.Content
 				Mildfire = "WeakFires",
 				NapalmSprings = "StubbornFires",
 				
-				FloralerFlora = "FloralerFlora",
-				LitterallyTheWorst = "LitterallyTheWorst",
-			// Rest of these are in notes in CCU
-				
 				Gameplay_Hide = "Gameplay_Hide",
 				Gameplay_Show = "Gameplay_Show",
 				ScaryGuns = "ScaryGuns",
@@ -380,21 +376,6 @@ namespace BunnyMod.Content
 				vObject.PoolTable,
 				vObject.TableBig,
 				vObject.TrashCan
-		};
-
-		public static List<string> WreckageMisc = new List<string>()
-		{
-				vObject.BarStool,
-				vObject.Lamp,
-				vObject.Shelf,
-		};
-
-		public static List<string> WreckageOrganic = new List<string>() // All should have gibs with visible burn
-		{
-				vObject.Chair,
-				vObject.Shelf,
-				vObject.Table,
-				vObject.TableBig,
 		};
 	}
 	public static class cSkillPoints // Custom Skill Points

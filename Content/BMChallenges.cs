@@ -13,25 +13,6 @@ namespace BunnyMod.Content
 		public static void InitializeChallenges()
 		{
 			#region SORCE
-			//CustomMutator FloralerFlora = RogueLibs.CreateCustomMutator(cChallenge.FloralerFlora, true,
-			//	new CustomNameInfo("Features: Floral-er Flora"),
-			//	new CustomNameInfo(
-			//		"A mutator just for leaves? You got it!\n\n- Just adds leaves underneath bushes, hedge walls, plants and trees. Looks nice.\n- May be a performance strain for plebs"));
-			//FloralerFlora.Available = false;
-			//FloralerFlora.Conflicting.AddRange(new string[] { });
-			//FloralerFlora.IsActive = false;
-
-
-			//CustomMutator LitterallyTheWorst = RogueLibs.CreateCustomMutator(cChallenge.LitterallyTheWorst, true,
-			//	new CustomNameInfo("Features: Litter-aly the Worst"),
-			//	new CustomNameInfo(
-			//		"Civic Pride went and died!\n\n- Generates trash on the ground and around trashcans\n- May be a performance strain for plebs"));
-			//LitterallyTheWorst.Available = false;
-			//LitterallyTheWorst.Conflicting.AddRange(new string[] { cChallenge.PoliceState, cChallenge.ArcologyEcology, cChallenge.MACITS });
-			//LitterallyTheWorst.IsActive = false;
-
-
-
 			//CustomMutator AnCapistan = RogueLibs.CreateCustomMutator(cChallenge.AnCapistan, true,
 			//	new CustomNameInfo("Overhaul: AnCapistan"),
 			//	new CustomNameInfo(

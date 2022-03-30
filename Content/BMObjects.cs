@@ -59,7 +59,6 @@ namespace BunnyMod.Content
 
 			ObjectReal_00();
 			PlayfieldObject_00();
-			SpawnerMain_00();
 
 			AlarmButton_00();
 			ATMMachine_00();
@@ -69,7 +68,6 @@ namespace BunnyMod.Content
 			Elevator_00();
 			FireHydrant_00();
 			FlamingBarrel_00();
-			Fountain_00();
 			Generator_00();
 			Generator2_00();
 			Hole_00();
@@ -626,159 +624,6 @@ namespace BunnyMod.Content
 		#endregion
 
 		#region SpawnerMain
-
-		public void SpawnerMain_00()
-		{
-			Type t = typeof(SpawnerMain);
-			Type g = GetType();
-
-			Postfix(t, "spawnObjectReal", g, "SpawnerMain_spawnObjectReal",
-					new Type[6] { typeof(Vector3), typeof(PlayfieldObject), typeof(string), typeof(string), typeof(WorldDataObject), typeof(int) });
-		}
-
-		public static void SpawnerMain_spawnObjectReal(Vector3 objectPos, PlayfieldObject objectSource, string objectType, string myDir,
-				WorldDataObject worldDataObjects, int worldDataElementPosition, SpawnerMain __instance) // Postfix
-		{
-			// LitterallyTheWorst
-			// FloralerFlora
-
-			BMLog("SpawnerMain_spawnObjectReal");
-			BMLog("\tobjectType: " + objectType);
-
-			float offsetSize = 9999f;
-			string particleType = null;
-			int iteratorChance = 0;
-			int a = GC.levelTheme; // 0 = Home Base, 5 = Mayor Village
-			Vector2 loc = objectPos;
-			int chance = 100;
-
-			if (GC.challenges.Contains(cChallenge.FloralerFlora) || BMHeader.debugMode)
-				switch (objectType)
-				{
-					case vObject.Bush:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 20;
-						}
-
-						break;
-
-					case vObject.KillerPlant:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 20;
-						}
-
-						break;
-
-					case vObject.Plant:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)),
-									vObject.Bush, false);
-							chance -= 66;
-						}
-
-						break;
-
-					case vObject.Tree:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.64f, 0.64f), loc.y + Random.Range(-0.64f, 0.64f)),
-									vObject.Bush, false);
-							chance -= 10;
-						}
-
-						break;
-				}
-
-			if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || BMHeader.debugMode)
-				switch (objectType)
-				{
-					case vObject.ATMMachine:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									vObject.MovieScreen, false); // Was vObject.Lamp. Also try A/C if MovieScreen doesn't work out.
-							chance -= 10;
-						}
-
-						break;
-
-					case vObject.Barbecue:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.24f, 0.24f), loc.y + Random.Range(-0.12f, 0.12f)),
-									vObject.Bush, true);
-							chance -= 25;
-						}
-
-						break;
-
-					case vObject.Boulder:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)), vItem.Rock);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									vObject.FlamingBarrel, false);
-							chance -= 15;
-						}
-
-						break;
-
-					case vObject.BoulderSmall:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)), vItem.Rock);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.16f, 0.16f)),
-									vObject.FlamingBarrel, false);
-							chance -= 10;
-						}
-
-						break;
-
-					case vObject.FlamingBarrel:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.08f, 0.08f), loc.y + Random.Range(-0.08f, 0.08f)),
-									vObject.Bush, true);
-							chance -= 50;
-						}
-
-						break;
-
-					case vObject.Toilet:
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.16f, 0.16f), loc.y + Random.Range(-0.24f, 0.24f)),
-									vObject.FlamingBarrel, false);
-							chance -= 100;
-						}
-
-						break;
-
-					case vObject.TrashCan:
-						while (GC.percentChance(1))
-							GC.spawnerMain.SpawnItem(new Vector2(loc.x + Random.Range(-0.32f, 0.32f), loc.y + Random.Range(-0.32f, 0.32f)), vItem.BananaPeel);
-
-						while (GC.percentChance(chance))
-						{
-							GC.spawnerMain.SpawnWreckagePileObject(new Vector2(loc.x + Random.Range(-0.48f, 0.48f), loc.y + Random.Range(-0.48f, 0.48f)),
-									cObject.WreckageMisc.RandomElement(), GC.percentChance(10));
-							chance -= 15;
-						}
-
-						break;
-				}
-		}
 
 		#endregion
 
@@ -1979,112 +1824,7 @@ namespace BunnyMod.Content
 
 		#region Fountain
 
-		public void Fountain_00()
-		{
-			Type t = typeof(Fountain);
-			Type g = GetType();
 
-			Prefix(t, "DetermineButtons", g, "Fountain_DetermineButtons", new Type[0] { });
-			Prefix(t, "PressedButton", g, "Fountain_PressedButton", new Type[2] { typeof(string), typeof(int) });
-			Postfix(t, "SetVars", g, "Fountain_SetVars", new Type[0] { });
-		}
-
-		public static Dictionary<PlayfieldObject, bool> FountainStolenFrom = new Dictionary<PlayfieldObject, bool>();
-
-		public static bool Fountain_DetermineButtons(Fountain __instance) // Replacement
-		{
-			ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-			__instance.buttons.Add("TossCoin");
-			__instance.buttonPrices.Add(1);
-
-			if (FountainStolenFrom[__instance] == false)
-				__instance.buttons.Add(cButtonText.FountainSteal);
-
-			//__instance.buttons.Add(cButtonText.FountainWishGoodHealth);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishFabulousWealth);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishFameAndGlory);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishTrueFriendship);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishWorldPeace);
-			//__instance.buttonPrices.Add(30);
-
-			return false;
-		}
-
-		public static void Fountain_PressedButton(string buttonText, int buttonPrice, Fountain __instance) // Replacement
-		{
-			ObjectReal_PressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
-
-			Agent agent = __instance.interactingAgent;
-
-			if (buttonText == "TossCoin")
-			{
-				if (__instance.moneySuccess(buttonPrice))
-				{
-					__instance.tossedAgents.Add(__instance.interactingAgent);
-					__instance.objectInvDatabase.AddItem("Money", 1);
-				}
-			}
-			else if (buttonText == cButtonText.FountainSteal)
-			{
-				__instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
-				GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
-
-				if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
-				{
-					GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.4f, agent, "Normal", agent);
-					GC.audioHandler.Play(__instance, vAudioClip.Operating);
-					GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-					GC.OwnCheck(agent, __instance.go, "Normal", 2);
-					C_Relationships.AnnoyWitnessesVictimless(agent);
-				}
-				else
-					GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
-			}
-
-			__instance.StopInteraction();
-		}
-
-		public static void Fountain_SetVars(Fountain __instance) // Postfix
-		{
-			__instance.damageThreshold = 50;
-			__instance.damageAccumulates = false;
-			__instance.pickUppable = false;
-			__instance.fireProof = true;
-			__instance.cantMakeFollowersAttack = true;
-			BMHeaderTools.AddDictionary(FountainStolenFrom, __instance, false);
-		}
-
-		public static void Fountain_Steal(Fountain __instance) // Non-Patch
-		{
-			Agent agent = __instance.interactingAgent;
-
-			InvItem invItem = new InvItem();
-			invItem.invItemName = "Money";
-			invItem.ItemSetup(false);
-			invItem.invItemCount = Random.Range(10, 30);
-			invItem.ShowPickingUpText(__instance.interactingAgent);
-			__instance.interactingAgent.inventory.AddItem(invItem);
-			__instance.objectInvDatabase.DestroyAllItems();
-			FountainStolenFrom[__instance] = true;
-			__instance.interactable = false;
-			agent.statusEffects.AddStatusEffect(vStatusEffect.FeelingUnlucky, true, true);
-
-			if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
-				GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
-			else
-				GC.audioHandler.Play(__instance, vAudioClip.JumpOutWater);
-
-			__instance.StopInteraction();
-		}
 
 		#endregion
 

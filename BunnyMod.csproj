@@ -139,7 +139,6 @@
     <Compile Include="Content\Localization\TraitsLocalization.cs" />
     <Compile Include="Content\Logging\BMLogger.cs" />
     <Compile Include="Content\ObjectBehaviour\FlamingBarrelController.cs" />
-    <Compile Include="Content\ObjectBehaviour\ManholeController.cs" />
     <Compile Include="Content\ObjectBehaviour\StoveController.cs" />
     <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
     <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
@@ -225,7 +224,6 @@
     <Compile Include="Content\Traits\T_Spawns\Reinforcements.cs" />
     <Compile Include="Content\Traits\T_Spawns\Reinforcements2.cs" />
     <Compile Include="Content\Traits\T_Stealth\StealthBastardDeluxe.cs" />
-    <Compile Include="Content\Traits\T_Stealth\UnderdarkCitizen.cs" />
     <Compile Include="Content\Traits\T_Tampering\TamperTantrum.cs" />
     <Compile Include="Content\Traits\T_Tampering\TamperTantrum2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

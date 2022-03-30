@@ -98,6 +98,11 @@ namespace BunnyMod.Content.Patches
 			}
 		}
 
+		/// <summary>
+		/// Stealth Bastard Deluxe
+		/// </summary>
+		/// <param name="hiddenInObject"></param>
+		/// <param name="__instance"></param>
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(StatusEffects.BecomeHidden), argumentTypes: new[] { typeof(ObjectReal) })]
 		private static void BecomeHidden_Postfix(ObjectReal hiddenInObject, StatusEffects __instance)
 		{
@@ -106,13 +111,12 @@ namespace BunnyMod.Content.Patches
 				Agent agent = __instance.agent;
 				Vector3 objectPosition = hiddenInObject.tr.position;
 				agent.tr.position = new Vector2(objectPosition.x, objectPosition.y + BecomeHidden_GetPositionOffset(hiddenInObject));
+
 				if (BecomeHidden_ShouldDisableHitbox(hiddenInObject))
 				{
 					agent.EnableHitboxes(false);
 					agent.agentItemColliderTr.gameObject.SetActive(false);
 				}
-
-				UnderdarkCitizen.Handle_StatusEffects_BecomeHidden(__instance, hiddenInObject);
 			}
 		}
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using BepInEx.Logging;
 using BunnyMod.Content.Extensions;
 using BunnyMod.Content.Traits;
@@ -66,17 +66,6 @@ namespace BunnyMod.Content.ObjectBehaviour
 						text: "UseWrenchToDetonate",
 						extraText: $" ({invItemCount}) -{toolCost}"
 				);
-			}
-
-			if (agent.inventory.HasItem(ItemNameDB.rowIds.Fud))
-			{
-				if (GameController.gameController.challenges.Contains(cChallenge.AnCapistan))
-				{
-					stove.AddButton(
-							text: cButtonText.GrillFudPaid,
-							price: 5
-					);
-				}
 			}
 		}
 	}

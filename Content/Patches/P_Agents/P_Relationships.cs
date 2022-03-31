@@ -14,19 +14,6 @@ namespace BunnyMod.Content.Patches
 		private static readonly ManualLogSource logger = BMLogger.GetLogger();
 		public static GameController GC => GameController.gameController;
 
-		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Relationships.EnforcerAlert), argumentTypes: new[] { typeof(Agent), typeof(float), typeof(Vector2), typeof(int), typeof(Agent) })]
-		private static void EnforcerAlert_Postfix(Agent criminal, float noiseDist, Vector2 noisePos, int numStrikes, Agent victim, Relationships __instance)
-		{
-			// TODO move logic to PoliceState challenge
-			if (GameController.gameController.challenges.Contains(cChallenge.PoliceState))
-			{
-				if (__instance.GetRel(criminal) == nameof(relStatus.Hostile))
-				{
-					criminal.statusEffects.AddTrait(vTrait.Wanted);
-				}
-			}
-		}
-
 		[HarmonyPostfix, HarmonyPatch(methodName: nameof(Relationships.SetupRelationshipOriginal), argumentTypes: new[] { typeof(Agent) })]
 		private static void SetupRelationshipOriginal_Postfix(Agent otherAgent, Relationships __instance, ref Agent ___agent)
 		{
@@ -87,7 +74,5 @@ namespace BunnyMod.Content.Patches
 				}
 			}
 		}
-
-		// TODO OwnCheck Prefix - PoliceState sets all Objects NoStrikesIfDestroyed to false
 	}
 }

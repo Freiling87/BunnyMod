@@ -201,10 +201,6 @@ namespace BunnyMod.Content
 				SaveTheWalls = "SaveTheWalls",
 				WallWallopWorld = "WallWallopWorld",
 				
-				AnCapistan = "AnCapistan",
-				DiscoCityDanceoff = "DiscoCityDanceoff",
-				PoliceState = "PoliceState",
-
 				QuestCount_Hide = "QuestCount_Hide",
 				QuestCount_Show = "QuestCount_Show",
 				SingleMinded = "SingleMinded",

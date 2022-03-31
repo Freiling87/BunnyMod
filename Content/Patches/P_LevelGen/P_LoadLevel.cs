@@ -13,6 +13,7 @@ using Light2D;
 using System.Linq;
 using Object = UnityEngine.Object;
 using BunnyMod.Content.Custom;
+using BunnyMod.Content.Extensions;
 
 namespace BunnyMod.Content.Patches
 {
@@ -56,6 +57,7 @@ namespace BunnyMod.Content.Patches
 						if (agent.HasTrait<MobDebt>())
 							C_Spawns.SpawnRoamerSquad(agent, (int)((float)level * 1.66f), vAgent.Mobster, __instance, nameof(relStatus.Hostile), 4);
 
+					// To SORCE
 					if (level >= 13)
 						if (GC.challenges.Contains(cChallenge.LitterallyTheWorst) || GC.challenges.Contains(cChallenge.FloralerFlora))
 							for (int i = 0; i <= level - 11; i++)

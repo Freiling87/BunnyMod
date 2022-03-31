@@ -52,7 +52,6 @@ namespace BunnyMod.Content
 			Elevator_00();
 			FireHydrant_00();
 			FlamingBarrel_00();
-			Fountain_00();
 			Generator_00();
 			Generator2_00();
 			Lamp_00();
@@ -1779,112 +1778,7 @@ namespace BunnyMod.Content
 
 		#region Fountain
 
-		public void Fountain_00()
-		{
-			Type t = typeof(Fountain);
-			Type g = GetType();
 
-			Prefix(t, "DetermineButtons", g, "Fountain_DetermineButtons", new Type[0] { });
-			Prefix(t, "PressedButton", g, "Fountain_PressedButton", new Type[2] { typeof(string), typeof(int) });
-			Postfix(t, "SetVars", g, "Fountain_SetVars", new Type[0] { });
-		}
-
-		public static Dictionary<PlayfieldObject, bool> FountainStolenFrom = new Dictionary<PlayfieldObject, bool>();
-
-		public static bool Fountain_DetermineButtons(Fountain __instance) // Replacement
-		{
-			ObjectReal_DetermineButtons_base.GetMethodWithoutOverrides<Action>(__instance).Invoke();
-
-			__instance.buttons.Add("TossCoin");
-			__instance.buttonPrices.Add(1);
-
-			if (FountainStolenFrom[__instance] == false)
-				__instance.buttons.Add(cButtonText.FountainSteal);
-
-			//__instance.buttons.Add(cButtonText.FountainWishGoodHealth);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishFabulousWealth);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishFameAndGlory);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishTrueFriendship);
-			//__instance.buttonPrices.Add(30);
-
-			//__instance.buttons.Add(cButtonText.FountainWishWorldPeace);
-			//__instance.buttonPrices.Add(30);
-
-			return false;
-		}
-
-		public static void Fountain_PressedButton(string buttonText, int buttonPrice, Fountain __instance) // Replacement
-		{
-			ObjectReal_PressedButton_base.GetMethodWithoutOverrides<Action<string, int>>(__instance).Invoke(buttonText, buttonPrice);
-
-			Agent agent = __instance.interactingAgent;
-
-			if (buttonText == "TossCoin")
-			{
-				if (__instance.moneySuccess(buttonPrice))
-				{
-					__instance.tossedAgents.Add(__instance.interactingAgent);
-					__instance.objectInvDatabase.AddItem("Money", 1);
-				}
-			}
-			else if (buttonText == cButtonText.FountainSteal)
-			{
-				__instance.StartCoroutine(__instance.Operating(agent, null, 2f, false, "Tampering"));
-				GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
-
-				if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
-				{
-					GC.spawnerMain.SpawnNoise(__instance.tr.position, 0.4f, agent, "Normal", agent);
-					GC.audioHandler.Play(__instance, vAudioClip.Operating);
-					GC.spawnerMain.SpawnStateIndicator(__instance, "HighVolume");
-					GC.OwnCheck(agent, __instance.go, "Normal", 2);
-					C_Relationships.AnnoyWitnessesVictimless(agent);
-				}
-				else
-					GC.audioHandler.Play(__instance, vAudioClip.JumpIntoWater);
-			}
-
-			__instance.StopInteraction();
-		}
-
-		public static void Fountain_SetVars(Fountain __instance) // Postfix
-		{
-			__instance.damageThreshold = 50;
-			__instance.damageAccumulates = false;
-			__instance.pickUppable = false;
-			__instance.fireProof = true;
-			__instance.cantMakeFollowersAttack = true;
-			BMHeaderTools.AddDictionary(FountainStolenFrom, __instance, false);
-		}
-
-		public static void Fountain_Steal(Fountain __instance) // Non-Patch
-		{
-			Agent agent = __instance.interactingAgent;
-
-			InvItem invItem = new InvItem();
-			invItem.invItemName = "Money";
-			invItem.ItemSetup(false);
-			invItem.invItemCount = Random.Range(10, 30);
-			invItem.ShowPickingUpText(__instance.interactingAgent);
-			__instance.interactingAgent.inventory.AddItem(invItem);
-			__instance.objectInvDatabase.DestroyAllItems();
-			FountainStolenFrom[__instance] = true;
-			__instance.interactable = false;
-			agent.statusEffects.AddStatusEffect(vStatusEffect.FeelingUnlucky, true, true);
-
-			if (!agent.statusEffects.hasTrait(vTrait.SneakyFingers))
-				GC.spawnerMain.SpawnExplosion(__instance, __instance.curPosition, vExplosion.Water);
-			else
-				GC.audioHandler.Play(__instance, vAudioClip.JumpOutWater);
-
-			__instance.StopInteraction();
-		}
 
 		#endregion
 

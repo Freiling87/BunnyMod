@@ -149,7 +149,6 @@
     <Compile Include="Content\Patches\P_Combat\P_BulletHitbox.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
-    <Compile Include="Content\Patches\P_LevelGen\P_BasicWall.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
     <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
     <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />

@@ -174,22 +174,13 @@ namespace BunnyMod.Content
 	public static class cButtonText
 	{
 		public const string
-				CamerasCaptureWanted = "CamerasCaptureWanted",
-				CamerasCaptureGuilty = "CamerasCaptureGuilty",
 				DispenseIce = "DispenseIce",
-				FountainSteal = "FountainSteal",
-				FountainWishFabulousWealth = "FountainWishFabulousWealth",
-				FountainWishFameAndGlory = "FountainWishFameAndGlory",
-				FountainWishGoodHealth = "FountainWishGoodHealth",
-				FountainWishTrueFriendship = "FountainWishTrueFriendship",
-				FountainWishWorldPeace = "FountainWishWorldPeace",
 				GrillFudPaid = "GrillFudPaid",
 				HideInContainer = "HideInContainer",
 				OpenContainer = "OpenContainer",
 				SlotMachineHackJackpot = "SlotMachineHackJackpot",
 				SlotMachinePlay1 = "Play1",
 				SlotMachinePlay100 = "Play100",
-				StealItem = "StealItem";
 	}
 	public static class cChallenge // Custom Mutators
 	{
@@ -199,10 +190,6 @@ namespace BunnyMod.Content
 				GasolineHumidity = "FastFires",
 				Mildfire = "WeakFires",
 				NapalmSprings = "StubbornFires",
-				
-				FloralerFlora = "FloralerFlora",
-				LitterallyTheWorst = "LitterallyTheWorst",
-			// Rest of these are in notes in CCU
 				
 				Gameplay_Hide = "Gameplay_Hide",
 				Gameplay_Show = "Gameplay_Show",
@@ -380,21 +367,6 @@ namespace BunnyMod.Content
 				vObject.PoolTable,
 				vObject.TableBig,
 				vObject.TrashCan
-		};
-
-		public static List<string> WreckageMisc = new List<string>()
-		{
-				vObject.BarStool,
-				vObject.Lamp,
-				vObject.Shelf,
-		};
-
-		public static List<string> WreckageOrganic = new List<string>() // All should have gibs with visible burn
-		{
-				vObject.Chair,
-				vObject.Shelf,
-				vObject.Table,
-				vObject.TableBig,
 		};
 	}
 	public static class cSkillPoints // Custom Skill Points

@@ -174,22 +174,13 @@ namespace BunnyMod.Content
 	public static class cButtonText
 	{
 		public const string
-				CamerasCaptureWanted = "CamerasCaptureWanted",
-				CamerasCaptureGuilty = "CamerasCaptureGuilty",
 				DispenseIce = "DispenseIce",
-				FountainSteal = "FountainSteal",
-				FountainWishFabulousWealth = "FountainWishFabulousWealth",
-				FountainWishFameAndGlory = "FountainWishFameAndGlory",
-				FountainWishGoodHealth = "FountainWishGoodHealth",
-				FountainWishTrueFriendship = "FountainWishTrueFriendship",
-				FountainWishWorldPeace = "FountainWishWorldPeace",
 				GrillFudPaid = "GrillFudPaid",
 				HideInContainer = "HideInContainer",
 				OpenContainer = "OpenContainer",
 				SlotMachineHackJackpot = "SlotMachineHackJackpot",
 				SlotMachinePlay1 = "Play1",
 				SlotMachinePlay100 = "Play100",
-				StealItem = "StealItem";
 	}
 	public static class cChallenge // Custom Mutators
 	{

@@ -274,7 +274,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="MD\9.1. GameLogs.md" />
     <None Include="packages.config" />
     <None Include="Properties\Resources\BeerCan.bin" />
     <None Include="Properties\Resources\PyromanticJet.bin" />

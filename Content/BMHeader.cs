@@ -387,7 +387,6 @@ namespace BunnyMod.Content
 				Archmage = "Archmage",
 				BodyGuarded = "BodyGuarded",
 				BodyGuarded_2 = "BodyGuarded2",
-				Brainiac = "Brainiac",
 				BootLicker = "BootLicker",
 				Charmed = "Charmed",
 				Charmed_2 = "Charmed2",
@@ -395,7 +394,6 @@ namespace BunnyMod.Content
 				Cursed_2 = "Cursed2",
 				DAREdevil = "DAREdevil",
 				Debug = "00_Debug",
-				DimBulb = "DimBulb",
 				Domineering = "Domineering",
 				Domineering_2 = "Domineering2",
 				FocusedCasting = "FocusedCasting",
@@ -408,7 +406,6 @@ namespace BunnyMod.Content
 				ManaBattery_2 = "ManaBattery2",
 				MobDebt = "MobDebt",
 				MookMasher = "MookMasher",
-				MoronTheMerrier = "MoronTheMerrier",
 				ObjectivelyUnpleasant = "ObjectivelyUnpleasant",
 				Polarizing = "Polarizing",
 				Polarizing_2 = "Polarizing2",
@@ -417,23 +414,14 @@ namespace BunnyMod.Content
 				RATS_2 = "RATS2",
 				Reinforcements = "Reinforcements",
 				Reinforcements_2 = "Reinforcements2",
-				SmoothBrained = "SmoothBrained",
 				StealthBastardDeluxe = "StealthBastardDeluxe",
 				TamperTantrum = "TamperTantrum",
 				TamperTantrum_2 = "TamperTantrum2",
 				Teetotaller = "Teetotaller",
 				VeiledThreats = "VeiledThreats",
-				VeryHardOnYourself = "VeryHardOnYourself",
 				Warlord = "Warlord",
 				WildCasting = "WildCasting",
 				WildCasting_2 = "WildCasting2";
-
-		public static List<string> ExperienceRate = new List<string>()
-		{
-				DimBulb,
-				MoronTheMerrier,
-				SmoothBrained
-		};
 
 		public static List<string> Luck = new List<string>()
 		{

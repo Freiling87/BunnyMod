@@ -907,22 +907,6 @@ namespace BunnyMod.Content
 				CorrectButtonCosts(__instance);
 		}
 
-		public static void Door_FreePrisonerPointsIfNotDead(Agent myAgent, List<Agent> myFreedAgents) // Postfix
-		{
-			// VeryHardOnYourself
-
-			if (myAgent.HasTrait<VeryHardOnYourself>())
-			{
-				bool someFreed = false;
-
-				for (int i = 0; i < myFreedAgents.Count; i++)
-					if (!myFreedAgents[i].dead || myFreedAgents[i].teleporting)
-						return;
-
-				myAgent.skillPoints.AddPoints(cSkillPoints.FreePrisonerFailure);
-			}
-		}
-
 		public static bool Door_OpenDoor(Agent myAgent, bool remote, Door __instance, bool ___usedTutorialKey) // Replacement
 		{
 			BMLog("Door_OpenDoor");

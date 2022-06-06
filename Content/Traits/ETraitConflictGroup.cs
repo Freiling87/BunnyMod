@@ -13,8 +13,6 @@ namespace BunnyMod.Content.Traits
 		Charisma,
 		PoliceStanding,
 		
-		SmoothBrained_VeryHardOnYourself,
-		
 		Archmage_FocusedCasting,
 		Archmage_MagicTraining,
 		Archmage_ManaBattery,

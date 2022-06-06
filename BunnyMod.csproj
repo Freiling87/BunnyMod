@@ -142,15 +142,12 @@
     <Compile Include="Content\ObjectBehaviour\StoveData.cs" />
     <Compile Include="Content\Patches\P_Agents\P_AgentInteractions.cs" />
     <Compile Include="Content\Patches\P_Agents\P_Agent.cs" />
-    <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
-    <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
     <Compile Include="Content\Patches\P_Objects\P_Fire.cs" />
     <Compile Include="Content\Patches\P_Resources\P_GameResources.cs" />
     <Compile Include="Content\Patches\P_Inventory\P_InvDatabase.cs" />
-    <Compile Include="Content\Patches\P_Inventory\P_InvInterface.cs" />
     <Compile Include="Content\Patches\P_Items\P_Item.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_LoadLevel.cs" />
     <Compile Include="Content\Patches\P_Movement\P_Movement.cs" />
@@ -161,7 +158,6 @@
     <Compile Include="Content\Patches\P_Random\P_RandomSelection.cs" />
     <Compile Include="Content\Patches\P_Agents\P_Relationships.cs" />
     <Compile Include="Content\Patches\P_Interface\P_ScrollingMenu.cs" />
-    <Compile Include="Content\Patches\P_Interface\P_StatsScreen.cs" />
     <Compile Include="Content\Patches\P_Agents\P_StatusEffects.cs" />
     <Compile Include="Content\Status_Effects\S_ChronomanticDilation.cs" />
     <Compile Include="Content\Status_Effects\S_MuscleSpasms.cs" />

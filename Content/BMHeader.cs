@@ -365,22 +365,6 @@ namespace BunnyMod.Content
 				vObject.TrashCan
 		};
 	}
-	public static class cSkillPoints // Custom Skill Points
-	{
-		public const string
-				AngeredMany = "AngeredMany",
-				BQMalusDowntown = "BQMalusDowntown",
-				BQMalusFloor = "BQMalusFloor",
-				BQMalusGame = "BQMalusGame",
-				BQMalusIndustrial = "BQMalusIndustrial",
-				BQMalusPark = "BQMalusPark",
-				BQMalusSlums = "BQMalusSlums",
-				BQMalusUptown = "BQMalusUptown",
-				ElectabilityMalus = "ElectabilityMalus",
-				FreePrisonerFailure = "FreePrisonerFailure",
-				StoleNone = "StoleNone", // TODO does nothing
-				TookLotsOfDamage = "TookLotsOfDamage";
-	}
 	public static class cTrait // Custom Traits
 	{
 		public const string

@@ -153,7 +153,6 @@
     <Compile Include="Content\Patches\P_Inventory\P_InvInterface.cs" />
     <Compile Include="Content\Patches\P_Items\P_Item.cs" />
     <Compile Include="Content\Patches\P_LevelGen\P_LoadLevel.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_MeleeHitbox.cs" />
     <Compile Include="Content\Patches\P_Movement\P_Movement.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectMult.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectReal.cs" />

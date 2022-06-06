@@ -384,17 +384,11 @@ namespace BunnyMod.Content
 	public static class cTrait // Custom Traits
 	{
 		public const string
-				AfraidOfLoudNoises = "AfraidOfLoudNoises",
 				Archmage = "Archmage",
-				Ballistician = "Ballistician",
-				Ballistician_2 = "Ballistician2",
-				BlessedStrikes = "BlessedStrikes",
-				BlessedStrikes_2 = "BlessedStrikes2",
 				BodyGuarded = "BodyGuarded",
 				BodyGuarded_2 = "BodyGuarded2",
 				Brainiac = "Brainiac",
 				BootLicker = "BootLicker",
-				Carnivore = "Carnivore",
 				Charmed = "Charmed",
 				Charmed_2 = "Charmed2",
 				Cursed = "Cursed",
@@ -404,20 +398,10 @@ namespace BunnyMod.Content
 				DimBulb = "DimBulb",
 				Domineering = "Domineering",
 				Domineering_2 = "Domineering2",
-				DoubleTapper = "DoubleTapper",
-				DoubleTapper_2 = "DoubleTapper2",
-				DrawNoBlood = "DrawNoBlood",
-				EagleEyes = "EagleEyes",
-				EagleEyes_2 = "EagleEyes2",
-				Fatass = "Fatass",
-				FatHead = "FatHead",
 				FocusedCasting = "FocusedCasting",
 				FocusedCasting_2 = "FocusedCasting2",
-				FriendOfBill = "FriendOfBill",
 				GenerallyUnpleasant = "GenerallyUnpleasant",
 				Haunted = "Haunted",
-				InfernalStrikes = "InfernalStrikes",
-				InfernalStrikes_2 = "InfernalStrikes2",
 				MagicTraining = "MagicTraining",
 				MagicTraining_2 = "MagicTraining2",
 				ManaBattery = "ManaBattery",
@@ -425,8 +409,6 @@ namespace BunnyMod.Content
 				MobDebt = "MobDebt",
 				MookMasher = "MookMasher",
 				MoronTheMerrier = "MoronTheMerrier",
-				Myopic = "Myopic",
-				Myopic2 = "Myopic2",
 				ObjectivelyUnpleasant = "ObjectivelyUnpleasant",
 				Polarizing = "Polarizing",
 				Polarizing_2 = "Polarizing2",
@@ -435,60 +417,22 @@ namespace BunnyMod.Content
 				RATS_2 = "RATS2",
 				Reinforcements = "Reinforcements",
 				Reinforcements_2 = "Reinforcements2",
-				SharpOnly = "SharpOnly",
 				SmoothBrained = "SmoothBrained",
-				Sniper = "Sniper",
-				Sniper_2 = "Sniper2",
 				StealthBastardDeluxe = "StealthBastardDeluxe",
 				TamperTantrum = "TamperTantrum",
 				TamperTantrum_2 = "TamperTantrum2",
 				Teetotaller = "Teetotaller",
-				Vegetarian = "Vegetarian",
 				VeiledThreats = "VeiledThreats",
 				VeryHardOnYourself = "VeryHardOnYourself",
 				Warlord = "Warlord",
 				WildCasting = "WildCasting",
 				WildCasting_2 = "WildCasting2";
 
-		public static List<string> BulletRange = new List<string>()
-		{
-				Ballistician,
-				Ballistician_2,
-				Sniper
-		};
-
 		public static List<string> ExperienceRate = new List<string>()
 		{
 				DimBulb,
 				MoronTheMerrier,
 				SmoothBrained
-		};
-
-		public static List<string> LimitArmor = new List<string>()
-				{ };
-
-		public static List<string> LimitDrugs = new List<string>()
-		{
-				DAREdevil,
-				FriendOfBill,
-				Teetotaller,
-		};
-
-		public static List<string> LimitFood = new List<string>()
-		{
-				Carnivore,
-				Vegetarian
-		};
-
-		public static List<string> LimitHeadgear = new List<string>()
-		{
-				FatHead
-		};
-
-		public static List<string> LimitWeapons = new List<string>()
-		{
-				AfraidOfLoudNoises,
-				DrawNoBlood,
 		};
 
 		public static List<string> Luck = new List<string>()
@@ -540,14 +484,6 @@ namespace BunnyMod.Content
 				MookMasher,
 				Reinforcements,
 				Reinforcements_2,
-		};
-
-		public static List<string> VisionRange = new List<string>()
-		{
-				EagleEyes,
-				EagleEyes_2,
-				Myopic,
-				Myopic2,
 		};
 	}
 	public static class cStatuseffect // Custom Status Effects

@@ -24,8 +24,6 @@ namespace BunnyMod.Content.Traits
 							.SetEnabled(true)
 					);
 
-			BMTraitsManager.RegisterTrait<TamperTantrum2>(new BMTraitInfo(name, traitBuilder)
-					.WithConflictGroup(ETraitConflictGroup.Myopic_Ballistician)
 			);
 		}
 

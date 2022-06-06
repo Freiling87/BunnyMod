@@ -108,7 +108,6 @@
     <Compile Include="Content\CustomListDump.cs" />
     <Compile Include="Content\Custom\C_Combat.cs" />
     <Compile Include="Content\Custom\C_Interactions.cs" />
-    <Compile Include="Content\Custom\C_Interface.cs" />
     <Compile Include="Content\Custom\C_LevelGen.cs" />
     <Compile Include="Content\Custom\C_Relationships.cs" />
     <Compile Include="Content\Custom\C_Spawns.cs" />
@@ -145,8 +144,6 @@
     <Compile Include="Content\Patches\P_Agents\P_Agent.cs" />
     <Compile Include="Content\Patches\P_Items\P_InvItem.cs" />
     <Compile Include="Content\Patches\P_Items\P_ItemFunctions.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_Bullet.cs" />
-    <Compile Include="Content\Patches\P_Combat\P_BulletHitbox.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterCreation.cs" />
     <Compile Include="Content\Patches\P_Interface\P_CharacterSelect.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ExitPoint.cs" />
@@ -160,7 +157,6 @@
     <Compile Include="Content\Patches\P_Movement\P_Movement.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectMult.cs" />
     <Compile Include="Content\Patches\P_Objects\P_ObjectReal.cs" />
-    <Compile Include="Content\Patches\P_Controls\P_PlayerControl.cs" />
     <Compile Include="Content\Patches\P_Objects\P_PlayfieldObject.cs" />
     <Compile Include="Content\Patches\P_Quests\P_Quests.cs" />
     <Compile Include="Content\Patches\P_Random\P_RandomSelection.cs" />
@@ -172,25 +168,13 @@
     <Compile Include="Content\Status_Effects\S_ChronomanticDilation.cs" />
     <Compile Include="Content\Status_Effects\S_MuscleSpasms.cs" />
     <Compile Include="Content\Traits\BMTraitController.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Ballistician2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Wetworker.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper.cs" />
-    <Compile Include="Content\Traits\T_Combat_Ranged\Sniper2.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\DareDevil.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\FriendOfBill.cs" />
     <Compile Include="Content\Traits\T_Drug_Limitations\TeeTotaller.cs" />
     <Compile Include="Content\Traits\ETraitConflictGroup.cs" />
     <Compile Include="Content\Traits\BMTraitInfo.cs" />
     <Compile Include="Content\Traits\BMTraitsManager.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\BlessedStrikes2.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes.cs" />
-    <Compile Include="Content\Traits\T_Combat_Melee\InfernalStrikes2.cs" />
     <Compile Include="Content\Traits\TDebug.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\AfraidOfLoudNoises.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\DrawNoBlood.cs" />
-    <Compile Include="Content\Traits\T_Equipment_Limitations\FatHead.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\DimBulb.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\Brainiac.cs" />
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\MoronTheMerrier.cs" />
@@ -198,16 +182,10 @@
     <Compile Include="Content\Traits\T_Experience_Gain_Rate\VeryHardOnYourself.cs" />
     <Compile Include="Content\Traits\T_Followers\BodyGuarded.cs" />
     <Compile Include="Content\Traits\T_Followers\BodyGuarded2.cs" />
-    <Compile Include="Content\Traits\T_Food_Limitations\Carnivore.cs" />
-    <Compile Include="Content\Traits\T_Food_Limitations\Vegetarian.cs" />
     <Compile Include="Content\Traits\T_Luck\Charmed.cs" />
     <Compile Include="Content\Traits\T_Luck\Charmed2.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed.cs" />
     <Compile Include="Content\Traits\T_Luck\Cursed2.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\EagleEyes2.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\Myopic.cs" />
-    <Compile Include="Content\Traits\T_Miscellaneous\Myopic2.cs" />
     <Compile Include="Content\Traits\T_Social\BootLicker.cs" />
     <Compile Include="Content\Traits\T_Social\Domineering.cs" />
     <Compile Include="Content\Traits\T_Social\Domineering2.cs" />
@@ -295,14 +273,6 @@
     <Content Include="Localizations\L_Traits.yaml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Challenges\C_Features\" />
-    <Folder Include="Content\Challenges\C_Fire\" />
-    <Folder Include="Content\Challenges\C_Knockback\" />
-    <Folder Include="Content\Challenges\C_Overhauls\" />
-    <Folder Include="Content\Challenges\C_Quest_Count\" />
-    <Folder Include="Content\Challenges\C_Quest_Rewards\" />
-    <Folder Include="Content\Challenges\C_Roamer_Population\" />
-    <Folder Include="Content\Challenges\C_Roamer_Types\" />
     <Folder Include="Content\Items\I_Tool\" />
     <Folder Include="Content\Items\I_Weapons_Ranged\" />
     <Folder Include="Content\Items\I_Wearable_Body\" />

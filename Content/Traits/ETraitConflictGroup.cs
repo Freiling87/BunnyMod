@@ -1,4 +1,4 @@
-﻿namespace BunnyMod.Content.Traits
+namespace BunnyMod.Content.Traits
 {
 	public enum ETraitConflictGroup
 	{
@@ -12,11 +12,6 @@
 		VisionRange,
 		Charisma,
 		PoliceStanding,
-		
-		Myopic_Ballistician,
-		Myopic_Sniper,
-
-		AfraidOfLoudNoises_DrawNoBlood,
 		
 		SmoothBrained_VeryHardOnYourself,
 		

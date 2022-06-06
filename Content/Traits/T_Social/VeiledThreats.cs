@@ -34,7 +34,6 @@ namespace BunnyMod.Content.Traits
 					);
 
 			// TODO recommend: vTrait.Extortionist, vTrait.Mugger
-			BMTraitsManager.RegisterTrait<VeiledThreats>(new BMTraitInfo(name, traitBuilder)
 					.WithConflictGroup(ETraitConflictGroup.Myopic_Ballistician)
 			);
 		}
